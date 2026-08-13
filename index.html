@@ -59,7 +59,8 @@
       margin: 14px 0 7px;
     }
 
-    input, select {
+    input,
+    select {
       width: 100%;
       padding: 13px;
       border: 1px solid #ccd3df;
@@ -68,15 +69,34 @@
       background: white;
     }
 
-    .row {
+    .route-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
 
+    .price-box {
+      margin-top: 15px;
+      background: #eef4ff;
+      border: 1px solid #c9daf5;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      color: #0b4ea2;
+    }
+
+    .price-box small {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .price-box strong {
+      font-size: 24px;
+    }
+
     .schedule-grid {
       display: grid;
-      grid-template-columns: repeat(2,1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
 
@@ -103,7 +123,7 @@
 
     .seat-grid {
       display: grid;
-      grid-template-columns: repeat(2,1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
 
@@ -114,16 +134,20 @@
       border-radius: 10px;
       padding: 13px;
       font-size: 15px;
+      cursor: pointer;
     }
 
     .seat.taken {
       background: #e5e7eb;
       color: #777;
+      border-color: #d1d5db;
+      cursor: not-allowed;
     }
 
     .seat.selected {
       background: #0b4ea2;
       color: white;
+      border-color: #0b4ea2;
     }
 
     #book {
@@ -135,6 +159,11 @@
       border: 0;
       border-radius: 10px;
       padding: 14px;
+      cursor: pointer;
+    }
+
+    #book:disabled {
+      opacity: .6;
     }
 
     .muted {
@@ -171,10 +200,7 @@
     }
 
     @media(max-width:480px) {
-      .row {
-        grid-template-columns: 1fr;
-      }
-
+      .route-grid,
       .schedule-grid {
         grid-template-columns: 1fr;
       }
@@ -195,10 +221,10 @@
 
     <h2>Pemesanan Tiket Online</h2>
 
-    <div class="row">
+    <div class="route-grid">
 
       <div>
-        <label>Dari</label>
+        <label for="from">Dari</label>
 
         <select id="from">
           <option value="">Pilih keberangkatan</option>
@@ -209,7 +235,7 @@
       </div>
 
       <div>
-        <label>Ke</label>
+        <label for="to">Ke</label>
 
         <select id="to">
           <option value="">Pilih tujuan</option>
@@ -221,7 +247,14 @@
 
     </div>
 
-    <label>Tanggal Keberangkatan</label>
+    <div id="priceBox" class="price-box">
+      <small>Harga tiket</small>
+      <strong>Pilih rute</strong>
+    </div>
+
+    <label for="date">
+      Tanggal Keberangkatan
+    </label>
 
     <input id="date" type="date">
 
@@ -233,11 +266,9 @@
     <h3>Pilih Jadwal</h3>
 
     <div id="schedule" class="schedule-grid">
-
       <p class="muted">
-        Pilih tanggal terlebih dahulu.
+        Pilih rute dan tanggal terlebih dahulu.
       </p>
-
     </div>
 
   </section>
@@ -248,11 +279,9 @@
     <h3>Pilih Kursi</h3>
 
     <div id="seats" class="seat-grid">
-
       <p class="muted">
         Pilih jadwal terlebih dahulu.
       </p>
-
     </div>
 
   </section>
@@ -262,7 +291,9 @@
 
     <h3>Data Penumpang</h3>
 
-    <label>Nama Penumpang</label>
+    <label for="name">
+      Nama Penumpang
+    </label>
 
     <input
       id="name"
@@ -270,7 +301,9 @@
       placeholder="Nama penumpang"
     >
 
-    <label>Nomor WhatsApp</label>
+    <label for="phone">
+      Nomor WhatsApp
+    </label>
 
     <input
       id="phone"
@@ -283,7 +316,7 @@
 
   <section class="card">
 
-    <button id="book">
+    <button id="book" type="button">
       Pesan Sekarang
     </button>
 
