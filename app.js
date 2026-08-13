@@ -7,13 +7,14 @@ let selectedSeat = null;
 
 
 /* =========================
-   HARGA
+   HARGA RUTE
 ========================= */
 
-const HARGA = {
+const PRICES = {
   "Sofifi-Weda": 200000,
   "Sofifi-Lelilef": 300000,
   "Weda-Lelilef": 100000,
+
   "Lelilef-Weda": 100000,
   "Lelilef-Sofifi": 300000,
   "Weda-Sofifi": 200000
@@ -21,20 +22,20 @@ const HARGA = {
 
 
 /* =========================
-   RUPIAH
+   FORMAT RUPIAH
 ========================= */
 
-function rupiah(n) {
+function rupiah(value) {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
     maximumFractionDigits: 0
-  }).format(Number(n) || 0);
+  }).format(Number(value) || 0);
 }
 
 
 /* =========================
-   FORM
+   AMBIL DATA FORM
 ========================= */
 
 function getFrom() {
@@ -49,10 +50,14 @@ function getDate() {
   return document.querySelector("#date")?.value || "";
 }
 
-function getPrice() {
-  return HARGA[
-    getFrom() + "-" + getTo()
-  ] || 0;
+
+/* =========================
+   HARGA OTOMATIS
+========================= */
+
+function getRoutePrice() {
+  const key = getFrom() + "-" + getTo();
+  return PRICES[key] || 0;
 }
 
 
@@ -60,90 +65,49 @@ function getPrice() {
    NORMALISASI VEHICLE
 ========================= */
 
-function normalVehicle(value) {
-
-  const v = String(value || "")
+function normalizeVehicle(vehicle) {
+  const v = String(vehicle || "")
     .toUpperCase()
     .replace(/\s+/g, "")
-    .trim();
+    .replace(/-/g, "");
 
   if (v === "01" || v === "HSM01") {
-    return "01";
+    return "HSM-01";
   }
 
   if (v === "02" || v === "HSM02") {
-    return "02";
+    return "HSM-02";
   }
 
-  return v;
+  return String(vehicle || "");
 }
 
 
 /* =========================
-   NORMALISASI ROUTE
+   ERROR
 ========================= */
 
-function normalRoute(route) {
+function showError(message, error) {
+  const el = document.querySelector("#schedule");
 
-  return String(route || "")
-    .replace(/[–—-]/g, "→")
-    .replace(/\s*→\s*/g, "→")
-    .replace(/\s+/g, " ")
-    .trim()
-    .toLowerCase();
-}
-
-
-/* =========================
-   PECAH ROUTE
-========================= */
-
-function routeParts(route) {
-
-  return normalRoute(route)
-    .split("→")
-    .map(x => x.trim())
-    .filter(Boolean);
-}
-
-
-/* =========================
-   CEK APAKAH PERJALANAN
-   MELEWATI KOTA YANG DIPILIH
-========================= */
-
-function routeCocok(route, from, to) {
-
-  const parts = routeParts(route);
-
-  const dari = from.toLowerCase();
-  const ke = to.toLowerCase();
-
-  const a = parts.indexOf(dari);
-  const b = parts.indexOf(ke);
-
-  /*
-    Harus dari kiri ke kanan.
-  */
-
-  if (a === -1 || b === -1) {
-    return false;
+  if (el) {
+    el.innerHTML = `
+      <p class="error">${message}</p>
+    `;
   }
 
-  return a < b;
+  console.error("HSM:", message, error || "");
 }
 
 
 /* =========================
-   UNIT YANG BENAR
+   TENTUKAN VEHICLE
 ========================= */
 
-function unitUntukRute(from, to) {
+function vehicleUntukRute(from, to) {
 
-  /*
-    Unit 01:
-    Sofifi → Weda → Lelilef
-  */
+  // HSM-01
+  // Sofifi → Weda → Lelilef
 
   if (
     from === "Sofifi" &&
@@ -152,14 +116,12 @@ function unitUntukRute(from, to) {
       to === "Lelilef"
     )
   ) {
-    return "01";
+    return "HSM-01";
   }
 
 
-  /*
-    Unit 02:
-    Lelilef → Weda → Sofifi
-  */
+  // HSM-02
+  // Lelilef → Weda → Sofifi
 
   if (
     from === "Lelilef" &&
@@ -168,54 +130,30 @@ function unitUntukRute(from, to) {
       to === "Sofifi"
     )
   ) {
-    return "02";
+    return "HSM-02";
   }
 
 
-  /*
-    Weda → Lelilef
-  */
+  // Weda → Lelilef
 
   if (
     from === "Weda" &&
     to === "Lelilef"
   ) {
-    return "01";
+    return "HSM-01";
   }
 
 
-  /*
-    Weda → Sofifi
-  */
+  // Weda → Sofifi
 
   if (
     from === "Weda" &&
     to === "Sofifi"
   ) {
-    return "02";
+    return "HSM-02";
   }
-
 
   return null;
-}
-
-
-/* =========================
-   ERROR
-========================= */
-
-function showError(message, err) {
-
-  const el = document.querySelector("#schedule");
-
-  if (el) {
-    el.innerHTML =
-      '<p class="error">' +
-      message +
-      '</p>';
-  }
-
-  console.error("HSM:", message, err || "");
 }
 
 
@@ -246,9 +184,7 @@ async function loadSchedules() {
   `;
 
 
-  /*
-    RUTE
-  */
+  /* BELUM PILIH RUTE */
 
   if (!from || !to) {
 
@@ -262,9 +198,7 @@ async function loadSchedules() {
   }
 
 
-  /*
-    KOTA SAMA
-  */
+  /* RUTE SAMA */
 
   if (from === to) {
 
@@ -278,9 +212,7 @@ async function loadSchedules() {
   }
 
 
-  /*
-    TANGGAL
-  */
+  /* BELUM PILIH TANGGAL */
 
   if (!date) {
 
@@ -294,11 +226,9 @@ async function loadSchedules() {
   }
 
 
-  /*
-    HARGA
-  */
+  /* HARGA */
 
-  const price = getPrice();
+  const price = getRoutePrice();
 
   if (!price) {
 
@@ -312,17 +242,12 @@ async function loadSchedules() {
   }
 
 
-  /*
-    UNIT
-  */
+  /* VEHICLE */
 
-  const unit = unitUntukRute(
-    from,
-    to
-  );
+  const targetVehicle =
+    vehicleUntukRute(from, to);
 
-
-  if (!unit) {
+  if (!targetVehicle) {
 
     scheduleEl.innerHTML = `
       <p class="error">
@@ -353,28 +278,15 @@ async function loadSchedules() {
 
   try {
 
-    /*
-      Ambil semua jadwal
-      tanggal tersebut.
-    */
-
     const {
       data,
       error
     } = await db
       .from("schedules")
       .select("*")
-      .eq(
-        "travel_date",
-        date
-      )
-      .eq(
-        "active",
-        true
-      )
-      .order(
-        "departure_time"
-      );
+      .eq("travel_date", date)
+      .eq("active", true)
+      .order("departure_time");
 
 
     if (error) {
@@ -390,82 +302,51 @@ async function loadSchedules() {
 
 
     /*
-      FILTER:
-      1. vehicle
-      2. arah perjalanan
+      FILTER VEHICLE
+
+      Hanya kendaraan yang sesuai
+      dengan arah perjalanan.
     */
 
-    schedules =
-      (data || []).filter(
-        schedule => {
+    schedules = (data || []).filter(schedule => {
 
-          const kendaraan =
-            normalVehicle(
-              schedule.vehicle
-            );
+      const vehicle =
+        normalizeVehicle(
+          schedule.vehicle
+        );
 
-          const cocokUnit =
-            kendaraan === unit;
+      return vehicle === targetVehicle;
 
-
-          const cocokArah =
-            routeCocok(
-              schedule.route,
-              from,
-              to
-            );
-
-
-          return (
-            cocokUnit &&
-            cocokArah
-          );
-
-        }
-      );
+    });
 
 
     /*
       HILANGKAN DUPLIKAT
     */
 
-    const unique =
-      new Map();
+    const map = new Map();
 
-    schedules.forEach(
-      schedule => {
+    schedules.forEach(schedule => {
 
-        const key =
-          String(
-            schedule.id
-          );
+      map.set(
+        String(schedule.id),
+        schedule
+      );
 
-        if (!unique.has(key)) {
-          unique.set(
-            key,
-            schedule
-          );
-        }
+    });
 
-      }
+    schedules = Array.from(
+      map.values()
     );
 
 
-    schedules =
-      Array.from(
-        unique.values()
-      );
-
-
-    /*
-      TIDAK ADA
-    */
+    /* TIDAK ADA JADWAL */
 
     if (!schedules.length) {
 
       scheduleEl.innerHTML = `
         <p class="muted">
-          Tidak ada jadwal
+          Belum ada jadwal
           ${from} → ${to}
           pada tanggal ${date}.
         </p>
@@ -476,93 +357,79 @@ async function loadSchedules() {
 
 
     /*
-      TAMPILKAN
+      TAMPILKAN JADWAL
     */
 
     scheduleEl.innerHTML =
-      schedules.map(
-        schedule => {
+      schedules.map(schedule => {
 
-          const jam =
-            String(
-              schedule.departure_time ||
-              ""
-            ).slice(
-              0,
-              5
-            );
+        const time =
+          String(
+            schedule.departure_time || ""
+          ).slice(0, 5);
 
-
-          const kendaraan =
-            normalVehicle(
-              schedule.vehicle
-            );
+        const vehicle =
+          normalizeVehicle(
+            schedule.vehicle
+          );
 
 
-          return `
-            <button
-              type="button"
-              class="scheduleBtn"
-              data-id="${schedule.id}"
-            >
+        return `
+          <button
+            type="button"
+            class="scheduleBtn"
+            data-id="${schedule.id}"
+          >
 
-              <b>
-                ${jam}
-              </b>
+            <b>
+              ${time}
+            </b>
 
-              <small>
-                ${from} → ${to}
-              </small>
+            <small>
+              ${from} → ${to}
+            </small>
 
-              <small>
-                HSM ${kendaraan}
-              </small>
+            <small>
+              ${vehicle}
+            </small>
 
-              <small>
-                ${rupiah(price)}
-              </small>
+            <small>
+              ${rupiah(price)}
+            </small>
 
-            </button>
-          `;
+          </button>
+        `;
 
-        }
-      ).join("");
+      }).join("");
 
 
     /*
-      KLIK JADWAL
+      EVENT JADWAL
     */
 
     document
-      .querySelectorAll(
-        ".scheduleBtn"
-      )
-      .forEach(
-        button => {
+      .querySelectorAll(".scheduleBtn")
+      .forEach(button => {
 
-          button.addEventListener(
-            "click",
-            function() {
+        button.addEventListener(
+          "click",
+          () => {
 
-              pickSchedule(
-                Number(
-                  this.dataset.id
-                ),
-                this
-              );
+            pickSchedule(
+              Number(button.dataset.id),
+              button
+            );
 
-            }
-          );
+          }
+        );
 
-        }
-      );
+      });
 
-
-  } catch (e) {
+  } catch (error) {
 
     showError(
       "Terjadi kesalahan saat memuat jadwal.",
-      e
+      error
     );
 
   }
@@ -581,8 +448,7 @@ async function pickSchedule(
   selectedSchedule =
     schedules.find(
       schedule =>
-        Number(schedule.id) ===
-        Number(id)
+        Number(schedule.id) === Number(id)
     );
 
 
@@ -600,28 +466,19 @@ async function pickSchedule(
 
 
   document
-    .querySelectorAll(
-      ".scheduleBtn"
-    )
-    .forEach(
-      btn =>
-        btn.classList.remove(
-          "active"
-        )
+    .querySelectorAll(".scheduleBtn")
+    .forEach(btn =>
+      btn.classList.remove("active")
     );
 
 
   if (button) {
-    button.classList.add(
-      "active"
-    );
+    button.classList.add("active");
   }
 
 
   const seatsEl =
-    document.querySelector(
-      "#seats"
-    );
+    document.querySelector("#seats");
 
 
   seatsEl.innerHTML = `
@@ -634,8 +491,8 @@ async function pickSchedule(
   try {
 
     /*
-      BOOKING UNTUK
-      JADWAL INI SAJA
+      AMBIL BOOKING UNTUK
+      JADWAL KENDARAAN INI
     */
 
     const {
@@ -643,12 +500,10 @@ async function pickSchedule(
       error
     } = await db
       .from("bookings")
-      .select(
-        "seat_number"
-      )
+      .select("seat_number")
       .eq(
         "schedule_id",
-        id
+        selectedSchedule.id
       )
       .neq(
         "payment_status",
@@ -669,12 +524,10 @@ async function pickSchedule(
     }
 
 
-    const used =
+    const bookedSeats =
       (data || []).map(
         item =>
-          Number(
-            item.seat_number
-          )
+          Number(item.seat_number)
       );
 
 
@@ -684,15 +537,13 @@ async function pickSchedule(
 
     seatsEl.innerHTML =
       Array.from(
-        {
-          length: 14
-        },
-        (_, i) => {
+        { length: 14 },
+        (_, index) => {
 
-          const number = i + 1;
+          const number = index + 1;
 
-          const taken =
-            used.includes(
+          const booked =
+            bookedSeats.includes(
               number
             );
 
@@ -701,26 +552,21 @@ async function pickSchedule(
             <button
               type="button"
               class="seat ${
-                taken
-                  ? "taken"
-                  : ""
+                booked ? "taken" : ""
               }"
               ${
-                taken
+                booked
                   ? "disabled"
                   : ""
               }
               data-seat="${number}"
             >
-
               Kursi ${number}
-
               ${
-                taken
+                booked
                   ? " - Sudah dipesan"
                   : ""
               }
-
             </button>
           `;
 
@@ -736,43 +582,37 @@ async function pickSchedule(
       .querySelectorAll(
         ".seat:not(:disabled)"
       )
-      .forEach(
-        button => {
+      .forEach(button => {
 
-          button.addEventListener(
-            "click",
-            function() {
+        button.addEventListener(
+          "click",
+          () => {
 
-              selectedSeat =
-                Number(
-                  this.dataset.seat
-                );
-
-
-              document
-                .querySelectorAll(
-                  ".seat"
-                )
-                .forEach(
-                  btn =>
-                    btn.classList.remove(
-                      "selected"
-                    )
-                );
-
-
-              this.classList.add(
-                "selected"
+            selectedSeat =
+              Number(
+                button.dataset.seat
               );
 
-            }
-          );
 
-        }
-      );
+            document
+              .querySelectorAll(".seat")
+              .forEach(seat =>
+                seat.classList.remove(
+                  "selected"
+                )
+              );
 
 
-  } catch (e) {
+            button.classList.add(
+              "selected"
+            );
+
+          }
+        );
+
+      });
+
+  } catch (error) {
 
     seatsEl.innerHTML = `
       <p class="error">
@@ -780,7 +620,7 @@ async function pickSchedule(
       </p>
     `;
 
-    console.error(e);
+    console.error(error);
 
   }
 }
@@ -830,24 +670,19 @@ async function createBooking() {
 
 
   const price =
-    getPrice();
+    getRoutePrice();
 
 
   const code =
     "HSM-" +
     crypto
       .randomUUID()
-      .slice(
-        0,
-        6
-      )
+      .slice(0, 6)
       .toUpperCase();
 
 
   const button =
-    document.querySelector(
-      "#book"
-    );
+    document.querySelector("#book");
 
 
   button.disabled = true;
@@ -858,17 +693,15 @@ async function createBooking() {
   try {
 
     /*
-      CEK KURSI TERBARU
+      CEK KURSI SEKALI LAGI
     */
 
     const {
-      data: cek,
-      error: cekError
+      data: check,
+      error: checkError
     } = await db
       .from("bookings")
-      .select(
-        "seat_number"
-      )
+      .select("seat_number")
       .eq(
         "schedule_id",
         selectedSchedule.id
@@ -883,11 +716,11 @@ async function createBooking() {
       );
 
 
-    if (cekError) {
+    if (checkError) {
 
       alert(
         "Gagal mengecek kursi: " +
-        cekError.message
+        checkError.message
       );
 
       return;
@@ -895,12 +728,12 @@ async function createBooking() {
 
 
     if (
-      cek &&
-      cek.length
+      check &&
+      check.length > 0
     ) {
 
       alert(
-        "Kursi sudah dipesan orang lain."
+        "Kursi tersebut baru saja dipesan orang lain."
       );
 
       await pickSchedule(
@@ -912,7 +745,7 @@ async function createBooking() {
 
 
     /*
-      SIMPAN
+      SIMPAN BOOKING
     */
 
     const {
@@ -947,17 +780,29 @@ async function createBooking() {
 
     if (error) {
 
-      alert(
-        "Booking gagal: " +
-        error.message
-      );
+      if (
+        error.code === "23505"
+      ) {
+
+        alert(
+          "Kursi sudah dipesan. Silakan pilih kursi lain."
+        );
+
+      } else {
+
+        alert(
+          "Booking gagal: " +
+          error.message
+        );
+
+      }
 
       return;
     }
 
 
     /*
-      WHATSAPP
+      PESAN WHATSAPP
     */
 
     const message = [
@@ -978,15 +823,11 @@ async function createBooking() {
 
       "Jam: " +
         String(
-          selectedSchedule.departure_time ||
-          ""
-        ).slice(
-          0,
-          5
-        ),
+          selectedSchedule.departure_time || ""
+        ).slice(0, 5),
 
-      "Unit: HSM " +
-        normalVehicle(
+      "Kendaraan: " +
+        normalizeVehicle(
           selectedSchedule.vehicle
         ),
 
@@ -999,91 +840,79 @@ async function createBooking() {
     ].join("\n");
 
 
-    const wa =
+    const whatsapp =
       String(
         cfg.WHATSAPP_ADMIN || ""
-      ).replace(
-        /\D/g,
-        ""
-      );
+      ).replace(/\D/g, "");
 
 
     /*
-      HASIL BOOKING
+      HASIL
     */
 
     document
-      .querySelector(
-        "#result"
-      )
+      .querySelector("#result")
       .innerHTML = `
 
-      <div class="success">
+        <div class="success">
 
-        <b>
-          Booking berhasil!
-        </b>
+          <b>
+            Booking berhasil!
+          </b>
 
-        <strong>
-          ${code}
-        </strong>
+          <strong>
+            ${code}
+          </strong>
 
-        <p>
+          <p>
 
-          ${getFrom()} →
-          ${getTo()}
+            ${getFrom()} →
+            ${getTo()}
 
-          <br>
+            <br>
 
-          ${getDate()}
+            ${getDate()}
 
-          •
+            •
+            ${
+              String(
+                selectedSchedule.departure_time || ""
+              ).slice(0, 5)
+            }
+
+            <br>
+
+            ${
+              normalizeVehicle(
+                selectedSchedule.vehicle
+              )
+            }
+
+            • Kursi ${selectedSeat}
+
+            <br>
+
+            Total:
+            ${rupiah(price)}
+
+          </p>
+
           ${
-            String(
-              selectedSchedule.departure_time ||
-              ""
-            ).slice(
-              0,
-              5
-            )
+            whatsapp
+              ? `
+                <a
+                  target="_blank"
+                  rel="noopener"
+                  href="https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}"
+                >
+                  Konfirmasi via WhatsApp
+                </a>
+              `
+              : ""
           }
 
-          <br>
-
-          HSM ${
-            normalVehicle(
-              selectedSchedule.vehicle
-            )
-          }
-
-          •
-          Kursi ${selectedSeat}
-
-          <br>
-
-          Total:
-          ${rupiah(price)}
-
-        </p>
-
-
-        ${
-          wa
-            ? `
-              <a
-                target="_blank"
-                rel="noopener"
-                href="https://wa.me/${wa}?text=${encodeURIComponent(message)}"
-              >
-                Konfirmasi via WhatsApp
-              </a>
-            `
-            : ""
-        }
-
-      </div>
-
-    `;
+        </div>
+      `;
 
 
     /*
@@ -1095,9 +924,9 @@ async function createBooking() {
     );
 
 
-  } catch (e) {
+  } catch (error) {
 
-    console.error(e);
+    console.error(error);
 
     alert(
       "Terjadi kesalahan saat menyimpan booking."
@@ -1114,20 +943,16 @@ async function createBooking() {
 
 
 /* =========================
-   START
+   START HSM
 ========================= */
 
 async function startHSM() {
 
   const dateEl =
-    document.querySelector(
-      "#date"
-    );
+    document.querySelector("#date");
 
   const bookButton =
-    document.querySelector(
-      "#book"
-    );
+    document.querySelector("#book");
 
 
   if (
@@ -1137,7 +962,7 @@ async function startHSM() {
   ) {
 
     return showError(
-      "Config HSM belum lengkap."
+      "Config HSM belum lengkap. Periksa config.js."
     );
 
   }
@@ -1160,11 +985,11 @@ async function startHSM() {
         cfg.SUPABASE_PUBLISHABLE_KEY
       );
 
-  } catch (e) {
+  } catch (error) {
 
     return showError(
       "Gagal membuat koneksi Supabase.",
-      e
+      error
     );
 
   }
@@ -1177,26 +1002,24 @@ async function startHSM() {
   const today =
     new Date()
       .toISOString()
-      .slice(
-        0,
-        10
-      );
+      .slice(0, 10);
 
 
-  dateEl.min =
-    today;
+  dateEl.min = today;
 
 
   /*
-    JANGAN MEMILIH
-    TANGGAL LAMA
+    KALAU TANGGAL LAMA
+    DIKOSONGKAN
   */
 
   if (
     dateEl.value &&
     dateEl.value < today
   ) {
+
     dateEl.value = "";
+
   }
 
 
@@ -1205,9 +1028,7 @@ async function startHSM() {
   */
 
   document
-    .querySelector(
-      "#from"
-    )
+    .querySelector("#from")
     .addEventListener(
       "change",
       loadSchedules
@@ -1219,9 +1040,7 @@ async function startHSM() {
   */
 
   document
-    .querySelector(
-      "#to"
-    )
+    .querySelector("#to")
     .addEventListener(
       "change",
       loadSchedules
@@ -1239,7 +1058,7 @@ async function startHSM() {
 
 
   /*
-    BOOKING
+    BUTTON BOOKING
   */
 
   bookButton.addEventListener(
@@ -1249,18 +1068,23 @@ async function startHSM() {
 
 
   /*
-    AWAL
+    PESAN AWAL
   */
 
-  document.querySelector(
-    "#schedule"
-  ).innerHTML = `
-    <p class="muted">
-      Pilih keberangkatan, tujuan dan tanggal terlebih dahulu.
-    </p>
-  `;
+  document
+    .querySelector("#schedule")
+    .innerHTML = `
+      <p class="muted">
+        Pilih keberangkatan, tujuan dan tanggal terlebih dahulu.
+      </p>
+    `;
+
 }
 
+
+/* =========================
+   JALANKAN
+========================= */
 
 document.addEventListener(
   "DOMContentLoaded",
