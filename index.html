@@ -17,7 +17,7 @@
 
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Arial, sans-serif;
       background: #f3f6fa;
       color: #172033;
     }
@@ -28,14 +28,20 @@
 
     .hero {
       position: relative;
-      min-height: 390px;
+      min-height: 480px;
 
-      background:
+      background-image:
         linear-gradient(
-          rgba(0, 35, 80, 0.35),
-          rgba(0, 20, 50, 0.65)
+          rgba(0, 35, 80, 0.20),
+          rgba(0, 20, 50, 0.45)
         ),
-        url("hsm-hero.png") center center / cover no-repeat;
+        url("./hsm-hero.png");
+
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: contain;
+
+      background-color: #0b315c;
 
       display: flex;
       align-items: center;
@@ -50,39 +56,37 @@
     .hero-content {
       position: relative;
       z-index: 2;
-      padding: 30px 15px;
-    }
 
-    /* =========================
-       LOGO HSM
-    ========================== */
+      width: 100%;
+      padding: 30px 15px;
+
+      text-shadow: 0 2px 8px rgba(0,0,0,0.55);
+    }
 
     .brand {
       margin: 0;
 
-      font-size: 62px;
+      font-size: 58px;
       font-weight: 900;
 
-      letter-spacing: 5px;
+      letter-spacing: 4px;
       line-height: 1;
 
-      text-shadow:
-        0 3px 12px rgba(0, 0, 0, 0.45);
-    }
-
-    .brand-blue {
       color: #1684ff;
+
+      text-shadow:
+        0 3px 10px rgba(0,0,0,0.55);
     }
 
     .transport {
-      margin-top: 10px;
+      margin-top: 9px;
 
       color: #e63946;
 
       font-size: 25px;
       font-weight: 800;
 
-      letter-spacing: 6px;
+      letter-spacing: 5px;
 
       text-transform: uppercase;
     }
@@ -91,20 +95,16 @@
       margin: 15px 0 0;
 
       font-size: 17px;
-      font-weight: 500;
-
-      text-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.55);
+      font-weight: 600;
     }
 
     .route-text {
-      margin-top: 12px;
+      margin-top: 10px;
 
-      font-size: 16px;
-      font-weight: bold;
+      font-size: 15px;
+      font-weight: 500;
 
-      text-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.55);
+      opacity: 0.97;
     }
 
     /* =========================
@@ -112,7 +112,6 @@
     ========================== */
 
     .container {
-      width: 100%;
       max-width: 720px;
 
       margin: 20px auto;
@@ -121,7 +120,7 @@
     }
 
     /* =========================
-       FITUR TRAVEL
+       FEATURES
     ========================== */
 
     .features {
@@ -144,7 +143,7 @@
       text-align: center;
 
       box-shadow:
-        0 4px 18px rgba(0, 0, 0, 0.07);
+        0 4px 18px rgba(0,0,0,0.07);
     }
 
     .feature-icon {
@@ -185,7 +184,7 @@
       margin-bottom: 16px;
 
       box-shadow:
-        0 4px 18px rgba(0, 0, 0, 0.08);
+        0 4px 18px rgba(0,0,0,0.08);
     }
 
     h2,
@@ -214,8 +213,7 @@
 
       padding: 13px;
 
-      border:
-        1px solid #ccd3df;
+      border: 1px solid #ccd3df;
 
       border-radius: 10px;
 
@@ -230,7 +228,7 @@
       border-color: #0b4ea2;
 
       box-shadow:
-        0 0 0 2px rgba(11, 78, 162, 0.1);
+        0 0 0 2px rgba(11,78,162,0.10);
     }
 
     /* =========================
@@ -240,8 +238,7 @@
     .schedule-grid {
       display: grid;
 
-      grid-template-columns:
-        repeat(2, 1fr);
+      grid-template-columns: repeat(2, 1fr);
 
       gap: 10px;
     }
@@ -251,8 +248,7 @@
 
       color: #0b4ea2;
 
-      border:
-        1px solid #c9daf5;
+      border: 1px solid #c9daf5;
 
       border-radius: 10px;
 
@@ -269,6 +265,9 @@
 
     .scheduleBtn:hover {
       transform: translateY(-1px);
+
+      box-shadow:
+        0 4px 10px rgba(0,0,0,0.08);
     }
 
     .scheduleBtn small {
@@ -283,6 +282,8 @@
       background: #0b4ea2;
 
       color: white;
+
+      border-color: #0b4ea2;
     }
 
     .scheduleBtn.active small {
@@ -296,8 +297,7 @@
     .seat-grid {
       display: grid;
 
-      grid-template-columns:
-        repeat(2, 1fr);
+      grid-template-columns: repeat(2, 1fr);
 
       gap: 10px;
     }
@@ -307,8 +307,7 @@
 
       color: #137333;
 
-      border:
-        1px solid #b8e0c4;
+      border: 1px solid #b8e0c4;
 
       border-radius: 10px;
 
@@ -317,6 +316,12 @@
       font-size: 15px;
 
       cursor: pointer;
+
+      transition: 0.2s;
+    }
+
+    .seat:hover {
+      transform: translateY(-1px);
     }
 
     .seat.taken {
@@ -366,7 +371,7 @@
     }
 
     #book:hover {
-      background: #083b7d;
+      background: #083b7c;
     }
 
     #book:disabled {
@@ -381,6 +386,10 @@
 
     .muted {
       color: #6b7280;
+
+      text-align: center;
+
+      padding: 10px;
     }
 
     .error {
@@ -390,14 +399,13 @@
     }
 
     /* =========================
-       SUCCESS BOOKING
+       SUCCESS
     ========================== */
 
     .success {
       background: #ecfdf3;
 
-      border:
-        1px solid #a7e6c1;
+      border: 1px solid #a7e6c1;
 
       border-radius: 12px;
 
@@ -434,15 +442,24 @@
        FOOTER
     ========================== */
 
-    footer {
+    .footer {
       text-align: center;
 
-      color: #6b7280;
+      padding: 25px 15px;
+
+      background: #0b315c;
+
+      color: white;
 
       font-size: 13px;
+    }
 
-      padding:
-        10px 15px 30px;
+    .footer strong {
+      color: #1684ff;
+    }
+
+    .footer .red {
+      color: #e63946;
     }
 
     /* =========================
@@ -452,35 +469,41 @@
     @media (max-width: 600px) {
 
       .hero {
-        min-height: 340px;
+        min-height: 390px;
+
+        background-size: contain;
+
+        background-position: center center;
       }
 
       .brand {
-        font-size: 48px;
+        font-size: 44px;
+
+        letter-spacing: 3px;
       }
 
       .transport {
-        font-size: 20px;
+        font-size: 18px;
 
-        letter-spacing: 4px;
+        letter-spacing: 3px;
       }
 
       .tagline {
-        font-size: 15px;
-      }
-
-      .route-text {
         font-size: 14px;
       }
 
+      .route-text {
+        font-size: 13px;
+      }
+
       .features {
-        grid-template-columns:
-          repeat(3, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 7px;
       }
 
       .feature {
-        padding:
-          13px 5px;
+        padding: 12px 5px;
       }
 
       .feature-icon {
@@ -496,14 +519,13 @@
       }
 
       .schedule-grid {
-        grid-template-columns:
-          1fr;
+        grid-template-columns: 1fr;
       }
 
       .seat-grid {
-        grid-template-columns:
-          repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
       }
+
     }
   </style>
 </head>
@@ -518,9 +540,7 @@
 
     <div class="hero-content">
 
-      <h1 class="brand">
-        <span class="brand-blue">HSM</span>
-      </h1>
+      <h1 class="brand">HSM</h1>
 
       <div class="transport">
         TRANSPORT
@@ -530,22 +550,20 @@
         Hidayah Sarana Mulia Transport
       </p>
 
-      <div class="route-text">
-        Sofifi ↔ Weda
-      </div>
+      <p class="route-text">
+        🚐 Sofifi → Weda &nbsp; | &nbsp; Weda → Sofifi
+      </p>
 
     </div>
 
   </header>
 
 
-  <!-- =========================
-       CONTENT
-  ========================== -->
-
   <main class="container">
 
-    <!-- FITUR -->
+    <!-- =========================
+         KEUNGGULAN TRAVEL
+    ========================== -->
 
     <section class="features">
 
@@ -555,12 +573,10 @@
           ❄️
         </div>
 
-        <strong>
-          Full AC
-        </strong>
+        <strong>Full AC</strong>
 
         <span>
-          Perjalanan nyaman
+          Perjalanan lebih nyaman
         </span>
 
       </div>
@@ -572,12 +588,10 @@
           🚐
         </div>
 
-        <strong>
-          HiAce
-        </strong>
+        <strong>HiAce</strong>
 
         <span>
-          Kendaraan nyaman
+          Armada nyaman
         </span>
 
       </div>
@@ -589,12 +603,10 @@
           👨‍✈️
         </div>
 
-        <strong>
-          Supir Berpengalaman
-        </strong>
+        <strong>Berpengalaman</strong>
 
         <span>
-          Aman & profesional
+          Supir profesional
         </span>
 
       </div>
@@ -602,14 +614,15 @@
     </section>
 
 
-    <!-- FORM -->
+    <!-- =========================
+         DATA PENUMPANG
+    ========================== -->
 
     <section class="card">
 
       <h2>
         Pemesanan Tiket Online
       </h2>
-
 
       <label for="name">
         Nama Penumpang
@@ -619,6 +632,7 @@
         id="name"
         type="text"
         placeholder="Masukkan nama penumpang"
+        autocomplete="name"
       >
 
 
@@ -630,6 +644,7 @@
         id="phone"
         type="tel"
         placeholder="08xxxxxxxxxx"
+        autocomplete="tel"
       >
 
 
@@ -645,7 +660,9 @@
     </section>
 
 
-    <!-- JADWAL -->
+    <!-- =========================
+         JADWAL
+    ========================== -->
 
     <section class="card">
 
@@ -667,7 +684,9 @@
     </section>
 
 
-    <!-- KURSI -->
+    <!-- =========================
+         KURSI
+    ========================== -->
 
     <section class="card">
 
@@ -689,7 +708,9 @@
     </section>
 
 
-    <!-- TOMBOL -->
+    <!-- =========================
+         BOOKING
+    ========================== -->
 
     <section class="card">
 
@@ -714,10 +735,20 @@
        FOOTER
   ========================== -->
 
-  <footer>
+  <footer class="footer">
 
-    © 2026 HSM Transport —
-    Hidayah Sarana Mulia Transport
+    <div>
+      <strong>HSM</strong>
+      <span class="red"> TRANSPORT</span>
+    </div>
+
+    <div style="margin-top: 6px;">
+      Hidayah Sarana Mulia Transport
+    </div>
+
+    <div style="margin-top: 6px;">
+      Sofifi ↔ Weda
+    </div>
 
   </footer>
 
@@ -729,14 +760,18 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-  <!-- CONFIG -->
+  <!-- =========================
+       CONFIG HSM
+  ========================== -->
 
-  <script src="config.js"></script>
+  <script src="./config.js"></script>
 
 
-  <!-- APP -->
+  <!-- =========================
+       APP HSM
+  ========================== -->
 
-  <script src="app.js"></script>
+  <script src="./app.js"></script>
 
 </body>
-</html>
+    </html>
