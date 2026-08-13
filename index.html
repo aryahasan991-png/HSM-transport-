@@ -11,160 +11,373 @@
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       background: #f3f6fa;
       color: #172033;
     }
 
-    .header {
-      background: linear-gradient(135deg, #0b4ea2, #123b78);
-      color: white;
-      padding: 25px 15px;
+    /* =========================
+       HERO
+    ========================== */
+
+    .hero {
+      position: relative;
+      min-height: 390px;
+
+      background:
+        linear-gradient(
+          rgba(0, 35, 80, 0.35),
+          rgba(0, 20, 50, 0.65)
+        ),
+        url("hsm-hero.png") center center / cover no-repeat;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
       text-align: center;
+      color: white;
+
+      overflow: hidden;
     }
 
-    .header h1 {
-      margin: 0 0 6px;
-      font-size: 28px;
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 30px 15px;
     }
 
-    .header p {
+    /* =========================
+       LOGO HSM
+    ========================== */
+
+    .brand {
       margin: 0;
-      opacity: .9;
+
+      font-size: 62px;
+      font-weight: 900;
+
+      letter-spacing: 5px;
+      line-height: 1;
+
+      text-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.45);
     }
+
+    .brand-blue {
+      color: #1684ff;
+    }
+
+    .transport {
+      margin-top: 10px;
+
+      color: #e63946;
+
+      font-size: 25px;
+      font-weight: 800;
+
+      letter-spacing: 6px;
+
+      text-transform: uppercase;
+    }
+
+    .tagline {
+      margin: 15px 0 0;
+
+      font-size: 17px;
+      font-weight: 500;
+
+      text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.55);
+    }
+
+    .route-text {
+      margin-top: 12px;
+
+      font-size: 16px;
+      font-weight: bold;
+
+      text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.55);
+    }
+
+    /* =========================
+       CONTAINER
+    ========================== */
 
     .container {
+      width: 100%;
       max-width: 720px;
+
       margin: 20px auto;
+
       padding: 0 14px 40px;
     }
 
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 18px rgba(0,0,0,.08);
-    }
+    /* =========================
+       FITUR TRAVEL
+    ========================== */
 
-    h2, h3 {
-      margin-top: 0;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      margin: 14px 0 7px;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #ccd3df;
-      border-radius: 10px;
-      font-size: 16px;
-      background: white;
-    }
-
-    .route-grid {
+    .features {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+
+      grid-template-columns: repeat(3, 1fr);
+
       gap: 10px;
+
+      margin-bottom: 16px;
     }
 
-    .price-box {
-      margin-top: 15px;
-      background: #eef4ff;
-      border: 1px solid #c9daf5;
-      border-radius: 12px;
-      padding: 15px;
+    .feature {
+      background: white;
+
+      border-radius: 14px;
+
+      padding: 16px 8px;
+
       text-align: center;
+
+      box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.07);
+    }
+
+    .feature-icon {
+      font-size: 27px;
+
+      margin-bottom: 7px;
+    }
+
+    .feature strong {
+      display: block;
+
+      font-size: 14px;
+
       color: #0b4ea2;
     }
 
-    .price-box small {
+    .feature span {
       display: block;
-      margin-bottom: 5px;
+
+      margin-top: 4px;
+
+      font-size: 12px;
+
+      color: #6b7280;
     }
 
-    .price-box strong {
-      font-size: 24px;
+    /* =========================
+       CARD
+    ========================== */
+
+    .card {
+      background: white;
+
+      border-radius: 16px;
+
+      padding: 20px;
+
+      margin-bottom: 16px;
+
+      box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.08);
     }
+
+    h2,
+    h3 {
+      margin-top: 0;
+    }
+
+    h2 {
+      color: #0b4ea2;
+    }
+
+    /* =========================
+       FORM
+    ========================== */
+
+    label {
+      display: block;
+
+      font-weight: bold;
+
+      margin: 14px 0 7px;
+    }
+
+    input {
+      width: 100%;
+
+      padding: 13px;
+
+      border:
+        1px solid #ccd3df;
+
+      border-radius: 10px;
+
+      font-size: 16px;
+
+      background: white;
+    }
+
+    input:focus {
+      outline: none;
+
+      border-color: #0b4ea2;
+
+      box-shadow:
+        0 0 0 2px rgba(11, 78, 162, 0.1);
+    }
+
+    /* =========================
+       JADWAL
+    ========================== */
 
     .schedule-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
       gap: 10px;
     }
 
     .scheduleBtn {
       background: #eef4ff;
+
       color: #0b4ea2;
-      border: 1px solid #c9daf5;
+
+      border:
+        1px solid #c9daf5;
+
       border-radius: 10px;
+
       padding: 14px;
+
       text-align: left;
+
       cursor: pointer;
+
       font-size: 16px;
+
+      transition: 0.2s;
     }
 
-    .scheduleBtn.active {
-      background: #0b4ea2;
-      color: white;
+    .scheduleBtn:hover {
+      transform: translateY(-1px);
     }
 
     .scheduleBtn small {
       display: block;
+
       margin-top: 5px;
+
+      color: #333;
     }
+
+    .scheduleBtn.active {
+      background: #0b4ea2;
+
+      color: white;
+    }
+
+    .scheduleBtn.active small {
+      color: white;
+    }
+
+    /* =========================
+       KURSI
+    ========================== */
 
     .seat-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
       gap: 10px;
     }
 
     .seat {
       background: #e8f7ed;
+
       color: #137333;
-      border: 1px solid #b8e0c4;
+
+      border:
+        1px solid #b8e0c4;
+
       border-radius: 10px;
+
       padding: 13px;
+
       font-size: 15px;
+
       cursor: pointer;
     }
 
     .seat.taken {
       background: #e5e7eb;
+
       color: #777;
+
       border-color: #d1d5db;
+
       cursor: not-allowed;
     }
 
     .seat.selected {
       background: #0b4ea2;
+
       color: white;
+
       border-color: #0b4ea2;
     }
 
+    /* =========================
+       BOOKING BUTTON
+    ========================== */
+
     #book {
       width: 100%;
+
+      margin-top: 5px;
+
       background: #0b4ea2;
+
       color: white;
+
       font-weight: bold;
+
       font-size: 17px;
-      border: 0;
+
+      border: none;
+
       border-radius: 10px;
+
       padding: 14px;
+
       cursor: pointer;
+
+      transition: 0.2s;
+    }
+
+    #book:hover {
+      background: #083b7d;
     }
 
     #book:disabled {
-      opacity: .6;
+      opacity: 0.6;
+
+      cursor: not-allowed;
     }
+
+    /* =========================
+       TEXT
+    ========================== */
 
     .muted {
       color: #6b7280;
@@ -172,37 +385,124 @@
 
     .error {
       color: #b42318;
+
       font-weight: bold;
     }
 
+    /* =========================
+       SUCCESS BOOKING
+    ========================== */
+
     .success {
       background: #ecfdf3;
-      border: 1px solid #a7e6c1;
+
+      border:
+        1px solid #a7e6c1;
+
       border-radius: 12px;
+
       padding: 16px;
+
       color: #14532d;
     }
 
     .success strong {
       display: block;
+
       font-size: 22px;
+
       margin: 8px 0;
     }
 
     .success a {
       display: inline-block;
+
       margin-top: 10px;
+
       background: #16a34a;
+
       color: white;
+
       text-decoration: none;
+
       padding: 11px 15px;
+
       border-radius: 9px;
     }
 
-    @media(max-width:480px) {
-      .route-grid,
+    /* =========================
+       FOOTER
+    ========================== */
+
+    footer {
+      text-align: center;
+
+      color: #6b7280;
+
+      font-size: 13px;
+
+      padding:
+        10px 15px 30px;
+    }
+
+    /* =========================
+       MOBILE
+    ========================== */
+
+    @media (max-width: 600px) {
+
+      .hero {
+        min-height: 340px;
+      }
+
+      .brand {
+        font-size: 48px;
+      }
+
+      .transport {
+        font-size: 20px;
+
+        letter-spacing: 4px;
+      }
+
+      .tagline {
+        font-size: 15px;
+      }
+
+      .route-text {
+        font-size: 14px;
+      }
+
+      .features {
+        grid-template-columns:
+          repeat(3, 1fr);
+      }
+
+      .feature {
+        padding:
+          13px 5px;
+      }
+
+      .feature-icon {
+        font-size: 23px;
+      }
+
+      .feature strong {
+        font-size: 12px;
+      }
+
+      .feature span {
+        font-size: 10px;
+      }
+
       .schedule-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr;
+      }
+
+      .seat-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
       }
     }
   </style>
@@ -210,129 +510,233 @@
 
 <body>
 
-<header class="header">
-  <h1>HSM Transport</h1>
-  <p>Hidayah Sarana Mulia Transport</p>
-</header>
+  <!-- =========================
+       HERO HSM
+  ========================== -->
 
-<main class="container">
+  <header class="hero">
 
-  <section class="card">
+    <div class="hero-content">
 
-    <h2>Pemesanan Tiket Online</h2>
+      <h1 class="brand">
+        <span class="brand-blue">HSM</span>
+      </h1>
 
-    <div class="route-grid">
-
-      <div>
-        <label for="from">Dari</label>
-
-        <select id="from">
-          <option value="">Pilih keberangkatan</option>
-          <option value="Sofifi">Sofifi</option>
-          <option value="Weda">Weda</option>
-          <option value="Lelilef">Lelilef</option>
-        </select>
+      <div class="transport">
+        TRANSPORT
       </div>
 
-      <div>
-        <label for="to">Ke</label>
+      <p class="tagline">
+        Hidayah Sarana Mulia Transport
+      </p>
 
-        <select id="to">
-          <option value="">Pilih tujuan</option>
-          <option value="Sofifi">Sofifi</option>
-          <option value="Weda">Weda</option>
-          <option value="Lelilef">Lelilef</option>
-        </select>
+      <div class="route-text">
+        Sofifi ↔ Weda
       </div>
 
     </div>
 
-    <div id="priceBox" class="price-box">
-      <small>Harga tiket</small>
-      <strong>Pilih rute</strong>
-    </div>
-
-    <label for="date">
-      Tanggal Keberangkatan
-    </label>
-
-    <input id="date" type="date">
-
-  </section>
+  </header>
 
 
-  <section class="card">
+  <!-- =========================
+       CONTENT
+  ========================== -->
 
-    <h3>Pilih Jadwal</h3>
+  <main class="container">
 
-    <div id="schedule" class="schedule-grid">
-      <p class="muted">
-        Pilih rute dan tanggal terlebih dahulu.
-      </p>
-    </div>
+    <!-- FITUR -->
 
-  </section>
+    <section class="features">
 
+      <div class="feature">
 
-  <section class="card">
+        <div class="feature-icon">
+          ❄️
+        </div>
 
-    <h3>Pilih Kursi</h3>
+        <strong>
+          Full AC
+        </strong>
 
-    <div id="seats" class="seat-grid">
-      <p class="muted">
-        Pilih jadwal terlebih dahulu.
-      </p>
-    </div>
+        <span>
+          Perjalanan nyaman
+        </span>
 
-  </section>
-
-
-  <section class="card">
-
-    <h3>Data Penumpang</h3>
-
-    <label for="name">
-      Nama Penumpang
-    </label>
-
-    <input
-      id="name"
-      type="text"
-      placeholder="Nama penumpang"
-    >
-
-    <label for="phone">
-      Nomor WhatsApp
-    </label>
-
-    <input
-      id="phone"
-      type="tel"
-      placeholder="08xxxxxxxxxx"
-    >
-
-  </section>
+      </div>
 
 
-  <section class="card">
+      <div class="feature">
 
-    <button id="book" type="button">
-      Pesan Sekarang
-    </button>
+        <div class="feature-icon">
+          🚐
+        </div>
 
-  </section>
+        <strong>
+          HiAce
+        </strong>
+
+        <span>
+          Kendaraan nyaman
+        </span>
+
+      </div>
 
 
-  <section id="result"></section>
+      <div class="feature">
 
-</main>
+        <div class="feature-icon">
+          👨‍✈️
+        </div>
+
+        <strong>
+          Supir Berpengalaman
+        </strong>
+
+        <span>
+          Aman & profesional
+        </span>
+
+      </div>
+
+    </section>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- FORM -->
 
-<script src="config.js"></script>
+    <section class="card">
 
-<script src="app.js"></script>
+      <h2>
+        Pemesanan Tiket Online
+      </h2>
+
+
+      <label for="name">
+        Nama Penumpang
+      </label>
+
+      <input
+        id="name"
+        type="text"
+        placeholder="Masukkan nama penumpang"
+      >
+
+
+      <label for="phone">
+        Nomor WhatsApp
+      </label>
+
+      <input
+        id="phone"
+        type="tel"
+        placeholder="08xxxxxxxxxx"
+      >
+
+
+      <label for="date">
+        Tanggal Keberangkatan
+      </label>
+
+      <input
+        id="date"
+        type="date"
+      >
+
+    </section>
+
+
+    <!-- JADWAL -->
+
+    <section class="card">
+
+      <h3>
+        Pilih Jadwal
+      </h3>
+
+      <div
+        id="schedule"
+        class="schedule-grid"
+      >
+
+        <p class="muted">
+          Memuat jadwal...
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- KURSI -->
+
+    <section class="card">
+
+      <h3>
+        Pilih Kursi
+      </h3>
+
+      <div
+        id="seats"
+        class="seat-grid"
+      >
+
+        <p class="muted">
+          Pilih jadwal terlebih dahulu.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- TOMBOL -->
+
+    <section class="card">
+
+      <button
+        id="book"
+        type="button"
+      >
+        Pesan Sekarang
+      </button>
+
+    </section>
+
+
+    <!-- HASIL BOOKING -->
+
+    <section id="result"></section>
+
+  </main>
+
+
+  <!-- =========================
+       FOOTER
+  ========================== -->
+
+  <footer>
+
+    © 2026 HSM Transport —
+    Hidayah Sarana Mulia Transport
+
+  </footer>
+
+
+  <!-- =========================
+       SUPABASE
+  ========================== -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <!-- CONFIG -->
+
+  <script src="config.js"></script>
+
+
+  <!-- APP -->
+
+  <script src="app.js"></script>
 
 </body>
 </html>
