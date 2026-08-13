@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HSM Transport - Pemesanan Tiket</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6fa;
+      color: #172033;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #0b4ea2, #123b78);
+      color: white;
+      padding: 25px 15px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0 0 6px;
+      font-size: 28px;
+    }
+
+    .header p {
+      margin: 0;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 20px auto;
+      padding: 0 14px 40px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    }
+
+    h2, h3 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 14px 0 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ccd3df;
+      border-radius: 10px;
+      font-size: 16px;
+      background: white;
+    }
+
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .scheduleBtn {
+      background: #eef4ff;
+      color: #0b4ea2;
+      border: 1px solid #c9daf5;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .scheduleBtn small {
+      display: block;
+      margin-top: 5px;
+      color: #333;
+    }
+
+    .scheduleBtn.active {
+      background: #0b4ea2;
+      color: white;
+    }
+
+    .scheduleBtn.active small {
+      color: white;
+    }
+
+    .seat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .seat {
+      background: #e8f7ed;
+      color: #137333;
+      border: 1px solid #b8e0c4;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .seat.taken {
+      background: #e5e7eb;
+      color: #777;
+      border-color: #d1d5db;
+      cursor: not-allowed;
+    }
+
+    .seat.selected {
+      background: #0b4ea2;
+      color: white;
+      border-color: #0b4ea2;
+    }
+
+    #book {
+      width: 100%;
+      margin-top: 5px;
+      background: #0b4ea2;
+      color: white;
+      font-weight: bold;
+      font-size: 17px;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+    }
+
+    #book:disabled {
+      opacity: 0.6;
+    }
+
+    .muted {
+      color: #6b7280;
+    }
+
+    .error {
+      color: #b42318;
+      font-weight: bold;
+    }
+
+    .success {
+      background: #ecfdf3;
+      border: 1px solid #a7e6c1;
+      border-radius: 12px;
+      padding: 16px;
+      color: #14532d;
+    }
+
+    .success strong {
+      display: block;
+      font-size: 22px;
+      margin: 8px 0;
+    }
+
+    .success a {
+      display: inline-block;
+      margin-top: 10px;
+      background: #16a34a;
+      color: white;
+      text-decoration: none;
+      padding: 11px 15px;
+      border-radius: 9px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <h1>HSM Transport</h1>
+    <p>Hidayah Sarana Mulia Transport</p>
+  </header>
+
+  <main class="container">
+
+    <section class="card">
+      <h2>Pemesanan Tiket Online</h2>
+
+      <label for="name">Nama Penumpang</label>
+      <input
+        id="name"
+        type="text"
+        placeholder="Masukkan nama penumpang"
+      >
+
+      <label for="phone">Nomor WhatsApp</label>
+      <input
+        id="phone"
+        type="tel"
+        placeholder="08xxxxxxxxxx"
+      >
+
+      <label for="date">Tanggal Keberangkatan</label>
+      <input id="date" type="date">
+    </section>
+
+    <section class="card">
+      <h3>Pilih Jadwal</h3>
+
+      <div id="schedule" class="schedule-grid">
+        <p class="muted">Memuat jadwal...</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Pilih Kursi</h3>
+
+      <div id="seats" class="seat-grid">
+        <p class="muted">
+          Pilih jadwal terlebih dahulu.
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <button id="book" type="button">
+        Pesan Sekarang
+      </button>
+    </section>
+
+    <section id="result"></section>
+
+  </main>
+
+  <!-- Library Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Konfigurasi HSM -->
+  <script src="config.js"></script>
+
+  <!-- Program HSM -->
+  <script src="app.js"></script>
+
+</body>
+</html>
