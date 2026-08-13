@@ -7,124 +7,374 @@ let selectedSeat = null;
 
 
 /* =========================
-   HARGA RUTE
+   HARGA
 ========================= */
 
-const HARGA = {
+const PRICES = {
   "Sofifi-Weda": 200000,
-  "Sofifi-Lelilef": 300000,
+  "Weda-Sofifi": 200000,
   "Weda-Lelilef": 100000,
-
   "Lelilef-Weda": 100000,
-  "Lelilef-Sofifi": 300000,
-  "Weda-Sofifi": 200000
+  "Sofifi-Lelilef": 300000,
+  "Lelilef-Sofifi": 300000
 };
-
-
-/* =========================
-   FORMAT RUPIAH
-========================= */
-
-function rupiah(n) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0
-  }).format(Number(n) || 0);
-}
 
 
 /* =========================
    ELEMENT
 ========================= */
 
-function el(id) {
+function $(id) {
   return document.getElementById(id);
 }
 
 
 /* =========================
-   HARGA OTOMATIS
+   RUPIAH
 ========================= */
 
-function hargaRute() {
-
-  const from = el("from").value;
-  const to = el("to").value;
-
-  return HARGA[from + "-" + to] || 0;
+function rupiah(value) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0
+  }).format(Number(value) || 0);
 }
 
 
 /* =========================
-   ROUTE DATABASE
+   NORMALISASI RUTE
 ========================= */
 
-function routeDatabase(from, to) {
+function cleanRoute(route) {
 
-  /*
-    Pilihan user:
-    Sofifi → Weda
-    Database:
-    Sofifi → Weda → Lelilef
-  */
-
-  if (from === "Sofifi" && to === "Weda") {
-    return "Sofifi → Weda → Lelilef";
-  }
-
-
-  /*
-    Sofifi → Lelilef
-  */
-
-  if (from === "Sofifi" && to === "Lelilef") {
-    return "Sofifi → Weda → Lelilef";
-  }
-
-
-  /*
-    Weda → Lelilef
-  */
-
-  if (from === "Weda" && to === "Lelilef") {
-    return "Sofifi → Weda → Lelilef";
-  }
-
-
-  /*
-    Lelilef → Weda
-  */
-
-  if (from === "Lelilef" && to === "Weda") {
-    return "Lelilef → Weda → Sofifi";
-  }
-
-
-  /*
-    Lelilef → Sofifi
-  */
-
-  if (from === "Lelilef" && to === "Sofifi") {
-    return "Lelilef → Weda → Sofifi";
-  }
-
-
-  /*
-    Weda → Sofifi
-  */
-
-  if (from === "Weda" && to === "Sofifi") {
-    return "Lelilef → Weda → Sofifi";
-  }
-
-
-  return null;
+  return String(route || "")
+    .replace(/[–—]/g, "→")
+    .replace(/\s*→\s*/g, "→")
+    .trim();
 }
 
 
 /* =========================
-   LOAD JADWAL
+   WAKTU
+========================= */
+
+function jam(time) {
+
+  return String(time || "")
+    .substring(0, 5);
+}
+
+
+/* =========================
+   HARGA RUTE
+========================= */
+
+function getPrice(from, to) {
+
+  return PRICES[
+    from + "-" + to
+  ] || 0;
+}
+
+
+/* =========================
+   CARI PERJALANAN
+=========================
+
+   Untuk rute panjang:
+
+   Sofifi → Lelilef
+   menggunakan:
+   Sofifi → Weda
+   lalu
+   Weda → Lelilef
+
+   Lelilef → Sofifi
+   menggunakan:
+   Lelilef → Weda
+   lalu
+   Weda → Sofifi
+*/
+
+
+function buildTrips(from, to) {
+
+  const result = [];
+
+  /* -------------------------
+     SOFIFI → WEDA
+  ------------------------- */
+
+  if (
+    from === "Sofifi" &&
+    to === "Weda"
+  ) {
+
+    schedules
+      .filter(s =>
+        cleanRoute(s.route) === "Sofifi→Weda"
+      )
+      .forEach(s => {
+
+        result.push({
+          main: s,
+          from: from,
+          to: to,
+          departure: s.departure_time,
+          price: 200000,
+          vehicle: s.vehicle
+        });
+
+      });
+
+    return result;
+  }
+
+
+  /* -------------------------
+     WEDA → LELILEF
+  ------------------------- */
+
+  if (
+    from === "Weda" &&
+    to === "Lelilef"
+  ) {
+
+    schedules
+      .filter(s =>
+        cleanRoute(s.route) === "Weda→Lelilef"
+      )
+      .forEach(s => {
+
+        result.push({
+          main: s,
+          from: from,
+          to: to,
+          departure: s.departure_time,
+          price: 100000,
+          vehicle: s.vehicle
+        });
+
+      });
+
+    return result;
+  }
+
+
+  /* -------------------------
+     LELILEF → WEDA
+  ------------------------- */
+
+  if (
+    from === "Lelilef" &&
+    to === "Weda"
+  ) {
+
+    schedules
+      .filter(s =>
+        cleanRoute(s.route) === "Lelilef→Weda"
+      )
+      .forEach(s => {
+
+        result.push({
+          main: s,
+          from: from,
+          to: to,
+          departure: s.departure_time,
+          price: 100000,
+          vehicle: s.vehicle
+        });
+
+      });
+
+    return result;
+  }
+
+
+  /* -------------------------
+     WEDA → SOFIFI
+  ------------------------- */
+
+  if (
+    from === "Weda" &&
+    to === "Sofifi"
+  ) {
+
+    schedules
+      .filter(s =>
+        cleanRoute(s.route) === "Weda→Sofifi"
+      )
+      .forEach(s => {
+
+        result.push({
+          main: s,
+          from: from,
+          to: to,
+          departure: s.departure_time,
+          price: 200000,
+          vehicle: s.vehicle
+        });
+
+      });
+
+    return result;
+  }
+
+
+  /* =========================
+     SOFIFI → LELILEF
+  ========================= */
+
+  if (
+    from === "Sofifi" &&
+    to === "Lelilef"
+  ) {
+
+    const firstLeg =
+      schedules.filter(s =>
+        cleanRoute(s.route) === "Sofifi→Weda"
+      );
+
+
+    firstLeg.forEach(first => {
+
+      const second =
+        schedules.find(s =>
+
+          cleanRoute(s.route) ===
+          "Weda→Lelilef"
+
+          &&
+
+          s.vehicle === first.vehicle
+
+          &&
+
+          String(s.travel_date) ===
+          String(first.travel_date)
+
+          &&
+
+          String(s.departure_time) >
+          String(first.departure_time)
+
+        );
+
+
+      if (second) {
+
+        result.push({
+
+          main: first,
+
+          second: second,
+
+          from: from,
+
+          to: to,
+
+          departure:
+            first.departure_time,
+
+          arrival:
+            second.departure_time,
+
+          price: 300000,
+
+          vehicle:
+            first.vehicle
+
+        });
+
+      }
+
+    });
+
+    return result;
+  }
+
+
+  /* =========================
+     LELILEF → SOFIFI
+  ========================= */
+
+  if (
+    from === "Lelilef" &&
+    to === "Sofifi"
+  ) {
+
+    const firstLeg =
+      schedules.filter(s =>
+        cleanRoute(s.route) ===
+        "Lelilef→Weda"
+      );
+
+
+    firstLeg.forEach(first => {
+
+      const second =
+        schedules.find(s =>
+
+          cleanRoute(s.route) ===
+          "Weda→Sofifi"
+
+          &&
+
+          s.vehicle === first.vehicle
+
+          &&
+
+          String(s.travel_date) ===
+          String(first.travel_date)
+
+          &&
+
+          String(s.departure_time) >
+          String(first.departure_time)
+
+        );
+
+
+      if (second) {
+
+        result.push({
+
+          main: first,
+
+          second: second,
+
+          from: from,
+
+          to: to,
+
+          departure:
+            first.departure_time,
+
+          arrival:
+            second.departure_time,
+
+          price: 300000,
+
+          vehicle:
+            first.vehicle
+
+        });
+
+      }
+
+    });
+
+    return result;
+  }
+
+
+  return result;
+}
+
+
+/* =========================
+   LOAD DATA JADWAL
 ========================= */
 
 async function loadSchedules() {
@@ -132,12 +382,12 @@ async function loadSchedules() {
   selectedSchedule = null;
   selectedSeat = null;
 
-  const scheduleBox = el("schedule");
-  const seatsBox = el("seats");
+  const scheduleBox = $("schedule");
+  const seatsBox = $("seats");
 
-  const from = el("from").value;
-  const to = el("to").value;
-  const date = el("date").value;
+  const from = $("from").value;
+  const to = $("to").value;
+  const date = $("date").value;
 
 
   seatsBox.innerHTML = `
@@ -183,34 +433,6 @@ async function loadSchedules() {
   }
 
 
-  const price = hargaRute();
-
-  if (!price) {
-
-    scheduleBox.innerHTML = `
-      <p class="error">
-        Harga rute belum tersedia.
-      </p>
-    `;
-
-    return;
-  }
-
-
-  const dbRoute = routeDatabase(from, to);
-
-  if (!dbRoute) {
-
-    scheduleBox.innerHTML = `
-      <p class="error">
-        Rute belum tersedia.
-      </p>
-    `;
-
-    return;
-  }
-
-
   scheduleBox.innerHTML = `
     <p class="muted">
       Memuat jadwal...
@@ -228,7 +450,6 @@ async function loadSchedules() {
       .select("*")
       .eq("travel_date", date)
       .eq("active", true)
-      .eq("route", dbRoute)
       .order("departure_time");
 
 
@@ -250,13 +471,16 @@ async function loadSchedules() {
     schedules = data || [];
 
 
-    if (!schedules.length) {
+    const trips =
+      buildTrips(from, to);
+
+
+    if (!trips.length) {
 
       scheduleBox.innerHTML = `
         <p class="muted">
-          Belum ada jadwal untuk
-          ${from} → ${to}
-          pada ${date}.
+          Tidak ada jadwal ${from} → ${to}
+          pada tanggal ${date}.
         </p>
       `;
 
@@ -264,53 +488,51 @@ async function loadSchedules() {
     }
 
 
-    /*
-      TAMPILKAN JADWAL
-    */
+    /* =========================
+       TAMPILKAN JADWAL
+    ========================= */
 
     scheduleBox.innerHTML =
-      schedules.map(schedule => {
+      trips.map((trip, index) => {
 
-        const jam =
-          String(
-            schedule.departure_time || ""
-          ).substring(0, 5);
-
-
-        const vehicle =
-          schedule.vehicle || "";
+        const arrival =
+          trip.arrival
+            ? `<small>Weda: ${jam(trip.arrival)}</small>`
+            : "";
 
 
         return `
+
           <button
             type="button"
             class="scheduleBtn"
-            data-id="${schedule.id}"
+            data-trip="${index}"
           >
 
-            <b>${jam}</b>
+            <b>
+              Berangkat ${jam(trip.departure)}
+            </b>
+
+            ${arrival}
 
             <small>
-              ${from} → ${to}
+              ${trip.vehicle || ""}
             </small>
 
             <small>
-              ${vehicle}
-            </small>
-
-            <small>
-              ${rupiah(price)}
+              ${rupiah(trip.price)}
             </small>
 
           </button>
+
         `;
 
       }).join("");
 
 
-    /*
-      EVENT PILIH JADWAL
-    */
+    /* =========================
+       EVENT
+    ========================= */
 
     document
       .querySelectorAll(".scheduleBtn")
@@ -318,17 +540,24 @@ async function loadSchedules() {
 
         button.addEventListener(
           "click",
-          function() {
+          () => {
 
-            pickSchedule(
-              Number(this.dataset.id),
-              this
+            const index =
+              Number(
+                button.dataset.trip
+              );
+
+
+            pickTrip(
+              trips[index],
+              button
             );
 
           }
         );
 
       });
+
 
   } catch (error) {
 
@@ -344,27 +573,13 @@ async function loadSchedules() {
 
 
 /* =========================
-   PILIH JADWAL
+   PILIH PERJALANAN
 ========================= */
 
-async function pickSchedule(id, button) {
+async function pickTrip(trip, button) {
 
-  selectedSchedule =
-    schedules.find(
-      item =>
-        Number(item.id) === Number(id)
-    );
-
-
+  selectedSchedule = trip;
   selectedSeat = null;
-
-
-  if (!selectedSchedule) {
-
-    alert("Jadwal tidak ditemukan.");
-
-    return;
-  }
 
 
   document
@@ -379,7 +594,7 @@ async function pickSchedule(id, button) {
   }
 
 
-  const seatsBox = el("seats");
+  const seatsBox = $("seats");
 
 
   seatsBox.innerHTML = `
@@ -389,21 +604,32 @@ async function pickSchedule(id, button) {
   `;
 
 
-  try {
+  /*
+    Untuk perjalanan panjang,
+    kursi harus dikunci berdasarkan
+    kendaraan dan tanggal.
 
-    /*
-      AMBIL KURSI YANG SUDAH BOOKING
-    */
+    Untuk perjalanan pendek,
+    menggunakan schedule utama.
+  */
+
+  const scheduleId =
+    trip.main.id;
+
+
+  try {
 
     const {
       data,
       error
     } = await db
       .from("bookings")
-      .select("seat_number")
+      .select(
+        "seat_number, schedule_id, payment_status"
+      )
       .eq(
         "schedule_id",
-        selectedSchedule.id
+        scheduleId
       )
       .neq(
         "payment_status",
@@ -427,15 +653,15 @@ async function pickSchedule(id, button) {
 
 
     const booked =
-      (data || []).map(
-        item =>
-          Number(item.seat_number)
-      );
+      (data || [])
+        .map(x =>
+          Number(x.seat_number)
+        );
 
 
-    /*
-      14 KURSI
-    */
+    /* =========================
+       14 KURSI
+    ========================= */
 
     seatsBox.innerHTML =
       Array.from(
@@ -444,41 +670,44 @@ async function pickSchedule(id, button) {
 
           const number = i + 1;
 
-          const sudahDipesan =
+          const taken =
             booked.includes(number);
 
 
           return `
+
             <button
               type="button"
               class="seat ${
-                sudahDipesan
-                  ? "taken"
-                  : ""
+                taken ? "taken" : ""
               }"
               ${
-                sudahDipesan
+                taken
                   ? "disabled"
                   : ""
               }
               data-seat="${number}"
             >
+
               Kursi ${number}
+
               ${
-                sudahDipesan
-                  ? " - Sudah dipesan"
+                taken
+                  ? "<br><small>Sudah dipesan</small>"
                   : ""
               }
+
             </button>
+
           `;
 
         }
       ).join("");
 
 
-    /*
-      PILIH KURSI
-    */
+    /* =========================
+       PILIH KURSI
+    ========================= */
 
     document
       .querySelectorAll(
@@ -488,11 +717,11 @@ async function pickSchedule(id, button) {
 
         button.addEventListener(
           "click",
-          function() {
+          () => {
 
             selectedSeat =
               Number(
-                this.dataset.seat
+                button.dataset.seat
               );
 
 
@@ -505,7 +734,7 @@ async function pickSchedule(id, button) {
               );
 
 
-            this.classList.add(
+            button.classList.add(
               "selected"
             );
 
@@ -514,13 +743,14 @@ async function pickSchedule(id, button) {
 
       });
 
+
   } catch (error) {
 
     console.error(error);
 
     seatsBox.innerHTML = `
       <p class="error">
-        Terjadi kesalahan saat memuat kursi.
+        Gagal memuat kursi.
       </p>
     `;
   }
@@ -547,11 +777,11 @@ async function createBooking() {
 
 
   const name =
-    el("name").value.trim();
+    $("name").value.trim();
 
 
   const phone =
-    el("phone").value.trim();
+    $("phone").value.trim();
 
 
   if (!name || !phone) {
@@ -564,8 +794,16 @@ async function createBooking() {
   }
 
 
+  const from =
+    $("from").value;
+
+
+  const to =
+    $("to").value;
+
+
   const price =
-    hargaRute();
+    getPrice(from, to);
 
 
   const code =
@@ -576,7 +814,8 @@ async function createBooking() {
       .toUpperCase();
 
 
-  const button = el("book");
+  const button = $("book");
+
 
   button.disabled = true;
   button.textContent =
@@ -586,18 +825,18 @@ async function createBooking() {
   try {
 
     /*
-      CEK LAGI KURSI
+      CEK KURSI LAGI
     */
 
     const {
-      data: cek,
-      error: cekError
+      data: existing,
+      error: checkError
     } = await db
       .from("bookings")
       .select("id")
       .eq(
         "schedule_id",
-        selectedSchedule.id
+        selectedSchedule.main.id
       )
       .eq(
         "seat_number",
@@ -609,25 +848,28 @@ async function createBooking() {
       );
 
 
-    if (cekError) {
+    if (checkError) {
 
       alert(
         "Gagal mengecek kursi: " +
-        cekError.message
+        checkError.message
       );
 
       return;
     }
 
 
-    if (cek && cek.length) {
+    if (
+      existing &&
+      existing.length > 0
+    ) {
 
       alert(
-        "Kursi sudah dipesan orang lain."
+        "Kursi tersebut baru saja dipesan orang lain."
       );
 
-      await pickSchedule(
-        selectedSchedule.id
+      await pickTrip(
+        selectedSchedule
       );
 
       return;
@@ -635,7 +877,7 @@ async function createBooking() {
 
 
     /*
-      SIMPAN
+      SIMPAN BOOKING
     */
 
     const {
@@ -644,19 +886,23 @@ async function createBooking() {
       .from("bookings")
       .insert({
 
-        booking_code: code,
+        booking_code:
+          code,
 
         schedule_id:
-          selectedSchedule.id,
+          selectedSchedule.main.id,
 
-        passenger_name: name,
+        passenger_name:
+          name,
 
-        phone: phone,
+        phone:
+          phone,
 
         seat_number:
           selectedSeat,
 
-        total: price,
+        total:
+          price,
 
         payment_status:
           "Belum Bayar"
@@ -675,40 +921,56 @@ async function createBooking() {
     }
 
 
-    /*
-      WHATSAPP
-    */
+    /* =========================
+       WHATSAPP
+    ========================= */
 
     const wa =
       String(
         cfg.WHATSAPP_ADMIN || ""
-      ).replace(/\D/g, "");
+      ).replace(
+        /\D/g,
+        ""
+      );
 
 
-    const pesan = [
+    const message = [
+
       "Halo HSM Transport, saya ingin konfirmasi booking.",
+
       "Kode: " + code,
+
       "Nama: " + name,
+
       "Rute: " +
-        el("from").value +
+        from +
         " → " +
-        el("to").value,
+        to,
+
       "Tanggal: " +
-        el("date").value,
-      "Jam: " +
-        String(
-          selectedSchedule.departure_time || ""
-        ).substring(0, 5),
+        $("date").value,
+
+      "Berangkat: " +
+        jam(
+          selectedSchedule.departure
+        ),
+
       "Kendaraan: " +
-        (selectedSchedule.vehicle || ""),
+        (
+          selectedSchedule.vehicle ||
+          ""
+        ),
+
       "Kursi: " +
         selectedSeat,
+
       "Total: " +
         rupiah(price)
+
     ].join("\n");
 
 
-    el("result").innerHTML = `
+    $("result").innerHTML = `
 
       <div class="success">
 
@@ -720,24 +982,28 @@ async function createBooking() {
 
         <p>
 
-          ${el("from").value}
-          →
-          ${el("to").value}
+          ${from} → ${to}
 
           <br>
 
-          ${el("date").value}
-
-          •
-          ${
-            String(
-              selectedSchedule.departure_time || ""
-            ).substring(0, 5)
-          }
+          ${$("date").value}
 
           <br>
 
-          Kursi ${selectedSeat}
+          Berangkat:
+          ${jam(
+            selectedSchedule.departure
+          )}
+
+          <br>
+
+          Kendaraan:
+          ${selectedSchedule.vehicle || ""}
+
+          <br>
+
+          Kursi:
+          ${selectedSeat}
 
           <br>
 
@@ -752,7 +1018,7 @@ async function createBooking() {
               <a
                 target="_blank"
                 rel="noopener"
-                href="https://wa.me/${wa}?text=${encodeURIComponent(pesan)}"
+                href="https://wa.me/${wa}?text=${encodeURIComponent(message)}"
               >
                 Konfirmasi via WhatsApp
               </a>
@@ -761,6 +1027,7 @@ async function createBooking() {
         }
 
       </div>
+
     `;
 
 
@@ -768,8 +1035,8 @@ async function createBooking() {
       REFRESH KURSI
     */
 
-    await pickSchedule(
-      selectedSchedule.id
+    await pickTrip(
+      selectedSchedule
     );
 
 
@@ -784,6 +1051,7 @@ async function createBooking() {
   } finally {
 
     button.disabled = false;
+
     button.textContent =
       "Pesan Sekarang";
   }
@@ -791,7 +1059,7 @@ async function createBooking() {
 
 
 /* =========================
-   START
+   START HSM
 ========================= */
 
 async function startHSM() {
@@ -802,7 +1070,7 @@ async function startHSM() {
     !cfg.SUPABASE_PUBLISHABLE_KEY
   ) {
 
-    showError(
+    console.error(
       "Config HSM belum lengkap."
     );
 
@@ -812,7 +1080,7 @@ async function startHSM() {
 
   if (!window.supabase) {
 
-    showError(
+    console.error(
       "Library Supabase tidak termuat."
     );
 
@@ -830,10 +1098,7 @@ async function startHSM() {
 
   } catch (error) {
 
-    showError(
-      "Gagal membuat koneksi Supabase.",
-      error
-    );
+    console.error(error);
 
     return;
   }
@@ -845,46 +1110,28 @@ async function startHSM() {
       .substring(0, 10);
 
 
-  const dateInput = el("date");
-
-
-  dateInput.min = today;
-
-
-  /*
-    KALAU TANGGAL YANG TERSIMPAN
-    SUDAH LEWAT, KOSONGKAN
-  */
-
-  if (
-    dateInput.value &&
-    dateInput.value < today
-  ) {
-
-    dateInput.value = "";
-
-  }
+  $("date").min = today;
 
 
   /*
     EVENT RUTE
   */
 
-  el("from")
+  $("from")
     .addEventListener(
       "change",
       loadSchedules
     );
 
 
-  el("to")
+  $("to")
     .addEventListener(
       "change",
       loadSchedules
     );
 
 
-  dateInput
+  $("date")
     .addEventListener(
       "change",
       loadSchedules
@@ -895,28 +1142,26 @@ async function startHSM() {
     BOOKING
   */
 
-  el("book")
+  $("book")
     .addEventListener(
       "click",
       createBooking
     );
 
 
-  /*
-    PESAN AWAL
-  */
+  $("schedule").innerHTML = `
 
-  el("schedule").innerHTML = `
     <p class="muted">
       Pilih keberangkatan, tujuan dan tanggal terlebih dahulu.
     </p>
+
   `;
 
 }
 
 
 /* =========================
-   JALANKAN
+   MULAI
 ========================= */
 
 document.addEventListener(
