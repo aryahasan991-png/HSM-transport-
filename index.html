@@ -17,9 +17,15 @@
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       background: #f3f6fa;
       color: #172033;
+    }
+
+    button,
+    input,
+    select {
+      font-family: inherit;
     }
 
     /* =========================
@@ -28,20 +34,14 @@
 
     .hero {
       position: relative;
-      min-height: 480px;
+      min-height: 430px;
 
-      background-image:
+      background:
         linear-gradient(
-          rgba(0, 35, 80, 0.20),
-          rgba(0, 20, 50, 0.45)
+          rgba(0, 35, 80, 0.35),
+          rgba(0, 20, 50, 0.65)
         ),
-        url("./hsm-hero.png");
-
-      background-position: center center;
-      background-repeat: no-repeat;
-      background-size: contain;
-
-      background-color: #0b315c;
+        url("./hsm-hero.png") center center / cover no-repeat;
 
       display: flex;
       align-items: center;
@@ -49,62 +49,52 @@
 
       text-align: center;
       color: white;
-
       overflow: hidden;
     }
 
     .hero-content {
       position: relative;
       z-index: 2;
-
       width: 100%;
-      padding: 30px 15px;
-
-      text-shadow: 0 2px 8px rgba(0,0,0,0.55);
+      padding: 35px 15px;
     }
 
     .brand {
       margin: 0;
-
-      font-size: 58px;
+      font-size: clamp(55px, 13vw, 80px);
       font-weight: 900;
-
-      letter-spacing: 4px;
+      letter-spacing: 6px;
       line-height: 1;
-
       color: #1684ff;
-
       text-shadow:
-        0 3px 10px rgba(0,0,0,0.55);
+        0 3px 10px rgba(0,0,0,0.45);
     }
 
     .transport {
-      margin-top: 9px;
-
-      color: #e63946;
-
-      font-size: 25px;
-      font-weight: 800;
-
-      letter-spacing: 5px;
-
-      text-transform: uppercase;
-    }
-
-    .tagline {
-      margin: 15px 0 0;
-
-      font-size: 17px;
-      font-weight: 600;
-    }
-
-    .route-text {
       margin-top: 10px;
+      color: #e63946;
+      font-size: clamp(20px, 5vw, 30px);
+      font-weight: 800;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      text-shadow:
+        0 2px 7px rgba(0,0,0,0.5);
+    }
 
+    .hero-subtitle {
+      margin: 16px auto 0;
+      font-size: 18px;
+      font-weight: 600;
+      text-shadow:
+        0 2px 7px rgba(0,0,0,0.6);
+    }
+
+    .hero-route {
+      margin-top: 9px;
       font-size: 15px;
-      font-weight: 500;
-
-      opacity: 0.97;
+      opacity: 0.95;
+      text-shadow:
+        0 2px 7px rgba(0,0,0,0.6);
     }
 
     /* =========================
@@ -112,11 +102,10 @@
     ========================== */
 
     .container {
-      max-width: 720px;
-
-      margin: 20px auto;
-
-      padding: 0 14px 40px;
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 20px 14px 50px;
     }
 
     /* =========================
@@ -125,49 +114,36 @@
 
     .features {
       display: grid;
-
       grid-template-columns: repeat(3, 1fr);
-
       gap: 10px;
-
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .feature {
       background: white;
-
-      border-radius: 14px;
-
-      padding: 16px 8px;
-
+      border-radius: 15px;
+      padding: 16px 7px;
       text-align: center;
-
       box-shadow:
         0 4px 18px rgba(0,0,0,0.07);
     }
 
     .feature-icon {
       font-size: 27px;
-
       margin-bottom: 7px;
     }
 
     .feature strong {
       display: block;
-
-      font-size: 14px;
-
       color: #0b4ea2;
+      font-size: 14px;
     }
 
     .feature span {
       display: block;
-
       margin-top: 4px;
-
-      font-size: 12px;
-
       color: #6b7280;
+      font-size: 12px;
     }
 
     /* =========================
@@ -176,13 +152,9 @@
 
     .card {
       background: white;
-
-      border-radius: 16px;
-
+      border-radius: 17px;
       padding: 20px;
-
-      margin-bottom: 16px;
-
+      margin-bottom: 17px;
       box-shadow:
         0 4px 18px rgba(0,0,0,0.08);
     }
@@ -194,6 +166,18 @@
 
     h2 {
       color: #0b4ea2;
+      margin-bottom: 7px;
+    }
+
+    h3 {
+      color: #172033;
+    }
+
+    .description {
+      color: #6b7280;
+      font-size: 14px;
+      margin-top: 0;
+      line-height: 1.5;
     }
 
     /* =========================
@@ -202,33 +186,79 @@
 
     label {
       display: block;
-
-      font-weight: bold;
-
-      margin: 14px 0 7px;
+      font-weight: 700;
+      margin: 15px 0 7px;
     }
 
-    input {
+    input,
+    select {
       width: 100%;
-
-      padding: 13px;
-
+      padding: 14px;
       border: 1px solid #ccd3df;
-
-      border-radius: 10px;
-
+      border-radius: 11px;
       font-size: 16px;
-
       background: white;
+      color: #172033;
     }
 
-    input:focus {
+    input:focus,
+    select:focus {
       outline: none;
-
       border-color: #0b4ea2;
-
       box-shadow:
-        0 0 0 2px rgba(11,78,162,0.10);
+        0 0 0 3px rgba(11,78,162,0.1);
+    }
+
+    /* =========================
+       RUTE
+    ========================== */
+
+    .route-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .route-card {
+      position: relative;
+    }
+
+    .route-card input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .route-label {
+      display: block;
+      padding: 17px 10px;
+      border: 2px solid #d5deeb;
+      border-radius: 13px;
+      background: #f8fafc;
+      color: #344054;
+      text-align: center;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .route-label:hover {
+      border-color: #7daeea;
+      background: #eef5ff;
+    }
+
+    .route-arrow {
+      display: block;
+      font-size: 23px;
+      margin-bottom: 5px;
+    }
+
+    .route-card input:checked + .route-label {
+      background: #0b4ea2;
+      border-color: #0b4ea2;
+      color: white;
+      box-shadow:
+        0 5px 15px rgba(11,78,162,0.22);
     }
 
     /* =========================
@@ -237,53 +267,39 @@
 
     .schedule-grid {
       display: grid;
-
       grid-template-columns: repeat(2, 1fr);
-
       gap: 10px;
     }
 
     .scheduleBtn {
+      width: 100%;
       background: #eef4ff;
-
       color: #0b4ea2;
-
       border: 1px solid #c9daf5;
-
-      border-radius: 10px;
-
-      padding: 14px;
-
+      border-radius: 12px;
+      padding: 15px;
       text-align: left;
-
       cursor: pointer;
-
       font-size: 16px;
-
       transition: 0.2s;
     }
 
     .scheduleBtn:hover {
       transform: translateY(-1px);
-
       box-shadow:
-        0 4px 10px rgba(0,0,0,0.08);
-    }
-
-    .scheduleBtn small {
-      display: block;
-
-      margin-top: 5px;
-
-      color: #333;
+        0 5px 12px rgba(11,78,162,0.12);
     }
 
     .scheduleBtn.active {
       background: #0b4ea2;
-
       color: white;
-
       border-color: #0b4ea2;
+    }
+
+    .scheduleBtn small {
+      display: block;
+      margin-top: 5px;
+      color: #374151;
     }
 
     .scheduleBtn.active small {
@@ -294,79 +310,30 @@
        KURSI
     ========================== */
 
-    .seat-grid {
-      display: grid;
-
-      grid-template-columns: repeat(2, 1fr);
-
-      gap: 10px;
-    }
-
     .seat {
-      background: #e8f7ed;
-
-      color: #137333;
-
-      border: 1px solid #b8e0c4;
-
-      border-radius: 10px;
-
-      padding: 13px;
-
-      font-size: 15px;
-
-      cursor: pointer;
-
-      transition: 0.2s;
+      transition: 0.15s;
     }
 
-    .seat:hover {
-      transform: translateY(-1px);
-    }
-
-    .seat.taken {
-      background: #e5e7eb;
-
-      color: #777;
-
-      border-color: #d1d5db;
-
-      cursor: not-allowed;
-    }
-
-    .seat.selected {
-      background: #0b4ea2;
-
-      color: white;
-
-      border-color: #0b4ea2;
+    .seat:not(:disabled):hover {
+      transform: scale(1.02);
+      filter: brightness(1.05);
     }
 
     /* =========================
-       BOOKING BUTTON
+       BOOKING
     ========================== */
 
     #book {
       width: 100%;
-
       margin-top: 5px;
-
       background: #0b4ea2;
-
       color: white;
-
       font-weight: bold;
-
       font-size: 17px;
-
       border: none;
-
-      border-radius: 10px;
-
-      padding: 14px;
-
+      border-radius: 11px;
+      padding: 15px;
       cursor: pointer;
-
       transition: 0.2s;
     }
 
@@ -376,26 +343,33 @@
 
     #book:disabled {
       opacity: 0.6;
-
       cursor: not-allowed;
     }
 
     /* =========================
-       TEXT
+       INFO
     ========================== */
+
+    .info-box {
+      background: #eef5ff;
+      border: 1px solid #cfe0f8;
+      border-radius: 12px;
+      padding: 13px;
+      margin-top: 15px;
+      color: #164b87;
+      font-size: 13px;
+      line-height: 1.5;
+    }
 
     .muted {
       color: #6b7280;
-
-      text-align: center;
-
-      padding: 10px;
+      line-height: 1.5;
     }
 
     .error {
       color: #b42318;
-
       font-weight: bold;
+      line-height: 1.5;
     }
 
     /* =========================
@@ -404,38 +378,28 @@
 
     .success {
       background: #ecfdf3;
-
       border: 1px solid #a7e6c1;
-
-      border-radius: 12px;
-
-      padding: 16px;
-
+      border-radius: 14px;
+      padding: 18px;
       color: #14532d;
+      margin-bottom: 20px;
     }
 
     .success strong {
       display: block;
-
-      font-size: 22px;
-
+      font-size: 24px;
       margin: 8px 0;
     }
 
     .success a {
       display: inline-block;
-
       margin-top: 10px;
-
       background: #16a34a;
-
       color: white;
-
       text-decoration: none;
-
-      padding: 11px 15px;
-
+      padding: 12px 17px;
       border-radius: 9px;
+      font-weight: bold;
     }
 
     /* =========================
@@ -444,66 +408,45 @@
 
     .footer {
       text-align: center;
-
-      padding: 25px 15px;
-
-      background: #0b315c;
-
-      color: white;
-
+      color: #6b7280;
       font-size: 13px;
+      padding: 5px 10px 25px;
     }
 
     .footer strong {
-      color: #1684ff;
-    }
-
-    .footer .red {
-      color: #e63946;
+      color: #0b4ea2;
     }
 
     /* =========================
        MOBILE
     ========================== */
 
-    @media (max-width: 600px) {
+    @media (max-width: 560px) {
 
       .hero {
         min-height: 390px;
-
-        background-size: contain;
-
-        background-position: center center;
       }
 
       .brand {
-        font-size: 44px;
-
-        letter-spacing: 3px;
+        font-size: 54px;
+        letter-spacing: 4px;
       }
 
       .transport {
-        font-size: 18px;
-
-        letter-spacing: 3px;
+        font-size: 21px;
+        letter-spacing: 4px;
       }
 
-      .tagline {
-        font-size: 14px;
-      }
-
-      .route-text {
-        font-size: 13px;
+      .hero-subtitle {
+        font-size: 16px;
       }
 
       .features {
-        grid-template-columns: repeat(3, 1fr);
-
         gap: 7px;
       }
 
       .feature {
-        padding: 12px 5px;
+        padding: 13px 5px;
       }
 
       .feature-icon {
@@ -518,14 +461,14 @@
         font-size: 10px;
       }
 
+      .route-grid,
       .schedule-grid {
         grid-template-columns: 1fr;
       }
 
-      .seat-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .card {
+        padding: 17px;
       }
-
     }
   </style>
 </head>
@@ -533,7 +476,7 @@
 <body>
 
   <!-- =========================
-       HERO HSM
+       HERO
   ========================== -->
 
   <header class="hero">
@@ -546,13 +489,13 @@
         TRANSPORT
       </div>
 
-      <p class="tagline">
+      <p class="hero-subtitle">
         Hidayah Sarana Mulia Transport
       </p>
 
-      <p class="route-text">
-        🚐 Sofifi → Weda &nbsp; | &nbsp; Weda → Sofifi
-      </p>
+      <div class="hero-route">
+        Perjalanan nyaman Sofifi ↔ Weda
+      </div>
 
     </div>
 
@@ -562,60 +505,34 @@
   <main class="container">
 
     <!-- =========================
-         KEUNGGULAN TRAVEL
+         FITUR TRAVEL
     ========================== -->
 
     <section class="features">
 
       <div class="feature">
-
-        <div class="feature-icon">
-          ❄️
-        </div>
-
+        <div class="feature-icon">❄️</div>
         <strong>Full AC</strong>
-
-        <span>
-          Perjalanan lebih nyaman
-        </span>
-
+        <span>Perjalanan nyaman</span>
       </div>
 
-
       <div class="feature">
-
-        <div class="feature-icon">
-          🚐
-        </div>
-
+        <div class="feature-icon">🚐</div>
         <strong>HiAce</strong>
-
-        <span>
-          Armada nyaman
-        </span>
-
+        <span>Armada nyaman</span>
       </div>
 
-
       <div class="feature">
-
-        <div class="feature-icon">
-          👨‍✈️
-        </div>
-
-        <strong>Berpengalaman</strong>
-
-        <span>
-          Supir profesional
-        </span>
-
+        <div class="feature-icon">👨‍✈️</div>
+        <strong>Supir Berpengalaman</strong>
+        <span>Aman & profesional</span>
       </div>
 
     </section>
 
 
     <!-- =========================
-         DATA PENUMPANG
+         FORM PEMESANAN
     ========================== -->
 
     <section class="card">
@@ -623,6 +540,13 @@
       <h2>
         Pemesanan Tiket Online
       </h2>
+
+      <p class="description">
+        Isi data penumpang lalu pilih rute, tanggal, jadwal, dan kursi.
+      </p>
+
+
+      <!-- NAMA -->
 
       <label for="name">
         Nama Penumpang
@@ -636,6 +560,8 @@
       >
 
 
+      <!-- WHATSAPP -->
+
       <label for="phone">
         Nomor WhatsApp
       </label>
@@ -648,6 +574,89 @@
       >
 
 
+      <!-- =========================
+           RUTE
+      ========================== -->
+
+      <label>
+        Pilih Rute
+      </label>
+
+      <div class="route-grid">
+
+        <div class="route-card">
+
+          <input
+            type="radio"
+            id="route-sofifi-weda"
+            name="route"
+            value="Sofifi|Weda"
+          >
+
+          <label
+            class="route-label"
+            for="route-sofifi-weda"
+          >
+
+            <span class="route-arrow">
+              ➜
+            </span>
+
+            Sofifi → Weda
+
+          </label>
+
+        </div>
+
+
+        <div class="route-card">
+
+          <input
+            type="radio"
+            id="route-weda-sofifi"
+            name="route"
+            value="Weda|Sofifi"
+          >
+
+          <label
+            class="route-label"
+            for="route-weda-sofifi"
+          >
+
+            <span class="route-arrow">
+              ➜
+            </span>
+
+            Weda → Sofifi
+
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <!--
+        ELEMENT INI DIPAKAI app.js.
+        JANGAN HAPUS.
+      -->
+
+      <select id="from" style="display:none;">
+        <option value="">Pilih keberangkatan</option>
+        <option value="Sofifi">Sofifi</option>
+        <option value="Weda">Weda</option>
+      </select>
+
+
+      <select id="to" style="display:none;">
+        <option value="">Pilih tujuan</option>
+        <option value="Weda">Weda</option>
+        <option value="Sofifi">Sofifi</option>
+      </select>
+
+
+      <!-- TANGGAL -->
+
       <label for="date">
         Tanggal Keberangkatan
       </label>
@@ -656,6 +665,11 @@
         id="date"
         type="date"
       >
+
+
+      <div class="info-box">
+        Pilih rute dan tanggal untuk melihat jadwal keberangkatan yang tersedia.
+      </div>
 
     </section>
 
@@ -676,7 +690,7 @@
       >
 
         <p class="muted">
-          Memuat jadwal...
+          Pilih rute dan tanggal terlebih dahulu.
         </p>
 
       </div>
@@ -694,10 +708,11 @@
         Pilih Kursi
       </h3>
 
-      <div
-        id="seats"
-        class="seat-grid"
-      >
+      <p class="description">
+        Kursi hijau tersedia. Kursi abu-abu sudah dipesan.
+      </p>
+
+      <div id="seats">
 
         <p class="muted">
           Pilih jadwal terlebih dahulu.
@@ -709,7 +724,7 @@
 
 
     <!-- =========================
-         BOOKING
+         PESAN
     ========================== -->
 
     <section class="card">
@@ -724,9 +739,12 @@
     </section>
 
 
-    <!-- HASIL BOOKING -->
+    <!-- =========================
+         HASIL BOOKING
+    ========================== -->
 
     <section id="result"></section>
+
 
   </main>
 
@@ -737,18 +755,15 @@
 
   <footer class="footer">
 
-    <div>
-      <strong>HSM</strong>
-      <span class="red"> TRANSPORT</span>
-    </div>
+    <strong>HSM Transport</strong>
 
-    <div style="margin-top: 6px;">
-      Hidayah Sarana Mulia Transport
-    </div>
+    <br>
 
-    <div style="margin-top: 6px;">
-      Sofifi ↔ Weda
-    </div>
+    Hidayah Sarana Mulia Transport
+
+    <br>
+
+    Sofifi ↔ Weda
 
   </footer>
 
@@ -761,17 +776,80 @@
 
 
   <!-- =========================
-       CONFIG HSM
+       CONFIG
   ========================== -->
 
   <script src="./config.js"></script>
 
 
   <!-- =========================
-       APP HSM
+       APP
   ========================== -->
 
   <script src="./app.js"></script>
 
+
+  <!-- =========================
+       PENGHUBUNG RUTE KE app.js
+  ========================== -->
+
+  <script>
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+        const routeButtons =
+          document.querySelectorAll(
+            'input[name="route"]'
+          );
+
+        const from =
+          document.getElementById("from");
+
+        const to =
+          document.getElementById("to");
+
+
+        routeButtons.forEach(
+          function (radio) {
+
+            radio.addEventListener(
+              "change",
+              function () {
+
+                const parts =
+                  this.value.split("|");
+
+                from.value =
+                  parts[0];
+
+                to.value =
+                  parts[1];
+
+
+                /*
+                  Trigger event supaya
+                  app.js menjalankan
+                  loadSchedules()
+                */
+
+                from.dispatchEvent(
+                  new Event("change", {
+                    bubbles: true
+                  })
+                );
+
+              }
+            );
+
+          }
+        );
+
+      }
+    );
+
+  </script>
+
 </body>
-    </html>
+</html>
