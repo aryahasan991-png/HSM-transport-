@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>HSM Transport - Pemesanan Tiket</title>
 
   <style>
@@ -48,7 +49,8 @@
       box-shadow: 0 4px 18px rgba(0,0,0,0.08);
     }
 
-    h2, h3 {
+    h2,
+    h3 {
       margin-top: 0;
     }
 
@@ -58,13 +60,20 @@
       margin: 14px 0 7px;
     }
 
-    input {
+    input,
+    select {
       width: 100%;
       padding: 13px;
       border: 1px solid #ccd3df;
       border-radius: 10px;
       font-size: 16px;
       background: white;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
 
     .schedule-grid {
@@ -97,6 +106,12 @@
 
     .scheduleBtn.active small {
       color: white;
+    }
+
+    .vehicle {
+      margin-top: 6px;
+      font-size: 13px;
+      font-weight: bold;
     }
 
     .seat-grid {
@@ -177,6 +192,22 @@
       padding: 11px 15px;
       border-radius: 9px;
     }
+
+    .legend {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 480px) {
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      .schedule-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
@@ -189,62 +220,137 @@
 
   <main class="container">
 
+    <!-- RUTE -->
     <section class="card">
+
       <h2>Pemesanan Tiket Online</h2>
 
-      <label for="name">Nama Penumpang</label>
+      <div class="row">
+
+        <div>
+          <label for="from">Dari</label>
+
+          <select id="from">
+            <option value="">Pilih keberangkatan</option>
+            <option value="Sofifi">Sofifi</option>
+            <option value="Weda">Weda</option>
+            <option value="Lelilef">Lelilef</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="to">Ke</label>
+
+          <select id="to">
+            <option value="">Pilih tujuan</option>
+            <option value="Sofifi">Sofifi</option>
+            <option value="Weda">Weda</option>
+            <option value="Lelilef">Lelilef</option>
+          </select>
+        </div>
+
+      </div>
+
+      <label for="date">Tanggal Keberangkatan</label>
+
+      <input
+        id="date"
+        type="date"
+      >
+
+      <p class="legend">
+        Pilih keberangkatan, tujuan, dan tanggal untuk melihat jadwal.
+      </p>
+
+    </section>
+
+
+    <!-- JADWAL -->
+    <section class="card">
+
+      <h3>Pilih Jadwal</h3>
+
+      <div id="schedule" class="schedule-grid">
+
+        <p class="muted">
+          Pilih rute terlebih dahulu.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- KURSI -->
+    <section class="card">
+
+      <h3>Pilih Kursi</h3>
+
+      <div id="seats" class="seat-grid">
+
+        <p class="muted">
+          Pilih jadwal terlebih dahulu.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- DATA PENUMPANG -->
+    <section class="card">
+
+      <h3>Data Penumpang</h3>
+
+      <label for="name">
+        Nama Penumpang
+      </label>
+
       <input
         id="name"
         type="text"
         placeholder="Masukkan nama penumpang"
       >
 
-      <label for="phone">Nomor WhatsApp</label>
+      <label for="phone">
+        Nomor WhatsApp
+      </label>
+
       <input
         id="phone"
         type="tel"
         placeholder="08xxxxxxxxxx"
       >
 
-      <label for="date">Tanggal Keberangkatan</label>
-      <input id="date" type="date">
     </section>
 
+
+    <!-- BOOKING -->
     <section class="card">
-      <h3>Pilih Jadwal</h3>
 
-      <div id="schedule" class="schedule-grid">
-        <p class="muted">Memuat jadwal...</p>
-      </div>
-    </section>
-
-    <section class="card">
-      <h3>Pilih Kursi</h3>
-
-      <div id="seats" class="seat-grid">
-        <p class="muted">
-          Pilih jadwal terlebih dahulu.
-        </p>
-      </div>
-    </section>
-
-    <section class="card">
-      <button id="book" type="button">
+      <button
+        id="book"
+        type="button"
+      >
         Pesan Sekarang
       </button>
+
     </section>
 
+
+    <!-- HASIL -->
     <section id="result"></section>
 
   </main>
 
-  <!-- Library Supabase -->
+
+  <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Konfigurasi HSM -->
+  <!-- CONFIG -->
   <script src="config.js"></script>
 
-  <!-- Program HSM -->
+  <!-- APP -->
   <script src="app.js"></script>
 
 </body>
