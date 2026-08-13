@@ -32,7 +32,7 @@
 
     .header p {
       margin: 0;
-      opacity: 0.9;
+      opacity: .9;
     }
 
     .container {
@@ -46,11 +46,10 @@
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 16px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 18px rgba(0,0,0,.08);
     }
 
-    h2,
-    h3 {
+    h2, h3 {
       margin-top: 0;
     }
 
@@ -60,8 +59,7 @@
       margin: 14px 0 7px;
     }
 
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 13px;
       border: 1px solid #ccd3df;
@@ -78,7 +76,7 @@
 
     .schedule-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2,1fr);
       gap: 10px;
     }
 
@@ -93,30 +91,19 @@
       font-size: 16px;
     }
 
-    .scheduleBtn small {
-      display: block;
-      margin-top: 5px;
-      color: #333;
-    }
-
     .scheduleBtn.active {
       background: #0b4ea2;
       color: white;
     }
 
-    .scheduleBtn.active small {
-      color: white;
-    }
-
-    .vehicle {
-      margin-top: 6px;
-      font-size: 13px;
-      font-weight: bold;
+    .scheduleBtn small {
+      display: block;
+      margin-top: 5px;
     }
 
     .seat-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2,1fr);
       gap: 10px;
     }
 
@@ -127,37 +114,27 @@
       border-radius: 10px;
       padding: 13px;
       font-size: 15px;
-      cursor: pointer;
     }
 
     .seat.taken {
       background: #e5e7eb;
       color: #777;
-      border-color: #d1d5db;
-      cursor: not-allowed;
     }
 
     .seat.selected {
       background: #0b4ea2;
       color: white;
-      border-color: #0b4ea2;
     }
 
     #book {
       width: 100%;
-      margin-top: 5px;
       background: #0b4ea2;
       color: white;
       font-weight: bold;
       font-size: 17px;
-      border: none;
+      border: 0;
       border-radius: 10px;
       padding: 14px;
-      cursor: pointer;
-    }
-
-    #book:disabled {
-      opacity: 0.6;
     }
 
     .muted {
@@ -193,13 +170,7 @@
       border-radius: 9px;
     }
 
-    .legend {
-      font-size: 13px;
-      color: #6b7280;
-      margin-top: 10px;
-    }
-
-    @media (max-width: 480px) {
+    @media(max-width:480px) {
       .row {
         grid-template-columns: 1fr;
       }
@@ -213,145 +184,122 @@
 
 <body>
 
-  <header class="header">
-    <h1>HSM Transport</h1>
-    <p>Hidayah Sarana Mulia Transport</p>
-  </header>
+<header class="header">
+  <h1>HSM Transport</h1>
+  <p>Hidayah Sarana Mulia Transport</p>
+</header>
 
-  <main class="container">
+<main class="container">
 
-    <!-- RUTE -->
-    <section class="card">
+  <section class="card">
 
-      <h2>Pemesanan Tiket Online</h2>
+    <h2>Pemesanan Tiket Online</h2>
 
-      <div class="row">
+    <div class="row">
 
-        <div>
-          <label for="from">Dari</label>
+      <div>
+        <label>Dari</label>
 
-          <select id="from">
-            <option value="">Pilih keberangkatan</option>
-            <option value="Sofifi">Sofifi</option>
-            <option value="Weda">Weda</option>
-            <option value="Lelilef">Lelilef</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="to">Ke</label>
-
-          <select id="to">
-            <option value="">Pilih tujuan</option>
-            <option value="Sofifi">Sofifi</option>
-            <option value="Weda">Weda</option>
-            <option value="Lelilef">Lelilef</option>
-          </select>
-        </div>
-
+        <select id="from">
+          <option value="">Pilih keberangkatan</option>
+          <option value="Sofifi">Sofifi</option>
+          <option value="Weda">Weda</option>
+          <option value="Lelilef">Lelilef</option>
+        </select>
       </div>
 
-      <label for="date">Tanggal Keberangkatan</label>
+      <div>
+        <label>Ke</label>
 
-      <input
-        id="date"
-        type="date"
-      >
+        <select id="to">
+          <option value="">Pilih tujuan</option>
+          <option value="Sofifi">Sofifi</option>
+          <option value="Weda">Weda</option>
+          <option value="Lelilef">Lelilef</option>
+        </select>
+      </div>
 
-      <p class="legend">
-        Pilih keberangkatan, tujuan, dan tanggal untuk melihat jadwal.
+    </div>
+
+    <label>Tanggal Keberangkatan</label>
+
+    <input id="date" type="date">
+
+  </section>
+
+
+  <section class="card">
+
+    <h3>Pilih Jadwal</h3>
+
+    <div id="schedule" class="schedule-grid">
+
+      <p class="muted">
+        Pilih tanggal terlebih dahulu.
       </p>
 
-    </section>
+    </div>
+
+  </section>
 
 
-    <!-- JADWAL -->
-    <section class="card">
+  <section class="card">
 
-      <h3>Pilih Jadwal</h3>
+    <h3>Pilih Kursi</h3>
 
-      <div id="schedule" class="schedule-grid">
+    <div id="seats" class="seat-grid">
 
-        <p class="muted">
-          Pilih rute terlebih dahulu.
-        </p>
+      <p class="muted">
+        Pilih jadwal terlebih dahulu.
+      </p>
 
-      </div>
+    </div>
 
-    </section>
-
-
-    <!-- KURSI -->
-    <section class="card">
-
-      <h3>Pilih Kursi</h3>
-
-      <div id="seats" class="seat-grid">
-
-        <p class="muted">
-          Pilih jadwal terlebih dahulu.
-        </p>
-
-      </div>
-
-    </section>
+  </section>
 
 
-    <!-- DATA PENUMPANG -->
-    <section class="card">
+  <section class="card">
 
-      <h3>Data Penumpang</h3>
+    <h3>Data Penumpang</h3>
 
-      <label for="name">
-        Nama Penumpang
-      </label>
+    <label>Nama Penumpang</label>
 
-      <input
-        id="name"
-        type="text"
-        placeholder="Masukkan nama penumpang"
-      >
+    <input
+      id="name"
+      type="text"
+      placeholder="Nama penumpang"
+    >
 
-      <label for="phone">
-        Nomor WhatsApp
-      </label>
+    <label>Nomor WhatsApp</label>
 
-      <input
-        id="phone"
-        type="tel"
-        placeholder="08xxxxxxxxxx"
-      >
+    <input
+      id="phone"
+      type="tel"
+      placeholder="08xxxxxxxxxx"
+    >
 
-    </section>
+  </section>
 
 
-    <!-- BOOKING -->
-    <section class="card">
+  <section class="card">
 
-      <button
-        id="book"
-        type="button"
-      >
-        Pesan Sekarang
-      </button>
+    <button id="book">
+      Pesan Sekarang
+    </button>
 
-    </section>
+  </section>
 
 
-    <!-- HASIL -->
-    <section id="result"></section>
+  <section id="result"></section>
 
-  </main>
+</main>
 
 
-  <!-- SUPABASE -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- CONFIG -->
-  <script src="config.js"></script>
+<script src="config.js"></script>
 
-  <!-- APP -->
-  <script src="app.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
