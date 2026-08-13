@@ -1,350 +1,196 @@
 const cfg = window.HSM_CONFIG;
-
-let db = null;
-let selectedSchedule = null;
-let selectedSeat = null;
-let schedules = [];
+let db = null, selectedSchedule = null, selectedSeat = null, schedules = [];
 
 function rupiah(n) {
   return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0
+    style: "currency", currency: "IDR", maximumFractionDigits: 0
   }).format(Number(n) || 0);
 }
 
 function showError(message, err) {
   const el = document.querySelector("#schedule");
-  if (el) {
-    el.innerHTML =
-      '<span class="error">' + message + '</span>';
-  }
+  if (el) el.innerHTML = '<span class="error">' + message + '</span>';
   console.error("HSM:", message, err || "");
 }
 
-/* =========================
-   FILTER RUTE
-========================= */
+async function loadSchedules() {
+  selectedSchedule = null;
+  selectedSeat = null;
+  const dateEl = document.querySelector("#date");
+  const scheduleEl = document.querySelector("#schedule");
+  const seatsEl = document.querySelector("#seats");
 
-function cocokRoute(route, dari, ke) {
-  if (!dari || !ke) return true;
+  if (!db) return showError("Koneksi Supabase belum siap.");
+  scheduleEl.textContent = "Memuat jadwal...";
+  seatsEl.innerHTML = '<p class="muted">Pilih jadwal terlebih dahulu.</p>';
 
-  const text = String(route || "")
-    .toLowerCase()
-    .replace(/[–—]/g, "-")
-    .replace(/\s+/g, " ")
-    .trim();
+  try {
+    const { data, error } = await db.from("schedules")
+      .select("*")
+      .eq("travel_date", dateEl.value)
+      .eq("active", true)
+      .order("departure_time");
 
-  const a = dari.toLowerCase();
-  const b = ke.toLowerCase();
-
-  if (a === b) return false;
-
-  /*
-    Contoh:
-    Sofifi - Weda - Lelilef
-
-    Bisa:
-    Sofifi -> Weda
-    Sofifi -> Lelilef
-    Weda -> Lelilef
-  */
-
-  const posisiDari = text.indexOf(a);
-  const posisiKe = text.indexOf(b);
-
-  return (
-    posisiDari !== -1 &&
-    posisiKe !== -1 &&
-    posisiDari < posisiKe
+    if (error) {
+  showError(
+    "Gagal memuat jadwal: " +
+    error.message +
+    " | Code: " +
+    (error.code || "-"),
+    error
   );
+  return;
 }
 
-/* =========================
-   TAMPILKAN JADWAL
-========================= */
+    schedules = data || [];
+    if (!schedules.length) {
+      scheduleEl.textContent = "Belum ada jadwal pada tanggal " + dateEl.value + ".";
+      return;
+    }
 
-function tampilkanJadwal(list) {
-
-  const scheduleEl =
-    document.querySelector("#schedule");
-
-  if (!list.length) {
-    scheduleEl.innerHTML =
-      '<p class="muted">Tidak ada jadwal untuk pilihan tersebut.</p>';
-    return;
-  }
-
-  scheduleEl.innerHTML =
-    list.map(s => `
-      <button
-        type="button"
-        class="scheduleBtn"
-        data-id="${s.id}"
-      >
-
-        <b>
-          ${String(
-            s.departure_time || ""
-          ).slice(0,5)}
-        </b>
-
-        <br>
-
-        <span>
-          ${s.route || ""}
-        </span>
-
-        <small>
-          ${rupiah(s.price)}
-        </small>
-
-        ${
-          s.vehicle
-            ? `<small>🚐 ${s.vehicle}</small>`
-            : ""
-        }
-
+    scheduleEl.innerHTML = schedules.map(s => `
+      <button type="button" class="scheduleBtn" data-id="${s.id}">
+        ${String(s.departure_time || "").slice(0,5)}
+        <small>${rupiah(s.price)}</small>
       </button>
     `).join("");
 
-  document
-    .querySelectorAll(".scheduleBtn")
-    .forEach(btn => {
-
-      btn.addEventListener(
-        "click",
-        () =>
-          pickSchedule(
-            Number(btn.dataset.id),
-            btn
-          )
-      );
-
+    document.querySelectorAll(".scheduleBtn").forEach(btn => {
+      btn.addEventListener("click", () => pickSchedule(Number(btn.dataset.id), btn));
     });
+  } catch (e) {
+    showError("Terjadi kesalahan saat memuat jadwal.", e);
+  }
 }
 
-/* =========================
-   LOAD JADWAL
-========================= */
-
-async function loadSchedules() {
-
-  selectedSchedule = null;
+async function pickSchedule(id, button) {
+  selectedSchedule = schedules.find(x => Number(x.id) === Number(id));
   selectedSeat = null;
+  if (!selectedSchedule) return alert("Jadwal tidak ditemukan.");
 
-  const dateEl =
-    document.querySelector("#date");
+  document.querySelectorAll(".scheduleBtn").forEach(x => x.classList.remove("active"));
+  if (button) button.classList.add("active");
 
-  const scheduleEl =
-    document.querySelector("#schedule");
-
-  const seatsEl =
-    document.querySelector("#seats");
-
-  if (!db) {
-    return showError(
-      "Koneksi Supabase belum siap."
-    );
-  }
-
-  scheduleEl.textContent =
-    "Memuat jadwal...";
-
-  seatsEl.innerHTML =
-    '<p class="muted">Pilih jadwal terlebih dahulu.</p>';
+  const seatsEl = document.querySelector("#seats");
+  seatsEl.innerHTML = "<p class='muted'>Memuat kursi...</p>";
 
   try {
-
-    /*
-      INI SAMA SEPERTI APP.JS LAMA
-      YANG SUDAH BERHASIL.
-    */
-
-    const {
-      data,
-      error
-    } = await db
-      .from("schedules")
-      .select("*")
-      .eq(
-        "travel_date",
-        dateEl.value
-      )
-      .eq(
-        "active",
-        true
-      )
-      .order(
-        "departure_time"
-      );
+    const { data, error } = await db.from("bookings")
+      .select("seat_number")
+      .eq("schedule_id", id)
+      .neq("payment_status", "Batal");
 
     if (error) {
-
-      showError(
-        "Gagal memuat jadwal: " +
-        error.message +
-        " | Code: " +
-        (error.code || "-"),
-        error
-      );
-
+      seatsEl.innerHTML = '<p class="error">Gagal memuat kursi: ' + error.message + '</p>';
       return;
     }
 
-    schedules = data || [];
+    const used = (data || []).map(x => Number(x.seat_number));
+    seatsEl.innerHTML = Array.from({length:14}, (_,i) => {
+      const n = i + 1, taken = used.includes(n);
+      return `<button type="button" class="seat ${taken ? "taken" : ""}" ${taken ? "disabled" : ""} data-seat="${n}">Kursi ${n}</button>`;
+    }).join("");
 
-    if (!schedules.length) {
-
-      scheduleEl.textContent =
-        "Belum ada jadwal pada tanggal " +
-        dateEl.value +
-        ".";
-
-      return;
-    }
-
-    /*
-      Ambil pilihan Dari dan Ke.
-    */
-
-    const dariEl =
-      document.querySelector("#from");
-
-    const keEl =
-      document.querySelector("#to");
-
-    const dari =
-      dariEl
-        ? dariEl.value
-        : "";
-
-    const ke =
-      keEl
-        ? keEl.value
-        : "";
-
-    /*
-      Kalau belum memilih rute,
-      tampilkan semua jadwal.
-    */
-
-    if (!dari || !ke) {
-
-      tampilkanJadwal(
-        schedules
-      );
-
-      return;
-    }
-
-    /*
-      Filter hanya tampilan.
-    */
-
-    const hasil =
-      schedules.filter(s =>
-        cocokRoute(
-          s.route,
-          dari,
-          ke
-        )
-      );
-
-    /*
-      Jika ditemukan, tampilkan hasil.
-      Jika tidak ditemukan, tetap
-      tampilkan semua jadwal agar
-      website tidak kosong.
-    */
-
-    if (hasil.length) {
-
-      tampilkanJadwal(
-        hasil
-      );
-
-    } else {
-
-      scheduleEl.innerHTML = `
-        <p class="muted">
-          Tidak ditemukan jadwal yang
-          cocok dengan rute ${dari}
-          → ${ke}.
-        </p>
-
-        <p class="muted">
-          Jadwal pada tanggal ini:
-        </p>
-      `;
-
-      tampilkanJadwal(
-        schedules
-      );
-    }
-
+    document.querySelectorAll(".seat:not(:disabled)").forEach(btn => {
+      btn.addEventListener("click", () => pickSeat(Number(btn.dataset.seat), btn));
+    });
   } catch (e) {
-
-    showError(
-      "Terjadi kesalahan saat memuat jadwal.",
-      e
-    );
-
+    seatsEl.innerHTML = '<p class="error">Terjadi kesalahan saat memuat kursi.</p>';
+    console.error(e);
   }
 }
 
-/* =========================
-   PILIH JADWAL
-========================= */
+function pickSeat(n, button) {
+  selectedSeat = n;
+  document.querySelectorAll(".seat").forEach(x => x.classList.remove("selected"));
+  if (button) button.classList.add("selected");
+}
 
-async function pickSchedule(
-  id,
-  button
-) {
+async function createBooking() {
+  if (!selectedSchedule || !selectedSeat) return alert("Pilih jadwal dan kursi.");
 
-  selectedSchedule =
-    schedules.find(
-      x =>
-        Number(x.id) ===
-        Number(id)
-    );
+  const name = document.querySelector("#name").value.trim();
+  const phone = document.querySelector("#phone").value.trim();
+  if (!name || !phone) return alert("Isi nama dan nomor WhatsApp.");
 
-  selectedSeat = null;
-
-  if (!selectedSchedule) {
-
-    return alert(
-      "Jadwal tidak ditemukan."
-    );
-
-  }
-
-  document
-    .querySelectorAll(".scheduleBtn")
-    .forEach(x =>
-      x.classList.remove(
-        "active"
-      )
-    );
-
-  if (button) {
-
-    button.classList.add(
-      "active"
-    );
-
-  }
-
-  const seatsEl =
-    document.querySelector("#seats");
-
-  seatsEl.innerHTML =
-    "<p class='muted'>Memuat kursi...</p>";
+  const code = "HSM-" + crypto.randomUUID().slice(0,6).toUpperCase();
+  const button = document.querySelector("#book");
+  button.disabled = true;
+  button.textContent = "Memproses...";
 
   try {
+    const { error } = await db.from("bookings").insert({
+      booking_code: code,
+      schedule_id: selectedSchedule.id,
+      passenger_name: name,
+      phone,
+      seat_number: selectedSeat,
+      total: selectedSchedule.price,
+      payment_status: "Belum Bayar"
+    });
 
-    const {
-      data,
-      error
-    } = await db
-      .from("bookings
+    if (error) {
+      alert(error.code === "23505"
+        ? "Kursi sudah dipesan orang lain. Silakan pilih kursi lain."
+        : "Booking gagal: " + error.message);
+      return;
+    }
+
+    const msg = [
+      "Halo HSM Transport, saya ingin konfirmasi booking.",
+      "Kode: " + code,
+      "Nama: " + name,
+      "Rute: " + (selectedSchedule.route || ""),
+      "Tanggal: " + document.querySelector("#date").value,
+      "Jam: " + String(selectedSchedule.departure_time || "").slice(0,5),
+      "Kursi: " + selectedSeat,
+      "Total: " + rupiah(selectedSchedule.price)
+    ].join("\n");
+
+    const wa = String(cfg.WHATSAPP_ADMIN || "").replace(/\D/g, "");
+    document.querySelector("#result").innerHTML = `
+      <div class="success">
+        <b>Booking berhasil!</b><strong>${code}</strong>
+        <p>${selectedSchedule.route || ""}<br>
+        ${document.querySelector("#date").value} • ${String(selectedSchedule.departure_time || "").slice(0,5)}
+        • Kursi ${selectedSeat}<br>Total ${rupiah(selectedSchedule.price)}</p>
+        ${wa ? `<a target="_blank" rel="noopener" href="https://wa.me/${wa}?text=${encodeURIComponent(msg)}">Konfirmasi via WhatsApp</a>` :
+        '<p class="error">Nomor WhatsApp admin belum diisi di config.js.</p>'}
+      </div>`;
+    await pickSchedule(selectedSchedule.id);
+  } catch (e) {
+    console.error(e);
+    alert("Terjadi kesalahan saat menyimpan booking.");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Pesan Sekarang";
+  }
+}
+
+async function startHSM() {
+  const dateEl = document.querySelector("#date");
+  const bookButton = document.querySelector("#book");
+
+  if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_PUBLISHABLE_KEY)
+    return showError("Config HSM belum lengkap. Periksa config.js.");
+
+  if (!window.supabase)
+    return showError("Library Supabase tidak termuat. Periksa koneksi internet.");
+
+  try {
+    db = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY);
+  } catch (e) {
+    return showError("Gagal membuat koneksi Supabase.", e);
+  }
+
+  if (!dateEl || !bookButton) return showError("Elemen halaman HSM tidak lengkap.");
+
+  const today = new Date().toISOString().slice(0,10);
+  dateEl.value = dateEl.value || today;
+  dateEl.min = today;
+  dateEl.addEventListener("change", loadSchedules);
+  bookButton.addEventListener("click", createBooking);
+  await loadSchedules();
+}
+
+document.addEventListener("DOMContentLoaded", startHSM);
