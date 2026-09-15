@@ -1,5 +1,6 @@
 // ============================================================
 // HSM TRANSPORT - APP.JS FINAL
+// Layout Hiace: 14 kursi penumpang + 1 kursi kernet
 // ============================================================
 
 const HSM_CONFIG = window.HSM_CONFIG;
@@ -149,7 +150,6 @@ function getSelectedRoute() {
   }
 
   const value = checked.value || "";
-
   const parts = value.split("|");
 
   return {
@@ -242,6 +242,7 @@ function buildServices(rows) {
     const vehicle = normalizeVehicle(row.vehicle);
     const time = formatTime(row.departure_time);
 
+
     // ========================================================
     // SOFIFI → WEDA
     // ========================================================
@@ -268,10 +269,7 @@ function buildServices(rows) {
       });
 
 
-      // ======================================================
       // LOLEO → WEDA
-      // ======================================================
-
       if (
         vehicle === "HSM-01" &&
         time === "09:00"
@@ -349,10 +347,7 @@ function buildServices(rows) {
       });
 
 
-      // ======================================================
       // WEDA → LOLEO
-      // ======================================================
-
       if (
         vehicle === "HSM-02" &&
         time === "09:00"
@@ -461,11 +456,6 @@ async function loadSchedules() {
 
     schedules = rows;
 
-    console.log(
-      "HSM schedules:",
-      rows
-    );
-
 
     // ========================================================
     // FILTER TANGGAL
@@ -490,19 +480,17 @@ async function loadSchedules() {
 
 
     // ========================================================
-    // FILTER ROUTE USER
+    // FILTER ROUTE
     // ========================================================
 
     const services =
       allServices.filter(service => {
 
         return (
-          service.displayOrigin
-            .toLowerCase() ===
+          service.displayOrigin.toLowerCase() ===
             route.origin.toLowerCase()
           &&
-          service.displayDestination
-            .toLowerCase() ===
+          service.displayDestination.toLowerCase() ===
             route.destination.toLowerCase()
         );
 
@@ -514,7 +502,6 @@ async function loadSchedules() {
     // ========================================================
 
     const unique = [];
-
     const seen = new Set();
 
     services.forEach(service => {
@@ -562,7 +549,7 @@ async function loadSchedules() {
 
 
     // ========================================================
-    // TAMPILKAN
+    // TAMPILKAN JADWAL
     // ========================================================
 
     scheduleEl.innerHTML = "";
@@ -624,23 +611,16 @@ async function loadSchedules() {
           document
             .querySelectorAll(".scheduleBtn")
             .forEach(btn => {
-
-              btn.classList.remove(
-                "active"
-              );
-
+              btn.classList.remove("active");
             });
 
 
-          button.classList.add(
-            "active"
-          );
+          button.classList.add("active");
 
 
-          selectedSchedule =
-            service;
-
+          selectedSchedule = service;
           selectedSeat = null;
+
 
           loadSeats(service);
 
@@ -684,7 +664,7 @@ async function loadSchedules() {
 
 
 // ============================================================
-// AMBIL BOOKING UNTUK SCHEDULE
+// AMBIL BOOKING
 // ============================================================
 
 async function fetchBookings(scheduleId) {
@@ -707,10 +687,51 @@ async function fetchBookings(scheduleId) {
 
 
 // ============================================================
-// CEK APAKAH KURSI TERISI
+// STATUS BOOKING
 // ============================================================
 
-function isSeatOccupied(
+function getBookingStatus(booking) {
+
+  const status =
+    String(
+      booking.payment_status || ""
+    )
+      .trim()
+      .toLowerCase();
+
+
+  // SUDAH DIBAYAR
+  if (
+    status === "paid" ||
+    status === "lunas" ||
+    status === "success" ||
+    status === "settled" ||
+    status === "sudah_dibayar"
+  ) {
+    return "paid";
+  }
+
+
+  // DIBATALKAN
+  if (
+    status === "cancelled" ||
+    status === "canceled" ||
+    status === "failed"
+  ) {
+    return "cancelled";
+  }
+
+
+  // DEFAULT = MENUNGGU PEMBAYARAN
+  return "pending";
+}
+
+
+// ============================================================
+// CEK STATUS KURSI
+// ============================================================
+
+function getSeatStatus(
   seatNumber,
   schedule
 ) {
@@ -726,36 +747,35 @@ function isSeatOccupied(
     );
 
 
-  return currentBookings.some(
+  let seatStatus = "available";
+
+
+  currentBookings.forEach(
     booking => {
-
-      // Hanya booking yang sama
-      // dengan status yang masih relevan.
-      const status =
-        String(
-          booking.payment_status || ""
-        ).toLowerCase();
-
-
-      if (
-        status === "cancelled" ||
-        status === "canceled"
-      ) {
-        return false;
-      }
-
 
       if (
         Number(
           booking.seat_number
         ) !== Number(seatNumber)
       ) {
-        return false;
+        return;
       }
 
 
-      // Booking lama yang belum punya
-      // segment dianggap full trip.
+      const bookingStatus =
+        getBookingStatus(
+          booking
+        );
+
+
+      if (
+        bookingStatus ===
+        "cancelled"
+      ) {
+        return;
+      }
+
+
       const bookingStart =
         Number(
           booking.segment_start || 1
@@ -767,36 +787,394 @@ function isSeatOccupied(
         );
 
 
-      // Cek bentrok segment
-      return (
+      // CEK BENTROK SEGMENT
+      const overlap =
         bookingStart <= newEnd &&
-        bookingEnd >= newStart
-      );
+        bookingEnd >= newStart;
+
+
+      if (!overlap) {
+        return;
+      }
+
+
+      // PAID LEBIH KUAT DARI PENDING
+      if (
+        bookingStatus ===
+        "paid"
+      ) {
+
+        seatStatus =
+          "paid";
+
+      }
+      else if (
+        bookingStatus ===
+          "pending" &&
+        seatStatus !==
+          "paid"
+      ) {
+
+        seatStatus =
+          "pending";
+
+      }
 
     }
   );
+
+
+  return seatStatus;
 }
 
 
 // ============================================================
-// RENDER KURSI 14 SEAT
+// BUAT KURSI
+// ============================================================
+
+function createSeat(
+  number,
+  schedule
+) {
+
+  const seat =
+    document.createElement(
+      "button"
+    );
+
+
+  seat.type = "button";
+
+  seat.className = "seat";
+
+  seat.textContent = number;
+
+
+  seat.style.width = "48px";
+  seat.style.height = "48px";
+  seat.style.border = "none";
+  seat.style.borderRadius = "8px";
+  seat.style.fontWeight = "bold";
+  seat.style.fontSize = "15px";
+  seat.style.cursor = "pointer";
+  seat.style.color = "#fff";
+  seat.style.flexShrink = "0";
+
+
+  const status =
+    getSeatStatus(
+      number,
+      schedule
+    );
+
+
+  // ==========================================================
+  // TERSEDIA
+  // ==========================================================
+
+  if (
+    status ===
+    "available"
+  ) {
+
+    seat.style.background =
+      "#22c55e";
+
+    seat.title =
+      `Kursi ${number} tersedia`;
+
+
+    seat.addEventListener(
+      "click",
+      () => {
+
+        document
+          .querySelectorAll(
+            ".seat-passenger"
+          )
+          .forEach(
+            s => {
+              s.style.outline =
+                "none";
+            }
+          );
+
+
+        seat.style.outline =
+          "3px solid #111";
+
+
+        selectedSeat =
+          number;
+
+      }
+    );
+
+  }
+
+
+  // ==========================================================
+  // MENUNGGU PEMBAYARAN
+  // ==========================================================
+
+  else if (
+    status ===
+    "pending"
+  ) {
+
+    seat.style.background =
+      "#facc15";
+
+    seat.style.color =
+      "#111";
+
+    seat.disabled =
+      true;
+
+    seat.title =
+      `Kursi ${number} menunggu pembayaran`;
+
+  }
+
+
+  // ==========================================================
+  // SUDAH DIBAYAR
+  // ==========================================================
+
+  else if (
+    status ===
+    "paid"
+  ) {
+
+    seat.style.background =
+      "#ef4444";
+
+    seat.disabled =
+      true;
+
+    seat.title =
+      `Kursi ${number} sudah dibayar`;
+
+  }
+
+
+  seat.dataset.status =
+    status;
+
+  seat.dataset.seat =
+    number;
+
+  seat.classList.add(
+    "seat-passenger"
+  );
+
+
+  return seat;
+}
+
+
+// ============================================================
+// KURSI KERNET
+// ============================================================
+
+function createKernetSeat() {
+
+  const kernet =
+    document.createElement(
+      "div"
+    );
+
+
+  kernet.style.width =
+    "48px";
+
+  kernet.style.height =
+    "48px";
+
+  kernet.style.borderRadius =
+    "8px";
+
+  kernet.style.background =
+    "#111";
+
+  kernet.style.color =
+    "#fff";
+
+  kernet.style.display =
+    "flex";
+
+  kernet.style.alignItems =
+    "center";
+
+  kernet.style.justifyContent =
+    "center";
+
+  kernet.style.fontSize =
+    "10px";
+
+  kernet.style.fontWeight =
+    "bold";
+
+  kernet.style.textAlign =
+    "center";
+
+  kernet.style.lineHeight =
+    "12px";
+
+  kernet.style.flexShrink =
+    "0";
+
+  kernet.textContent =
+    "KERNET";
+
+
+  kernet.title =
+    "Kursi khusus kernet";
+
+
+  return kernet;
+}
+
+
+// ============================================================
+// PEMBATAS / LORONG
+// ============================================================
+
+function createAisle(
+  width = 32
+) {
+
+  const aisle =
+    document.createElement(
+      "div"
+    );
+
+
+  aisle.style.width =
+    `${width}px`;
+
+  aisle.style.height =
+    "48px";
+
+  aisle.style.flexShrink =
+    "0";
+
+
+  return aisle;
+}
+
+
+// ============================================================
+// ROW LAYOUT
+// ============================================================
+
+function createSeatRow(
+  items
+) {
+
+  const row =
+    document.createElement(
+      "div"
+    );
+
+
+  row.style.display =
+    "flex";
+
+  row.style.alignItems =
+    "center";
+
+  row.style.justifyContent =
+    "center";
+
+  row.style.gap =
+    "7px";
+
+  row.style.marginBottom =
+    "9px";
+
+  row.style.minHeight =
+    "48px";
+
+
+  items.forEach(item => {
+
+    if (
+      item ===
+      "AISLE"
+    ) {
+
+      row.appendChild(
+        createAisle()
+      );
+
+      return;
+    }
+
+
+    if (
+      item ===
+      "KERNET"
+    ) {
+
+      row.appendChild(
+        createKernetSeat()
+      );
+
+      return;
+    }
+
+
+    if (
+      typeof item ===
+      "number"
+    ) {
+
+      row.appendChild(
+        createSeat(
+          item,
+          selectedSchedule
+        )
+      );
+
+    }
+
+  });
+
+
+  return row;
+}
+
+
+// ============================================================
+// RENDER KURSI
 // ============================================================
 
 function renderSeats(schedule) {
 
   if (!seatsEl) return;
 
-  seatsEl.innerHTML = "";
 
+  seatsEl.innerHTML =
+    "";
+
+
+  // ==========================================================
+  // JUDUL
+  // ==========================================================
 
   const title =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
+
 
   title.style.textAlign =
     "center";
 
   title.style.marginBottom =
-    "12px";
+    "10px";
+
 
   title.innerHTML = `
     <strong>
@@ -804,157 +1182,545 @@ function renderSeats(schedule) {
     </strong>
   `;
 
-  seatsEl.appendChild(title);
+
+  seatsEl.appendChild(
+    title
+  );
 
 
   // ==========================================================
-  // Layout 14 kursi
-  //
-  // Depan
-  // [1] [2] [3]
-  //
-  // [4]  AISLE  [5] [6]
-  //
-  // [7]  AISLE  [8] [9]
-  //
-  // [10][11][12][13]
-  //
-  // [14]
+  // LABEL DEPAN
   // ==========================================================
 
-  const layout = [
-    [1, 2, 3],
-    [4, null, 5, 6],
-    [7, null, 8, 9],
-    [10, 11, 12, 13],
-    [14]
-  ];
+  const front =
+    document.createElement(
+      "div"
+    );
 
 
-  layout.forEach(row => {
+  front.style.textAlign =
+    "center";
 
-    const rowEl =
-      document.createElement("div");
+  front.style.fontSize =
+    "12px";
 
-    rowEl.style.display =
-      "flex";
+  front.style.fontWeight =
+    "bold";
 
-    rowEl.style.justifyContent =
-      "center";
+  front.style.marginBottom =
+    "7px";
 
-    rowEl.style.alignItems =
-      "center";
-
-    rowEl.style.gap =
-      "8px";
-
-    rowEl.style.marginBottom =
-      "8px";
+  front.style.opacity =
+    "0.7";
 
 
-    row.forEach(number => {
-
-      // AISLE
-      if (number === null) {
-
-        const aisle =
-          document.createElement("div");
-
-        aisle.style.width =
-          "25px";
-
-        rowEl.appendChild(
-          aisle
-        );
-
-        return;
-      }
+  front.textContent =
+    "DEPAN / KABIN SUPIR";
 
 
-      const seat =
-        document.createElement("button");
-
-      seat.type = "button";
-
-      seat.className =
-        "seat";
-
-      seat.textContent =
-        number;
+  seatsEl.appendChild(
+    front
+  );
 
 
-      const occupied =
-        isSeatOccupied(
+  // ==========================================================
+  // ROW 1
+  //
+  // (1) (2)       (SUPIR)
+  //
+  // Posisi supir hanya sebagai label.
+  // Tidak bisa dibooking.
+  // ==========================================================
+
+  const row1 =
+    document.createElement(
+      "div"
+    );
+
+
+  row1.style.display =
+    "flex";
+
+  row1.style.alignItems =
+    "center";
+
+  row1.style.justifyContent =
+    "center";
+
+  row1.style.gap =
+    "7px";
+
+  row1.style.marginBottom =
+    "9px";
+
+
+  row1.appendChild(
+    createSeat(
+      1,
+      schedule
+    )
+  );
+
+  row1.appendChild(
+    createSeat(
+      2,
+      schedule
+    )
+  );
+
+  row1.appendChild(
+    createAisle(
+      32
+    )
+  );
+
+
+  const driver =
+    document.createElement(
+      "div"
+    );
+
+
+  driver.style.width =
+    "48px";
+
+  driver.style.height =
+    "48px";
+
+  driver.style.borderRadius =
+    "8px";
+
+  driver.style.background =
+    "#374151";
+
+  driver.style.color =
+    "#fff";
+
+  driver.style.display =
+    "flex";
+
+  driver.style.alignItems =
+    "center";
+
+  driver.style.justifyContent =
+    "center";
+
+  driver.style.fontSize =
+    "9px";
+
+  driver.style.fontWeight =
+    "bold";
+
+  driver.textContent =
+    "SUPIR";
+
+
+  row1.appendChild(
+    driver
+  );
+
+
+  seatsEl.appendChild(
+    row1
+  );
+
+
+  // ==========================================================
+  // PINTU SLIDING
+  // ==========================================================
+
+  const sliding =
+    document.createElement(
+      "div"
+    );
+
+
+  sliding.style.textAlign =
+    "center";
+
+  sliding.style.fontSize =
+    "10px";
+
+  sliding.style.opacity =
+    "0.6";
+
+  sliding.style.margin =
+    "2px 0 8px";
+
+
+  sliding.textContent =
+    "PINTU SLIDING";
+
+
+  seatsEl.appendChild(
+    sliding
+  );
+
+
+  // ==========================================================
+  // ROW 2
+  //
+  // KERNET    (3) (4) (5)
+  //
+  // ==========================================================
+
+  const row2 =
+    document.createElement(
+      "div"
+    );
+
+
+  row2.style.display =
+    "flex";
+
+  row2.style.alignItems =
+    "center";
+
+  row2.style.justifyContent =
+    "center";
+
+  row2.style.gap =
+    "7px";
+
+  row2.style.marginBottom =
+    "9px";
+
+
+  row2.appendChild(
+    createKernetSeat()
+  );
+
+
+  row2.appendChild(
+    createAisle(
+      32
+    )
+  );
+
+
+  row2.appendChild(
+    createSeat(
+      3,
+      schedule
+    )
+  );
+
+  row2.appendChild(
+    createSeat(
+      4,
+      schedule
+    )
+  );
+
+  row2.appendChild(
+    createSeat(
+      5,
+      schedule
+    )
+  );
+
+
+  seatsEl.appendChild(
+    row2
+  );
+
+
+  // ==========================================================
+  // ROW 3
+  //
+  //            (6) (7)
+  //
+  // ==========================================================
+
+  const row3 =
+    createSeatRow([
+      "KERNET",
+      "AISLE",
+      6,
+      7
+    ]);
+
+
+  // Hapus KERNET kedua karena row ini hanya
+  // untuk kursi 6 dan 7.
+  row3.innerHTML =
+    "";
+
+
+  row3.appendChild(
+    createKernetSeat()
+  );
+
+  row3.appendChild(
+    createAisle(
+      32
+    )
+  );
+
+  row3.appendChild(
+    createSeat(
+      6,
+      schedule
+    )
+  );
+
+  row3.appendChild(
+    createSeat(
+      7,
+      schedule
+    )
+  );
+
+
+  seatsEl.appendChild(
+    row3
+  );
+
+
+  // ==========================================================
+  // ROW 4
+  //
+  // (8)       (9) (10)
+  //
+  // 8 TEPAT DI BELAKANG KERNET
+  // ==========================================================
+
+  const row4 =
+    document.createElement(
+      "div"
+    );
+
+
+  row4.style.display =
+    "flex";
+
+  row4.style.alignItems =
+    "center";
+
+  row4.style.justifyContent =
+    "center";
+
+  row4.style.gap =
+    "7px";
+
+  row4.style.marginBottom =
+    "9px";
+
+
+  row4.appendChild(
+    createSeat(
+      8,
+      schedule
+    )
+  );
+
+
+  row4.appendChild(
+    createAisle(
+      32
+    )
+  );
+
+
+  row4.appendChild(
+    createSeat(
+      9,
+      schedule
+    )
+  );
+
+  row4.appendChild(
+    createSeat(
+      10,
+      schedule
+    )
+  );
+
+
+  seatsEl.appendChild(
+    row4
+  );
+
+
+  // ==========================================================
+  // ROW 5
+  //
+  // (11) (12) (13) (14)
+  //
+  // ==========================================================
+
+  const row5 =
+    document.createElement(
+      "div"
+    );
+
+
+  row5.style.display =
+    "flex";
+
+  row5.style.alignItems =
+    "center";
+
+  row5.style.justifyContent =
+    "center";
+
+  row5.style.gap =
+    "7px";
+
+  row5.style.marginBottom =
+    "12px";
+
+
+  [11, 12, 13, 14]
+    .forEach(number => {
+
+      row5.appendChild(
+        createSeat(
           number,
           schedule
-        );
-
-
-      if (occupied) {
-
-        seat.disabled = true;
-
-        seat.classList.add(
-          "booked"
-        );
-
-        seat.title =
-          "Kursi sudah dipesan";
-
-      }
-
-
-      seat.addEventListener(
-        "click",
-        () => {
-
-          if (occupied) {
-            return;
-          }
-
-
-          document
-            .querySelectorAll(
-              ".seat"
-            )
-            .forEach(
-              s =>
-                s.classList.remove(
-                  "selected"
-                )
-            );
-
-
-          seat.classList.add(
-            "selected"
-          );
-
-
-          selectedSeat =
-            number;
-
-        }
-      );
-
-
-      rowEl.appendChild(
-        seat
+        )
       );
 
     });
 
 
-    seatsEl.appendChild(
-      rowEl
+  seatsEl.appendChild(
+    row5
+  );
+
+
+  // ==========================================================
+  // BELAKANG
+  // ==========================================================
+
+  const back =
+    document.createElement(
+      "div"
     );
 
-  });
+
+  back.style.textAlign =
+    "center";
+
+  back.style.fontSize =
+    "11px";
+
+  back.style.opacity =
+    "0.6";
+
+  back.style.marginTop =
+    "3px";
 
 
-  // INFO SEGMENT
+  back.textContent =
+    "BELAKANG";
+
+
+  seatsEl.appendChild(
+    back
+  );
+
+
+  // ==========================================================
+  // LEGENDA WARNA
+  // ==========================================================
+
+  const legend =
+    document.createElement(
+      "div"
+    );
+
+
+  legend.style.display =
+    "flex";
+
+  legend.style.justifyContent =
+    "center";
+
+  legend.style.flexWrap =
+    "wrap";
+
+  legend.style.gap =
+    "12px";
+
+  legend.style.marginTop =
+    "18px";
+
+  legend.style.fontSize =
+    "12px";
+
+
+  legend.innerHTML = `
+
+    <span>
+      <span style="
+        display:inline-block;
+        width:15px;
+        height:15px;
+        background:#22c55e;
+        border-radius:4px;
+        vertical-align:middle;
+        margin-right:4px;
+      "></span>
+      Tersedia
+    </span>
+
+    <span>
+      <span style="
+        display:inline-block;
+        width:15px;
+        height:15px;
+        background:#facc15;
+        border-radius:4px;
+        vertical-align:middle;
+        margin-right:4px;
+      "></span>
+      Menunggu pembayaran
+    </span>
+
+    <span>
+      <span style="
+        display:inline-block;
+        width:15px;
+        height:15px;
+        background:#ef4444;
+        border-radius:4px;
+        vertical-align:middle;
+        margin-right:4px;
+      "></span>
+      Sudah dibayar
+    </span>
+
+    <span>
+      <span style="
+        display:inline-block;
+        width:15px;
+        height:15px;
+        background:#111;
+        border-radius:4px;
+        vertical-align:middle;
+        margin-right:4px;
+      "></span>
+      Kernet
+    </span>
+
+  `;
+
+
+  seatsEl.appendChild(
+    legend
+  );
+
+
+  // ==========================================================
+  // INFO
+  // ==========================================================
 
   const info =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
+
 
   info.style.textAlign =
     "center";
@@ -965,19 +1731,24 @@ function renderSeats(schedule) {
   info.style.fontSize =
     "13px";
 
+
   info.innerHTML = `
     Rute:
     <b>
       ${schedule.displayRoute}
     </b>
     <br>
+
     Harga:
     <b>
       ${rupiah(schedule.displayPrice)}
     </b>
   `;
 
-  seatsEl.appendChild(info);
+
+  seatsEl.appendChild(
+    info
+  );
 }
 
 
@@ -1069,7 +1840,6 @@ async function createBooking() {
     );
 
     return;
-
   }
 
 
@@ -1080,7 +1850,6 @@ async function createBooking() {
     );
 
     return;
-
   }
 
 
@@ -1107,7 +1876,6 @@ async function createBooking() {
     }
 
     return;
-
   }
 
 
@@ -1122,12 +1890,11 @@ async function createBooking() {
     }
 
     return;
-
   }
 
 
   // ==========================================================
-  // CEK ULANG KURSI SEBELUM INSERT
+  // CEK ULANG KURSI
   // ==========================================================
 
   try {
@@ -1138,23 +1905,29 @@ async function createBooking() {
       );
 
 
-    if (
-      isSeatOccupied(
+    const seatStatus =
+      getSeatStatus(
         selectedSeat,
         selectedSchedule
-      )
+      );
+
+
+    if (
+      seatStatus !==
+      "available"
     ) {
 
       alert(
         "Maaf, kursi tersebut baru saja dipesan."
       );
 
+
       await loadSeats(
         selectedSchedule
       );
 
-      return;
 
+      return;
     }
 
   }
@@ -1167,7 +1940,6 @@ async function createBooking() {
     );
 
     return;
-
   }
 
 
@@ -1272,7 +2044,6 @@ async function createBooking() {
     }
 
     return;
-
   }
 
 
@@ -1290,7 +2061,6 @@ async function createBooking() {
       .replace(/\D/g, "");
 
 
-  // Kalau config masih 0812...
   if (
     adminNumber.startsWith("0")
   ) {
@@ -1326,6 +2096,8 @@ Kursi: ${selectedSeat}
 
 Total: ${rupiah(selectedSchedule.displayPrice)}
 
+Status: Menunggu pembayaran.
+
 Mohon konfirmasi booking saya.
   `.trim();
 
@@ -1350,11 +2122,11 @@ Mohon konfirmasi booking saya.
         padding:18px;
         margin-top:15px;
         border-radius:10px;
-        background:#e8f5e9;
+        background:#fff3cd;
       ">
 
         <strong>
-          Booking berhasil! ✅
+          Booking berhasil! 🟡
         </strong>
 
         <br><br>
@@ -1397,6 +2169,13 @@ Mohon konfirmasi booking saya.
         Total:
         <b>
           ${rupiah(selectedSchedule.displayPrice)}
+        </b>
+
+        <br><br>
+
+        Status:
+        <b>
+          Menunggu pembayaran
         </b>
 
         <br><br>
@@ -1488,7 +2267,10 @@ if (dateEl) {
 // INITIAL DATE
 // ============================================================
 
-if (dateEl && !dateEl.value) {
+if (
+  dateEl &&
+  !dateEl.value
+) {
 
   dateEl.value =
     getLocalDate();
@@ -1502,6 +2284,7 @@ if (dateEl && !dateEl.value) {
 
 const initialRoute =
   getSelectedRoute();
+
 
 selectedOrigin =
   initialRoute.origin;
@@ -1530,7 +2313,6 @@ loadSchedules();
 
 // ============================================================
 // AUTO REFRESH
-// Setiap 30 detik untuk update kursi/jadwal
 // ============================================================
 
 setInterval(
