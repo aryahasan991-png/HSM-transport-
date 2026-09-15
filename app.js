@@ -554,7 +554,6 @@ async function loadSchedules() {
 
     scheduleEl.innerHTML = "";
 
-
     unique.sort((a, b) => {
 
       return a.displayTime.localeCompare(
@@ -829,7 +828,7 @@ function getSeatStatus(
 
 
 // ============================================================
-// BUAT KURSI
+// BUAT KURSI PENUMPANG
 // ============================================================
 
 function createSeat(
@@ -852,6 +851,7 @@ function createSeat(
 
   seat.style.width = "48px";
   seat.style.height = "48px";
+  seat.style.boxSizing = "border-box";
   seat.style.border = "none";
   seat.style.borderRadius = "8px";
   seat.style.fontWeight = "bold";
@@ -974,65 +974,99 @@ function createSeat(
 
 
 // ============================================================
-// KURSI KERNET
+// BLOK TETAP
+// KERNET / PINTU SLIDING / SUPIR
 // ============================================================
 
-function createKernetSeat() {
+function createFixedBlock(
+  label,
+  background = "#111"
+) {
 
-  const kernet =
+  const block =
     document.createElement(
       "div"
     );
 
 
-  kernet.style.width =
+  block.style.width =
     "48px";
 
-  kernet.style.height =
+  block.style.height =
     "48px";
 
-  kernet.style.borderRadius =
+  block.style.boxSizing =
+    "border-box";
+
+  block.style.borderRadius =
     "8px";
 
-  kernet.style.background =
-    "#111";
+  block.style.background =
+    background;
 
-  kernet.style.color =
+  block.style.color =
     "#fff";
 
-  kernet.style.display =
+  block.style.display =
     "flex";
 
-  kernet.style.alignItems =
+  block.style.alignItems =
     "center";
 
-  kernet.style.justifyContent =
+  block.style.justifyContent =
     "center";
 
-  kernet.style.fontSize =
-    "10px";
+  block.style.fontSize =
+    "9px";
 
-  kernet.style.fontWeight =
+  block.style.fontWeight =
     "bold";
 
-  kernet.style.textAlign =
+  block.style.textAlign =
     "center";
 
-  kernet.style.lineHeight =
-    "12px";
+  block.style.lineHeight =
+    "11px";
 
-  kernet.style.flexShrink =
+  block.style.flexShrink =
     "0";
 
-  kernet.textContent =
-    "KERNET";
+  block.textContent =
+    label;
+
+  block.title =
+    label;
 
 
-  kernet.title =
-    "Kursi khusus kernet";
+  return block;
+}
 
 
-  return kernet;
+// ============================================================
+// KURSI KERNET
+// ============================================================
+
+function createKernetSeat() {
+
+  return createFixedBlock(
+    "KERNET",
+    "#111"
+  );
+
+}
+
+
+// ============================================================
+// PINTU SLIDING
+// ============================================================
+
+function createSlidingDoor() {
+
+  return createFixedBlock(
+    "PINTU SLIDING",
+    "#111"
+  );
+
 }
 
 
@@ -1041,7 +1075,7 @@ function createKernetSeat() {
 // ============================================================
 
 function createAisle(
-  width = 32
+  width = 48
 ) {
 
   const aisle =
@@ -1079,22 +1113,25 @@ function createSeatRow(
 
 
   row.style.display =
-    "flex";
+    "grid";
 
-  row.style.alignItems =
-    "center";
+  row.style.gridTemplateColumns =
+    "48px 48px 48px 48px";
 
-  row.style.justifyContent =
-    "center";
-
-  row.style.gap =
+  row.style.columnGap =
     "7px";
 
-  row.style.marginBottom =
-    "9px";
+  row.style.width =
+    "213px";
+
+  row.style.margin =
+    "0 auto 9px";
 
   row.style.minHeight =
     "48px";
+
+  row.style.alignItems =
+    "center";
 
 
   items.forEach(item => {
@@ -1126,6 +1163,35 @@ function createSeatRow(
 
 
     if (
+      item ===
+      "SLIDING"
+    ) {
+
+      row.appendChild(
+        createSlidingDoor()
+      );
+
+      return;
+    }
+
+
+    if (
+      item ===
+      "SUPIR"
+    ) {
+
+      row.appendChild(
+        createFixedBlock(
+          "SUPIR",
+          "#374151"
+        )
+      );
+
+      return;
+    }
+
+
+    if (
       typeof item ===
       "number"
     ) {
@@ -1150,7 +1216,9 @@ function createSeatRow(
 // RENDER KURSI
 // ============================================================
 
-function renderSeats(schedule) {
+function renderSeats(
+  schedule
+) {
 
   if (!seatsEl) return;
 
@@ -1208,14 +1276,14 @@ function renderSeats(schedule) {
     "bold";
 
   front.style.marginBottom =
-    "7px";
+    "10px";
 
   front.style.opacity =
     "0.7";
 
 
   front.textContent =
-    "DEPAN / KABIN SUPIR";
+    "DEPAN";
 
 
   seatsEl.appendChild(
@@ -1224,100 +1292,24 @@ function renderSeats(schedule) {
 
 
   // ==========================================================
-  // ROW 1
+  // BARIS 1
   //
-  // (1) (2)       (SUPIR)
+  // (1) (2)       SUPIR
   //
-  // Posisi supir hanya sebagai label.
-  // Tidak bisa dibooking.
+  // Kolom:
+  // 1 = kursi 1
+  // 2 = kursi 2
+  // 3 = kosong
+  // 4 = supir
   // ==========================================================
 
   const row1 =
-    document.createElement(
-      "div"
-    );
-
-
-  row1.style.display =
-    "flex";
-
-  row1.style.alignItems =
-    "center";
-
-  row1.style.justifyContent =
-    "center";
-
-  row1.style.gap =
-    "7px";
-
-  row1.style.marginBottom =
-    "9px";
-
-
-  row1.appendChild(
-    createSeat(
+    createSeatRow([
       1,
-      schedule
-    )
-  );
-
-  row1.appendChild(
-    createSeat(
       2,
-      schedule
-    )
-  );
-
-  row1.appendChild(
-    createAisle(
-      32
-    )
-  );
-
-
-  const driver =
-    document.createElement(
-      "div"
-    );
-
-
-  driver.style.width =
-    "48px";
-
-  driver.style.height =
-    "48px";
-
-  driver.style.borderRadius =
-    "8px";
-
-  driver.style.background =
-    "#374151";
-
-  driver.style.color =
-    "#fff";
-
-  driver.style.display =
-    "flex";
-
-  driver.style.alignItems =
-    "center";
-
-  driver.style.justifyContent =
-    "center";
-
-  driver.style.fontSize =
-    "9px";
-
-  driver.style.fontWeight =
-    "bold";
-
-  driver.textContent =
-    "SUPIR";
-
-
-  row1.appendChild(
-    driver
-  );
+      "AISLE",
+      "SUPIR"
+    ]);
 
 
   seatsEl.appendChild(
@@ -1326,98 +1318,24 @@ function renderSeats(schedule) {
 
 
   // ==========================================================
-  // PINTU SLIDING
-  // ==========================================================
-
-  const sliding =
-    document.createElement(
-      "div"
-    );
-
-
-  sliding.style.textAlign =
-    "center";
-
-  sliding.style.fontSize =
-    "10px";
-
-  sliding.style.opacity =
-    "0.6";
-
-  sliding.style.margin =
-    "2px 0 8px";
-
-
-  sliding.textContent =
-    "PINTU SLIDING";
-
-
-  seatsEl.appendChild(
-    sliding
-  );
-
-
-  // ==========================================================
-  // ROW 2
+  // BARIS 2
   //
-  // KERNET    (3) (4) (5)
+  // PINTU SLIDING    (3) (4) (5)
   //
+  // Kolom:
+  // 1 = pintu sliding
+  // 2 = kursi 3
+  // 3 = kursi 4
+  // 4 = kursi 5
   // ==========================================================
 
   const row2 =
-    document.createElement(
-      "div"
-    );
-
-
-  row2.style.display =
-    "flex";
-
-  row2.style.alignItems =
-    "center";
-
-  row2.style.justifyContent =
-    "center";
-
-  row2.style.gap =
-    "7px";
-
-  row2.style.marginBottom =
-    "9px";
-
-
-  row2.appendChild(
-    createKernetSeat()
-  );
-
-
-  row2.appendChild(
-    createAisle(
-      32
-    )
-  );
-
-
-  row2.appendChild(
-    createSeat(
+    createSeatRow([
+      "SLIDING",
       3,
-      schedule
-    )
-  );
-
-  row2.appendChild(
-    createSeat(
       4,
-      schedule
-    )
-  );
-
-  row2.appendChild(
-    createSeat(
-      5,
-      schedule
-    )
-  );
+      5
+    ]);
 
 
   seatsEl.appendChild(
@@ -1426,10 +1344,15 @@ function renderSeats(schedule) {
 
 
   // ==========================================================
-  // ROW 3
+  // BARIS 3
   //
-  //            (6) (7)
+  // KERNET              (6) (7)
   //
+  // Kolom:
+  // 1 = kernet
+  // 2 = kosong
+  // 3 = kursi 6
+  // 4 = kursi 7
   // ==========================================================
 
   const row3 =
@@ -1441,100 +1364,33 @@ function renderSeats(schedule) {
     ]);
 
 
-  // Hapus KERNET kedua karena row ini hanya
-  // untuk kursi 6 dan 7.
-  row3.innerHTML =
-    "";
-
-
-  row3.appendChild(
-    createKernetSeat()
-  );
-
-  row3.appendChild(
-    createAisle(
-      32
-    )
-  );
-
-  row3.appendChild(
-    createSeat(
-      6,
-      schedule
-    )
-  );
-
-  row3.appendChild(
-    createSeat(
-      7,
-      schedule
-    )
-  );
-
-
   seatsEl.appendChild(
     row3
   );
 
 
   // ==========================================================
-  // ROW 4
+  // BARIS 4
   //
-  // (8)       (9) (10)
+  // (8)                (9) (10)
   //
-  // 8 TEPAT DI BELAKANG KERNET
+  // Kolom:
+  // 1 = kursi 8
+  // 2 = kosong
+  // 3 = kursi 9
+  // 4 = kursi 10
+  //
+  // 4 → 6 → 9 SEJAJAR
+  // 5 → 7 → 10 SEJAJAR
   // ==========================================================
 
   const row4 =
-    document.createElement(
-      "div"
-    );
-
-
-  row4.style.display =
-    "flex";
-
-  row4.style.alignItems =
-    "center";
-
-  row4.style.justifyContent =
-    "center";
-
-  row4.style.gap =
-    "7px";
-
-  row4.style.marginBottom =
-    "9px";
-
-
-  row4.appendChild(
-    createSeat(
+    createSeatRow([
       8,
-      schedule
-    )
-  );
-
-
-  row4.appendChild(
-    createAisle(
-      32
-    )
-  );
-
-
-  row4.appendChild(
-    createSeat(
+      "AISLE",
       9,
-      schedule
-    )
-  );
-
-  row4.appendChild(
-    createSeat(
-      10,
-      schedule
-    )
-  );
+      10
+    ]);
 
 
   seatsEl.appendChild(
@@ -1543,45 +1399,18 @@ function renderSeats(schedule) {
 
 
   // ==========================================================
-  // ROW 5
+  // BARIS 5
   //
   // (11) (12) (13) (14)
-  //
   // ==========================================================
 
   const row5 =
-    document.createElement(
-      "div"
-    );
-
-
-  row5.style.display =
-    "flex";
-
-  row5.style.alignItems =
-    "center";
-
-  row5.style.justifyContent =
-    "center";
-
-  row5.style.gap =
-    "7px";
-
-  row5.style.marginBottom =
-    "12px";
-
-
-  [11, 12, 13, 14]
-    .forEach(number => {
-
-      row5.appendChild(
-        createSeat(
-          number,
-          schedule
-        )
-      );
-
-    });
+    createSeatRow([
+      11,
+      12,
+      13,
+      14
+    ]);
 
 
   seatsEl.appendChild(
@@ -1590,7 +1419,7 @@ function renderSeats(schedule) {
 
 
   // ==========================================================
-  // BELAKANG
+  // LABEL BELAKANG
   // ==========================================================
 
   const back =
@@ -1701,7 +1530,7 @@ function renderSeats(schedule) {
         vertical-align:middle;
         margin-right:4px;
       "></span>
-      Kernet
+      Kernet / Pintu
     </span>
 
   `;
@@ -1756,9 +1585,12 @@ function renderSeats(schedule) {
 // LOAD KURSI
 // ============================================================
 
-async function loadSeats(schedule) {
+async function loadSeats(
+  schedule
+) {
 
   if (!seatsEl) return;
+
 
   seatsEl.innerHTML = `
     <div style="
