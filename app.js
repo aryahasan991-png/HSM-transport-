@@ -1,42 +1,64 @@
 const scheduleEl = document.getElementById("schedule");
 
-scheduleEl.innerHTML = `
-  <div style="
-    padding:20px;
-    background:#fff3cd;
-    border:1px solid #ffe69c;
-    border-radius:10px;
-    color:#664d03;
-  ">
-    <b>APP.JS TERBACA ✅</b><br>
-    Sedang mengecek database...
-  </div>
-`;
+try {
+  // Cek config
+  if (!window.HSM_CONFIG) {
+    throw new Error("config.js tidak terbaca");
+  }
 
-async function testDatabase() {
-  try {
-    const { data, error } = await supabase
+  // Cek library Supabase
+  if (!window.supabase) {
+    throw new Error("Library Supabase tidak terbaca");
+  }
+
+  // Buat koneksi Supabase
+  const db = window.supabase.createClient(
+    window.HSM_CONFIG.SUPABASE_URL,
+    window.HSM_CONFIG.SUPABASE_PUBLISHABLE_KEY
+  );
+
+  scheduleEl.innerHTML = `
+    <div style="padding:20px">
+      Menghubungkan ke database...
+    </div>
+  `;
+
+  async function testDatabase() {
+
+    const { data, error } = await db
       .from("schedules")
       .select("*")
       .limit(20);
 
     if (error) {
       scheduleEl.innerHTML = `
-        <div style="padding:20px;color:red">
-          <b>SUPABASE ERROR ❌</b><br><br>
+        <div style="
+          padding:20px;
+          color:red;
+          background:#ffe5e5;
+          border-radius:10px;
+        ">
+          <b>SUPABASE ERROR ❌</b>
+          <br><br>
           ${error.message}
         </div>
       `;
+
       return;
     }
 
     if (!data || data.length === 0) {
       scheduleEl.innerHTML = `
-        <div style="padding:20px;color:red">
-          <b>DATABASE KOSONG ❌</b><br><br>
-          Tabel schedules tidak mengembalikan data.
+        <div style="
+          padding:20px;
+          color:red;
+          background:#ffe5e5;
+          border-radius:10px;
+        ">
+          <b>DATABASE TIDAK ADA DATA ❌</b>
         </div>
       `;
+
       return;
     }
 
@@ -44,40 +66,48 @@ async function testDatabase() {
       <div style="
         padding:20px;
         background:#d1e7dd;
-        border:1px solid #a3cfbb;
         border-radius:10px;
+        margin-bottom:15px;
       ">
-        <b>DATABASE TERBACA ✅</b><br><br>
-        Jumlah data terbaca: <b>${data.length}</b>
+        <b>DATABASE TERBACA ✅</b>
+        <br><br>
+        Ditemukan ${data.length} jadwal.
       </div>
 
-      <div style="margin-top:15px">
-        ${data.map(row => `
-          <div style="
-            padding:12px;
-            margin-bottom:8px;
-            border:1px solid #ddd;
-            border-radius:8px;
-          ">
-            <b>${row.route || "-"}</b><br>
-            Tanggal: ${row.travel_date || "-"}<br>
-            Jam: ${row.departure_time || "-"}<br>
-            Harga: ${row.price || "-"}<br>
-            Vehicle: ${row.vehicle || "-"}<br>
-            Active: ${row.active}
-          </div>
-        `).join("")}
-      </div>
-    `;
-
-  } catch (err) {
-    scheduleEl.innerHTML = `
-      <div style="padding:20px;color:red">
-        <b>JAVASCRIPT ERROR ❌</b><br><br>
-        ${err.message}
-      </div>
+      ${data.map(row => `
+        <div style="
+          padding:15px;
+          margin-bottom:10px;
+          border:1px solid #ddd;
+          border-radius:10px;
+        ">
+          <b>${row.route || "-"}</b><br>
+          Tanggal: ${row.travel_date || "-"}<br>
+          Jam: ${row.departure_time || "-"}<br>
+          Harga: Rp${Number(row.price || 0).toLocaleString("id-ID")}<br>
+          Kendaraan: ${row.vehicle || "-"}<br>
+          Aktif: ${row.active ? "YA" : "TIDAK"}
+        </div>
+      `).join("")}
     `;
   }
-}
 
-testDatabase();
+  testDatabase();
+
+} catch (error) {
+
+  scheduleEl.innerHTML = `
+    <div style="
+      padding:20px;
+      color:red;
+      background:#ffe5e5;
+      border-radius:10px;
+    ">
+      <b>JAVASCRIPT ERROR ❌</b>
+      <br><br>
+      ${error.message}
+    </div>
+  `;
+
+  console.error(error);
+}
