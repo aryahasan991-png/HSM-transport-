@@ -65,8 +65,10 @@
       --hsm-blue: #0754a6;
       --hsm-blue-dark: #063d79;
       --hsm-blue-light: #eaf3ff;
+
       --hsm-red: #e31e2d;
       --hsm-red-dark: #bb1420;
+
       --text: #172033;
       --muted: #6b7280;
       --white: #ffffff;
@@ -82,7 +84,11 @@
 
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
       background:
         linear-gradient(
@@ -106,15 +112,23 @@
     }
 
 
-    /* ================= HEADER ================= */
+    /* =========================================
+       HEADER
+       ========================================= */
 
     .header {
       width: 100%;
-      background: rgba(255,255,255,0.98);
-      border-bottom: 1px solid #e4eaf2;
+
+      background:
+        rgba(255,255,255,0.98);
+
+      border-bottom:
+        1px solid #e4eaf2;
 
       position: sticky;
+
       top: 0;
+
       z-index: 1000;
 
       box-shadow:
@@ -125,6 +139,7 @@
       content: "";
 
       position: absolute;
+
       left: 0;
       right: 0;
       bottom: -1px;
@@ -143,20 +158,28 @@
 
     .header-inner {
       max-width: 1100px;
+
       margin: auto;
 
-      padding: 10px 18px;
+      padding:
+        10px 18px;
 
       display: flex;
+
       align-items: center;
-      justify-content: space-between;
+
+      justify-content:
+        space-between;
 
       gap: 15px;
     }
 
     .brand {
       display: flex;
-      flex-direction: column;
+
+      flex-direction:
+        column;
+
       min-width: 0;
     }
 
@@ -164,35 +187,46 @@
       display: block;
 
       width: 185px;
+
       max-width: 100%;
+
       height: auto;
 
-      object-fit: contain;
+      object-fit:
+        contain;
     }
 
     .brand-company {
       margin-top: 2px;
 
       font-size: 10px;
+
       font-weight: 700;
 
       color: #687386;
 
-      letter-spacing: 0.3px;
+      letter-spacing:
+        0.3px;
     }
 
     .header-link {
       display: inline-flex;
+
       align-items: center;
-      justify-content: center;
+
+      justify-content:
+        center;
 
       min-height: 40px;
 
-      padding: 0 17px;
+      padding:
+        0 17px;
 
-      border-radius: 10px;
+      border-radius:
+        10px;
 
-      text-decoration: none;
+      text-decoration:
+        none;
 
       color: white;
 
@@ -204,6 +238,7 @@
         );
 
       font-weight: 800;
+
       font-size: 13px;
 
       box-shadow:
@@ -213,80 +248,113 @@
     }
 
 
-    /* ================= HERO ================= */
+    /* =========================================
+       HERO
+       ========================================= */
 
     .hero {
       min-height: 455px;
 
       position: relative;
+
       overflow: hidden;
 
       display: flex;
+
       align-items: center;
+
       justify-content: center;
 
-      padding: 40px 20px;
+      padding:
+        40px 20px;
 
       color: white;
+
       text-align: center;
 
       background-image:
+
         linear-gradient(
           180deg,
-          rgba(3,31,62,0.34) 0%,
-          rgba(3,42,84,0.28) 40%,
-          rgba(3,42,84,0.20) 68%,
-          rgba(3,30,60,0.38) 100%
+          rgba(3,31,62,0.30) 0%,
+          rgba(3,42,84,0.22) 40%,
+          rgba(3,42,84,0.18) 68%,
+          rgba(3,30,60,0.34) 100%
         ),
+
         url("hsm-hiace-commuter.png");
 
-      background-size: cover;
-      background-position: center center;
-      background-repeat: no-repeat;
+      background-size:
+        cover;
+
+      background-position:
+        center center;
+
+      background-repeat:
+        no-repeat;
     }
 
     .hero::before {
       content: "";
 
       position: absolute;
+
       inset: 0;
 
       background:
         linear-gradient(
           90deg,
-          rgba(3,30,60,0.13) 0%,
-          rgba(3,30,60,0.02) 50%,
-          rgba(3,30,60,0.08) 100%
+          rgba(3,30,60,0.10) 0%,
+          rgba(3,30,60,0.01) 50%,
+          rgba(3,30,60,0.07) 100%
         );
 
-      pointer-events: none;
+      pointer-events:
+        none;
     }
 
     .hero-inner {
       position: relative;
+
       z-index: 2;
 
       width: 100%;
-      max-width: 720px;
+
+      max-width:
+        720px;
 
       margin: auto;
 
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+
+      flex-direction:
+        column;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
     }
+
+
+    /* BADGE */
 
     .hero-badge {
       display: inline-flex;
+
       align-items: center;
 
       gap: 7px;
 
-      padding: 7px 13px;
-      margin-bottom: 10px;
+      padding:
+        7px 13px;
 
-      border-radius: 999px;
+      margin-bottom:
+        10px;
+
+      border-radius:
+        999px;
 
       color: white;
 
@@ -296,13 +364,20 @@
       border:
         1px solid rgba(255,255,255,0.25);
 
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter:
+        blur(5px);
 
-      font-size: 11px;
-      font-weight: 900;
+      -webkit-backdrop-filter:
+        blur(5px);
 
-      letter-spacing: 0.3px;
+      font-size:
+        11px;
+
+      font-weight:
+        900;
+
+      letter-spacing:
+        0.3px;
 
       box-shadow:
         0 5px 16px rgba(0,0,0,0.15);
@@ -312,96 +387,158 @@
       content: "";
 
       width: 7px;
+
       height: 7px;
 
-      border-radius: 50%;
+      border-radius:
+        50%;
 
       background:
         var(--hsm-red);
     }
 
+
+    /* LOGO HERO */
+
     .hero-logo-wrap {
       width: 100%;
 
       display: flex;
-      align-items: center;
-      justify-content: center;
 
-      margin-bottom: 3px;
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      margin-bottom:
+        3px;
     }
 
     .hero-logo {
       display: block;
 
-      width: min(285px,62vw);
-      max-height: 105px;
+      width:
+        min(270px,60vw);
+
+      max-height:
+        100px;
+
       height: auto;
 
-      object-fit: contain;
+      object-fit:
+        contain;
 
-      margin: 0 auto;
+      margin:
+        0 auto;
 
       filter:
         drop-shadow(
-          0 3px 7px rgba(0,0,0,0.32)
+          0 3px 7px rgba(0,0,0,0.30)
         );
     }
 
+
+    /* DESKRIPSI HERO */
+
     .hero-description {
-      max-width: 520px;
+      max-width:
+        520px;
 
-      margin: 7px auto 0;
+      margin:
+        7px auto 0;
 
-      color: #ffffff;
+      padding:
+        6px 10px;
 
-      font-size: 14px;
-      font-weight: 600;
+      color:
+        #ffffff;
 
-      line-height: 1.5;
+      font-size:
+        13px;
+
+      font-weight:
+        600;
+
+      line-height:
+        1.5;
+
+      border-radius:
+        8px;
+
+      background:
+        rgba(2,30,59,0.22);
 
       text-shadow:
-        0 2px 7px rgba(0,0,0,0.85);
+        0 2px 6px rgba(0,0,0,0.90);
     }
+
+
+    /* RUTE HERO */
 
     .hero-route {
       display: inline-flex;
-      align-items: center;
-      justify-content: center;
 
-      margin-top: 13px;
+      align-items:
+        center;
 
-      padding: 8px 13px;
+      justify-content:
+        center;
 
-      border-radius: 9px;
+      margin-top:
+        12px;
+
+      padding:
+        8px 13px;
+
+      border-radius:
+        9px;
 
       background:
-        rgba(3,47,91,0.82);
+        rgba(3,47,91,0.84);
 
       border:
         1px solid rgba(255,255,255,0.24);
 
-      color: #ffffff;
+      color:
+        #ffffff;
 
-      font-size: 13px;
-      font-weight: 900;
+      font-size:
+        13px;
 
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
+      font-weight:
+        900;
+
+      backdrop-filter:
+        blur(5px);
+
+      -webkit-backdrop-filter:
+        blur(5px);
 
       box-shadow:
         0 5px 15px rgba(0,0,0,0.16);
     }
 
+
+    /* BUTTON HERO */
+
     .hero-button {
       display: inline-flex;
-      align-items: center;
-      justify-content: center;
 
-      margin-top: 14px;
+      align-items:
+        center;
 
-      padding: 11px 19px;
+      justify-content:
+        center;
 
-      border-radius: 10px;
+      margin-top:
+        13px;
+
+      padding:
+        11px 19px;
+
+      border-radius:
+        10px;
 
       background:
         linear-gradient(
@@ -412,10 +549,14 @@
 
       color: white;
 
-      text-decoration: none;
+      text-decoration:
+        none;
 
-      font-size: 13px;
-      font-weight: 900;
+      font-size:
+        13px;
+
+      font-weight:
+        900;
 
       box-shadow:
         0 7px 18px rgba(0,0,0,0.22);
@@ -426,14 +567,19 @@
     }
 
     .hero-button:hover {
-      transform: translateY(-2px);
+      transform:
+        translateY(-2px);
 
       box-shadow:
         0 10px 23px rgba(0,0,0,0.27);
     }
 
+
+    /* GARIS BAWAH HERO */
+
     .hero-bottom-line {
       position: absolute;
+
       z-index: 3;
 
       left: 0;
@@ -453,29 +599,39 @@
     }
 
 
-    /* ================= MAIN ================= */
+    /* =========================================
+       MAIN
+       ========================================= */
 
     main {
       width: 100%;
-      max-width: 1100px;
+
+      max-width:
+        1100px;
 
       margin: auto;
 
-      padding: 38px 18px 60px;
+      padding:
+        38px 18px 60px;
     }
 
     .section-title {
       position: relative;
 
-      margin: 0 0 10px;
+      margin:
+        0 0 10px;
 
-      padding-left: 15px;
+      padding-left:
+        15px;
 
-      font-size: 29px;
+      font-size:
+        29px;
 
-      color: #15233a;
+      color:
+        #15233a;
 
-      letter-spacing: -0.5px;
+      letter-spacing:
+        -0.5px;
     }
 
     .section-title::before {
@@ -484,12 +640,15 @@
       position: absolute;
 
       left: 0;
+
       top: 2px;
+
       bottom: 2px;
 
       width: 5px;
 
-      border-radius: 999px;
+      border-radius:
+        999px;
 
       background:
         linear-gradient(
@@ -501,29 +660,40 @@
     }
 
     .section-description {
-      margin: 0 0 27px;
+      margin:
+        0 0 27px;
 
-      padding-left: 15px;
+      padding-left:
+        15px;
 
-      color: var(--muted);
+      color:
+        var(--muted);
 
-      line-height: 1.6;
+      line-height:
+        1.6;
 
-      font-size: 14px;
+      font-size:
+        14px;
     }
 
 
-    /* ================= BOOKING CARD ================= */
+    /* =========================================
+       BOOKING CARD
+       ========================================= */
 
     .booking-card {
       position: relative;
+
       overflow: hidden;
 
-      background: #ffffff;
+      background:
+        #ffffff;
 
-      border-radius: 20px;
+      border-radius:
+        20px;
 
-      padding: 28px;
+      padding:
+        28px;
 
       box-shadow:
         0 15px 45px rgba(21,45,80,0.09);
@@ -538,9 +708,11 @@
       position: absolute;
 
       left: 0;
+
       top: 0;
 
       width: 72%;
+
       height: 4px;
 
       background:
@@ -553,9 +725,11 @@
       position: absolute;
 
       right: 0;
+
       top: 0;
 
       width: 28%;
+
       height: 4px;
 
       background:
@@ -563,31 +737,40 @@
     }
 
     .form-group {
-      margin-bottom: 26px;
+      margin-bottom:
+        26px;
     }
 
     .form-group > label {
       display: flex;
-      align-items: center;
+
+      align-items:
+        center;
 
       gap: 8px;
 
-      margin-bottom: 11px;
+      margin-bottom:
+        11px;
 
-      font-weight: 900;
+      font-weight:
+        900;
 
-      color: #17233a;
+      color:
+        #17233a;
 
-      font-size: 14px;
+      font-size:
+        14px;
     }
 
     .form-group > label::before {
       content: "";
 
       width: 7px;
+
       height: 7px;
 
-      border-radius: 50%;
+      border-radius:
+        50%;
 
       background:
         var(--hsm-blue);
@@ -597,7 +780,9 @@
     }
 
 
-    /* ================= ROUTES ================= */
+    /* =========================================
+       ROUTE
+       ========================================= */
 
     .route-grid {
       display: grid;
@@ -617,11 +802,13 @@
 
       opacity: 0;
 
-      pointer-events: none;
+      pointer-events:
+        none;
     }
 
     .route-label {
       position: relative;
+
       overflow: hidden;
 
       min-height: 58px;
@@ -629,16 +816,20 @@
       width: 100%;
 
       display: flex;
-      align-items: center;
+
+      align-items:
+        center;
 
       gap: 11px;
 
-      padding: 13px 15px;
+      padding:
+        13px 15px;
 
       border:
         1.5px solid #dce3ec;
 
-      border-radius: 12px;
+      border-radius:
+        12px;
 
       background:
         linear-gradient(
@@ -647,12 +838,17 @@
           #fbfcfe
         );
 
-      color: #354157;
+      color:
+        #354157;
 
-      font-size: 14px;
-      font-weight: 800;
+      font-size:
+        14px;
 
-      cursor: pointer;
+      font-weight:
+        800;
+
+      cursor:
+        pointer;
 
       box-shadow:
         0 3px 10px rgba(20,40,70,0.035);
@@ -667,7 +863,9 @@
       position: absolute;
 
       left: 0;
+
       top: 0;
+
       bottom: 0;
 
       width: 4px;
@@ -677,7 +875,8 @@
     }
 
     .route-label:hover {
-      border-color: #9cbce2;
+      border-color:
+        #9cbce2;
 
       transform:
         translateY(-1px);
@@ -694,7 +893,8 @@
           #0a67c8
         );
 
-      color: #ffffff;
+      color:
+        #ffffff;
 
       box-shadow:
         0 8px 20px rgba(7,84,166,0.22);
@@ -707,15 +907,23 @@
 
     .route-arrow {
       width: 30px;
+
       height: 30px;
 
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      display:
+        inline-flex;
 
-      flex: 0 0 30px;
+      align-items:
+        center;
 
-      border-radius: 8px;
+      justify-content:
+        center;
+
+      flex:
+        0 0 30px;
+
+      border-radius:
+        8px;
 
       background:
         var(--hsm-blue-light);
@@ -723,34 +931,40 @@
       color:
         var(--hsm-blue);
 
-      font-size: 16px;
-      font-weight: 900;
+      font-size:
+        16px;
+
+      font-weight:
+        900;
     }
 
-    .route-card input:checked
-    + .route-label
-    .route-arrow {
-
+    .route-card input:checked + .route-label .route-arrow {
       background:
         rgba(255,255,255,0.17);
 
-      color: white;
+      color:
+        white;
     }
 
 
-    /* ================= INPUT ================= */
+    /* =========================================
+       INPUT
+       ========================================= */
 
     .input {
       width: 100%;
 
-      min-height: 51px;
+      min-height:
+        51px;
 
-      padding: 12px 14px;
+      padding:
+        12px 14px;
 
       border:
         1.5px solid #dce3ec;
 
-      border-radius: 11px;
+      border-radius:
+        11px;
 
       background:
         #fbfcfe;
@@ -758,9 +972,11 @@
       color:
         #172033;
 
-      font-size: 15px;
+      font-size:
+        15px;
 
-      outline: none;
+      outline:
+        none;
     }
 
     .input:focus {
@@ -775,7 +991,9 @@
     }
 
 
-    /* ================= SCHEDULE ================= */
+    /* =========================================
+       SCHEDULE
+       ========================================= */
 
     #schedule {
       display: grid;
@@ -788,21 +1006,26 @@
 
     .schedule-card {
       position: relative;
+
       overflow: hidden;
 
       width: 100%;
 
-      min-height: 108px;
+      min-height:
+        108px;
 
       padding: 0;
 
       display: flex;
-      align-items: stretch;
+
+      align-items:
+        stretch;
 
       border:
         1.5px solid #dce3ec;
 
-      border-radius: 14px;
+      border-radius:
+        14px;
 
       background:
         #ffffff;
@@ -810,7 +1033,8 @@
       color:
         #172033;
 
-      text-align: left;
+      text-align:
+        left;
 
       box-shadow:
         0 5px 15px rgba(20,40,70,0.05);
@@ -825,9 +1049,11 @@
       position: absolute;
 
       right: 0;
+
       top: 0;
 
       width: 4px;
+
       height: 100%;
 
       background:
@@ -843,13 +1069,19 @@
     }
 
     .schedule-time {
-      min-width: 90px;
+      min-width:
+        90px;
 
       display: flex;
-      align-items: center;
-      justify-content: center;
 
-      padding: 15px 12px;
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      padding:
+        15px 12px;
 
       background:
         linear-gradient(
@@ -860,8 +1092,11 @@
 
       color: white;
 
-      font-size: 21px;
-      font-weight: 900;
+      font-size:
+        21px;
+
+      font-weight:
+        900;
     }
 
     .schedule-info {
@@ -869,11 +1104,16 @@
 
       min-width: 0;
 
-      padding: 14px;
+      padding:
+        14px;
 
       display: flex;
-      flex-direction: column;
-      justify-content: center;
+
+      flex-direction:
+        column;
+
+      justify-content:
+        center;
 
       gap: 5px;
     }
@@ -882,27 +1122,36 @@
       color:
         var(--hsm-blue);
 
-      font-size: 14px;
-      font-weight: 900;
+      font-size:
+        14px;
+
+      font-weight:
+        900;
     }
 
     .schedule-info span {
       color:
         #687386;
 
-      font-size: 12px;
+      font-size:
+        12px;
 
-      line-height: 1.35;
+      line-height:
+        1.35;
     }
 
     .schedule-info span:last-child {
-      margin-top: 2px;
+      margin-top:
+        2px;
 
       color:
         var(--hsm-red);
 
-      font-size: 14px;
-      font-weight: 900;
+      font-size:
+        14px;
+
+      font-weight:
+        900;
     }
 
     .schedule-card.selected {
@@ -922,12 +1171,16 @@
     }
 
 
-    /* ================= SEATS ================= */
+    /* =========================================
+       SEATS
+       ========================================= */
 
     #seats {
-      margin-top: 8px;
+      margin-top:
+        8px;
 
-      padding: 20px;
+      padding:
+        20px;
 
       background:
         linear-gradient(
@@ -939,39 +1192,54 @@
       border:
         1.5px solid #dce5f0;
 
-      border-radius: 16px;
+      border-radius:
+        16px;
 
-      overflow-x: auto;
+      overflow-x:
+        auto;
     }
 
     .seatLegend {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+
+      flex-wrap:
+        wrap;
+
+      justify-content:
+        center;
 
       gap: 9px;
 
-      margin-bottom: 18px;
+      margin-bottom:
+        18px;
 
-      font-size: 11px;
-      font-weight: 800;
+      font-size:
+        11px;
+
+      font-weight:
+        800;
 
       color:
         #4b5563;
     }
 
     .seatLegend span {
-      display: inline-flex;
-      align-items: center;
+      display:
+        inline-flex;
+
+      align-items:
+        center;
 
       gap: 6px;
 
-      padding: 6px 9px;
+      padding:
+        6px 9px;
 
       border:
         1px solid #e0e5eb;
 
-      border-radius: 999px;
+      border-radius:
+        999px;
 
       background:
         #ffffff;
@@ -979,32 +1247,42 @@
 
     .seatLegend i {
       width: 11px;
+
       height: 11px;
 
-      display: inline-block;
+      display:
+        inline-block;
 
-      border-radius: 3px;
+      border-radius:
+        3px;
     }
 
     .legendAvailable {
-      background: #22c55e;
+      background:
+        #22c55e;
     }
 
     .legendPending {
-      background: #facc15;
+      background:
+        #facc15;
     }
 
     .legendPaid {
-      background: #ef4444;
+      background:
+        #ef4444;
     }
 
     .seatCabin {
-      max-width: 420px;
+      max-width:
+        420px;
 
-      margin: 0 auto 16px;
+      margin:
+        0 auto 16px;
 
       display: flex;
-      justify-content: space-between;
+
+      justify-content:
+        space-between;
 
       gap: 12px;
     }
@@ -1013,30 +1291,39 @@
     .kernetSeat {
       flex: 1;
 
-      padding: 12px 8px;
+      padding:
+        12px 8px;
 
-      border-radius: 9px;
+      border-radius:
+        9px;
 
       background:
         var(--hsm-blue-dark);
 
       color: white;
 
-      text-align: center;
+      text-align:
+        center;
 
-      font-size: 12px;
-      font-weight: 800;
+      font-size:
+        12px;
+
+      font-weight:
+        800;
     }
 
     .seatLayout {
       width: 100%;
 
-      max-width: 420px;
+      max-width:
+        420px;
 
       margin: auto;
 
       display: flex;
-      flex-direction: column;
+
+      flex-direction:
+        column;
 
       gap: 9px;
     }
@@ -1044,8 +1331,11 @@
     .seatRow {
       display: flex;
 
-      align-items: center;
-      justify-content: center;
+      align-items:
+        center;
+
+      justify-content:
+        center;
 
       gap: 9px;
     }
@@ -1059,14 +1349,19 @@
 
     .seat {
       width: 54px;
+
       height: 48px;
 
       border: 0;
 
-      border-radius: 10px;
+      border-radius:
+        10px;
 
-      font-weight: 900;
-      font-size: 14px;
+      font-weight:
+        900;
+
+      font-size:
+        14px;
 
       box-shadow:
         0 4px 10px rgba(0,0,0,0.08);
@@ -1080,7 +1375,8 @@
           #16a34a
         );
 
-      color: white;
+      color:
+        white;
     }
 
     .seat.selected {
@@ -1114,27 +1410,34 @@
           #dc2626
         );
 
-      color: white;
+      color:
+        white;
 
       cursor:
         not-allowed;
     }
 
 
-    /* ================= SUMMARY ================= */
+    /* =========================================
+       BOOKING SUMMARY
+       ========================================= */
 
     .bookingSummary {
       position: relative;
+
       overflow: hidden;
 
-      margin-top: 18px;
+      margin-top:
+        18px;
 
-      padding: 18px;
+      padding:
+        18px;
 
       border:
         1px solid #dce5f0;
 
-      border-radius: 14px;
+      border-radius:
+        14px;
 
       background:
         linear-gradient(
@@ -1150,7 +1453,8 @@
 
       gap: 14px;
 
-      line-height: 1.5;
+      line-height:
+        1.5;
     }
 
     .bookingSummary::before {
@@ -1159,7 +1463,9 @@
       position: absolute;
 
       left: 0;
+
       top: 0;
+
       bottom: 0;
 
       width: 4px;
@@ -1179,21 +1485,27 @@
     }
 
 
-    /* ================= BOOK BUTTON ================= */
+    /* =========================================
+       BOOK BUTTON
+       ========================================= */
 
     #book {
       position: relative;
+
       overflow: hidden;
 
       width: 100%;
 
-      min-height: 55px;
+      min-height:
+        55px;
 
-      margin-top: 8px;
+      margin-top:
+        8px;
 
       border: 0;
 
-      border-radius: 12px;
+      border-radius:
+        12px;
 
       background:
         linear-gradient(
@@ -1204,8 +1516,11 @@
 
       color: white;
 
-      font-size: 16px;
-      font-weight: 900;
+      font-size:
+        16px;
+
+      font-weight:
+        900;
 
       box-shadow:
         0 9px 22px rgba(7,84,166,0.24);
@@ -1217,7 +1532,9 @@
       position: absolute;
 
       right: 0;
+
       top: 0;
+
       bottom: 0;
 
       width: 7px;
@@ -1227,24 +1544,33 @@
     }
 
     #book:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+      opacity:
+        0.6;
+
+      cursor:
+        not-allowed;
     }
 
     #result {
-      margin-top: 5px;
+      margin-top:
+        5px;
     }
 
 
-    /* ================= INFO ================= */
+    /* =========================================
+       INFO
+       ========================================= */
 
     .info-section {
       position: relative;
+
       overflow: hidden;
 
-      margin-top: 35px;
+      margin-top:
+        35px;
 
-      padding: 27px;
+      padding:
+        27px;
 
       background:
         #ffffff;
@@ -1252,9 +1578,11 @@
       border:
         1px solid #e1e7ef;
 
-      border-radius: 18px;
+      border-radius:
+        18px;
 
-      line-height: 1.75;
+      line-height:
+        1.75;
 
       box-shadow:
         0 10px 30px rgba(20,40,70,0.06);
@@ -1266,9 +1594,11 @@
       position: absolute;
 
       left: 0;
+
       top: 0;
 
       width: 6px;
+
       height: 70%;
 
       background:
@@ -1281,9 +1611,11 @@
       position: absolute;
 
       left: 0;
+
       bottom: 0;
 
       width: 6px;
+
       height: 30%;
 
       background:
@@ -1303,12 +1635,15 @@
     }
 
 
-    /* ================= FOOTER ================= */
+    /* =========================================
+       FOOTER
+       ========================================= */
 
     footer {
       position: relative;
 
-      padding: 38px 18px;
+      padding:
+        38px 18px;
 
       background:
         linear-gradient(
@@ -1320,9 +1655,11 @@
       color:
         #cbd5e1;
 
-      text-align: center;
+      text-align:
+        center;
 
-      line-height: 1.75;
+      line-height:
+        1.75;
     }
 
     footer::before {
@@ -1331,9 +1668,11 @@
       position: absolute;
 
       top: 0;
+
       left: 0;
 
       width: 72%;
+
       height: 4px;
 
       background:
@@ -1346,9 +1685,11 @@
       position: absolute;
 
       top: 0;
+
       right: 0;
 
       width: 28%;
+
       height: 4px;
 
       background:
@@ -1356,125 +1697,256 @@
     }
 
     footer strong {
-      color: white;
+      color:
+        white;
 
-      font-size: 18px;
+      font-size:
+        18px;
     }
 
 
-    /* ================= MOBILE ================= */
+    /* =========================================
+       MOBILE
+       ========================================= */
 
     @media (max-width: 760px) {
 
+      /* HEADER */
+
       .header-inner {
-        padding: 9px 13px;
+        padding:
+          9px 13px;
       }
 
       .header-logo {
-        width: 145px;
+        width:
+          145px;
       }
 
       .brand-company {
-        font-size: 8px;
+        font-size:
+          8px;
       }
 
       .header-link {
-        min-height: 36px;
+        min-height:
+          36px;
 
-        padding: 0 12px;
+        padding:
+          0 12px;
 
-        font-size: 11px;
+        font-size:
+          11px;
       }
 
 
-      /* HERO MOBILE */
+      /* ================= HERO MOBILE ================= */
 
       .hero {
-        min-height: 405px;
+        min-height:
+          440px;
 
         padding:
-          24px 14px 28px;
+          20px 14px 24px;
 
-        background-size: cover;
+        background-image:
 
-        /*
-          Sedikit digeser agar badan Hiace
-          lebih dominan di layar HP.
-        */
+          linear-gradient(
+            180deg,
+            rgba(3,31,62,0.22) 0%,
+            rgba(3,42,84,0.15) 38%,
+            rgba(3,42,84,0.17) 68%,
+            rgba(3,30,60,0.35) 100%
+          ),
+
+          url("hsm-hiace-commuter.png");
+
+        background-size:
+          cover;
+
         background-position:
           52% center;
+
+        background-repeat:
+          no-repeat;
       }
 
       .hero::before {
         background:
           linear-gradient(
             180deg,
-            rgba(3,31,62,0.15) 0%,
-            rgba(3,31,62,0.05) 35%,
-            rgba(3,31,62,0.12) 65%,
-            rgba(3,31,62,0.31) 100%
+            rgba(0,0,0,0.04) 0%,
+            rgba(0,0,0,0.02) 35%,
+            rgba(0,0,0,0.08) 65%,
+            rgba(0,0,0,0.20) 100%
           );
       }
 
       .hero-inner {
-        max-width: 390px;
+        width: 100%;
+
+        max-width:
+          360px;
+
+        min-height:
+          390px;
+
+        display: flex;
+
+        flex-direction:
+          column;
+
+        align-items:
+          center;
+
+        justify-content:
+          flex-start;
       }
 
+
+      /* BADGE MOBILE */
+
       .hero-badge {
-        padding: 6px 11px;
+        margin-top:
+          4px;
 
-        margin-bottom: 8px;
+        margin-bottom:
+          7px;
 
-        font-size: 10px;
+        padding:
+          6px 11px;
+
+        font-size:
+          10px;
+
+        border-radius:
+          999px;
+
+        background:
+          rgba(3,47,91,0.80);
+
+        box-shadow:
+          0 4px 12px rgba(0,0,0,0.16);
       }
 
       .hero-badge::before {
-        width: 6px;
-        height: 6px;
+        width:
+          6px;
+
+        height:
+          6px;
       }
 
+
+      /* LOGO MOBILE */
+
       .hero-logo-wrap {
-        margin-bottom: 2px;
+        margin: 0;
+
+        height: auto;
       }
 
       .hero-logo {
         width:
-          min(215px,54vw);
+          175px;
 
-        max-height: 80px;
+        max-width:
+          50vw;
+
+        max-height:
+          66px;
+
+        margin:
+          0 auto;
+
+        filter:
+          drop-shadow(
+            0 3px 6px rgba(0,0,0,0.30)
+          );
       }
+
+
+      /* DESKRIPSI MOBILE */
 
       .hero-description {
-        max-width: 315px;
+        max-width:
+          305px;
 
-        margin-top: 4px;
+        margin:
+          9px auto 0;
 
-        font-size: 12px;
+        padding:
+          6px 9px;
 
-        line-height: 1.42;
+        font-size:
+          11px;
+
+        font-weight:
+          600;
+
+        line-height:
+          1.42;
+
+        color:
+          #ffffff;
+
+        background:
+          rgba(2,30,59,0.32);
+
+        border-radius:
+          8px;
 
         text-shadow:
-          0 2px 6px rgba(0,0,0,0.95);
+          0 1px 4px rgba(0,0,0,0.85);
       }
+
+
+      /* RUTE DITURUNKAN */
 
       .hero-route {
-        margin-top: 10px;
+        margin-top:
+          auto;
 
-        padding: 7px 10px;
+        padding:
+          7px 10px;
 
-        font-size: 11px;
+        font-size:
+          10.5px;
 
-        border-radius: 8px;
+        border-radius:
+          8px;
+
+        background:
+          rgba(3,47,91,0.86);
+
+        border:
+          1px solid rgba(255,255,255,0.20);
+
+        box-shadow:
+          0 4px 12px rgba(0,0,0,0.16);
       }
 
+
+      /* BUTTON MOBILE */
+
       .hero-button {
-        margin-top: 11px;
+        margin-top:
+          9px;
 
-        padding: 10px 17px;
+        margin-bottom:
+          5px;
 
-        font-size: 12px;
+        padding:
+          10px 18px;
 
-        border-radius: 9px;
+        font-size:
+          12px;
+
+        border-radius:
+          9px;
+
+        box-shadow:
+          0 6px 16px rgba(0,0,0,0.22);
       }
 
 
@@ -1489,58 +1961,75 @@
         padding:
           18px 15px 20px;
 
-        border-radius: 16px;
+        border-radius:
+          16px;
       }
 
       .section-title {
-        font-size: 25px;
+        font-size:
+          25px;
       }
 
       .route-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr;
 
-        gap: 9px;
+        gap:
+          9px;
       }
 
       .route-label {
-        min-height: 56px;
+        min-height:
+          56px;
       }
 
       #schedule {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr;
       }
 
       .schedule-card {
-        min-height: 94px;
+        min-height:
+          94px;
       }
 
       .schedule-time {
-        min-width: 82px;
+        min-width:
+          82px;
 
-        font-size: 19px;
+        font-size:
+          19px;
       }
 
       #seats {
-        padding: 15px 8px;
+        padding:
+          15px 8px;
       }
 
       .bookingSummary {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr;
       }
 
       .seat {
-        width: 48px;
-        height: 45px;
+        width:
+          48px;
+
+        height:
+          45px;
       }
 
       .seatAisle {
-        width: 16px;
+        width:
+          16px;
 
-        flex-basis: 16px;
+        flex-basis:
+          16px;
       }
 
       .info-section {
-        padding: 22px 20px;
+        padding:
+          22px 20px;
       }
 
     }
@@ -1553,7 +2042,9 @@
 <body>
 
 
-  <!-- ================= HEADER ================= -->
+  <!-- =========================================
+       HEADER
+       ========================================= -->
 
   <header class="header">
 
@@ -1586,7 +2077,9 @@
   </header>
 
 
-  <!-- ================= HERO ================= -->
+  <!-- =========================================
+       HERO
+       ========================================= -->
 
   <section class="hero">
 
@@ -1636,7 +2129,9 @@
   </section>
 
 
-  <!-- ================= MAIN ================= -->
+  <!-- =========================================
+       MAIN
+       ========================================= -->
 
   <main>
 
@@ -1650,13 +2145,16 @@
         Pesan Tiket
       </h2>
 
+
       <p class="section-description">
         Pilih rute perjalanan, tanggal keberangkatan,
         jadwal dan kursi yang tersedia.
       </p>
 
 
-      <!-- ================= RUTE ================= -->
+      <!-- =========================================
+           RUTE
+           ========================================= -->
 
       <div class="form-group">
 
@@ -1683,6 +2181,7 @@
               for="route-sofifi-weda"
             >
               <span class="route-arrow">➜</span>
+
               Sofifi → Weda
             </label>
 
@@ -1703,6 +2202,7 @@
               for="route-sofifi-lelilef"
             >
               <span class="route-arrow">➜</span>
+
               Sofifi → Lelilef
             </label>
 
@@ -1723,6 +2223,7 @@
               for="route-loleo-weda"
             >
               <span class="route-arrow">➜</span>
+
               Loleo → Weda
             </label>
 
@@ -1743,6 +2244,7 @@
               for="route-loleo-lelilef"
             >
               <span class="route-arrow">➜</span>
+
               Loleo → Lelilef
             </label>
 
@@ -1763,6 +2265,7 @@
               for="route-weda-lelilef"
             >
               <span class="route-arrow">➜</span>
+
               Weda → Lelilef
             </label>
 
@@ -1783,6 +2286,7 @@
               for="route-lelilef-weda"
             >
               <span class="route-arrow">➜</span>
+
               Lelilef → Weda
             </label>
 
@@ -1803,6 +2307,7 @@
               for="route-lelilef-loleo"
             >
               <span class="route-arrow">➜</span>
+
               Lelilef → Loleo
             </label>
 
@@ -1823,6 +2328,7 @@
               for="route-lelilef-sofifi"
             >
               <span class="route-arrow">➜</span>
+
               Lelilef → Sofifi
             </label>
 
@@ -1843,6 +2349,7 @@
               for="route-weda-loleo"
             >
               <span class="route-arrow">➜</span>
+
               Weda → Loleo
             </label>
 
@@ -1863,6 +2370,7 @@
               for="route-weda-sofifi"
             >
               <span class="route-arrow">➜</span>
+
               Weda → Sofifi
             </label>
 
@@ -1874,7 +2382,10 @@
       </div>
 
 
-      <!-- APP.JS TETAP MEMAKAI FROM DAN TO -->
+      <!-- =========================================
+           HIDDEN FROM / TO
+           APP.JS TETAP MENGGUNAKAN INI
+           ========================================= -->
 
       <select
         id="from"
@@ -1932,7 +2443,9 @@
       </select>
 
 
-      <!-- ================= TANGGAL ================= -->
+      <!-- =========================================
+           TANGGAL
+           ========================================= -->
 
       <div class="form-group">
 
@@ -1950,7 +2463,9 @@
       </div>
 
 
-      <!-- ================= JADWAL ================= -->
+      <!-- =========================================
+           JADWAL
+           ========================================= -->
 
       <div class="form-group">
 
@@ -1974,7 +2489,9 @@
       </div>
 
 
-      <!-- ================= KURSI ================= -->
+      <!-- =========================================
+           KURSI
+           ========================================= -->
 
       <div class="form-group">
 
@@ -1998,7 +2515,9 @@
       </div>
 
 
-      <!-- ================= DATA PENUMPANG ================= -->
+      <!-- =========================================
+           NAMA
+           ========================================= -->
 
       <div class="form-group">
 
@@ -2016,6 +2535,10 @@
 
       </div>
 
+
+      <!-- =========================================
+           WHATSAPP
+           ========================================= -->
 
       <div class="form-group">
 
@@ -2035,6 +2558,10 @@
       </div>
 
 
+      <!-- =========================================
+           PESAN
+           ========================================= -->
+
       <button
         type="button"
         id="book"
@@ -2049,7 +2576,9 @@
     </section>
 
 
-    <!-- ================= INFORMASI ================= -->
+    <!-- =========================================
+         INFORMASI
+         ========================================= -->
 
     <section class="info-section">
 
@@ -2057,11 +2586,13 @@
         Travel Sofifi, Loleo, Weda & Lelilef
       </h2>
 
+
       <p>
         HSM Transport melayani perjalanan penumpang
         di wilayah Maluku Utara dengan rute yang
         menghubungkan Sofifi, Loleo, Weda dan Lelilef.
       </p>
+
 
       <p>
         Penumpang dapat memilih rute perjalanan,
@@ -2069,6 +2600,7 @@
         dan kursi yang masih tersedia langsung
         melalui website.
       </p>
+
 
       <p>
         Sistem kursi HSM Transport menggunakan
@@ -2085,7 +2617,9 @@
   </main>
 
 
-  <!-- ================= FOOTER ================= -->
+  <!-- =========================================
+       FOOTER
+       ========================================= -->
 
   <footer>
 
@@ -2112,7 +2646,9 @@
   </footer>
 
 
-  <!-- ================= JAVASCRIPT ================= -->
+  <!-- =========================================
+       JAVASCRIPT
+       ========================================= -->
 
   <script src="config.js"></script>
   <script src="app.js"></script>
