@@ -1,17 +1,18 @@
 // ============================================================
 // HSM TRANSPORT - APP.JS
 // ============================================================
-// FITUR:
-// - Dropdown DARI → TUJUAN
-// - Tujuan otomatis mengikuti rute yang tersedia
+// FINAL:
+// - Dari → Tujuan
 // - Jadwal otomatis
 // - Harga otomatis
 // - Segment kursi
-// - 14 kursi + 1 kernet
+// - 14 kursi + kernet
 // - Booking Supabase
-// - WhatsApp confirmation
+// - Kode booking 6 karakter
+// - Status pending
+// - Kursi pending = kuning
+// - Redirect langsung ke WhatsApp admin
 // ============================================================
-
 
 const HSM_CONFIG = window.HSM_CONFIG;
 
@@ -22,7 +23,6 @@ if (!HSM_CONFIG) {
 if (!window.supabase) {
   throw new Error("Library Supabase tidak ditemukan.");
 }
-
 
 const db = window.supabase.createClient(
   HSM_CONFIG.SUPABASE_URL,
@@ -62,7 +62,7 @@ let currentBookings = [];
 
 
 // ============================================================
-// ROUTE CONFIG
+// ROUTES
 // ============================================================
 
 const ROUTES = {
@@ -151,12 +151,10 @@ function normalizeVehicle(vehicle) {
     return "";
   }
 
-
   const v =
     String(vehicle)
       .trim()
       .toUpperCase();
-
 
   if (
     v === "HSM-01" ||
@@ -167,7 +165,6 @@ function normalizeVehicle(vehicle) {
     return "HSM-01";
   }
 
-
   if (
     v === "HSM-02" ||
     v === "HSM02" ||
@@ -176,7 +173,6 @@ function normalizeVehicle(vehicle) {
   ) {
     return "HSM-02";
   }
-
 
   return v;
 
@@ -194,7 +190,7 @@ function formatTime(time) {
 
 
 // ============================================================
-// RESET SELECTION
+// RESET
 // ============================================================
 
 function resetTripSelection() {
@@ -204,11 +200,9 @@ function resetTripSelection() {
 
   currentBookings = [];
 
-
   if (resultEl) {
     resultEl.innerHTML = "";
   }
-
 
   if (seatsEl) {
 
@@ -227,7 +221,7 @@ function resetTripSelection() {
 
 
 // ============================================================
-// UPDATE DESTINATION
+// DESTINATION
 // ============================================================
 
 function updateDestinationOptions() {
@@ -236,21 +230,14 @@ function updateDestinationOptions() {
     return;
   }
 
-
   const origin =
     fromEl.value;
-
-
-  const previousDestination =
-    toEl.value;
-
 
   toEl.innerHTML = `
     <option value="">
       Pilih tujuan
     </option>
   `;
-
 
   if (!origin) {
 
@@ -260,26 +247,22 @@ function updateDestinationOptions() {
     selectedDestination = "";
 
     return;
-  }
 
+  }
 
   const destinations =
     ROUTES[origin] || [];
-
 
   destinations.forEach(destination => {
 
     const option =
       document.createElement("option");
 
-
     option.value =
       destination;
 
-
     option.textContent =
       destination;
-
 
     toEl.appendChild(
       option
@@ -287,40 +270,18 @@ function updateDestinationOptions() {
 
   });
 
-
   toEl.disabled = false;
-
-
-  if (
-    destinations.includes(
-      previousDestination
-    )
-  ) {
-
-    toEl.value =
-      previousDestination;
-
-  }
-
-  else {
-
-    toEl.value = "";
-
-  }
-
 
   selectedOrigin =
     origin;
 
-
-  selectedDestination =
-    toEl.value;
+  selectedDestination = "";
 
 }
 
 
 // ============================================================
-// FROM CHANGE
+// FROM
 // ============================================================
 
 if (fromEl) {
@@ -347,7 +308,7 @@ if (fromEl) {
 
 
 // ============================================================
-// TO CHANGE
+// TO
 // ============================================================
 
 if (toEl) {
@@ -363,7 +324,6 @@ if (toEl) {
 
       selectedDestination =
         toEl.value;
-
 
       resetTripSelection();
 
@@ -385,28 +345,23 @@ async function fetchSchedules() {
     await db
       .from("schedules")
       .select("*")
-      .eq(
-        "active",
-        true
-      )
+      .eq("active", true)
       .order(
         "travel_date",
         {
-          ascending: true
+          ascending:true
         }
       )
       .order(
         "departure_time",
         {
-          ascending: true
+          ascending:true
         }
       );
-
 
   if (error) {
     throw error;
   }
-
 
   return data || [];
 
@@ -420,7 +375,6 @@ async function fetchSchedules() {
 function buildServices(rows) {
 
   const services = [];
-
 
   function addService(
     row,
@@ -472,12 +426,10 @@ function buildServices(rows) {
         row.route
       );
 
-
     const vehicle =
       normalizeVehicle(
         row.vehicle
       );
-
 
     const time =
       formatTime(
@@ -500,7 +452,6 @@ function buildServices(rows) {
 
 
       // HSM-01 PAGI
-
       if (
         vehicle === "HSM-01" &&
         time === "09:00"
@@ -514,7 +465,6 @@ function buildServices(rows) {
 
 
       // HSM-02 SIANG
-
       else if (
         vehicle === "HSM-02" &&
         time === "13:00"
@@ -603,7 +553,6 @@ function buildServices(rows) {
 
 
       // HSM-02 PAGI
-
       if (
         vehicle === "HSM-02" &&
         time === "09:00"
@@ -616,7 +565,6 @@ function buildServices(rows) {
 
 
       // HSM-01 SIANG
-
       else if (
         vehicle === "HSM-01" &&
         time === "13:00"
@@ -691,7 +639,6 @@ function buildServices(rows) {
 
   });
 
-
   return services;
 
 }
@@ -707,12 +654,10 @@ async function loadSchedules() {
     return;
   }
 
-
   selectedOrigin =
     fromEl
       ? fromEl.value
       : "";
-
 
   selectedDestination =
     toEl
@@ -767,12 +712,10 @@ async function loadSchedules() {
     schedules =
       await fetchSchedules();
 
-
     const selectedDate =
       dateEl
         ? dateEl.value
         : "";
-
 
     const rows =
       schedules.filter(row => {
@@ -784,7 +727,6 @@ async function loadSchedules() {
         ) {
           return false;
         }
-
 
         return true;
 
@@ -834,10 +776,8 @@ async function loadSchedules() {
           "button"
         );
 
-
       card.type =
         "button";
-
 
       card.className =
         "schedule-card";
@@ -895,10 +835,8 @@ async function loadSchedules() {
           selectedSchedule =
             service;
 
-
           selectedSeat =
             null;
-
 
           await loadSeats(
             service
@@ -948,11 +886,36 @@ async function loadSchedules() {
 
 
 // ============================================================
-// BOOKINGS
+// FETCH SEAT STATUS
 // ============================================================
 
 async function fetchBookings(scheduleId) {
 
+  // Utamakan RPC aman
+  const rpcResult =
+    await db.rpc(
+      "get_hsm_seat_statuses",
+      {
+        p_schedule_id:
+          scheduleId
+      }
+    );
+
+
+  if (!rpcResult.error) {
+
+    return rpcResult.data || [];
+
+  }
+
+
+  console.warn(
+    "RPC seat status gagal, mencoba SELECT:",
+    rpcResult.error
+  );
+
+
+  // Fallback
   const { data, error } =
     await db
       .from("bookings")
@@ -976,37 +939,47 @@ async function fetchBookings(scheduleId) {
 
 
 // ============================================================
-// BOOKING STATUS
+// STATUS
 // ============================================================
 
-function getBookingStatus(booking) {
+function normalizeBookingStatus(value) {
 
   const status =
-    String(
-      booking.payment_status || ""
-    )
+    String(value || "")
       .trim()
       .toLowerCase();
 
 
   if (
-    status === "cancelled" ||
-    status === "canceled" ||
-    status === "failed"
+    status === "paid" ||
+    status === "success" ||
+    status === "settled" ||
+    status === "lunas"
   ) {
 
-    return "cancelled";
+    return "paid";
 
   }
 
 
   if (
-    status === "paid" ||
-    status === "success" ||
-    status === "settled"
+    status === "completed" ||
+    status === "selesai"
   ) {
 
-    return "paid";
+    return "completed";
+
+  }
+
+
+  if (
+    status === "cancelled" ||
+    status === "canceled" ||
+    status === "failed" ||
+    status === "dibatalkan"
+  ) {
+
+    return "cancelled";
 
   }
 
@@ -1059,14 +1032,15 @@ function getSeatStatus(
 
 
       const status =
-        getBookingStatus(
-          booking
+        normalizeBookingStatus(
+          booking.payment_status
         );
 
 
+      // Cancelled dan completed tidak mengunci kursi
       if (
-        status ===
-        "cancelled"
+        status === "cancelled" ||
+        status === "completed"
       ) {
 
         return;
@@ -1166,8 +1140,7 @@ function createSeat(
 
 
   if (
-    status ===
-    "available"
+    status === "available"
   ) {
 
     seat.classList.add(
@@ -1210,8 +1183,7 @@ function createSeat(
 
 
   else if (
-    status ===
-    "pending"
+    status === "pending"
   ) {
 
     seat.classList.add(
@@ -1273,8 +1245,6 @@ async function loadSeats(schedule) {
     seatsEl.innerHTML = "";
 
 
-    // LEGEND
-
     const legend =
       document.createElement(
         "div"
@@ -1307,8 +1277,6 @@ async function loadSeats(schedule) {
       legend
     );
 
-
-    // BUS LAYOUT
 
     const busLayout =
       document.createElement(
@@ -1401,7 +1369,6 @@ async function loadSeats(schedule) {
 
 
     // DEPAN
-
     placeSeat(1, 2, 1);
     placeSeat(2, 3, 1);
 
@@ -1438,8 +1405,7 @@ async function loadSeats(schedule) {
     );
 
 
-    // PINTU SLIDING
-
+    // PINTU
     const slidingDoor =
       document.createElement(
         "div"
@@ -1478,14 +1444,12 @@ async function loadSeats(schedule) {
 
 
     // 03 04 05
-
     placeSeat(3, 2, 3);
     placeSeat(4, 3, 3);
     placeSeat(5, 4, 3);
 
 
     // KERNET
-
     const kernet =
       document.createElement(
         "div"
@@ -1519,20 +1483,17 @@ async function loadSeats(schedule) {
 
 
     // 06 07
-
     placeSeat(6, 3, 4);
     placeSeat(7, 4, 4);
 
 
     // 08 09 10
-
     placeSeat(8, 1, 5);
     placeSeat(9, 3, 5);
     placeSeat(10, 4, 5);
 
 
     // 11 12 13 14
-
     placeSeat(11, 1, 6);
     placeSeat(12, 2, 6);
     placeSeat(13, 3, 6);
@@ -1611,7 +1572,7 @@ async function loadSeats(schedule) {
 
 
 // ============================================================
-// BOOKING SUMMARY
+// SUMMARY
 // ============================================================
 
 function updateBookingSummary() {
@@ -1722,41 +1683,93 @@ function normalizePhone(value) {
 
 // ============================================================
 // BOOKING CODE
+// 6 KARAKTER
+// Contoh H8K4P2
 // ============================================================
 
 function generateBookingCode() {
 
-  const now =
-    new Date();
+  const chars =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 
-  const year =
-    String(
-      now.getFullYear()
-    ).slice(-2);
+  let code =
+    "H";
 
 
-  const month =
-    String(
-      now.getMonth() + 1
-    ).padStart(2, "0");
+  for (
+    let i = 0;
+    i < 5;
+    i++
+  ) {
+
+    code +=
+      chars.charAt(
+        Math.floor(
+          Math.random() *
+          chars.length
+        )
+      );
+
+  }
 
 
-  const day =
-    String(
-      now.getDate()
-    ).padStart(2, "0");
+  return code;
+
+}
 
 
-  const random =
-    Math.random()
-      .toString(36)
-      .substring(2, 7)
-      .toUpperCase();
+// ============================================================
+// INSERT BOOKING
+// ============================================================
+
+async function insertBooking(
+  bookingData
+) {
+
+  for (
+    let attempt = 0;
+    attempt < 5;
+    attempt++
+  ) {
+
+    const bookingCode =
+      generateBookingCode();
 
 
-  return (
-    `HSM${year}${month}${day}${random}`
+    const { error } =
+      await db
+        .from("bookings")
+        .insert({
+          ...bookingData,
+          booking_code:
+            bookingCode
+        });
+
+
+    if (!error) {
+
+      return bookingCode;
+
+    }
+
+
+    if (
+      error.code === "23505"
+    ) {
+
+      continue;
+
+    }
+
+
+    throw error;
+
+  }
+
+
+  throw new Error(
+    "Gagal membuat kode booking."
   );
 
 }
@@ -1830,11 +1843,7 @@ async function createBooking() {
       "Masukkan nama penumpang."
     );
 
-
-    if (nameEl) {
-      nameEl.focus();
-    }
-
+    nameEl?.focus();
 
     return;
 
@@ -1847,11 +1856,7 @@ async function createBooking() {
       "Masukkan nomor WhatsApp."
     );
 
-
-    if (phoneEl) {
-      phoneEl.focus();
-    }
-
+    phoneEl?.focus();
 
     return;
 
@@ -1873,11 +1878,7 @@ async function createBooking() {
       "Nomor WhatsApp tidak valid."
     );
 
-
-    if (phoneEl) {
-      phoneEl.focus();
-    }
-
+    phoneEl?.focus();
 
     return;
 
@@ -1885,7 +1886,7 @@ async function createBooking() {
 
 
   // ==========================================================
-  // CEK ULANG KURSI SEBELUM INSERT
+  // CEK ULANG KURSI
   // ==========================================================
 
   try {
@@ -1909,7 +1910,7 @@ async function createBooking() {
     ) {
 
       alert(
-        "Maaf, kursi tersebut baru saja dipesan oleh penumpang lain."
+        "Maaf, kursi tersebut baru saja dipesan."
       );
 
 
@@ -1931,17 +1932,10 @@ async function createBooking() {
 
   catch (error) {
 
-    console.error(
-      "SEAT CHECK ERROR:",
-      error
-    );
-
-
     alert(
       "Gagal mengecek kursi:\n" +
       error.message
     );
-
 
     return;
 
@@ -1960,14 +1954,27 @@ async function createBooking() {
   }
 
 
-  const bookingCode =
-    generateBookingCode();
+  const travelDate =
+    dateEl
+      ? dateEl.value
+      : selectedSchedule.travel_date;
+
+
+  const departureTime =
+    selectedSchedule.displayTime;
+
+
+  const vehicle =
+    normalizeVehicle(
+      selectedSchedule.vehicle
+    );
+
+
+  const bookedSeat =
+    selectedSeat;
 
 
   const bookingData = {
-
-    booking_code:
-      bookingCode,
 
     schedule_id:
       selectedSchedule.id,
@@ -1979,7 +1986,7 @@ async function createBooking() {
       phone,
 
     seat_number:
-      selectedSeat,
+      bookedSeat,
 
     total:
       selectedSchedule.displayPrice,
@@ -2003,28 +2010,29 @@ async function createBooking() {
       selectedSchedule.displayOrigin,
 
     destination:
-      selectedSchedule.displayDestination
+      selectedSchedule.displayDestination,
+
+    travel_date:
+      travelDate,
+
+    departure_time:
+      departureTime,
+
+    vehicle:
+      vehicle
 
   };
 
 
-  // ==========================================================
-  // INSERT BOOKING
-  // ==========================================================
+  let bookingCode;
+
 
   try {
 
-    const { error } =
-      await db
-        .from("bookings")
-        .insert(
-          bookingData
-        );
-
-
-    if (error) {
-      throw error;
-    }
+    bookingCode =
+      await insertBooking(
+        bookingData
+      );
 
   }
 
@@ -2037,28 +2045,12 @@ async function createBooking() {
     );
 
 
-    let errorMessage =
-      error.message ||
-      "Terjadi kesalahan saat membuat booking.";
-
-
-    if (
-      errorMessage
-        .toLowerCase()
-        .includes(
-          "row-level security"
-        )
-    ) {
-
-      errorMessage =
-        "Booking ditolak oleh keamanan database. Policy Supabase untuk booking belum aktif.";
-
-    }
-
-
     alert(
       "Booking gagal:\n" +
-      errorMessage
+      (
+        error.message ||
+        "Terjadi kesalahan."
+      )
     );
 
 
@@ -2080,16 +2072,14 @@ async function createBooking() {
 
 
   // ==========================================================
-  // WHATSAPP
+  // WHATSAPP ADMIN
   // ==========================================================
 
   let adminNumber =
-    HSM_CONFIG.WHATSAPP_ADMIN ||
-    "";
-
-
-  adminNumber =
-    String(adminNumber)
+    String(
+      HSM_CONFIG.WHATSAPP_ADMIN ||
+      ""
+    )
       .replace(/\D/g, "");
 
 
@@ -2104,45 +2094,43 @@ async function createBooking() {
   }
 
 
-  const date =
-    dateEl
-      ? dateEl.value
-      : "";
-
-
   const seatNumber =
-    String(selectedSeat)
+    String(bookedSeat)
       .padStart(2, "0");
 
 
   const message = `
-Halo HSM Transport 👋
+*BOOKING BARU HSM TRANSPORT*
 
-Saya ingin memesan tiket.
-
-Kode Booking: ${bookingCode}
+*Kode Booking: ${bookingCode}*
 
 Nama: ${passengerName}
 No. WhatsApp: ${rawPhone}
 
-Rute: ${selectedSchedule.displayOrigin} → ${selectedSchedule.displayDestination}
-Tanggal: ${date}
-Jam Berangkat: ${selectedSchedule.displayTime}
-Kendaraan: ${normalizeVehicle(selectedSchedule.vehicle)}
+*DETAIL PERJALANAN*
+Dari: ${selectedSchedule.displayOrigin}
+Tujuan: ${selectedSchedule.displayDestination}
+Tanggal: ${travelDate}
+Jam Berangkat: ${departureTime}
+Kendaraan: ${vehicle}
 Kursi: ${seatNumber}
 
-Total: ${rupiah(selectedSchedule.displayPrice)}
+*Total: ${rupiah(
+    selectedSchedule.displayPrice
+  )}*
 
-Status: Menunggu pembayaran.
+Status: MENUNGGU PEMBAYARAN
 
 Mohon konfirmasi booking saya.
   `.trim();
 
 
   const whatsappURL =
-    "https://wa.me/" +
-    adminNumber +
-    "?text=" +
+    "https://api.whatsapp.com/send?phone=" +
+    encodeURIComponent(
+      adminNumber
+    ) +
+    "&text=" +
     encodeURIComponent(
       message
     );
@@ -2164,10 +2152,8 @@ Mohon konfirmasi booking saya.
         line-height:1.65;
       ">
 
-        <strong style="
-          font-size:18px;
-        ">
-          Booking berhasil! 🟡
+        <strong>
+          Booking berhasil
         </strong>
 
         <br><br>
@@ -2177,78 +2163,12 @@ Mohon konfirmasi booking saya.
 
         <br>
 
-        Nama:
-        <b>${passengerName}</b>
-
-        <br>
-
-        Rute:
-        <b>
-          ${selectedSchedule.displayOrigin}
-          →
-          ${selectedSchedule.displayDestination}
-        </b>
-
-        <br>
-
-        Tanggal:
-        <b>${date}</b>
-
-        <br>
-
-        Jam Berangkat:
-        <b>
-          ${selectedSchedule.displayTime}
-        </b>
-
-        <br>
-
-        Kendaraan:
-        <b>
-          ${normalizeVehicle(
-            selectedSchedule.vehicle
-          )}
-        </b>
-
-        <br>
-
-        Kursi:
-        <b>${seatNumber}</b>
-
-        <br>
-
-        Total:
-        <b>
-          ${rupiah(
-            selectedSchedule.displayPrice
-          )}
-        </b>
-
-        <br><br>
-
         Status:
-        <b>
-          Menunggu pembayaran
-        </b>
+        <b>Menunggu Pembayaran</b>
 
         <br><br>
 
-        <a
-          href="${whatsappURL}"
-          target="_blank"
-          rel="noopener noreferrer"
-          style="
-            display:inline-block;
-            padding:12px 18px;
-            border-radius:8px;
-            background:#25D366;
-            color:#ffffff;
-            text-decoration:none;
-            font-weight:bold;
-          "
-        >
-          Konfirmasi via WhatsApp
-        </a>
+        Mengarahkan ke WhatsApp...
 
       </div>
     `;
@@ -2256,31 +2176,18 @@ Mohon konfirmasi booking saya.
   }
 
 
-  // Simpan jadwal sebelum refresh kursi
+  // Jangan tunggu refresh kursi sebelum membuka WhatsApp.
+  // Ini penting untuk browser Android.
+  setTimeout(
+    () => {
 
-  const bookedSchedule =
-    selectedSchedule;
+      window.location.assign(
+        whatsappURL
+      );
 
-
-  selectedSeat =
-    null;
-
-
-  await loadSeats(
-    bookedSchedule
+    },
+    250
   );
-
-
-  if (bookBtn) {
-
-    bookBtn.disabled =
-      false;
-
-
-    bookBtn.textContent =
-      "Pesan Sekarang";
-
-  }
 
 }
 
@@ -2351,7 +2258,10 @@ if (dateEl) {
 // ============================================================
 
 if (fromEl) {
-  fromEl.value = "";
+
+  fromEl.value =
+    "";
+
 }
 
 
@@ -2362,6 +2272,7 @@ if (toEl) {
       Pilih tujuan
     </option>
   `;
+
 
   toEl.disabled =
     true;
