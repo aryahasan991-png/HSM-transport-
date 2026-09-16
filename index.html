@@ -36,7 +36,7 @@
 
   <meta
     property="og:image"
-    content="https://hsm-transport.vercel.app/hsm-hiace.png"
+    content="https://hsm-transport.vercel.app/hsm-hiace-commuter.png"
   >
 
   <script type="application/ld+json">
@@ -83,6 +83,7 @@
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
+
       background:
         linear-gradient(
           180deg,
@@ -90,6 +91,7 @@
           #f3f6fa 50%,
           #f7f8fb 100%
         );
+
       color: var(--text);
     }
 
@@ -108,20 +110,31 @@
 
     .header {
       width: 100%;
-      background: rgba(255,255,255,0.98);
-      border-bottom: 1px solid #e4eaf2;
+
+      background:
+        rgba(255,255,255,0.98);
+
+      border-bottom:
+        1px solid #e4eaf2;
+
       position: sticky;
       top: 0;
+
       z-index: 1000;
-      box-shadow: 0 4px 20px rgba(20,40,80,0.05);
+
+      box-shadow:
+        0 4px 20px rgba(20,40,80,0.05);
     }
 
     .header::after {
       content: "";
+
       position: absolute;
+
       left: 0;
       right: 0;
       bottom: -1px;
+
       height: 3px;
 
       background:
@@ -136,47 +149,76 @@
 
     .header-inner {
       max-width: 1100px;
+
       margin: auto;
-      padding: 10px 18px;
+
+      padding:
+        10px 18px;
 
       display: flex;
+
       align-items: center;
-      justify-content: space-between;
+
+      justify-content:
+        space-between;
+
       gap: 15px;
     }
 
     .brand {
       display: flex;
-      flex-direction: column;
+
+      flex-direction:
+        column;
+
       min-width: 0;
     }
 
     .header-logo {
       display: block;
+
       width: 185px;
+
       max-width: 100%;
+
       height: auto;
-      object-fit: contain;
+
+      object-fit:
+        contain;
     }
 
     .brand-company {
       margin-top: 2px;
+
       font-size: 10px;
+
       font-weight: 700;
+
       color: #687386;
-      letter-spacing: 0.3px;
+
+      letter-spacing:
+        0.3px;
     }
 
     .header-link {
       display: inline-flex;
+
       align-items: center;
-      justify-content: center;
+
+      justify-content:
+        center;
 
       min-height: 40px;
-      padding: 0 17px;
 
-      border-radius: 10px;
-      text-decoration: none;
+      padding:
+        0 17px;
+
+      border-radius:
+        10px;
+
+      text-decoration:
+        none;
+
       color: white;
 
       background:
@@ -187,6 +229,7 @@
         );
 
       font-weight: 800;
+
       font-size: 13px;
 
       box-shadow:
@@ -199,176 +242,259 @@
     /* ================= HERO ================= */
 
     .hero {
+      min-height: 470px;
+
       position: relative;
+
       overflow: hidden;
 
-      background:
-        linear-gradient(
-          135deg,
-          #f7fbff 0%,
-          #edf5ff 55%,
-          #fff5f6 100%
-        );
+      display: flex;
 
-      border-bottom: 1px solid #dce6f1;
+      align-items: center;
+
+      justify-content: center;
+
+      padding:
+        55px 20px;
+
+      color: white;
+
+      text-align: center;
+
+      background-image:
+
+        linear-gradient(
+          110deg,
+          rgba(3,42,84,0.62),
+          rgba(7,84,166,0.34),
+          rgba(12,25,43,0.18)
+        ),
+
+        url("hsm-hiace-commuter.png");
+
+      background-size:
+        cover;
+
+      background-position:
+        center center;
+
+      background-repeat:
+        no-repeat;
     }
 
     .hero::before {
       content: "";
+
       position: absolute;
 
-      width: 430px;
-      height: 430px;
-
-      border-radius: 50%;
+      inset: 0;
 
       background:
-        rgba(7,84,166,0.07);
+        linear-gradient(
+          180deg,
+          rgba(0,0,0,0.04) 0%,
+          rgba(0,0,0,0.02) 60%,
+          rgba(0,0,0,0.22) 100%
+        );
 
-      top: -220px;
-      left: -150px;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-
-      width: 320px;
-      height: 320px;
-
-      border-radius: 50%;
-
-      background:
-        rgba(227,30,45,0.055);
-
-      right: -160px;
-      bottom: -190px;
+      pointer-events:
+        none;
     }
 
     .hero-inner {
       position: relative;
+
       z-index: 2;
 
       width: 100%;
-      max-width: 1180px;
+
+      max-width: 1000px;
+
       margin: auto;
 
-      min-height: 500px;
+      display: flex;
 
-      padding: 42px 20px 34px;
+      flex-direction:
+        column;
 
-      display: grid;
+      align-items:
+        center;
 
-      grid-template-columns:
-        minmax(0, 0.85fr)
-        minmax(0, 1.35fr);
-
-      align-items: center;
-      gap: 30px;
-    }
-
-    .hero-text {
-      position: relative;
-      z-index: 3;
+      justify-content:
+        center;
     }
 
     .hero-badge {
       display: inline-flex;
+
       align-items: center;
+
       gap: 7px;
 
-      padding: 8px 14px;
-      margin-bottom: 17px;
+      padding:
+        8px 14px;
 
-      border-radius: 999px;
+      margin-bottom:
+        16px;
 
-      color: var(--hsm-blue-dark);
+      border-radius:
+        999px;
+
+      color: white;
 
       background:
-        rgba(255,255,255,0.8);
+        rgba(5,38,75,0.72);
 
       border:
-        1px solid rgba(7,84,166,0.16);
+        1px solid rgba(255,255,255,0.32);
 
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 0.3px;
+      backdrop-filter:
+        blur(5px);
+
+      -webkit-backdrop-filter:
+        blur(5px);
+
+      font-size:
+        12px;
+
+      font-weight:
+        900;
+
+      letter-spacing:
+        0.4px;
 
       box-shadow:
-        0 5px 15px rgba(20,50,90,0.05);
+        0 5px 20px rgba(0,0,0,0.15);
     }
 
     .hero-badge::before {
       content: "";
+
       width: 7px;
+
       height: 7px;
-      border-radius: 50%;
-      background: var(--hsm-red);
+
+      border-radius:
+        50%;
+
+      background:
+        var(--hsm-red);
+    }
+
+    .hero-logo-wrap {
+      display: flex;
+
+      align-items: center;
+
+      justify-content:
+        center;
+
+      width: 100%;
     }
 
     .hero-logo {
       display: block;
 
-      width: min(390px, 100%);
+      width:
+        min(460px,82vw);
+
+      max-height:
+        175px;
+
       height: auto;
 
-      object-fit: contain;
+      object-fit:
+        contain;
 
-      margin: 0;
+      margin: 0 auto;
+
+      filter:
+        drop-shadow(
+          0 5px 10px rgba(0,0,0,0.38)
+        );
     }
 
     .hero-description {
-      max-width: 500px;
+      max-width:
+        650px;
 
       margin:
-        20px 0 0;
+        15px auto 0;
 
       color:
-        #526176;
+        #ffffff;
 
       font-size:
         15px;
 
+      font-weight:
+        600;
+
       line-height:
         1.65;
+
+      text-shadow:
+        0 2px 8px rgba(0,0,0,0.75);
     }
 
     .hero-route {
       display: inline-flex;
+
       align-items: center;
 
-      margin-top: 18px;
+      justify-content:
+        center;
 
-      padding: 9px 13px;
+      margin-top:
+        17px;
 
-      border-radius: 9px;
+      padding:
+        9px 14px;
+
+      border-radius:
+        10px;
 
       background:
-        #ffffff;
+        rgba(3,42,84,0.76);
 
       border:
-        1px solid #dce6f1;
+        1px solid rgba(255,255,255,0.30);
 
       color:
-        var(--hsm-blue-dark);
+        #ffffff;
 
-      font-size: 14px;
-      font-weight: 900;
+      font-size:
+        14px;
+
+      font-weight:
+        900;
+
+      backdrop-filter:
+        blur(5px);
+
+      -webkit-backdrop-filter:
+        blur(5px);
 
       box-shadow:
-        0 5px 15px rgba(20,50,90,0.05);
+        0 5px 18px rgba(0,0,0,0.16);
     }
 
     .hero-button {
       display: inline-flex;
+
       align-items: center;
-      justify-content: center;
 
-      margin-top: 20px;
+      justify-content:
+        center;
 
-      padding: 13px 21px;
+      margin-top:
+        19px;
 
-      border-radius: 11px;
+      padding:
+        13px 22px;
+
+      border-radius:
+        11px;
 
       background:
         linear-gradient(
@@ -377,66 +503,27 @@
           var(--hsm-red-dark)
         );
 
-      color: white;
-      text-decoration: none;
+      color:
+        white;
 
-      font-size: 14px;
-      font-weight: 900;
+      text-decoration:
+        none;
 
-      box-shadow:
-        0 8px 20px rgba(227,30,45,0.23);
-    }
+      font-size:
+        14px;
 
-    .hero-image-area {
-      position: relative;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      min-width: 0;
-    }
-
-    .hero-image-area::before {
-      content: "";
-
-      position: absolute;
-
-      width: 88%;
-      height: 72%;
-
-      border-radius: 28px;
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(7,84,166,0.10),
-          rgba(255,255,255,0.25)
-        );
-
-      transform:
-        rotate(-2deg);
-
-      z-index: -1;
-    }
-
-    .hero-car {
-      display: block;
-
-      width: 100%;
-      max-width: 700px;
-      height: auto;
-
-      border-radius: 20px;
-
-      object-fit: contain;
+      font-weight:
+        900;
 
       box-shadow:
-        0 22px 50px rgba(20,45,75,0.18);
+        0 8px 22px rgba(0,0,0,0.25);
     }
 
     .hero-bottom-line {
       position: absolute;
+
+      z-index: 3;
+
       left: 0;
       right: 0;
       bottom: 0;
@@ -458,28 +545,49 @@
 
     main {
       width: 100%;
+
       max-width: 1100px;
+
       margin: auto;
-      padding: 38px 18px 60px;
+
+      padding:
+        38px 18px 60px;
     }
 
     .section-title {
       position: relative;
-      margin: 0 0 10px;
-      padding-left: 15px;
-      font-size: 29px;
-      color: #15233a;
-      letter-spacing: -0.5px;
+
+      margin:
+        0 0 10px;
+
+      padding-left:
+        15px;
+
+      font-size:
+        29px;
+
+      color:
+        #15233a;
+
+      letter-spacing:
+        -0.5px;
     }
 
     .section-title::before {
       content: "";
+
       position: absolute;
+
       left: 0;
+
       top: 2px;
+
       bottom: 2px;
+
       width: 5px;
-      border-radius: 999px;
+
+      border-radius:
+        999px;
 
       background:
         linear-gradient(
@@ -491,22 +599,38 @@
     }
 
     .section-description {
-      margin: 0 0 27px;
-      padding-left: 15px;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 14px;
+      margin:
+        0 0 27px;
+
+      padding-left:
+        15px;
+
+      color:
+        var(--muted);
+
+      line-height:
+        1.6;
+
+      font-size:
+        14px;
     }
 
 
-    /* ================= BOOKING CARD ================= */
+    /* ================= BOOKING ================= */
 
     .booking-card {
       position: relative;
+
       overflow: hidden;
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 28px;
+
+      background:
+        #ffffff;
+
+      border-radius:
+        20px;
+
+      padding:
+        28px;
 
       box-shadow:
         0 15px 45px rgba(21,45,80,0.09);
@@ -517,59 +641,86 @@
 
     .booking-card::before {
       content: "";
+
       position: absolute;
+
       left: 0;
       top: 0;
+
       width: 72%;
+
       height: 4px;
-      background: var(--hsm-blue);
+
+      background:
+        var(--hsm-blue);
     }
 
     .booking-card::after {
       content: "";
+
       position: absolute;
+
       right: 0;
       top: 0;
+
       width: 28%;
+
       height: 4px;
-      background: var(--hsm-red);
+
+      background:
+        var(--hsm-red);
     }
 
     .form-group {
-      margin-bottom: 26px;
+      margin-bottom:
+        26px;
     }
 
     .form-group > label {
       display: flex;
+
       align-items: center;
+
       gap: 8px;
 
-      margin-bottom: 11px;
+      margin-bottom:
+        11px;
 
-      font-weight: 900;
-      color: #17233a;
-      font-size: 14px;
+      font-weight:
+        900;
+
+      color:
+        #17233a;
+
+      font-size:
+        14px;
     }
 
     .form-group > label::before {
       content: "";
+
       width: 7px;
+
       height: 7px;
-      border-radius: 50%;
-      background: var(--hsm-blue);
+
+      border-radius:
+        50%;
+
+      background:
+        var(--hsm-blue);
 
       box-shadow:
         9px 0 0 -2px var(--hsm-red);
     }
 
 
-    /* ================= ROUTES ================= */
+    /* ================= ROUTE ================= */
 
     .route-grid {
       display: grid;
 
       grid-template-columns:
-        repeat(2, minmax(0,1fr));
+        repeat(2,minmax(0,1fr));
 
       gap: 11px;
     }
@@ -580,27 +731,36 @@
 
     .route-card input {
       position: absolute;
+
       opacity: 0;
-      pointer-events: none;
+
+      pointer-events:
+        none;
     }
 
     .route-label {
       position: relative;
+
       overflow: hidden;
 
       min-height: 58px;
+
       width: 100%;
 
       display: flex;
+
       align-items: center;
+
       gap: 11px;
 
-      padding: 13px 15px;
+      padding:
+        13px 15px;
 
       border:
         1.5px solid #dce3ec;
 
-      border-radius: 12px;
+      border-radius:
+        12px;
 
       background:
         linear-gradient(
@@ -609,10 +769,14 @@
           #fbfcfe
         );
 
-      color: #354157;
+      color:
+        #354157;
 
-      font-size: 14px;
-      font-weight: 800;
+      font-size:
+        14px;
+
+      font-weight:
+        800;
 
       cursor: pointer;
 
@@ -629,7 +793,9 @@
       position: absolute;
 
       left: 0;
+
       top: 0;
+
       bottom: 0;
 
       width: 4px;
@@ -639,12 +805,16 @@
     }
 
     .route-label:hover {
-      border-color: #9cbce2;
-      transform: translateY(-1px);
+      border-color:
+        #9cbce2;
+
+      transform:
+        translateY(-1px);
     }
 
     .route-card input:checked + .route-label {
-      border-color: var(--hsm-blue);
+      border-color:
+        var(--hsm-blue);
 
       background:
         linear-gradient(
@@ -653,27 +823,35 @@
           #0a67c8
         );
 
-      color: #ffffff;
+      color:
+        #ffffff;
 
       box-shadow:
         0 8px 20px rgba(7,84,166,0.22);
     }
 
     .route-card input:checked + .route-label::after {
-      background: var(--hsm-red);
+      background:
+        var(--hsm-red);
     }
 
     .route-arrow {
       width: 30px;
+
       height: 30px;
 
       display: inline-flex;
+
       align-items: center;
-      justify-content: center;
 
-      flex: 0 0 30px;
+      justify-content:
+        center;
 
-      border-radius: 8px;
+      flex:
+        0 0 30px;
+
+      border-radius:
+        8px;
 
       background:
         var(--hsm-blue-light);
@@ -681,17 +859,19 @@
       color:
         var(--hsm-blue);
 
-      font-size: 16px;
-      font-weight: 900;
+      font-size:
+        16px;
+
+      font-weight:
+        900;
     }
 
-    .route-card input:checked
-    + .route-label
-    .route-arrow {
+    .route-card input:checked + .route-label .route-arrow {
       background:
         rgba(255,255,255,0.17);
 
-      color: white;
+      color:
+        white;
     }
 
 
@@ -699,14 +879,17 @@
 
     .input {
       width: 100%;
+
       min-height: 51px;
 
-      padding: 12px 14px;
+      padding:
+        12px 14px;
 
       border:
         1.5px solid #dce3ec;
 
-      border-radius: 11px;
+      border-radius:
+        11px;
 
       background:
         #fbfcfe;
@@ -714,8 +897,11 @@
       color:
         #172033;
 
-      font-size: 15px;
-      outline: none;
+      font-size:
+        15px;
+
+      outline:
+        none;
     }
 
     .input:focus {
@@ -743,20 +929,24 @@
 
     .schedule-card {
       position: relative;
+
       overflow: hidden;
 
       width: 100%;
+
       min-height: 108px;
 
       padding: 0;
 
       display: flex;
+
       align-items: stretch;
 
       border:
         1.5px solid #dce3ec;
 
-      border-radius: 14px;
+      border-radius:
+        14px;
 
       background:
         #ffffff;
@@ -764,7 +954,8 @@
       color:
         #172033;
 
-      text-align: left;
+      text-align:
+        left;
 
       box-shadow:
         0 5px 15px rgba(20,40,70,0.05);
@@ -779,9 +970,11 @@
       position: absolute;
 
       right: 0;
+
       top: 0;
 
       width: 4px;
+
       height: 100%;
 
       background:
@@ -800,10 +993,14 @@
       min-width: 90px;
 
       display: flex;
-      align-items: center;
-      justify-content: center;
 
-      padding: 15px 12px;
+      align-items: center;
+
+      justify-content:
+        center;
+
+      padding:
+        15px 12px;
 
       background:
         linear-gradient(
@@ -812,21 +1009,31 @@
           var(--hsm-blue-dark)
         );
 
-      color: white;
+      color:
+        white;
 
-      font-size: 21px;
-      font-weight: 900;
+      font-size:
+        21px;
+
+      font-weight:
+        900;
     }
 
     .schedule-info {
       flex: 1;
+
       min-width: 0;
 
-      padding: 14px;
+      padding:
+        14px;
 
       display: flex;
-      flex-direction: column;
-      justify-content: center;
+
+      flex-direction:
+        column;
+
+      justify-content:
+        center;
 
       gap: 5px;
     }
@@ -835,26 +1042,36 @@
       color:
         var(--hsm-blue);
 
-      font-size: 14px;
-      font-weight: 900;
+      font-size:
+        14px;
+
+      font-weight:
+        900;
     }
 
     .schedule-info span {
       color:
         #687386;
 
-      font-size: 12px;
-      line-height: 1.35;
+      font-size:
+        12px;
+
+      line-height:
+        1.35;
     }
 
     .schedule-info span:last-child {
-      margin-top: 2px;
+      margin-top:
+        2px;
 
       color:
         var(--hsm-red);
 
-      font-size: 14px;
-      font-weight: 900;
+      font-size:
+        14px;
+
+      font-weight:
+        900;
     }
 
     .schedule-card.selected {
@@ -877,8 +1094,11 @@
     /* ================= SEATS ================= */
 
     #seats {
-      margin-top: 8px;
-      padding: 20px;
+      margin-top:
+        8px;
+
+      padding:
+        20px;
 
       background:
         linear-gradient(
@@ -890,21 +1110,31 @@
       border:
         1.5px solid #dce5f0;
 
-      border-radius: 16px;
-      overflow-x: auto;
+      border-radius:
+        16px;
+
+      overflow-x:
+        auto;
     }
 
     .seatLegend {
       display: flex;
+
       flex-wrap: wrap;
-      justify-content: center;
+
+      justify-content:
+        center;
 
       gap: 9px;
 
-      margin-bottom: 18px;
+      margin-bottom:
+        18px;
 
-      font-size: 11px;
-      font-weight: 800;
+      font-size:
+        11px;
+
+      font-weight:
+        800;
 
       color:
         #4b5563;
@@ -912,16 +1142,19 @@
 
     .seatLegend span {
       display: inline-flex;
+
       align-items: center;
 
       gap: 6px;
 
-      padding: 6px 9px;
+      padding:
+        6px 9px;
 
       border:
         1px solid #e0e5eb;
 
-      border-radius: 999px;
+      border-radius:
+        999px;
 
       background:
         #ffffff;
@@ -929,31 +1162,42 @@
 
     .seatLegend i {
       width: 11px;
+
       height: 11px;
 
-      display: inline-block;
+      display:
+        inline-block;
 
-      border-radius: 3px;
+      border-radius:
+        3px;
     }
 
     .legendAvailable {
-      background: #22c55e;
+      background:
+        #22c55e;
     }
 
     .legendPending {
-      background: #facc15;
+      background:
+        #facc15;
     }
 
     .legendPaid {
-      background: #ef4444;
+      background:
+        #ef4444;
     }
 
     .seatCabin {
-      max-width: 420px;
-      margin: 0 auto 16px;
+      max-width:
+        420px;
+
+      margin:
+        0 auto 16px;
 
       display: flex;
-      justify-content: space-between;
+
+      justify-content:
+        space-between;
 
       gap: 12px;
     }
@@ -962,55 +1206,78 @@
     .kernetSeat {
       flex: 1;
 
-      padding: 12px 8px;
+      padding:
+        12px 8px;
 
-      border-radius: 9px;
+      border-radius:
+        9px;
 
       background:
         var(--hsm-blue-dark);
 
-      color: white;
+      color:
+        white;
 
-      text-align: center;
+      text-align:
+        center;
 
-      font-size: 12px;
-      font-weight: 800;
+      font-size:
+        12px;
+
+      font-weight:
+        800;
     }
 
     .seatLayout {
       width: 100%;
-      max-width: 420px;
+
+      max-width:
+        420px;
 
       margin: auto;
 
       display: flex;
-      flex-direction: column;
+
+      flex-direction:
+        column;
 
       gap: 9px;
     }
 
     .seatRow {
       display: flex;
-      align-items: center;
-      justify-content: center;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
 
       gap: 9px;
     }
 
     .seatAisle {
       width: 25px;
-      flex: 0 0 25px;
+
+      flex:
+        0 0 25px;
     }
 
     .seat {
       width: 54px;
+
       height: 48px;
 
       border: 0;
-      border-radius: 10px;
 
-      font-weight: 900;
-      font-size: 14px;
+      border-radius:
+        10px;
+
+      font-weight:
+        900;
+
+      font-size:
+        14px;
 
       box-shadow:
         0 4px 10px rgba(0,0,0,0.08);
@@ -1024,7 +1291,8 @@
           #16a34a
         );
 
-      color: white;
+      color:
+        white;
     }
 
     .seat.selected {
@@ -1058,26 +1326,32 @@
           #dc2626
         );
 
-      color: white;
+      color:
+        white;
 
       cursor:
         not-allowed;
     }
 
 
-    /* ================= BOOKING SUMMARY ================= */
+    /* ================= SUMMARY ================= */
 
     .bookingSummary {
       position: relative;
+
       overflow: hidden;
 
-      margin-top: 18px;
-      padding: 18px;
+      margin-top:
+        18px;
+
+      padding:
+        18px;
 
       border:
         1px solid #dce5f0;
 
-      border-radius: 14px;
+      border-radius:
+        14px;
 
       background:
         linear-gradient(
@@ -1093,7 +1367,8 @@
 
       gap: 14px;
 
-      line-height: 1.5;
+      line-height:
+        1.5;
     }
 
     .bookingSummary::before {
@@ -1102,7 +1377,9 @@
       position: absolute;
 
       left: 0;
+
       top: 0;
+
       bottom: 0;
 
       width: 4px;
@@ -1122,19 +1399,24 @@
     }
 
 
-    /* ================= BOOK BUTTON ================= */
+    /* ================= BUTTON ================= */
 
     #book {
       position: relative;
+
       overflow: hidden;
 
       width: 100%;
+
       min-height: 55px;
 
-      margin-top: 8px;
+      margin-top:
+        8px;
 
       border: 0;
-      border-radius: 12px;
+
+      border-radius:
+        12px;
 
       background:
         linear-gradient(
@@ -1143,10 +1425,14 @@
           var(--hsm-blue-dark)
         );
 
-      color: white;
+      color:
+        white;
 
-      font-size: 16px;
-      font-weight: 900;
+      font-size:
+        16px;
+
+      font-weight:
+        900;
 
       box-shadow:
         0 9px 22px rgba(7,84,166,0.24);
@@ -1158,7 +1444,9 @@
       position: absolute;
 
       right: 0;
+
       top: 0;
+
       bottom: 0;
 
       width: 7px;
@@ -1168,12 +1456,16 @@
     }
 
     #book:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+      opacity:
+        0.6;
+
+      cursor:
+        not-allowed;
     }
 
     #result {
-      margin-top: 5px;
+      margin-top:
+        5px;
     }
 
 
@@ -1181,10 +1473,14 @@
 
     .info-section {
       position: relative;
+
       overflow: hidden;
 
-      margin-top: 35px;
-      padding: 27px;
+      margin-top:
+        35px;
+
+      padding:
+        27px;
 
       background:
         #ffffff;
@@ -1192,9 +1488,11 @@
       border:
         1px solid #e1e7ef;
 
-      border-radius: 18px;
+      border-radius:
+        18px;
 
-      line-height: 1.75;
+      line-height:
+        1.75;
 
       box-shadow:
         0 10px 30px rgba(20,40,70,0.06);
@@ -1206,9 +1504,11 @@
       position: absolute;
 
       left: 0;
+
       top: 0;
 
       width: 6px;
+
       height: 70%;
 
       background:
@@ -1221,9 +1521,11 @@
       position: absolute;
 
       left: 0;
+
       bottom: 0;
 
       width: 6px;
+
       height: 30%;
 
       background:
@@ -1261,8 +1563,11 @@
       color:
         #cbd5e1;
 
-      text-align: center;
-      line-height: 1.75;
+      text-align:
+        center;
+
+      line-height:
+        1.75;
     }
 
     footer::before {
@@ -1271,9 +1576,11 @@
       position: absolute;
 
       top: 0;
+
       left: 0;
 
       width: 72%;
+
       height: 4px;
 
       background:
@@ -1286,9 +1593,11 @@
       position: absolute;
 
       top: 0;
+
       right: 0;
 
       width: 28%;
+
       height: 4px;
 
       background:
@@ -1296,8 +1605,11 @@
     }
 
     footer strong {
-      color: white;
-      font-size: 18px;
+      color:
+        white;
+
+      font-size:
+        18px;
     }
 
 
@@ -1312,7 +1624,7 @@
 
       .header-logo {
         width:
-          140px;
+          145px;
       }
 
       .brand-company {
@@ -1332,79 +1644,50 @@
       }
 
 
-      .hero-inner {
+      .hero {
         min-height:
-          auto;
+          455px;
 
         padding:
-          30px 16px 32px;
+          35px 15px;
 
-        grid-template-columns:
-          1fr;
-
-        gap:
-          23px;
-      }
-
-      .hero-text {
-        text-align:
-          center;
-      }
-
-      .hero-badge {
-        margin-bottom:
-          15px;
+        background-position:
+          center center;
       }
 
       .hero-logo {
         width:
-          min(300px, 82vw);
+          min(330px,82vw);
 
-        margin:
-          auto;
+        max-height:
+          135px;
       }
 
       .hero-description {
         max-width:
-          500px;
-
-        margin:
-          17px auto 0;
-
-        font-size:
-          14px;
-      }
-
-      .hero-route {
-        margin-top:
-          15px;
+          350px;
 
         font-size:
           13px;
+
+        line-height:
+          1.55;
+      }
+
+      .hero-route {
+        font-size:
+          12px;
+
+        padding:
+          8px 11px;
       }
 
       .hero-button {
-        margin-top:
-          17px;
-      }
+        padding:
+          12px 19px;
 
-      .hero-image-area {
-        width:
-          100%;
-      }
-
-      .hero-car {
-        width:
-          100%;
-
-        max-width:
-          600px;
-
-        border-radius:
-          14px;
-
-        box-shadow:
-          0 15px 35px rgba(20,45,75,0.16);
+        font-size:
+          13px;
       }
 
 
@@ -1537,13 +1820,12 @@
 
     <div class="hero-inner">
 
+      <div class="hero-badge">
+        Travel Maluku Utara
+      </div>
 
-      <div class="hero-text">
 
-        <div class="hero-badge">
-          Travel Maluku Utara
-        </div>
-
+      <div class="hero-logo-wrap">
 
         <img
           src="hsm-logo.png"
@@ -1551,42 +1833,28 @@
           class="hero-logo"
         >
 
-
-        <p class="hero-description">
-          Layanan perjalanan yang nyaman untuk
-          Sofifi, Loleo, Weda dan Lelilef.
-          Pilih rute, jadwal dan kursi langsung
-          melalui website.
-        </p>
-
-
-        <div class="hero-route">
-          Sofifi ↔ Loleo ↔ Weda ↔ Lelilef
-        </div>
-
-        <br>
-
-
-        <a
-          class="hero-button"
-          href="#booking"
-        >
-          Pesan Sekarang
-        </a>
-
       </div>
 
 
-      <div class="hero-image-area">
+      <p class="hero-description">
+        Layanan perjalanan yang nyaman untuk
+        Sofifi, Loleo, Weda dan Lelilef.
+        Pilih rute, jadwal dan kursi langsung
+        melalui website.
+      </p>
 
-        <img
-          src="hsm-hiace.png"
-          alt="Armada HSM Transport"
-          class="hero-car"
-        >
 
+      <div class="hero-route">
+        Sofifi ↔ Loleo ↔ Weda ↔ Lelilef
       </div>
 
+
+      <a
+        class="hero-button"
+        href="#booking"
+      >
+        Pesan Sekarang
+      </a>
 
     </div>
 
@@ -1616,7 +1884,7 @@
       </p>
 
 
-      <!-- PILIH RUTE -->
+      <!-- ================= RUTE ================= -->
 
       <div class="form-group">
 
@@ -1834,9 +2102,12 @@
       </div>
 
 
-      <!-- HIDDEN UNTUK APP.JS -->
+      <!-- APP.JS TETAP MEMAKAI FROM DAN TO -->
 
-      <select id="from" style="display:none;">
+      <select
+        id="from"
+        style="display:none;"
+      >
 
         <option value="">
           Pilih keberangkatan
@@ -1861,7 +2132,10 @@
       </select>
 
 
-      <select id="to" style="display:none;">
+      <select
+        id="to"
+        style="display:none;"
+      >
 
         <option value="">
           Pilih tujuan
@@ -1886,7 +2160,7 @@
       </select>
 
 
-      <!-- TANGGAL -->
+      <!-- ================= TANGGAL ================= -->
 
       <div class="form-group">
 
@@ -1904,7 +2178,7 @@
       </div>
 
 
-      <!-- JADWAL -->
+      <!-- ================= JADWAL ================= -->
 
       <div class="form-group">
 
@@ -1928,7 +2202,7 @@
       </div>
 
 
-      <!-- KURSI -->
+      <!-- ================= KURSI ================= -->
 
       <div class="form-group">
 
@@ -1952,7 +2226,7 @@
       </div>
 
 
-      <!-- DATA PENUMPANG -->
+      <!-- ================= PENUMPANG ================= -->
 
       <div class="form-group">
 
@@ -2003,7 +2277,7 @@
     </section>
 
 
-    <!-- ================= INFO ================= -->
+    <!-- ================= INFORMASI ================= -->
 
     <section class="info-section">
 
