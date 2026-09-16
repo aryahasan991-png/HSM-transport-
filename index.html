@@ -34,10 +34,7 @@
     content="index, follow"
   >
 
-
-  <!-- ====================================================== -->
   <!-- OPEN GRAPH -->
-  <!-- ====================================================== -->
 
   <meta
     property="og:title"
@@ -64,10 +61,7 @@
     content="https://hsm-transport.vercel.app/hsm-hero.png"
   >
 
-
-  <!-- ====================================================== -->
   <!-- STRUCTURED DATA -->
-  <!-- ====================================================== -->
 
   <script type="application/ld+json">
   {
@@ -87,72 +81,37 @@
   }
   </script>
 
-
-  <!-- ====================================================== -->
   <!-- SUPABASE -->
-  <!-- ====================================================== -->
 
   <script
     src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
   ></script>
 
-
-  <!-- ====================================================== -->
-  <!-- CSS -->
-  <!-- ====================================================== -->
-
   <style>
 
     :root {
-
-      --hsm-blue:
-        #0754a6;
-
-      --hsm-blue-dark:
-        #063d79;
-
-      --hsm-blue-light:
-        #eaf3ff;
-
-      --hsm-red:
-        #e31e2d;
-
-      --hsm-red-dark:
-        #bb1420;
-
-      --hsm-red-light:
-        #fff0f1;
-
-      --text:
-        #172033;
-
-      --muted:
-        #6b7280;
-
-      --border:
-        #dfe5ee;
-
-      --background:
-        #f3f6fa;
-
-      --white:
-        #ffffff;
-
+      --hsm-blue: #0754a6;
+      --hsm-blue-dark: #063d79;
+      --hsm-blue-light: #eaf3ff;
+      --hsm-red: #e31e2d;
+      --hsm-red-dark: #bb1420;
+      --hsm-red-light: #fff0f1;
+      --text: #172033;
+      --muted: #6b7280;
+      --border: #dfe5ee;
+      --background: #f3f6fa;
+      --white: #ffffff;
     }
-
 
     * {
       box-sizing: border-box;
     }
 
-
     html {
       scroll-behavior: smooth;
     }
 
-
     body {
-
       margin: 0;
 
       font-family:
@@ -168,27 +127,17 @@
           #f7f8fb 100%
         );
 
-      color:
-        var(--text);
-
+      color: var(--text);
     }
-
 
     button,
     input,
     select {
-
-      font-family:
-        inherit;
-
+      font-family: inherit;
     }
 
-
     button {
-
-      cursor:
-        pointer;
-
+      cursor: pointer;
     }
 
 
@@ -197,9 +146,7 @@
     /* ====================================================== */
 
     .header {
-
-      width:
-        100%;
+      width: 100%;
 
       background:
         rgba(255,255,255,0.97);
@@ -207,40 +154,24 @@
       border-bottom:
         1px solid #e4eaf2;
 
-      position:
-        sticky;
-
-      top:
-        0;
-
-      z-index:
-        1000;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
 
       box-shadow:
         0 4px 20px rgba(20,40,80,0.05);
-
     }
 
-
     .header::after {
+      content: "";
 
-      content:
-        "";
+      position: absolute;
 
-      position:
-        absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
 
-      left:
-        0;
-
-      right:
-        0;
-
-      bottom:
-        -1px;
-
-      height:
-        3px;
+      height: 3px;
 
       background:
         linear-gradient(
@@ -250,23 +181,16 @@
           var(--hsm-red) 72%,
           var(--hsm-red) 100%
         );
-
     }
 
-
     .header-inner {
-
-      max-width:
-        1100px;
-
-      margin:
-        auto;
+      max-width: 1100px;
+      margin: auto;
 
       padding:
-        14px 18px;
+        12px 18px;
 
-      display:
-        flex;
+      display: flex;
 
       align-items:
         center;
@@ -276,71 +200,44 @@
 
       gap:
         15px;
-
     }
-
 
     .brand {
+      display: flex;
+      flex-direction: column;
 
-      display:
-        flex;
-
-      flex-direction:
-        column;
-
+      min-width: 0;
     }
-
 
     .brand-name {
+      display: flex;
 
-      font-size:
-        22px;
-
-      font-weight:
-        900;
-
-      color:
-        var(--hsm-blue);
+      align-items:
+        center;
 
       line-height:
-        1.05;
-
-      letter-spacing:
-        -0.4px;
-
+        1;
     }
 
-
-    .brand-name::after {
-
-      content:
-        "";
-
-      display:
-        inline-block;
+    .header-logo {
+      display: block;
 
       width:
-        8px;
+        185px;
+
+      max-width:
+        100%;
 
       height:
-        8px;
+        auto;
 
-      margin-left:
-        5px;
-
-      border-radius:
-        50%;
-
-      background:
-        var(--hsm-red);
-
+      object-fit:
+        contain;
     }
 
-
     .brand-company {
-
       margin-top:
-        5px;
+        4px;
 
       font-size:
         10px;
@@ -353,12 +250,9 @@
 
       letter-spacing:
         0.3px;
-
     }
 
-
     .header-link {
-
       display:
         inline-flex;
 
@@ -402,14 +296,13 @@
       transition:
         0.2s ease;
 
+      flex-shrink:
+        0;
     }
 
-
     .header-link:hover {
-
       transform:
         translateY(-1px);
-
     }
 
 
@@ -418,7 +311,6 @@
     /* ====================================================== */
 
     .hero {
-
       min-height:
         430px;
 
@@ -451,12 +343,9 @@
 
       background-position:
         center;
-
     }
 
-
     .hero::before {
-
       content:
         "";
 
@@ -477,12 +366,9 @@
 
       background:
         var(--hsm-blue);
-
     }
 
-
     .hero::after {
-
       content:
         "";
 
@@ -503,12 +389,9 @@
 
       background:
         var(--hsm-red);
-
     }
 
-
     .hero-content {
-
       width:
         100%;
 
@@ -529,12 +412,9 @@
 
       z-index:
         2;
-
     }
 
-
     .hero-badge {
-
       display:
         inline-flex;
 
@@ -548,7 +428,7 @@
         8px 15px;
 
       margin-bottom:
-        17px;
+        22px;
 
       border-radius:
         999px;
@@ -570,12 +450,9 @@
 
       letter-spacing:
         0.4px;
-
     }
 
-
     .hero-badge::before {
-
       content:
         "";
 
@@ -590,37 +467,56 @@
 
       background:
         var(--hsm-red);
-
     }
 
+    .hero-logo-wrap {
+      width:
+        100%;
 
-    .hero h1 {
+      display:
+        flex;
+
+      justify-content:
+        center;
+
+      align-items:
+        center;
 
       margin:
-        0;
-
-      font-size:
-        46px;
-
-      line-height:
-        1.05;
-
-      font-weight:
-        900;
-
-      letter-spacing:
-        -1px;
-
+        0 auto;
     }
 
+    .hero-logo {
+      display:
+        block;
+
+      width:
+        min(480px, 82vw);
+
+      max-height:
+        180px;
+
+      height:
+        auto;
+
+      object-fit:
+        contain;
+
+      margin:
+        0 auto;
+
+      filter:
+        drop-shadow(
+          0 8px 20px rgba(0,0,0,0.20)
+        );
+    }
 
     .hero p {
-
       max-width:
         650px;
 
       margin:
-        17px auto 0;
+        20px auto 0;
 
       font-size:
         16px;
@@ -630,12 +526,9 @@
 
       color:
         #f4f7fb;
-
     }
 
-
     .hero-route {
-
       display:
         inline-block;
 
@@ -659,12 +552,9 @@
 
       letter-spacing:
         0.3px;
-
     }
 
-
     .hero-button {
-
       display:
         inline-flex;
 
@@ -704,15 +594,11 @@
 
       transition:
         0.2s ease;
-
     }
 
-
     .hero-button:hover {
-
       transform:
         translateY(-2px);
-
     }
 
 
@@ -721,7 +607,6 @@
     /* ====================================================== */
 
     main {
-
       width:
         100%;
 
@@ -733,12 +618,9 @@
 
       padding:
         38px 18px 60px;
-
     }
 
-
     .section-title {
-
       position:
         relative;
 
@@ -756,12 +638,9 @@
 
       letter-spacing:
         -0.5px;
-
     }
 
-
     .section-title::before {
-
       content:
         "";
 
@@ -790,12 +669,9 @@
           var(--hsm-blue) 65%,
           var(--hsm-red) 65%
         );
-
     }
 
-
     .section-description {
-
       margin:
         0 0 27px;
 
@@ -810,7 +686,6 @@
 
       font-size:
         14px;
-
     }
 
 
@@ -819,7 +694,6 @@
     /* ====================================================== */
 
     .booking-card {
-
       position:
         relative;
 
@@ -840,12 +714,9 @@
 
       border:
         1px solid #e1e7ef;
-
     }
 
-
     .booking-card::before {
-
       content:
         "";
 
@@ -866,12 +737,9 @@
 
       background:
         var(--hsm-blue);
-
     }
 
-
     .booking-card::after {
-
       content:
         "";
 
@@ -892,20 +760,14 @@
 
       background:
         var(--hsm-red);
-
     }
-
 
     .form-group {
-
       margin-bottom:
         26px;
-
     }
 
-
     .form-group > label {
-
       display:
         flex;
 
@@ -926,12 +788,9 @@
 
       font-size:
         14px;
-
     }
 
-
     .form-group > label::before {
-
       content:
         "";
 
@@ -949,7 +808,6 @@
 
       box-shadow:
         9px 0 0 -2px var(--hsm-red);
-
     }
 
 
@@ -958,7 +816,6 @@
     /* ====================================================== */
 
     .route-grid {
-
       display:
         grid;
 
@@ -967,20 +824,14 @@
 
       gap:
         11px;
-
     }
-
 
     .route-card {
-
       position:
         relative;
-
     }
 
-
     .route-card input {
-
       position:
         absolute;
 
@@ -989,12 +840,9 @@
 
       pointer-events:
         none;
-
     }
 
-
     .route-label {
-
       position:
         relative;
 
@@ -1049,12 +897,9 @@
 
       transition:
         0.2s ease;
-
     }
 
-
     .route-label::after {
-
       content:
         "";
 
@@ -1078,12 +923,9 @@
 
       transition:
         0.2s ease;
-
     }
 
-
     .route-label:hover {
-
       border-color:
         #9cbce2;
 
@@ -1092,13 +934,10 @@
 
       box-shadow:
         0 7px 18px rgba(7,84,166,0.08);
-
     }
-
 
     .route-card input:checked
     + .route-label {
-
       border-color:
         var(--hsm-blue);
 
@@ -1117,21 +956,15 @@
 
       transform:
         translateY(-1px);
-
     }
-
 
     .route-card input:checked
     + .route-label::after {
-
       background:
         var(--hsm-red);
-
     }
 
-
     .route-arrow {
-
       width:
         30px;
 
@@ -1164,20 +997,16 @@
 
       font-weight:
         900;
-
     }
-
 
     .route-card input:checked
     + .route-label
     .route-arrow {
-
       background:
         rgba(255,255,255,0.17);
 
       color:
         white;
-
     }
 
 
@@ -1186,7 +1015,6 @@
     /* ====================================================== */
 
     .input {
-
       width:
         100%;
 
@@ -1219,20 +1047,14 @@
 
       transition:
         0.2s ease;
-
     }
-
 
     .input:hover {
-
       border-color:
         #b6c7db;
-
     }
 
-
     .input:focus {
-
       border-color:
         var(--hsm-blue);
 
@@ -1241,7 +1063,6 @@
 
       box-shadow:
         0 0 0 4px rgba(7,84,166,0.10);
-
     }
 
 
@@ -1250,7 +1071,6 @@
     /* ====================================================== */
 
     #schedule {
-
       display:
         grid;
 
@@ -1259,12 +1079,9 @@
 
       gap:
         12px;
-
     }
 
-
     .schedule-card {
-
       position:
         relative;
 
@@ -1306,12 +1123,9 @@
 
       transition:
         0.2s ease;
-
     }
 
-
     .schedule-card::after {
-
       content:
         "";
 
@@ -1335,12 +1149,9 @@
 
       transition:
         0.2s ease;
-
     }
 
-
     .schedule-card:hover {
-
       transform:
         translateY(-2px);
 
@@ -1349,12 +1160,9 @@
 
       box-shadow:
         0 10px 25px rgba(7,84,166,0.10);
-
     }
 
-
     .schedule-time {
-
       min-width:
         90px;
 
@@ -1388,12 +1196,9 @@
 
       letter-spacing:
         -0.4px;
-
     }
 
-
     .schedule-info {
-
       flex:
         1;
 
@@ -1414,12 +1219,9 @@
 
       gap:
         5px;
-
     }
 
-
     .schedule-info strong {
-
       color:
         var(--hsm-blue);
 
@@ -1428,12 +1230,9 @@
 
       font-weight:
         900;
-
     }
 
-
     .schedule-info span {
-
       color:
         #687386;
 
@@ -1442,12 +1241,9 @@
 
       line-height:
         1.35;
-
     }
 
-
     .schedule-info span:last-child {
-
       margin-top:
         2px;
 
@@ -1459,12 +1255,9 @@
 
       font-weight:
         900;
-
     }
 
-
     .schedule-card.selected {
-
       border-color:
         var(--hsm-blue);
 
@@ -1476,15 +1269,11 @@
 
       transform:
         translateY(-1px);
-
     }
 
-
     .schedule-card.selected::after {
-
       background:
         var(--hsm-red);
-
     }
 
 
@@ -1493,7 +1282,6 @@
     /* ====================================================== */
 
     #seats {
-
       margin-top:
         8px;
 
@@ -1518,12 +1306,9 @@
 
       box-shadow:
         inset 0 1px 0 #ffffff;
-
     }
 
-
     .seatLegend {
-
       display:
         flex;
 
@@ -1547,12 +1332,9 @@
 
       color:
         #4b5563;
-
     }
 
-
     .seatLegend span {
-
       display:
         inline-flex;
 
@@ -1573,12 +1355,9 @@
 
       background:
         #ffffff;
-
     }
 
-
     .seatLegend i {
-
       width:
         11px;
 
@@ -1590,36 +1369,24 @@
 
       border-radius:
         3px;
-
     }
-
 
     .legendAvailable {
-
       background:
         #22c55e;
-
     }
-
 
     .legendPending {
-
       background:
         #facc15;
-
     }
-
 
     .legendPaid {
-
       background:
         #ef4444;
-
     }
 
-
     .seatCabin {
-
       max-width:
         420px;
 
@@ -1634,13 +1401,10 @@
 
       gap:
         12px;
-
     }
-
 
     .driverSeat,
     .kernetSeat {
-
       flex:
         1;
 
@@ -1664,12 +1428,9 @@
 
       font-weight:
         800;
-
     }
 
-
     .seatLayout {
-
       width:
         100%;
 
@@ -1687,12 +1448,9 @@
 
       gap:
         9px;
-
     }
 
-
     .seatRow {
-
       display:
         flex;
 
@@ -1704,23 +1462,17 @@
 
       gap:
         9px;
-
     }
 
-
     .seatAisle {
-
       width:
         25px;
 
       flex:
         0 0 25px;
-
     }
 
-
     .seat {
-
       width:
         54px;
 
@@ -1745,12 +1497,9 @@
       transition:
         transform 0.15s ease,
         box-shadow 0.15s ease;
-
     }
 
-
     .seat.available {
-
       background:
         linear-gradient(
           145deg,
@@ -1760,23 +1509,17 @@
 
       color:
         white;
-
     }
 
-
     .seat.available:hover {
-
       transform:
         translateY(-2px);
 
       box-shadow:
         0 7px 15px rgba(22,163,74,0.22);
-
     }
 
-
     .seat.selected {
-
       outline:
         4px solid rgba(7,84,166,0.28);
 
@@ -1785,12 +1528,9 @@
 
       box-shadow:
         0 7px 18px rgba(7,84,166,0.22);
-
     }
 
-
     .seat.pending {
-
       background:
         linear-gradient(
           145deg,
@@ -1803,12 +1543,9 @@
 
       cursor:
         not-allowed;
-
     }
 
-
     .seat.paid {
-
       background:
         linear-gradient(
           145deg,
@@ -1821,7 +1558,6 @@
 
       cursor:
         not-allowed;
-
     }
 
 
@@ -1830,7 +1566,6 @@
     /* ====================================================== */
 
     .bookingSummary {
-
       position:
         relative;
 
@@ -1870,12 +1605,9 @@
 
       box-shadow:
         0 5px 16px rgba(20,40,70,0.05);
-
     }
 
-
     .bookingSummary::before {
-
       content:
         "";
 
@@ -1901,15 +1633,11 @@
           var(--hsm-blue) 70%,
           var(--hsm-red) 70%
         );
-
     }
 
-
     .bookingSummary strong {
-
       color:
         var(--hsm-blue-dark);
-
     }
 
 
@@ -1918,7 +1646,6 @@
     /* ====================================================== */
 
     #book {
-
       position:
         relative;
 
@@ -1964,12 +1691,9 @@
 
       transition:
         0.2s ease;
-
     }
 
-
     #book::after {
-
       content:
         "";
 
@@ -1990,29 +1714,22 @@
 
       background:
         var(--hsm-red);
-
     }
 
-
     #book:hover:not(:disabled) {
-
       transform:
         translateY(-2px);
 
       box-shadow:
         0 12px 26px rgba(7,84,166,0.28);
-
     }
 
-
     #book:disabled {
-
       opacity:
         0.6;
 
       cursor:
         not-allowed;
-
     }
 
 
@@ -2021,18 +1738,13 @@
     /* ====================================================== */
 
     #result {
-
       margin-top:
         5px;
-
     }
 
-
     #result a {
-
       transition:
         0.2s ease;
-
     }
 
 
@@ -2041,7 +1753,6 @@
     /* ====================================================== */
 
     .info-section {
-
       position:
         relative;
 
@@ -2068,12 +1779,9 @@
 
       box-shadow:
         0 10px 30px rgba(20,40,70,0.06);
-
     }
 
-
     .info-section::before {
-
       content:
         "";
 
@@ -2094,12 +1802,9 @@
 
       background:
         var(--hsm-blue);
-
     }
 
-
     .info-section::after {
-
       content:
         "";
 
@@ -2120,26 +1825,19 @@
 
       background:
         var(--hsm-red);
-
     }
 
-
     .info-section h2 {
-
       margin-top:
         0;
 
       color:
         var(--hsm-blue-dark);
-
     }
 
-
     .info-section p {
-
       color:
         #596579;
-
     }
 
 
@@ -2148,7 +1846,6 @@
     /* ====================================================== */
 
     footer {
-
       position:
         relative;
 
@@ -2170,12 +1867,9 @@
 
       line-height:
         1.75;
-
     }
 
-
     footer::before {
-
       content:
         "";
 
@@ -2196,12 +1890,9 @@
 
       background:
         var(--hsm-blue);
-
     }
 
-
     footer::after {
-
       content:
         "";
 
@@ -2222,18 +1913,14 @@
 
       background:
         var(--hsm-red);
-
     }
 
-
     footer strong {
-
       color:
         white;
 
       font-size:
         18px;
-
     }
 
 
@@ -2244,31 +1931,24 @@
     @media (max-width:700px) {
 
       .header-inner {
-
         padding:
-          12px 14px;
-
+          10px 14px;
       }
 
-
-      .brand-name {
-
-        font-size:
-          19px;
-
+      .header-logo {
+        width:
+          145px;
       }
-
 
       .brand-company {
-
         font-size:
           9px;
 
+        margin-top:
+          3px;
       }
 
-
       .header-link {
-
         min-height:
           37px;
 
@@ -2277,166 +1957,114 @@
 
         font-size:
           12px;
-
       }
-
 
       .hero {
-
         min-height:
           390px;
-
       }
-
 
       .hero-content {
-
         padding:
           45px 17px;
-
       }
 
+      .hero-logo {
+        width:
+          min(330px, 82vw);
 
-      .hero h1 {
-
-        font-size:
-          36px;
-
+        max-height:
+          135px;
       }
-
 
       .hero p {
-
         font-size:
           14px;
-
       }
-
 
       .hero-route {
-
         font-size:
           14px;
-
       }
-
 
       main {
-
         padding:
           26px 13px 45px;
-
       }
 
-
       .booking-card {
-
         padding:
           18px 15px 20px;
 
         border-radius:
           16px;
-
       }
-
 
       .section-title {
-
         font-size:
           25px;
-
       }
 
-
       .route-grid {
-
         grid-template-columns:
           1fr;
 
         gap:
           9px;
-
       }
-
 
       .route-label {
-
         min-height:
           56px;
-
       }
-
 
       #schedule {
-
         grid-template-columns:
           1fr;
-
       }
-
 
       .schedule-card {
-
         min-height:
           94px;
-
       }
 
-
       .schedule-time {
-
         min-width:
           82px;
 
         font-size:
           19px;
-
       }
-
 
       #seats {
-
         padding:
           15px 8px;
-
       }
-
 
       .bookingSummary {
-
         grid-template-columns:
           1fr;
-
       }
 
-
       .seat {
-
         width:
           48px;
 
         height:
           45px;
-
       }
 
-
       .seatAisle {
-
         width:
           16px;
 
         flex-basis:
           16px;
-
       }
 
-
       .info-section {
-
         padding:
           22px 20px;
-
       }
 
     }
@@ -2460,7 +2088,13 @@
       <div class="brand">
 
         <div class="brand-name">
-          HSM Transport
+
+          <img
+            src="hsm-logo.png"
+            alt="HSM Transport"
+            class="header-logo"
+          >
+
         </div>
 
         <div class="brand-company">
@@ -2494,9 +2128,17 @@
         Travel Maluku Utara
       </div>
 
-      <h1>
-        HSM Transport
-      </h1>
+
+      <div class="hero-logo-wrap">
+
+        <img
+          src="hsm-logo.png"
+          alt="HSM Transport"
+          class="hero-logo"
+        >
+
+      </div>
+
 
       <p>
         Layanan perjalanan yang nyaman untuk
@@ -2505,11 +2147,13 @@
         melalui website.
       </p>
 
+
       <div class="hero-route">
         Sofifi ↔ Loleo ↔ Weda ↔ Lelilef
       </div>
 
       <br>
+
 
       <a
         class="hero-button"
@@ -2545,9 +2189,7 @@
       </p>
 
 
-      <!-- ================================================== -->
       <!-- PILIH RUTE -->
-      <!-- ================================================== -->
 
       <div class="form-group">
 
@@ -2815,9 +2457,7 @@
       </div>
 
 
-      <!-- ================================================== -->
       <!-- HIDDEN ELEMENTS FOR APP.JS -->
-      <!-- ================================================== -->
 
       <select
         id="from"
@@ -2875,9 +2515,7 @@
       </select>
 
 
-      <!-- ================================================== -->
       <!-- DATE -->
-      <!-- ================================================== -->
 
       <div class="form-group">
 
@@ -2895,9 +2533,7 @@
       </div>
 
 
-      <!-- ================================================== -->
       <!-- SCHEDULE -->
-      <!-- ================================================== -->
 
       <div class="form-group">
 
@@ -2921,9 +2557,7 @@
       </div>
 
 
-      <!-- ================================================== -->
       <!-- SEATS -->
-      <!-- ================================================== -->
 
       <div class="form-group">
 
@@ -2947,9 +2581,7 @@
       </div>
 
 
-      <!-- ================================================== -->
       <!-- PASSENGER -->
-      <!-- ================================================== -->
 
       <div class="form-group">
 
@@ -2986,9 +2618,7 @@
       </div>
 
 
-      <!-- ================================================== -->
       <!-- BOOK -->
-      <!-- ================================================== -->
 
       <button
         type="button"
@@ -3004,9 +2634,7 @@
     </section>
 
 
-    <!-- ====================================================== -->
     <!-- INFORMATION -->
-    <!-- ====================================================== -->
 
     <section class="info-section">
 
@@ -3042,9 +2670,7 @@
   </main>
 
 
-  <!-- ====================================================== -->
   <!-- FOOTER -->
-  <!-- ====================================================== -->
 
   <footer>
 
@@ -3071,9 +2697,7 @@
   </footer>
 
 
-  <!-- ====================================================== -->
   <!-- JAVASCRIPT -->
-  <!-- ====================================================== -->
 
   <script src="config.js"></script>
 
