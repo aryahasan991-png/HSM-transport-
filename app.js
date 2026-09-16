@@ -1,6 +1,6 @@
 // ============================================================
 // HSM TRANSPORT - APP.JS FINAL
-// Layout Hiace: 14 kursi penumpang + 1 kursi kernet
+// 14 KURSI PENUMPANG + 1 KERNET
 // ============================================================
 
 const HSM_CONFIG = window.HSM_CONFIG;
@@ -81,9 +81,10 @@ function normalizeRoute(route) {
   return String(route)
     .trim()
     .replace(/\s+/g, "")
-    .replace(/-/g, "→")
-    .replace(/–/g, "→")
-    .replace(/>/g, "→");
+    .replace(/->/g, "→")
+    .replace(/–>/g, "→")
+    .replace(/—>/g, "→")
+    .replace(/→+/g, "→");
 }
 
 
@@ -123,7 +124,7 @@ function normalizeVehicle(vehicle) {
 
 
 // ============================================================
-// JAM
+// FORMAT JAM
 // ============================================================
 
 function formatTime(time) {
@@ -199,7 +200,10 @@ function updateSelectedRoute() {
 document
   .querySelectorAll('input[name="route"]')
   .forEach(input => {
-    input.addEventListener("change", updateSelectedRoute);
+    input.addEventListener(
+      "change",
+      updateSelectedRoute
+    );
   });
 
 
@@ -208,7 +212,6 @@ document
 // ============================================================
 
 async function fetchSchedules() {
-
   const { data, error } = await db
     .from("schedules")
     .select("*")
@@ -257,14 +260,15 @@ function buildServices(rows) {
     });
   }
 
-  rows.forEach(row => {
 
+  rows.forEach(row => {
     const route = normalizeRoute(row.route);
     const vehicle = normalizeVehicle(row.vehicle);
     const time = formatTime(row.departure_time);
 
 
     // ========================================================
+    // ARAH:
     // SOFIFI → LOLEO → WEDA → LELILEF
     // ========================================================
 
@@ -272,12 +276,12 @@ function buildServices(rows) {
       route === "Sofifi→Lelilef" ||
       route === "Sofifi→Weda"
     ) {
-
       let sofifiTime = null;
       let loleoTime = null;
       let wedaTime = null;
 
-      // HSM-01 pagi
+
+      // HSM-01 PAGI
       if (
         vehicle === "HSM-01" &&
         time === "09:00"
@@ -287,7 +291,8 @@ function buildServices(rows) {
         wedaTime = "11:30";
       }
 
-      // HSM-02 siang
+
+      // HSM-02 SIANG
       else if (
         vehicle === "HSM-02" &&
         time === "13:00"
@@ -297,12 +302,13 @@ function buildServices(rows) {
         wedaTime = "15:30";
       }
 
+
       else {
         return;
       }
 
 
-      // Sofifi → Weda
+      // SOFIFI → WEDA
       addService(
         row,
         "Sofifi",
@@ -313,7 +319,8 @@ function buildServices(rows) {
         2
       );
 
-      // Sofifi → Lelilef
+
+      // SOFIFI → LELILEF
       addService(
         row,
         "Sofifi",
@@ -324,7 +331,8 @@ function buildServices(rows) {
         3
       );
 
-      // Loleo → Weda
+
+      // LOLEO → WEDA
       addService(
         row,
         "Loleo",
@@ -335,7 +343,8 @@ function buildServices(rows) {
         2
       );
 
-      // Loleo → Lelilef
+
+      // LOLEO → LELILEF
       addService(
         row,
         "Loleo",
@@ -346,7 +355,8 @@ function buildServices(rows) {
         3
       );
 
-      // Weda → Lelilef
+
+      // WEDA → LELILEF
       addService(
         row,
         "Weda",
@@ -360,6 +370,7 @@ function buildServices(rows) {
 
 
     // ========================================================
+    // ARAH:
     // LELILEF → WEDA → LOLEO → SOFIFI
     // ========================================================
 
@@ -367,11 +378,11 @@ function buildServices(rows) {
       route === "Lelilef→Sofifi" ||
       route === "Weda→Sofifi"
     ) {
-
       let lelilefTime = null;
       let wedaTime = null;
 
-      // HSM-02 pagi
+
+      // HSM-02 PAGI
       if (
         vehicle === "HSM-02" &&
         time === "09:00"
@@ -380,7 +391,8 @@ function buildServices(rows) {
         wedaTime = "09:45";
       }
 
-      // HSM-01 siang
+
+      // HSM-01 SIANG
       else if (
         vehicle === "HSM-01" &&
         time === "13:00"
@@ -389,12 +401,13 @@ function buildServices(rows) {
         wedaTime = "13:45";
       }
 
+
       else {
         return;
       }
 
 
-      // Lelilef → Weda
+      // LELILEF → WEDA
       addService(
         row,
         "Lelilef",
@@ -405,7 +418,8 @@ function buildServices(rows) {
         1
       );
 
-      // Lelilef → Loleo
+
+      // LELILEF → LOLEO
       addService(
         row,
         "Lelilef",
@@ -416,7 +430,8 @@ function buildServices(rows) {
         2
       );
 
-      // Lelilef → Sofifi
+
+      // LELILEF → SOFIFI
       addService(
         row,
         "Lelilef",
@@ -427,7 +442,8 @@ function buildServices(rows) {
         3
       );
 
-      // Weda → Loleo
+
+      // WEDA → LOLEO
       addService(
         row,
         "Weda",
@@ -438,7 +454,8 @@ function buildServices(rows) {
         2
       );
 
-      // Weda → Sofifi
+
+      // WEDA → SOFIFI
       addService(
         row,
         "Weda",
@@ -449,11 +466,11 @@ function buildServices(rows) {
         3
       );
     }
-
   });
 
+
   return services;
-  }// ============================================================
+        }// ============================================================
 // LOAD SCHEDULE
 // ============================================================
 
@@ -507,7 +524,7 @@ async function loadSchedules() {
 
 
     // ========================================================
-    // FILTER TANGGAL
+    // FILTER BERDASARKAN TANGGAL
     // ========================================================
 
     const dateRows = rows.filter(row => {
@@ -517,37 +534,36 @@ async function loadSchedules() {
         : "";
 
       return rowDate === selectedDate;
+
     });
 
 
     // ========================================================
-    // BUILD SERVICE
+    // BANGUN SEMUA LAYANAN
     // ========================================================
 
-    const allServices =
-      buildServices(dateRows);
-
-
-    // ========================================================
-    // FILTER ROUTE
-    // ========================================================
-
-    const services =
-      allServices.filter(service => {
-
-        return (
-          service.displayOrigin.toLowerCase() ===
-            route.origin.toLowerCase()
-          &&
-          service.displayDestination.toLowerCase() ===
-            route.destination.toLowerCase()
-        );
-
-      });
+    const allServices = buildServices(dateRows);
 
 
     // ========================================================
-    // HINDARI DUPLIKAT
+    // FILTER SESUAI RUTE YANG DIPILIH
+    // ========================================================
+
+    const services = allServices.filter(service => {
+
+      return (
+        service.displayOrigin.toLowerCase() ===
+          route.origin.toLowerCase()
+        &&
+        service.displayDestination.toLowerCase() ===
+          route.destination.toLowerCase()
+      );
+
+    });
+
+
+    // ========================================================
+    // HINDARI JADWAL DUPLIKAT
     // ========================================================
 
     const unique = [];
@@ -563,6 +579,7 @@ async function loadSchedules() {
         service.segmentStart,
         service.segmentEnd
       ].join("|");
+
 
       if (!seen.has(key)) {
 
@@ -603,6 +620,7 @@ async function loadSchedules() {
 
     scheduleEl.innerHTML = "";
 
+
     unique.sort((a, b) => {
 
       return a.displayTime.localeCompare(
@@ -614,13 +632,14 @@ async function loadSchedules() {
 
     unique.forEach(service => {
 
-      const button =
-        document.createElement("button");
+      const button = document.createElement(
+        "button"
+      );
+
 
       button.type = "button";
 
-      button.className =
-        "scheduleBtn";
+      button.className = "scheduleBtn";
 
 
       button.innerHTML = `
@@ -659,14 +678,21 @@ async function loadSchedules() {
           document
             .querySelectorAll(".scheduleBtn")
             .forEach(btn => {
-              btn.classList.remove("active");
+
+              btn.classList.remove(
+                "active"
+              );
+
             });
 
 
-          button.classList.add("active");
+          button.classList.add(
+            "active"
+          );
 
 
           selectedSchedule = service;
+
           selectedSeat = null;
 
 
@@ -697,6 +723,7 @@ async function loadSchedules() {
         padding:15px;
         color:#b00020;
       ">
+
         <strong>
           Gagal memuat jadwal.
         </strong>
@@ -704,33 +731,37 @@ async function loadSchedules() {
         <br><br>
 
         ${error.message}
+
       </div>
     `;
 
   }
+
 }
 
 
 // ============================================================
-// AMBIL BOOKING
+// AMBIL DATA BOOKING
 // ============================================================
 
 async function fetchBookings(scheduleId) {
 
-  const { data, error } =
-    await db
-      .from("bookings")
-      .select("*")
-      .eq(
-        "schedule_id",
-        scheduleId
-      );
+  const { data, error } = await db
+    .from("bookings")
+    .select("*")
+    .eq(
+      "schedule_id",
+      scheduleId
+    );
+
 
   if (error) {
     throw error;
   }
 
+
   return data || [];
+
 }
 
 
@@ -740,15 +771,17 @@ async function fetchBookings(scheduleId) {
 
 function getBookingStatus(booking) {
 
-  const status =
-    String(
-      booking.payment_status || ""
-    )
-      .trim()
-      .toLowerCase();
+  const status = String(
+    booking.payment_status || ""
+  )
+    .trim()
+    .toLowerCase();
 
 
+  // ==========================================================
   // SUDAH DIBAYAR
+  // ==========================================================
+
   if (
     status === "paid" ||
     status === "lunas" ||
@@ -756,27 +789,38 @@ function getBookingStatus(booking) {
     status === "settled" ||
     status === "sudah_dibayar"
   ) {
+
     return "paid";
+
   }
 
 
-  // DIBATALKAN
+  // ==========================================================
+  // BOOKING DIBATALKAN
+  // ==========================================================
+
   if (
     status === "cancelled" ||
     status === "canceled" ||
     status === "failed"
   ) {
+
     return "cancelled";
+
   }
 
 
+  // ==========================================================
   // DEFAULT = MENUNGGU PEMBAYARAN
+  // ==========================================================
+
   return "pending";
+
 }
 
 
 // ============================================================
-// CEK STATUS KURSI BERDASARKAN SEGMENT
+// CEK STATUS KURSI BERDASARKAN SEGMEN PERJALANAN
 // ============================================================
 
 function getSeatStatus(
@@ -784,15 +828,13 @@ function getSeatStatus(
   schedule
 ) {
 
-  const newStart =
-    Number(
-      schedule.segmentStart || 1
-    );
+  const newStart = Number(
+    schedule.segmentStart || 1
+  );
 
-  const newEnd =
-    Number(
-      schedule.segmentEnd || 2
-    );
+  const newEnd = Number(
+    schedule.segmentEnd || 1
+  );
 
 
   let seatStatus = "available";
@@ -801,12 +843,17 @@ function getSeatStatus(
   currentBookings.forEach(
     booking => {
 
+      // ======================================================
+      // BUKAN NOMOR KURSI YANG SAMA
+      // ======================================================
+
       if (
-        Number(
-          booking.seat_number
-        ) !== Number(seatNumber)
+        Number(booking.seat_number) !==
+        Number(seatNumber)
       ) {
+
         return;
+
       }
 
 
@@ -816,34 +863,41 @@ function getSeatStatus(
         );
 
 
+      // ======================================================
       // BOOKING BATAL TIDAK MENGUNCI KURSI
+      // ======================================================
+
       if (
-        bookingStatus ===
-        "cancelled"
+        bookingStatus === "cancelled"
       ) {
+
         return;
+
       }
 
 
-      const bookingStart =
-        Number(
-          booking.segment_start || 1
-        );
+      const bookingStart = Number(
+        booking.segment_start || 1
+      );
 
-      const bookingEnd =
-        Number(
-          booking.segment_end || 2
-        );
+      const bookingEnd = Number(
+        booking.segment_end || 1
+      );
 
 
       // ======================================================
-      // CEK APAKAH SEGMENT BERTABRAKAN
+      // CEK TABRAKAN SEGMEN
       //
-      // Contoh:
-      // Lelilef → Weda = 1-1
-      // Weda → Sofifi = 2-3
+      // CONTOH:
       //
-      // Tidak overlap, jadi kursi yang sama bisa dipakai lagi.
+      // Lelilef → Weda
+      // segment 1 - 1
+      //
+      // Weda → Sofifi
+      // segment 2 - 3
+      //
+      // Tidak bertabrakan.
+      // Kursi yang sama bisa dipakai kembali dari Weda.
       // ======================================================
 
       const overlap =
@@ -852,30 +906,35 @@ function getSeatStatus(
 
 
       if (!overlap) {
+
         return;
+
       }
 
 
-      // PAID LEBIH KUAT DARI PENDING
+      // ======================================================
+      // SUDAH DIBAYAR
+      // ======================================================
+
       if (
-        bookingStatus ===
-        "paid"
+        bookingStatus === "paid"
       ) {
 
-        seatStatus =
-          "paid";
+        seatStatus = "paid";
 
       }
+
+
+      // ======================================================
+      // MENUNGGU PEMBAYARAN
+      // ======================================================
 
       else if (
-        bookingStatus ===
-          "pending" &&
-        seatStatus !==
-          "paid"
+        bookingStatus === "pending" &&
+        seatStatus !== "paid"
       ) {
 
-        seatStatus =
-          "pending";
+        seatStatus = "pending";
 
       }
 
@@ -884,11 +943,12 @@ function getSeatStatus(
 
 
   return seatStatus;
+
 }
 
 
 // ============================================================
-// BUAT KURSI PENUMPANG
+// BUAT TOMBOL KURSI PENUMPANG
 // ============================================================
 
 function createSeat(
@@ -896,34 +956,33 @@ function createSeat(
   schedule
 ) {
 
-  const seat =
-    document.createElement(
-      "button"
-    );
+  const seat = document.createElement(
+    "button"
+  );
 
 
   seat.type = "button";
 
   seat.className = "seat";
 
-  seat.textContent = number;  const status =
-    getSeatStatus(
-      number,
-      schedule
-    );
+  seat.textContent = number;
 
 
-  seat.dataset.status =
-    status;
+  const status = getSeatStatus(
+    number,
+    schedule
+  );
+
+
+  seat.dataset.status = status;
 
 
   // ==========================================================
-  // KURSI TERSEDIA
+  // TERSEDIA
   // ==========================================================
 
   if (
-    status ===
-    "available"
+    status === "available"
   ) {
 
     seat.classList.add(
@@ -936,18 +995,14 @@ function createSeat(
       () => {
 
         document
-          .querySelectorAll(
-            ".seat"
-          )
-          .forEach(
-            item => {
+          .querySelectorAll(".seat")
+          .forEach(item => {
 
-              item.classList.remove(
-                "selected"
-              );
+            item.classList.remove(
+              "selected"
+            );
 
-            }
-          );
+          });
 
 
         seat.classList.add(
@@ -955,8 +1010,7 @@ function createSeat(
         );
 
 
-        selectedSeat =
-          number;
+        selectedSeat = number;
 
 
         updateBookingSummary();
@@ -972,16 +1026,14 @@ function createSeat(
   // ==========================================================
 
   else if (
-    status ===
-    "pending"
+    status === "pending"
   ) {
 
     seat.classList.add(
       "pending"
     );
 
-    seat.disabled =
-      true;
+    seat.disabled = true;
 
     seat.title =
       "Kursi sedang menunggu pembayaran";
@@ -994,16 +1046,14 @@ function createSeat(
   // ==========================================================
 
   else if (
-    status ===
-    "paid"
+    status === "paid"
   ) {
 
     seat.classList.add(
       "paid"
     );
 
-    seat.disabled =
-      true;
+    seat.disabled = true;
 
     seat.title =
       "Kursi sudah terisi";
@@ -1012,21 +1062,16 @@ function createSeat(
 
 
   return seat;
-}
 
-
-// ============================================================
+        }// ============================================================
 // LOAD KURSI
 // ============================================================
 
-async function loadSeats(
-  schedule
-) {
+async function loadSeats(schedule) {
 
   if (!seatsEl) {
     return;
   }
-
 
   seatsEl.innerHTML = `
     <div style="
@@ -1040,11 +1085,9 @@ async function loadSeats(
 
   try {
 
-    currentBookings =
-      await fetchBookings(
-        schedule.id
-      );
-
+    currentBookings = await fetchBookings(
+      schedule.id
+    );
 
     seatsEl.innerHTML = "";
 
@@ -1053,13 +1096,9 @@ async function loadSeats(
     // KETERANGAN WARNA
     // ========================================================
 
-    const legend =
-      document.createElement(
-        "div"
-      );
+    const legend = document.createElement("div");
 
-    legend.className =
-      "seatLegend";
+    legend.className = "seatLegend";
 
     legend.innerHTML = `
       <span>
@@ -1078,235 +1117,284 @@ async function loadSeats(
       </span>
     `;
 
-    seatsEl.appendChild(
-      legend
-    );
+    seatsEl.appendChild(legend);
 
 
     // ========================================================
-    // CABIN / DRIVER
+    // CONTAINER DENAH HIACE
     // ========================================================
 
-    const cabin =
-      document.createElement(
-        "div"
-      );
+    const busLayout = document.createElement("div");
 
-    cabin.className =
-      "seatCabin";
-
-    cabin.innerHTML = `
-      <div class="driverSeat">
-        SOPIR
-      </div>
-
-      <div class="kernetSeat">
-        KERNET
-      </div>
+    busLayout.style.cssText = `
+      width:100%;
+      max-width:390px;
+      margin:0 auto;
+      padding:16px 10px 20px;
+      border:2px solid #d1d5db;
+      border-radius:18px;
+      background:#ffffff;
     `;
 
-    seatsEl.appendChild(
-      cabin
+
+    // ========================================================
+    // DEPAN MOBIL
+    //
+    // 01    02              SOPIR
+    // ========================================================
+
+    const frontRow = document.createElement("div");
+
+    frontRow.style.cssText = `
+      display:grid;
+      grid-template-columns:54px 54px 28px 54px;
+      gap:8px;
+      justify-content:center;
+      align-items:center;
+      margin-bottom:16px;
+    `;
+
+
+    frontRow.appendChild(
+      createSeat(1, schedule)
+    );
+
+    frontRow.appendChild(
+      createSeat(2, schedule)
+    );
+
+
+    const frontSpace = document.createElement("div");
+
+    frontRow.appendChild(frontSpace);
+
+
+    const driver = document.createElement("div");
+
+    driver.textContent = "SOPIR";
+
+    driver.style.cssText = `
+      width:54px;
+      height:48px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:9px;
+      background:#111827;
+      color:#ffffff;
+      font-size:10px;
+      font-weight:800;
+    `;
+
+    frontRow.appendChild(driver);
+
+    busLayout.appendChild(frontRow);
+
+
+    // ========================================================
+    // PINTU SLIDING
+    // ========================================================
+
+    const slidingDoor = document.createElement("div");
+
+    slidingDoor.textContent = "PINTU SLIDING";
+
+    slidingDoor.style.cssText = `
+      width:128px;
+      margin:0 0 8px auto;
+      padding:5px 6px;
+      border:2px solid #111827;
+      border-radius:6px;
+      text-align:center;
+      font-size:10px;
+      font-weight:800;
+      color:#111827;
+      background:#f9fafb;
+    `;
+
+    busLayout.appendChild(slidingDoor);
+
+
+    // ========================================================
+    // GRID KURSI BELAKANG
+    //
+    // Posisi final:
+    //
+    //             03    04    05
+    //
+    // KERNET            06    07
+    //
+    // 08                09    10
+    //
+    // 11     12         13    14
+    //
+    //
+    // KERNET → 08 → 11
+    //
+    // 04 → 06 → 09
+    //
+    // 05 → 07 → 10
+    // ========================================================
+
+    const passengerGrid = document.createElement("div");
+
+    passengerGrid.style.cssText = `
+      display:grid;
+      grid-template-columns:54px 54px 54px 54px;
+      grid-template-rows:48px 48px 48px 48px;
+      column-gap:8px;
+      row-gap:10px;
+      justify-content:center;
+      align-items:center;
+    `;
+
+
+    // ========================================================
+    // HELPER UNTUK POSISI KURSI
+    // ========================================================
+
+    function placeSeat(
+      number,
+      column,
+      row
+    ) {
+
+      const seat = createSeat(
+        number,
+        schedule
+      );
+
+      seat.style.gridColumn = column;
+      seat.style.gridRow = row;
+
+      passengerGrid.appendChild(seat);
+
+    }
+
+
+    // ========================================================
+    // BARIS KURSI 03 04 05
+    //
+    // Kolom 1 sengaja kosong.
+    // ========================================================
+
+    placeSeat(3, 2, 1);
+
+    placeSeat(4, 3, 1);
+
+    placeSeat(5, 4, 1);
+
+
+    // ========================================================
+    // KERNET
+    //
+    // Kursi fisik kernet.
+    // Tepat di depan kursi 08.
+    // ========================================================
+
+    const kernet = document.createElement("div");
+
+    kernet.textContent = "KERNET";
+
+    kernet.style.cssText = `
+      grid-column:1;
+      grid-row:2;
+
+      width:54px;
+      height:48px;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      border-radius:9px;
+
+      background:#111827;
+      color:#ffffff;
+
+      font-size:10px;
+      font-weight:800;
+    `;
+
+    passengerGrid.appendChild(kernet);
+
+
+    // ========================================================
+    // KURSI 06 DAN 07
+    //
+    // 06 sejajar dengan 04.
+    // 07 sejajar dengan 05.
+    // ========================================================
+
+    placeSeat(6, 3, 2);
+
+    placeSeat(7, 4, 2);
+
+
+    // ========================================================
+    // KURSI 08 09 10
+    //
+    // 08 tepat di belakang KERNET.
+    // 09 sejajar dengan 04 dan 06.
+    // 10 sejajar dengan 05 dan 07.
+    // ========================================================
+
+    placeSeat(8, 1, 3);
+
+    placeSeat(9, 3, 3);
+
+    placeSeat(10, 4, 3);
+
+
+    // ========================================================
+    // BARIS PALING BELAKANG
+    //
+    // 08 sejajar vertikal dengan 11.
+    // ========================================================
+
+    placeSeat(11, 1, 4);
+
+    placeSeat(12, 2, 4);
+
+    placeSeat(13, 3, 4);
+
+    placeSeat(14, 4, 4);
+
+
+    busLayout.appendChild(
+      passengerGrid
     );
 
 
     // ========================================================
-    // LAYOUT KURSI PENUMPANG
-    //
-    // 01 02 03
-    //
-    // 04    05 06
-    //
-    // 07    08 09
-    //
-    // 10 11 12 13
-    //
-    // + kursi 14
-    //
-    // Sistem nomor tetap mengikuti layout website lama.
+    // PENANDA BELAKANG
     // ========================================================
 
-    const layout =
-      document.createElement(
-        "div"
-      );
+    const rearLabel = document.createElement("div");
 
-    layout.className =
-      "seatLayout";
+    rearLabel.textContent = "BELAKANG";
 
+    rearLabel.style.cssText = `
+      margin-top:14px;
+      padding-top:8px;
+      border-top:1px dashed #d1d5db;
+      text-align:center;
+      font-size:10px;
+      font-weight:800;
+      color:#6b7280;
+    `;
 
-    // BARIS 1
-    const row1 =
-      document.createElement(
-        "div"
-      );
-
-    row1.className =
-      "seatRow";
-
-    row1.appendChild(
-      createSeat(
-        1,
-        schedule
-      )
-    );
-
-    row1.appendChild(
-      createSeat(
-        2,
-        schedule
-      )
-    );
-
-    row1.appendChild(
-      createSeat(
-        3,
-        schedule
-      )
-    );
-
-    layout.appendChild(
-      row1
-    );
-
-
-    // BARIS 2
-    const row2 =
-      document.createElement(
-        "div"
-      );
-
-    row2.className =
-      "seatRow";
-
-    row2.appendChild(
-      createSeat(
-        4,
-        schedule
-      )
-    );
-
-
-    const aisle1 =
-      document.createElement(
-        "div"
-      );
-
-    aisle1.className =
-      "seatAisle";
-
-    row2.appendChild(
-      aisle1
-    );
-
-
-    row2.appendChild(
-      createSeat(
-        5,
-        schedule
-      )
-    );
-
-    row2.appendChild(
-      createSeat(
-        6,
-        schedule
-      )
-    );
-
-    layout.appendChild(
-      row2
-    );
-
-
-    // BARIS 3
-    const row3 =
-      document.createElement(
-        "div"
-      );
-
-    row3.className =
-      "seatRow";
-
-    row3.appendChild(
-      createSeat(
-        7,
-        schedule
-      )
-    );
-
-
-    const aisle2 =
-      document.createElement(
-        "div"
-      );
-
-    aisle2.className =
-      "seatAisle";
-
-    row3.appendChild(
-      aisle2
-    );
-
-
-    row3.appendChild(
-      createSeat(
-        8,
-        schedule
-      )
-    );
-
-    row3.appendChild(
-      createSeat(
-        9,
-        schedule
-      )
-    );
-
-    layout.appendChild(
-      row3
-    );
-
-
-    // BARIS BELAKANG
-    const row4 =
-      document.createElement(
-        "div"
-      );
-
-    row4.className =
-      "seatRow seatRowBack";
-
-
-    [
-      10,
-      11,
-      12,
-      13,
-      14
-    ].forEach(
-      number => {
-
-        row4.appendChild(
-          createSeat(
-            number,
-            schedule
-          )
-        );
-
-      }
-    );
-
-
-    layout.appendChild(
-      row4
-    );
+    busLayout.appendChild(rearLabel);
 
 
     seatsEl.appendChild(
-      layout
+      busLayout
     );
 
+
+    // ========================================================
+    // UPDATE RINGKASAN
+    // ========================================================
 
     updateBookingSummary();
 
@@ -1319,21 +1407,25 @@ async function loadSeats(
       error
     );
 
-
     seatsEl.innerHTML = `
       <div style="
         padding:15px;
         color:#b00020;
       ">
-        Gagal memuat data kursi.
+
+        <strong>
+          Gagal memuat data kursi.
+        </strong>
 
         <br><br>
 
         ${error.message}
+
       </div>
     `;
 
   }
+
 }
 
 
@@ -1348,22 +1440,18 @@ function updateBookingSummary() {
   }
 
 
-  if (
-    !selectedSchedule
-  ) {
+  if (!selectedSchedule) {
 
     resultEl.innerHTML = "";
 
     return;
+
   }
 
 
-  const seatText =
-    selectedSeat
-      ? `Kursi ${String(
-          selectedSeat
-        ).padStart(2, "0")}`
-      : "Belum memilih kursi";
+  const seatText = selectedSeat
+    ? `Kursi ${String(selectedSeat).padStart(2, "0")}`
+    : "Belum memilih kursi";
 
 
   resultEl.innerHTML = `
@@ -1407,6 +1495,7 @@ function updateBookingSummary() {
 
     </div>
   `;
+
 }
 
 
@@ -1414,18 +1503,13 @@ function updateBookingSummary() {
 // NORMALISASI NOMOR WHATSAPP
 // ============================================================
 
-function normalizePhone(
-  value
-) {
+function normalizePhone(value) {
 
-  let phone =
-    String(value || "")
-      .replace(/\D/g, "");
+  let phone = String(value || "")
+    .replace(/\D/g, "");
 
 
-  if (
-    phone.startsWith("0")
-  ) {
+  if (phone.startsWith("0")) {
 
     phone =
       "62" +
@@ -1433,10 +1517,7 @@ function normalizePhone(
 
   }
 
-
-  else if (
-    phone.startsWith("8")
-  ) {
+  else if (phone.startsWith("8")) {
 
     phone =
       "62" + phone;
@@ -1445,6 +1526,7 @@ function normalizePhone(
 
 
   return phone;
+
 }
 
 
@@ -1454,43 +1536,33 @@ function normalizePhone(
 
 function generateBookingCode() {
 
-  const now =
-    new Date();
+  const now = new Date();
 
 
-  const year =
-    String(
-      now.getFullYear()
-    ).slice(-2);
+  const year = String(
+    now.getFullYear()
+  ).slice(-2);
 
 
-  const month =
-    String(
-      now.getMonth() + 1
-    ).padStart(
-      2,
-      "0"
-    );
+  const month = String(
+    now.getMonth() + 1
+  ).padStart(2, "0");
 
 
-  const day =
-    String(
-      now.getDate()
-    ).padStart(
-      2,
-      "0"
-    );
+  const day = String(
+    now.getDate()
+  ).padStart(2, "0");
 
 
-  const random =
-    Math.random()
-      .toString(36)
-      .substring(2, 7)
-      .toUpperCase();
+  const random = Math.random()
+    .toString(36)
+    .substring(2, 7)
+    .toUpperCase();
 
 
   return `HSM${year}${month}${day}${random}`;
-      }// ============================================================
+
+}// ============================================================
 // CREATE BOOKING
 // ============================================================
 
@@ -1528,16 +1600,14 @@ async function createBooking() {
   // DATA PENUMPANG
   // ==========================================================
 
-  const passengerName =
-    nameEl
-      ? nameEl.value.trim()
-      : "";
+  const passengerName = nameEl
+    ? nameEl.value.trim()
+    : "";
 
 
-  const rawPhone =
-    phoneEl
-      ? phoneEl.value.trim()
-      : "";
+  const rawPhone = phoneEl
+    ? phoneEl.value.trim()
+    : "";
 
 
   if (!passengerName) {
@@ -1568,15 +1638,12 @@ async function createBooking() {
   }
 
 
-  const phone =
-    normalizePhone(
-      rawPhone
-    );
+  const phone = normalizePhone(
+    rawPhone
+  );
 
 
-  if (
-    phone.length < 10
-  ) {
+  if (phone.length < 10) {
 
     alert(
       "Nomor WhatsApp tidak valid."
@@ -1591,39 +1658,33 @@ async function createBooking() {
 
 
   // ==========================================================
-  // CEK ULANG KURSI SEBELUM BOOKING
+  // CEK ULANG KURSI
   //
-  // Ini penting karena bisa saja kursi dipesan orang lain
-  // setelah penumpang membuka halaman.
+  // Mencegah dua orang mengambil kursi yang sama
+  // pada segmen perjalanan yang sama.
   // ==========================================================
 
   try {
 
-    currentBookings =
-      await fetchBookings(
-        selectedSchedule.id
-      );
+    currentBookings = await fetchBookings(
+      selectedSchedule.id
+    );
 
 
-    const seatStatus =
-      getSeatStatus(
-        selectedSeat,
-        selectedSchedule
-      );
+    const seatStatus = getSeatStatus(
+      selectedSeat,
+      selectedSchedule
+    );
 
 
-    if (
-      seatStatus !==
-      "available"
-    ) {
+    if (seatStatus !== "available") {
 
       alert(
         "Maaf, kursi tersebut baru saja dipesan oleh penumpang lain."
       );
 
 
-      selectedSeat =
-        null;
+      selectedSeat = null;
 
 
       await loadSeats(
@@ -1655,13 +1716,12 @@ async function createBooking() {
 
 
   // ==========================================================
-  // DISABLE TOMBOL
+  // TOMBOL MEMPROSES
   // ==========================================================
 
   if (bookBtn) {
 
-    bookBtn.disabled =
-      true;
+    bookBtn.disabled = true;
 
     bookBtn.textContent =
       "Memproses...";
@@ -1670,7 +1730,7 @@ async function createBooking() {
 
 
   // ==========================================================
-  // BOOKING CODE
+  // GENERATE KODE BOOKING
   // ==========================================================
 
   const bookingCode =
@@ -1678,7 +1738,7 @@ async function createBooking() {
 
 
   // ==========================================================
-  // DATA YANG DISIMPAN KE SUPABASE
+  // DATA BOOKING
   // ==========================================================
 
   const bookingData = {
@@ -1726,14 +1786,12 @@ async function createBooking() {
 
 
   // ==========================================================
-  // INSERT BOOKING
+  // SIMPAN KE SUPABASE
   // ==========================================================
 
   try {
 
-    const {
-      error
-    } = await db
+    const { error } = await db
       .from("bookings")
       .insert(
         bookingData
@@ -1762,8 +1820,7 @@ async function createBooking() {
 
     if (bookBtn) {
 
-      bookBtn.disabled =
-        false;
+      bookBtn.disabled = false;
 
       bookBtn.textContent =
         "Pesan Sekarang";
@@ -1784,19 +1841,16 @@ async function createBooking() {
     "";
 
 
-  adminNumber =
-    String(
-      adminNumber
-    ).replace(
-      /\D/g,
-      ""
-    );
+  adminNumber = String(
+    adminNumber
+  ).replace(
+    /\D/g,
+    ""
+  );
 
 
   if (
-    adminNumber.startsWith(
-      "0"
-    )
+    adminNumber.startsWith("0")
   ) {
 
     adminNumber =
@@ -1807,26 +1861,24 @@ async function createBooking() {
 
 
   // ==========================================================
-  // TANGGAL
+  // TANGGAL PERJALANAN
   // ==========================================================
 
-  const date =
-    dateEl
-      ? dateEl.value
-      : "";
+  const date = dateEl
+    ? dateEl.value
+    : "";
 
 
   // ==========================================================
-  // FORMAT NOMOR KURSI
+  // NOMOR KURSI
   // ==========================================================
 
-  const seatNumber =
-    String(
-      selectedSeat
-    ).padStart(
-      2,
-      "0"
-    );
+  const seatNumber = String(
+    selectedSeat
+  ).padStart(
+    2,
+    "0"
+  );
 
 
   // ==========================================================
@@ -1871,7 +1923,7 @@ Mohon konfirmasi booking saya.
 
 
   // ==========================================================
-  // HASIL BOOKING
+  // TAMPILKAN HASIL BOOKING
   // ==========================================================
 
   if (resultEl) {
@@ -1894,16 +1946,12 @@ Mohon konfirmasi booking saya.
         <br><br>
 
         Kode Booking:
-        <b>
-          ${bookingCode}
-        </b>
+        <b>${bookingCode}</b>
 
         <br>
 
         Nama:
-        <b>
-          ${passengerName}
-        </b>
+        <b>${passengerName}</b>
 
         <br>
 
@@ -1917,9 +1965,7 @@ Mohon konfirmasi booking saya.
         <br>
 
         Tanggal:
-        <b>
-          ${date}
-        </b>
+        <b>${date}</b>
 
         <br>
 
@@ -1940,9 +1986,7 @@ Mohon konfirmasi booking saya.
         <br>
 
         Kursi:
-        <b>
-          ${seatNumber}
-        </b>
+        <b>${seatNumber}</b>
 
         <br>
 
@@ -1986,7 +2030,7 @@ Mohon konfirmasi booking saya.
 
 
   // ==========================================================
-  // REFRESH KURSI
+  // REFRESH DATA KURSI
   // ==========================================================
 
   await loadSeats(
@@ -1995,11 +2039,10 @@ Mohon konfirmasi booking saya.
 
 
   // ==========================================================
-  // RESET PILIHAN KURSI
+  // RESET KURSI TERPILIH
   // ==========================================================
 
-  selectedSeat =
-    null;
+  selectedSeat = null;
 
 
   // ==========================================================
@@ -2008,15 +2051,14 @@ Mohon konfirmasi booking saya.
 
   if (bookBtn) {
 
-    bookBtn.disabled =
-      false;
+    bookBtn.disabled = false;
 
     bookBtn.textContent =
       "Pesan Sekarang";
 
   }
 
-}// ============================================================
+      }// ============================================================
 // EVENT TOMBOL BOOKING
 // ============================================================
 
@@ -2040,11 +2082,8 @@ if (dateEl) {
     "change",
     () => {
 
-      selectedSchedule =
-        null;
-
-      selectedSeat =
-        null;
+      selectedSchedule = null;
+      selectedSeat = null;
 
       if (resultEl) {
         resultEl.innerHTML = "";
@@ -2064,19 +2103,16 @@ if (dateEl) {
 
 if (dateEl) {
 
-  const today =
-    getLocalDate();
+  const today = getLocalDate();
 
-  dateEl.min =
-    today;
+  dateEl.min = today;
 
   if (
     !dateEl.value ||
     dateEl.value < today
   ) {
 
-    dateEl.value =
-      today;
+    dateEl.value = today;
 
   }
 
@@ -2123,17 +2159,23 @@ loadSchedules();
 
 
 // ============================================================
-// AUTO REFRESH JADWAL
+// AUTO REFRESH DATA
 // ============================================================
 
 setInterval(
   () => {
 
-    // Jangan refresh saat user sedang memproses booking
+    // Jangan refresh saat proses booking berlangsung
     if (
       bookBtn &&
       bookBtn.disabled
     ) {
+      return;
+    }
+
+    // Kalau user sedang memilih jadwal/kursi,
+    // jangan reset tampilannya.
+    if (selectedSchedule) {
       return;
     }
 
