@@ -3,10 +3,20 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0754a6">
 
-  <title>HSM Transport | Travel Sofifi, Loleo, Weda & Lelilef</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#0754a6"
+  >
+
+  <title>
+    HSM Transport | Travel Sofifi, Loleo, Weda & Lelilef
+  </title>
 
   <meta
     name="description"
@@ -18,16 +28,25 @@
     content="HSM Transport, travel Sofifi Weda, travel Sofifi Lelilef, travel Loleo Weda, travel Loleo Lelilef, travel Weda Lelilef, travel Lelilef Sofifi, travel Maluku Utara"
   >
 
-  <meta name="robots" content="index, follow">
+  <meta
+    name="robots"
+    content="index, follow"
+  >
 
-  <meta property="og:title" content="HSM Transport">
+  <meta
+    property="og:title"
+    content="HSM Transport"
+  >
 
   <meta
     property="og:description"
     content="Travel Sofifi, Loleo, Weda dan Lelilef. Pesan tiket dan pilih kursi secara online."
   >
 
-  <meta property="og:type" content="website">
+  <meta
+    property="og:type"
+    content="website"
+  >
 
   <meta
     property="og:url"
@@ -74,13 +93,16 @@
       --white: #ffffff;
     }
 
+
     * {
       box-sizing: border-box;
     }
 
+
     html {
       scroll-behavior: smooth;
     }
+
 
     body {
       margin: 0;
@@ -101,15 +123,18 @@
       color: var(--text);
     }
 
+
     button,
     input,
     select {
       font-family: inherit;
     }
 
+
     button {
       cursor: pointer;
     }
+
 
 
     /* =========================================
@@ -135,6 +160,7 @@
         0 4px 20px rgba(20,40,80,0.05);
     }
 
+
     .header::after {
       content: "";
 
@@ -156,6 +182,7 @@
         );
     }
 
+
     .header-inner {
       max-width: 1100px;
 
@@ -174,14 +201,15 @@
       gap: 15px;
     }
 
+
     .brand {
       display: flex;
 
-      flex-direction:
-        column;
+      flex-direction: column;
 
       min-width: 0;
     }
+
 
     .header-logo {
       display: block;
@@ -192,9 +220,9 @@
 
       height: auto;
 
-      object-fit:
-        contain;
+      object-fit: contain;
     }
+
 
     .brand-company {
       margin-top: 2px;
@@ -205,28 +233,25 @@
 
       color: #687386;
 
-      letter-spacing:
-        0.3px;
+      letter-spacing: 0.3px;
     }
+
 
     .header-link {
       display: inline-flex;
 
       align-items: center;
 
-      justify-content:
-        center;
+      justify-content: center;
 
       min-height: 40px;
 
       padding:
         0 17px;
 
-      border-radius:
-        10px;
+      border-radius: 10px;
 
-      text-decoration:
-        none;
+      text-decoration: none;
 
       color: white;
 
@@ -248,6 +273,7 @@
     }
 
 
+
     /* =========================================
        HERO
        ========================================= */
@@ -266,7 +292,7 @@
       justify-content: center;
 
       padding:
-        40px 20px;
+        34px 20px;
 
       color: white;
 
@@ -276,16 +302,15 @@
 
         linear-gradient(
           180deg,
-          rgba(3,31,62,0.30) 0%,
-          rgba(3,42,84,0.22) 40%,
-          rgba(3,42,84,0.18) 68%,
-          rgba(3,30,60,0.34) 100%
+          rgba(3,31,62,0.18) 0%,
+          rgba(3,42,84,0.11) 40%,
+          rgba(3,42,84,0.08) 70%,
+          rgba(3,30,60,0.24) 100%
         ),
 
         url("hsm-hiace-commuter.png");
 
-      background-size:
-        cover;
+      background-size: cover;
 
       background-position:
         center center;
@@ -293,6 +318,7 @@
       background-repeat:
         no-repeat;
     }
+
 
     .hero::before {
       content: "";
@@ -303,15 +329,15 @@
 
       background:
         linear-gradient(
-          90deg,
-          rgba(3,30,60,0.10) 0%,
-          rgba(3,30,60,0.01) 50%,
-          rgba(3,30,60,0.07) 100%
+          180deg,
+          rgba(0,0,0,0.02),
+          transparent 45%,
+          rgba(0,0,0,0.10)
         );
 
-      pointer-events:
-        none;
+      pointer-events: none;
     }
+
 
     .hero-inner {
       position: relative;
@@ -320,22 +346,21 @@
 
       width: 100%;
 
-      max-width:
-        720px;
+      max-width: 720px;
+
+      min-height: 385px;
 
       margin: auto;
 
       display: flex;
 
-      flex-direction:
-        column;
+      flex-direction: column;
 
-      align-items:
-        center;
+      align-items: center;
 
-      justify-content:
-        center;
+      justify-content: flex-start;
     }
+
 
 
     /* BADGE */
@@ -350,38 +375,32 @@
       padding:
         7px 13px;
 
-      margin-bottom:
-        10px;
+      margin-bottom: 7px;
 
-      border-radius:
-        999px;
+      border-radius: 999px;
 
       color: white;
 
       background:
-        rgba(4,48,92,0.78);
+        rgba(3,47,91,0.84);
 
       border:
-        1px solid rgba(255,255,255,0.25);
+        1px solid rgba(255,255,255,0.22);
 
-      backdrop-filter:
-        blur(5px);
+      backdrop-filter: blur(5px);
 
-      -webkit-backdrop-filter:
-        blur(5px);
+      -webkit-backdrop-filter: blur(5px);
 
-      font-size:
-        11px;
+      font-size: 11px;
 
-      font-weight:
-        900;
+      font-weight: 900;
 
-      letter-spacing:
-        0.3px;
+      letter-spacing: 0.3px;
 
       box-shadow:
-        0 5px 16px rgba(0,0,0,0.15);
+        0 4px 14px rgba(0,0,0,0.15);
     }
+
 
     .hero-badge::before {
       content: "";
@@ -390,12 +409,12 @@
 
       height: 7px;
 
-      border-radius:
-        50%;
+      border-radius: 50%;
 
       background:
         var(--hsm-red);
     }
+
 
 
     /* LOGO HERO */
@@ -405,73 +424,61 @@
 
       display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
-      justify-content:
-        center;
+      justify-content: center;
 
-      margin-bottom:
-        3px;
+      margin: 0;
     }
+
 
     .hero-logo {
       display: block;
 
       width:
-        min(270px,60vw);
+        min(250px,58vw);
 
-      max-height:
-        100px;
+      max-height: 90px;
 
       height: auto;
 
-      object-fit:
-        contain;
+      object-fit: contain;
 
-      margin:
-        0 auto;
+      margin: 0 auto;
 
       filter:
         drop-shadow(
-          0 3px 7px rgba(0,0,0,0.30)
+          0 3px 6px rgba(0,0,0,0.30)
         );
     }
+
 
 
     /* DESKRIPSI HERO */
 
     .hero-description {
-      max-width:
-        520px;
+      max-width: 500px;
 
       margin:
-        7px auto 0;
+        4px auto 0;
 
-      padding:
-        6px 10px;
+      padding: 0;
 
-      color:
-        #ffffff;
+      color: #ffffff;
 
-      font-size:
-        13px;
+      background: transparent;
 
-      font-weight:
-        600;
+      font-size: 12.5px;
 
-      line-height:
-        1.5;
+      font-weight: 700;
 
-      border-radius:
-        8px;
-
-      background:
-        rgba(2,30,59,0.22);
+      line-height: 1.45;
 
       text-shadow:
-        0 2px 6px rgba(0,0,0,0.90);
+        0 2px 5px rgba(0,0,0,0.95),
+        0 1px 2px rgba(0,0,0,0.95);
     }
+
 
 
     /* RUTE HERO */
@@ -479,45 +486,37 @@
     .hero-route {
       display: inline-flex;
 
-      align-items:
-        center;
+      align-items: center;
 
-      justify-content:
-        center;
+      justify-content: center;
 
-      margin-top:
-        12px;
+      margin-top: auto;
 
       padding:
         8px 13px;
 
-      border-radius:
-        9px;
+      border-radius: 9px;
 
       background:
-        rgba(3,47,91,0.84);
+        rgba(3,47,91,0.88);
 
       border:
         1px solid rgba(255,255,255,0.24);
 
-      color:
-        #ffffff;
+      color: #ffffff;
 
-      font-size:
-        13px;
+      font-size: 13px;
 
-      font-weight:
-        900;
+      font-weight: 900;
 
-      backdrop-filter:
-        blur(5px);
+      backdrop-filter: blur(5px);
 
-      -webkit-backdrop-filter:
-        blur(5px);
+      -webkit-backdrop-filter: blur(5px);
 
       box-shadow:
         0 5px 15px rgba(0,0,0,0.16);
     }
+
 
 
     /* BUTTON HERO */
@@ -525,20 +524,18 @@
     .hero-button {
       display: inline-flex;
 
-      align-items:
-        center;
+      align-items: center;
 
-      justify-content:
-        center;
+      justify-content: center;
 
-      margin-top:
-        13px;
+      margin-top: 10px;
+
+      margin-bottom: 2px;
 
       padding:
         11px 19px;
 
-      border-radius:
-        10px;
+      border-radius: 10px;
 
       background:
         linear-gradient(
@@ -549,33 +546,19 @@
 
       color: white;
 
-      text-decoration:
-        none;
+      text-decoration: none;
 
-      font-size:
-        13px;
+      font-size: 13px;
 
-      font-weight:
-        900;
+      font-weight: 900;
 
       box-shadow:
         0 7px 18px rgba(0,0,0,0.22);
-
-      transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-    }
-
-    .hero-button:hover {
-      transform:
-        translateY(-2px);
-
-      box-shadow:
-        0 10px 23px rgba(0,0,0,0.27);
     }
 
 
-    /* GARIS BAWAH HERO */
+
+    /* GARIS HERO */
 
     .hero-bottom-line {
       position: absolute;
@@ -599,6 +582,7 @@
     }
 
 
+
     /* =========================================
        MAIN
        ========================================= */
@@ -606,8 +590,7 @@
     main {
       width: 100%;
 
-      max-width:
-        1100px;
+      max-width: 1100px;
 
       margin: auto;
 
@@ -615,24 +598,22 @@
         38px 18px 60px;
     }
 
+
     .section-title {
       position: relative;
 
       margin:
         0 0 10px;
 
-      padding-left:
-        15px;
+      padding-left: 15px;
 
-      font-size:
-        29px;
+      font-size: 29px;
 
-      color:
-        #15233a;
+      color: #15233a;
 
-      letter-spacing:
-        -0.5px;
+      letter-spacing: -0.5px;
     }
+
 
     .section-title::before {
       content: "";
@@ -647,8 +628,7 @@
 
       width: 5px;
 
-      border-radius:
-        999px;
+      border-radius: 999px;
 
       background:
         linear-gradient(
@@ -659,26 +639,25 @@
         );
     }
 
+
     .section-description {
       margin:
         0 0 27px;
 
-      padding-left:
-        15px;
+      padding-left: 15px;
 
       color:
         var(--muted);
 
-      line-height:
-        1.6;
+      line-height: 1.6;
 
-      font-size:
-        14px;
+      font-size: 14px;
     }
 
 
+
     /* =========================================
-       BOOKING CARD
+       BOOKING
        ========================================= */
 
     .booking-card {
@@ -686,14 +665,11 @@
 
       overflow: hidden;
 
-      background:
-        #ffffff;
+      background: #ffffff;
 
-      border-radius:
-        20px;
+      border-radius: 20px;
 
-      padding:
-        28px;
+      padding: 28px;
 
       box-shadow:
         0 15px 45px rgba(21,45,80,0.09);
@@ -701,6 +677,7 @@
       border:
         1px solid #e1e7ef;
     }
+
 
     .booking-card::before {
       content: "";
@@ -719,6 +696,7 @@
         var(--hsm-blue);
     }
 
+
     .booking-card::after {
       content: "";
 
@@ -736,31 +714,28 @@
         var(--hsm-red);
     }
 
+
     .form-group {
-      margin-bottom:
-        26px;
+      margin-bottom: 26px;
     }
+
 
     .form-group > label {
       display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
       gap: 8px;
 
-      margin-bottom:
-        11px;
+      margin-bottom: 11px;
 
-      font-weight:
-        900;
+      font-weight: 900;
 
-      color:
-        #17233a;
+      color: #17233a;
 
-      font-size:
-        14px;
+      font-size: 14px;
     }
+
 
     .form-group > label::before {
       content: "";
@@ -769,8 +744,7 @@
 
       height: 7px;
 
-      border-radius:
-        50%;
+      border-radius: 50%;
 
       background:
         var(--hsm-blue);
@@ -778,6 +752,7 @@
       box-shadow:
         9px 0 0 -2px var(--hsm-red);
     }
+
 
 
     /* =========================================
@@ -793,18 +768,20 @@
       gap: 11px;
     }
 
+
     .route-card {
       position: relative;
     }
+
 
     .route-card input {
       position: absolute;
 
       opacity: 0;
 
-      pointer-events:
-        none;
+      pointer-events: none;
     }
+
 
     .route-label {
       position: relative;
@@ -817,8 +794,7 @@
 
       display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
       gap: 11px;
 
@@ -828,8 +804,7 @@
       border:
         1.5px solid #dce3ec;
 
-      border-radius:
-        12px;
+      border-radius: 12px;
 
       background:
         linear-gradient(
@@ -838,24 +813,20 @@
           #fbfcfe
         );
 
-      color:
-        #354157;
+      color: #354157;
 
-      font-size:
-        14px;
+      font-size: 14px;
 
-      font-weight:
-        800;
+      font-weight: 800;
 
-      cursor:
-        pointer;
+      cursor: pointer;
 
       box-shadow:
         0 3px 10px rgba(20,40,70,0.035);
 
-      transition:
-        0.2s ease;
+      transition: 0.2s ease;
     }
+
 
     .route-label::after {
       content: "";
@@ -874,13 +845,14 @@
         #d8e6f8;
     }
 
+
     .route-label:hover {
-      border-color:
-        #9cbce2;
+      border-color: #9cbce2;
 
       transform:
         translateY(-1px);
     }
+
 
     .route-card input:checked + .route-label {
       border-color:
@@ -893,37 +865,34 @@
           #0a67c8
         );
 
-      color:
-        #ffffff;
+      color: #ffffff;
 
       box-shadow:
         0 8px 20px rgba(7,84,166,0.22);
     }
+
 
     .route-card input:checked + .route-label::after {
       background:
         var(--hsm-red);
     }
 
+
     .route-arrow {
       width: 30px;
 
       height: 30px;
 
-      display:
-        inline-flex;
+      display: inline-flex;
 
-      align-items:
-        center;
+      align-items: center;
 
-      justify-content:
-        center;
+      justify-content: center;
 
       flex:
         0 0 30px;
 
-      border-radius:
-        8px;
+      border-radius: 8px;
 
       background:
         var(--hsm-blue-light);
@@ -931,20 +900,19 @@
       color:
         var(--hsm-blue);
 
-      font-size:
-        16px;
+      font-size: 16px;
 
-      font-weight:
-        900;
+      font-weight: 900;
     }
+
 
     .route-card input:checked + .route-label .route-arrow {
       background:
         rgba(255,255,255,0.17);
 
-      color:
-        white;
+      color: white;
     }
+
 
 
     /* =========================================
@@ -954,8 +922,7 @@
     .input {
       width: 100%;
 
-      min-height:
-        51px;
+      min-height: 51px;
 
       padding:
         12px 14px;
@@ -963,8 +930,7 @@
       border:
         1.5px solid #dce3ec;
 
-      border-radius:
-        11px;
+      border-radius: 11px;
 
       background:
         #fbfcfe;
@@ -972,23 +938,22 @@
       color:
         #172033;
 
-      font-size:
-        15px;
+      font-size: 15px;
 
-      outline:
-        none;
+      outline: none;
     }
+
 
     .input:focus {
       border-color:
         var(--hsm-blue);
 
-      background:
-        #ffffff;
+      background: #ffffff;
 
       box-shadow:
         0 0 0 4px rgba(7,84,166,0.10);
     }
+
 
 
     /* =========================================
@@ -1004,6 +969,7 @@
       gap: 12px;
     }
 
+
     .schedule-card {
       position: relative;
 
@@ -1011,30 +977,24 @@
 
       width: 100%;
 
-      min-height:
-        108px;
+      min-height: 108px;
 
       padding: 0;
 
       display: flex;
 
-      align-items:
-        stretch;
+      align-items: stretch;
 
       border:
         1.5px solid #dce3ec;
 
-      border-radius:
-        14px;
+      border-radius: 14px;
 
-      background:
-        #ffffff;
+      background: #ffffff;
 
-      color:
-        #172033;
+      color: #172033;
 
-      text-align:
-        left;
+      text-align: left;
 
       box-shadow:
         0 5px 15px rgba(20,40,70,0.05);
@@ -1042,6 +1002,7 @@
       transition:
         0.2s ease;
     }
+
 
     .schedule-card::after {
       content: "";
@@ -1060,6 +1021,7 @@
         #dce9f8;
     }
 
+
     .schedule-card:hover {
       transform:
         translateY(-2px);
@@ -1068,17 +1030,15 @@
         #a9c6e8;
     }
 
+
     .schedule-time {
-      min-width:
-        90px;
+      min-width: 90px;
 
       display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
-      justify-content:
-        center;
+      justify-content: center;
 
       padding:
         15px 12px;
@@ -1092,67 +1052,60 @@
 
       color: white;
 
-      font-size:
-        21px;
+      font-size: 21px;
 
-      font-weight:
-        900;
+      font-weight: 900;
     }
+
 
     .schedule-info {
       flex: 1;
 
       min-width: 0;
 
-      padding:
-        14px;
+      padding: 14px;
 
       display: flex;
 
-      flex-direction:
-        column;
+      flex-direction: column;
 
-      justify-content:
-        center;
+      justify-content: center;
 
       gap: 5px;
     }
+
 
     .schedule-info strong {
       color:
         var(--hsm-blue);
 
-      font-size:
-        14px;
+      font-size: 14px;
 
-      font-weight:
-        900;
+      font-weight: 900;
     }
+
 
     .schedule-info span {
       color:
         #687386;
 
-      font-size:
-        12px;
+      font-size: 12px;
 
-      line-height:
-        1.35;
+      line-height: 1.35;
     }
 
+
     .schedule-info span:last-child {
-      margin-top:
-        2px;
+      margin-top: 2px;
 
       color:
         var(--hsm-red);
 
-      font-size:
-        14px;
+      font-size: 14px;
 
-      font-weight:
-        900;
+      font-weight: 900;
     }
+
 
     .schedule-card.selected {
       border-color:
@@ -1165,10 +1118,12 @@
         0 8px 24px rgba(7,84,166,0.16);
     }
 
+
     .schedule-card.selected::after {
       background:
         var(--hsm-red);
     }
+
 
 
     /* =========================================
@@ -1176,11 +1131,9 @@
        ========================================= */
 
     #seats {
-      margin-top:
-        8px;
+      margin-top: 8px;
 
-      padding:
-        20px;
+      padding: 20px;
 
       background:
         linear-gradient(
@@ -1192,43 +1145,35 @@
       border:
         1.5px solid #dce5f0;
 
-      border-radius:
-        16px;
+      border-radius: 16px;
 
-      overflow-x:
-        auto;
+      overflow-x: auto;
     }
+
 
     .seatLegend {
       display: flex;
 
-      flex-wrap:
-        wrap;
+      flex-wrap: wrap;
 
-      justify-content:
-        center;
+      justify-content: center;
 
       gap: 9px;
 
-      margin-bottom:
-        18px;
+      margin-bottom: 18px;
 
-      font-size:
-        11px;
+      font-size: 11px;
 
-      font-weight:
-        800;
+      font-weight: 800;
 
-      color:
-        #4b5563;
+      color: #4b5563;
     }
 
-    .seatLegend span {
-      display:
-        inline-flex;
 
-      align-items:
-        center;
+    .seatLegend span {
+      display: inline-flex;
+
+      align-items: center;
 
       gap: 6px;
 
@@ -1241,40 +1186,38 @@
       border-radius:
         999px;
 
-      background:
-        #ffffff;
+      background: #ffffff;
     }
+
 
     .seatLegend i {
       width: 11px;
 
       height: 11px;
 
-      display:
-        inline-block;
+      display: inline-block;
 
-      border-radius:
-        3px;
+      border-radius: 3px;
     }
+
 
     .legendAvailable {
-      background:
-        #22c55e;
+      background: #22c55e;
     }
+
 
     .legendPending {
-      background:
-        #facc15;
+      background: #facc15;
     }
+
 
     .legendPaid {
-      background:
-        #ef4444;
+      background: #ef4444;
     }
 
+
     .seatCabin {
-      max-width:
-        420px;
+      max-width: 420px;
 
       margin:
         0 auto 16px;
@@ -1287,6 +1230,7 @@
       gap: 12px;
     }
 
+
     .driverSeat,
     .kernetSeat {
       flex: 1;
@@ -1294,51 +1238,46 @@
       padding:
         12px 8px;
 
-      border-radius:
-        9px;
+      border-radius: 9px;
 
       background:
         var(--hsm-blue-dark);
 
       color: white;
 
-      text-align:
-        center;
+      text-align: center;
 
-      font-size:
-        12px;
+      font-size: 12px;
 
-      font-weight:
-        800;
+      font-weight: 800;
     }
+
 
     .seatLayout {
       width: 100%;
 
-      max-width:
-        420px;
+      max-width: 420px;
 
       margin: auto;
 
       display: flex;
 
-      flex-direction:
-        column;
+      flex-direction: column;
 
       gap: 9px;
     }
+
 
     .seatRow {
       display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
-      justify-content:
-        center;
+      justify-content: center;
 
       gap: 9px;
     }
+
 
     .seatAisle {
       width: 25px;
@@ -1347,6 +1286,7 @@
         0 0 25px;
     }
 
+
     .seat {
       width: 54px;
 
@@ -1354,18 +1294,16 @@
 
       border: 0;
 
-      border-radius:
-        10px;
+      border-radius: 10px;
 
-      font-weight:
-        900;
+      font-weight: 900;
 
-      font-size:
-        14px;
+      font-size: 14px;
 
       box-shadow:
         0 4px 10px rgba(0,0,0,0.08);
     }
+
 
     .seat.available {
       background:
@@ -1375,9 +1313,9 @@
           #16a34a
         );
 
-      color:
-        white;
+      color: white;
     }
+
 
     .seat.selected {
       outline:
@@ -1386,6 +1324,7 @@
       transform:
         scale(1.06);
     }
+
 
     .seat.pending {
       background:
@@ -1402,6 +1341,7 @@
         not-allowed;
     }
 
+
     .seat.paid {
       background:
         linear-gradient(
@@ -1410,16 +1350,16 @@
           #dc2626
         );
 
-      color:
-        white;
+      color: white;
 
       cursor:
         not-allowed;
     }
 
 
+
     /* =========================================
-       BOOKING SUMMARY
+       SUMMARY
        ========================================= */
 
     .bookingSummary {
@@ -1427,17 +1367,14 @@
 
       overflow: hidden;
 
-      margin-top:
-        18px;
+      margin-top: 18px;
 
-      padding:
-        18px;
+      padding: 18px;
 
       border:
         1px solid #dce5f0;
 
-      border-radius:
-        14px;
+      border-radius: 14px;
 
       background:
         linear-gradient(
@@ -1453,9 +1390,9 @@
 
       gap: 14px;
 
-      line-height:
-        1.5;
+      line-height: 1.5;
     }
+
 
     .bookingSummary::before {
       content: "";
@@ -1479,10 +1416,12 @@
         );
     }
 
+
     .bookingSummary strong {
       color:
         var(--hsm-blue-dark);
     }
+
 
 
     /* =========================================
@@ -1496,16 +1435,13 @@
 
       width: 100%;
 
-      min-height:
-        55px;
+      min-height: 55px;
 
-      margin-top:
-        8px;
+      margin-top: 8px;
 
       border: 0;
 
-      border-radius:
-        12px;
+      border-radius: 12px;
 
       background:
         linear-gradient(
@@ -1516,15 +1452,14 @@
 
       color: white;
 
-      font-size:
-        16px;
+      font-size: 16px;
 
-      font-weight:
-        900;
+      font-weight: 900;
 
       box-shadow:
         0 9px 22px rgba(7,84,166,0.24);
     }
+
 
     #book::after {
       content: "";
@@ -1543,18 +1478,19 @@
         var(--hsm-red);
     }
 
+
     #book:disabled {
-      opacity:
-        0.6;
+      opacity: 0.6;
 
       cursor:
         not-allowed;
     }
 
+
     #result {
-      margin-top:
-        5px;
+      margin-top: 5px;
     }
+
 
 
     /* =========================================
@@ -1566,27 +1502,23 @@
 
       overflow: hidden;
 
-      margin-top:
-        35px;
+      margin-top: 35px;
 
-      padding:
-        27px;
+      padding: 27px;
 
-      background:
-        #ffffff;
+      background: #ffffff;
 
       border:
         1px solid #e1e7ef;
 
-      border-radius:
-        18px;
+      border-radius: 18px;
 
-      line-height:
-        1.75;
+      line-height: 1.75;
 
       box-shadow:
         0 10px 30px rgba(20,40,70,0.06);
     }
+
 
     .info-section::before {
       content: "";
@@ -1605,6 +1537,7 @@
         var(--hsm-blue);
     }
 
+
     .info-section::after {
       content: "";
 
@@ -1622,6 +1555,7 @@
         var(--hsm-red);
     }
 
+
     .info-section h2 {
       margin-top: 0;
 
@@ -1629,10 +1563,12 @@
         var(--hsm-blue-dark);
     }
 
+
     .info-section p {
       color:
         #596579;
     }
+
 
 
     /* =========================================
@@ -1655,12 +1591,11 @@
       color:
         #cbd5e1;
 
-      text-align:
-        center;
+      text-align: center;
 
-      line-height:
-        1.75;
+      line-height: 1.75;
     }
+
 
     footer::before {
       content: "";
@@ -1679,6 +1614,7 @@
         var(--hsm-blue);
     }
 
+
     footer::after {
       content: "";
 
@@ -1696,13 +1632,13 @@
         var(--hsm-red);
     }
 
-    footer strong {
-      color:
-        white;
 
-      font-size:
-        18px;
+    footer strong {
+      color: white;
+
+      font-size: 18px;
     }
+
 
 
     /* =========================================
@@ -1711,6 +1647,7 @@
 
     @media (max-width: 760px) {
 
+
       /* HEADER */
 
       .header-inner {
@@ -1718,51 +1655,51 @@
           9px 13px;
       }
 
+
       .header-logo {
-        width:
-          145px;
+        width: 145px;
       }
+
 
       .brand-company {
-        font-size:
-          8px;
+        font-size: 8px;
       }
 
+
       .header-link {
-        min-height:
-          36px;
+        min-height: 36px;
 
         padding:
           0 12px;
 
-        font-size:
-          11px;
+        font-size: 11px;
       }
 
 
-      /* ================= HERO MOBILE ================= */
+
+      /* =====================================
+         HERO MOBILE
+         ===================================== */
 
       .hero {
-        min-height:
-          440px;
+        min-height: 440px;
 
         padding:
-          20px 14px 24px;
+          17px 14px 22px;
 
         background-image:
 
           linear-gradient(
             180deg,
-            rgba(3,31,62,0.22) 0%,
-            rgba(3,42,84,0.15) 38%,
-            rgba(3,42,84,0.17) 68%,
-            rgba(3,30,60,0.35) 100%
+            rgba(3,31,62,0.13) 0%,
+            rgba(3,42,84,0.07) 35%,
+            rgba(3,42,84,0.05) 70%,
+            rgba(3,30,60,0.20) 100%
           ),
 
           url("hsm-hiace-commuter.png");
 
-        background-size:
-          cover;
+        background-size: cover;
 
         background-position:
           52% center;
@@ -1771,153 +1708,138 @@
           no-repeat;
       }
 
+
       .hero::before {
         background:
           linear-gradient(
             180deg,
-            rgba(0,0,0,0.04) 0%,
-            rgba(0,0,0,0.02) 35%,
-            rgba(0,0,0,0.08) 65%,
-            rgba(0,0,0,0.20) 100%
+            rgba(0,0,0,0.02) 0%,
+            transparent 50%,
+            rgba(0,0,0,0.10) 100%
           );
       }
+
 
       .hero-inner {
         width: 100%;
 
-        max-width:
-          360px;
+        max-width: 360px;
 
-        min-height:
-          390px;
+        min-height: 400px;
 
         display: flex;
 
-        flex-direction:
-          column;
+        flex-direction: column;
 
-        align-items:
-          center;
+        align-items: center;
 
         justify-content:
           flex-start;
       }
 
 
-      /* BADGE MOBILE */
+
+      /* BADGE */
 
       .hero-badge {
-        margin-top:
-          4px;
+        margin-top: 0;
 
-        margin-bottom:
-          7px;
+        margin-bottom: 5px;
 
         padding:
           6px 11px;
 
-        font-size:
-          10px;
-
-        border-radius:
-          999px;
+        font-size: 10px;
 
         background:
-          rgba(3,47,91,0.80);
+          rgba(3,47,91,0.84);
 
         box-shadow:
-          0 4px 12px rgba(0,0,0,0.16);
+          0 4px 12px rgba(0,0,0,0.15);
       }
+
 
       .hero-badge::before {
-        width:
-          6px;
+        width: 6px;
 
-        height:
-          6px;
+        height: 6px;
       }
 
 
-      /* LOGO MOBILE */
+
+      /* LOGO */
 
       .hero-logo-wrap {
         margin: 0;
-
-        height: auto;
       }
 
+
       .hero-logo {
-        width:
-          175px;
+        width: 160px;
 
-        max-width:
-          50vw;
+        max-width: 46vw;
 
-        max-height:
-          66px;
+        max-height: 60px;
 
-        margin:
-          0 auto;
+        margin: 0 auto;
 
         filter:
           drop-shadow(
-            0 3px 6px rgba(0,0,0,0.30)
+            0 3px 5px rgba(0,0,0,0.28)
           );
       }
 
 
-      /* DESKRIPSI MOBILE */
+
+      /* DESKRIPSI DI ATAS KACA */
 
       .hero-description {
-        max-width:
-          305px;
+        max-width: 310px;
 
         margin:
-          9px auto 0;
+          3px auto 0;
 
-        padding:
-          6px 9px;
-
-        font-size:
-          11px;
-
-        font-weight:
-          600;
-
-        line-height:
-          1.42;
-
-        color:
-          #ffffff;
+        padding: 0;
 
         background:
-          rgba(2,30,59,0.32);
+          transparent;
 
-        border-radius:
-          8px;
+        font-size: 10.5px;
+
+        font-weight: 700;
+
+        line-height: 1.35;
+
+        color: #ffffff;
 
         text-shadow:
-          0 1px 4px rgba(0,0,0,0.85);
+          0 2px 4px rgba(0,0,0,1),
+          0 1px 2px rgba(0,0,0,1);
       }
 
 
-      /* RUTE DITURUNKAN */
+
+      /*
+        AREA TENGAH SENGAJA DIBIARKAN KOSONG.
+        Tulisan PT HIDAYAH SARANA MULIA
+        pada kaca mobil tidak ditimpa elemen.
+      */
+
+
+      /* RUTE */
 
       .hero-route {
-        margin-top:
-          auto;
+        margin-top: auto;
 
         padding:
           7px 10px;
 
-        font-size:
-          10.5px;
+        font-size: 10.5px;
 
-        border-radius:
-          8px;
+        border-radius: 8px;
 
         background:
-          rgba(3,47,91,0.86);
+          rgba(3,47,91,0.88);
 
         border:
           1px solid rgba(255,255,255,0.20);
@@ -1927,105 +1849,104 @@
       }
 
 
-      /* BUTTON MOBILE */
+
+      /* TOMBOL */
 
       .hero-button {
-        margin-top:
-          9px;
+        margin-top: 9px;
 
-        margin-bottom:
-          5px;
+        margin-bottom: 3px;
 
         padding:
           10px 18px;
 
-        font-size:
-          12px;
+        font-size: 12px;
 
-        border-radius:
-          9px;
+        border-radius: 9px;
 
         box-shadow:
           0 6px 16px rgba(0,0,0,0.22);
       }
 
 
-      /* MAIN MOBILE */
+
+      /* MAIN */
 
       main {
         padding:
           26px 13px 45px;
       }
 
+
       .booking-card {
         padding:
           18px 15px 20px;
 
-        border-radius:
-          16px;
+        border-radius: 16px;
       }
 
+
       .section-title {
-        font-size:
-          25px;
+        font-size: 25px;
       }
+
 
       .route-grid {
         grid-template-columns:
           1fr;
 
-        gap:
-          9px;
+        gap: 9px;
       }
 
+
       .route-label {
-        min-height:
-          56px;
+        min-height: 56px;
       }
+
 
       #schedule {
         grid-template-columns:
           1fr;
       }
 
+
       .schedule-card {
-        min-height:
-          94px;
+        min-height: 94px;
       }
+
 
       .schedule-time {
-        min-width:
-          82px;
+        min-width: 82px;
 
-        font-size:
-          19px;
+        font-size: 19px;
       }
+
 
       #seats {
         padding:
           15px 8px;
       }
 
+
       .bookingSummary {
         grid-template-columns:
           1fr;
       }
 
-      .seat {
-        width:
-          48px;
 
-        height:
-          45px;
+      .seat {
+        width: 48px;
+
+        height: 45px;
       }
+
 
       .seatAisle {
-        width:
-          16px;
+        width: 16px;
 
-        flex-basis:
-          16px;
+        flex-basis: 16px;
       }
+
 
       .info-section {
         padding:
@@ -2077,6 +1998,7 @@
   </header>
 
 
+
   <!-- =========================================
        HERO
        ========================================= -->
@@ -2084,6 +2006,7 @@
   <section class="hero">
 
     <div class="hero-inner">
+
 
       <div class="hero-badge">
         Travel Maluku Utara
@@ -2121,12 +2044,14 @@
         Pesan Sekarang
       </a>
 
+
     </div>
 
 
     <div class="hero-bottom-line"></div>
 
   </section>
+
 
 
   <!-- =========================================
@@ -2141,6 +2066,7 @@
       class="booking-card"
     >
 
+
       <h2 class="section-title">
         Pesan Tiket
       </h2>
@@ -2152,9 +2078,10 @@
       </p>
 
 
-      <!-- =========================================
+
+      <!-- =====================================
            RUTE
-           ========================================= -->
+           ===================================== -->
 
       <div class="form-group">
 
@@ -2180,12 +2107,17 @@
               class="route-label"
               for="route-sofifi-weda"
             >
-              <span class="route-arrow">➜</span>
+
+              <span class="route-arrow">
+                ➜
+              </span>
 
               Sofifi → Weda
+
             </label>
 
           </div>
+
 
 
           <div class="route-card">
@@ -2201,12 +2133,17 @@
               class="route-label"
               for="route-sofifi-lelilef"
             >
-              <span class="route-arrow">➜</span>
+
+              <span class="route-arrow">
+                ➜
+              </span>
 
               Sofifi → Lelilef
+
             </label>
 
           </div>
+
 
 
           <div class="route-card">
@@ -2222,12 +2159,17 @@
               class="route-label"
               for="route-loleo-weda"
             >
-              <span class="route-arrow">➜</span>
+
+              <span class="route-arrow">
+                ➜
+              </span>
 
               Loleo → Weda
+
             </label>
 
           </div>
+
 
 
           <div class="route-card">
@@ -2243,12 +2185,17 @@
               class="route-label"
               for="route-loleo-lelilef"
             >
-              <span class="route-arrow">➜</span>
+
+              <span class="route-arrow">
+                ➜
+              </span>
 
               Loleo → Lelilef
+
             </label>
 
           </div>
+
 
 
           <div class="route-card">
@@ -2264,12 +2211,17 @@
               class="route-label"
               for="route-weda-lelilef"
             >
-              <span class="route-arrow">➜</span>
+
+              <span class="route-arrow">
+                ➜
+              </span>
 
               Weda → Lelilef
+
             </label>
 
           </div>
+
 
 
           <div class="route-card">
@@ -2285,12 +2237,17 @@
               class="route-label"
               for="route-lelilef-weda"
             >
-              <span class="route-arrow">➜</span>
+
+              <span class="route-arrow">
+                ➜
+              </span>
 
               Lelilef → Weda
+
             </label>
 
           </div>
+
 
 
           <div class="route-card">
@@ -2306,12 +2263,17 @@
               class="route-label"
               for="route-lelilef-loleo"
             >
-              <span class="route-arrow">➜</span>
+
+              <span class="route-arrow">
+                ➜
+              </span>
 
               Lelilef → Loleo
+
             </label>
 
           </div>
+
 
 
           <div class="route-card">
@@ -2327,12 +2289,17 @@
               class="route-label"
               for="route-lelilef-sofifi"
             >
-              <span class="route-arrow">➜</span>
+
+              <span class="route-arrow">
+                ➜
+              </span>
 
               Lelilef → Sofifi
+
             </label>
 
           </div>
+
 
 
           <div class="route-card">
@@ -2348,12 +2315,17 @@
               class="route-label"
               for="route-weda-loleo"
             >
-              <span class="route-arrow">➜</span>
+
+              <span class="route-arrow">
+                ➜
+              </span>
 
               Weda → Loleo
+
             </label>
 
           </div>
+
 
 
           <div class="route-card">
@@ -2369,9 +2341,13 @@
               class="route-label"
               for="route-weda-sofifi"
             >
-              <span class="route-arrow">➜</span>
+
+              <span class="route-arrow">
+                ➜
+              </span>
 
               Weda → Sofifi
+
             </label>
 
           </div>
@@ -2382,10 +2358,8 @@
       </div>
 
 
-      <!-- =========================================
-           HIDDEN FROM / TO
-           APP.JS TETAP MENGGUNAKAN INI
-           ========================================= -->
+
+      <!-- APP.JS TETAP MENGGUNAKAN FROM / TO -->
 
       <select
         id="from"
@@ -2413,6 +2387,7 @@
         </option>
 
       </select>
+
 
 
       <select
@@ -2443,9 +2418,10 @@
       </select>
 
 
-      <!-- =========================================
+
+      <!-- =====================================
            TANGGAL
-           ========================================= -->
+           ===================================== -->
 
       <div class="form-group">
 
@@ -2463,9 +2439,10 @@
       </div>
 
 
-      <!-- =========================================
+
+      <!-- =====================================
            JADWAL
-           ========================================= -->
+           ===================================== -->
 
       <div class="form-group">
 
@@ -2489,9 +2466,10 @@
       </div>
 
 
-      <!-- =========================================
+
+      <!-- =====================================
            KURSI
-           ========================================= -->
+           ===================================== -->
 
       <div class="form-group">
 
@@ -2515,9 +2493,10 @@
       </div>
 
 
-      <!-- =========================================
-           NAMA
-           ========================================= -->
+
+      <!-- =====================================
+           NAMA PENUMPANG
+           ===================================== -->
 
       <div class="form-group">
 
@@ -2536,9 +2515,10 @@
       </div>
 
 
-      <!-- =========================================
+
+      <!-- =====================================
            WHATSAPP
-           ========================================= -->
+           ===================================== -->
 
       <div class="form-group">
 
@@ -2558,9 +2538,10 @@
       </div>
 
 
-      <!-- =========================================
-           PESAN
-           ========================================= -->
+
+      <!-- =====================================
+           BOOKING BUTTON
+           ===================================== -->
 
       <button
         type="button"
@@ -2574,6 +2555,7 @@
 
 
     </section>
+
 
 
     <!-- =========================================
@@ -2617,6 +2599,7 @@
   </main>
 
 
+
   <!-- =========================================
        FOOTER
        ========================================= -->
@@ -2646,11 +2629,13 @@
   </footer>
 
 
+
   <!-- =========================================
        JAVASCRIPT
        ========================================= -->
 
   <script src="config.js"></script>
+
   <script src="app.js"></script>
 
 
