@@ -8,9 +8,10 @@
 // - Segment kursi
 // - 14 kursi + kernet
 // - Booking Supabase
-// - Kode booking 6 karakter
+// - Kode booking 6 karakter HURUF + ANGKA
 // - Status pending
 // - Kursi pending = kuning
+// - Kursi paid = merah
 // - Redirect langsung ke WhatsApp admin
 // ============================================================
 
@@ -349,13 +350,13 @@ async function fetchSchedules() {
       .order(
         "travel_date",
         {
-          ascending:true
+          ascending: true
         }
       )
       .order(
         "departure_time",
         {
-          ascending:true
+          ascending: true
         }
       );
 
@@ -891,7 +892,6 @@ async function loadSchedules() {
 
 async function fetchBookings(scheduleId) {
 
-  // Utamakan RPC aman
   const rpcResult =
     await db.rpc(
       "get_hsm_seat_statuses",
@@ -915,7 +915,6 @@ async function fetchBookings(scheduleId) {
   );
 
 
-  // Fallback
   const { data, error } =
     await db
       .from("bookings")
@@ -1037,7 +1036,6 @@ function getSeatStatus(
         );
 
 
-      // Cancelled dan completed tidak mengunci kursi
       if (
         status === "cancelled" ||
         status === "completed"
@@ -1140,7 +1138,8 @@ function createSeat(
 
 
   if (
-    status === "available"
+    status ===
+    "available"
   ) {
 
     seat.classList.add(
@@ -1183,7 +1182,8 @@ function createSeat(
 
 
   else if (
-    status === "pending"
+    status ===
+    "pending"
   ) {
 
     seat.classList.add(
@@ -1405,7 +1405,7 @@ async function loadSeats(schedule) {
     );
 
 
-    // PINTU
+    // PINTU SLIDING
     const slidingDoor =
       document.createElement(
         "div"
@@ -1683,38 +1683,140 @@ function normalizePhone(value) {
 
 // ============================================================
 // BOOKING CODE
-// 6 KARAKTER
-// Contoh H8K4P2
+// 6 KARAKTER HURUF + ANGKA
+//
+// CONTOH:
+// A7K29B
+// H4M8Q2
+// 7X3P9L
+//
+// O, 0, I, 1 tidak digunakan supaya tidak membingungkan.
+// Minimal selalu ada 1 huruf dan 1 angka.
 // ============================================================
 
 function generateBookingCode() {
 
-  const chars =
-    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const letters =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ";
+
+  const numbers =
+    "23456789";
+
+  const all =
+    letters + numbers;
 
 
-  let code =
-    "H";
+  const chars = [];
 
 
-  for (
-    let i = 0;
-    i < 5;
-    i++
+  // Pastikan ada minimal 1 huruf
+  chars.push(
+    letters.charAt(
+      Math.floor(
+        Math.random() *
+        letters.length
+      )
+    )
+  );
+
+
+  // Pastikan ada minimal 1 angka
+  chars.push(
+    numbers.charAt(
+      Math.floor(
+        Math.random() *
+        numbers.length
+      )
+    )
+  );
+
+
+  // Tambah 4 karakter acak
+  while (
+    chars.length < 6
   ) {
 
-    code +=
-      chars.charAt(
+    chars.push(
+      all.charAt(
         Math.floor(
           Math.random() *
-          chars.length
+          all.length
         )
-      );
+      )
+    );
 
   }
 
 
-  return code;
+  // Fisher-Yates shuffle
+  // Supaya posisi huruf/angka benar-benar acak
+  for (
+    let i =
+      chars.length - 1;
+    i > 0;
+    i--
+  ) {
+
+    const j =
+      Math.floor(
+        Math.random() *
+        (i + 1)
+      );
+
+
+    [
+      chars[i],
+      chars[j]
+    ] = [
+      chars[j],
+      chars[i]
+    ];
+
+  }
+
+
+  return chars.join("");
+
+}
+
+
+// ============================================================
+// CEK APAKAH ERROR BENAR-BENAR DUPLIKAT BOOKING CODE
+// ============================================================
+
+function isBookingCodeDuplicate(error) {
+
+  if (!error) {
+    return false;
+  }
+
+
+  if (
+    String(error.code || "") !==
+    "23505"
+  ) {
+
+    return false;
+
+  }
+
+
+  const text = `
+    ${error.message || ""}
+    ${error.details || ""}
+    ${error.hint || ""}
+  `
+    .toLowerCase();
+
+
+  return (
+    text.includes(
+      "booking_code"
+    ) ||
+    text.includes(
+      "bookings_booking_code"
+    )
+  );
 
 }
 
@@ -1727,14 +1829,21 @@ async function insertBooking(
   bookingData
 ) {
 
+  // Maksimal 10 kali hanya jika kode booking kebetulan sama
   for (
-    let attempt = 0;
-    attempt < 5;
+    let attempt = 1;
+    attempt <= 10;
     attempt++
   ) {
 
     const bookingCode =
       generateBookingCode();
+
+
+    console.log(
+      "Mencoba booking code:",
+      bookingCode
+    );
 
 
     const { error } =
@@ -1749,27 +1858,49 @@ async function insertBooking(
 
     if (!error) {
 
+      console.log(
+        "Booking berhasil:",
+        bookingCode
+      );
+
+
       return bookingCode;
 
     }
 
 
+    console.error(
+      "INSERT BOOKING ERROR:",
+      error
+    );
+
+
+    // Kalau memang booking_code yang sama,
+    // buat kode baru dan coba lagi.
     if (
-      error.code === "23505"
+      isBookingCodeDuplicate(
+        error
+      )
     ) {
+
+      console.warn(
+        "Kode booking sudah dipakai. Membuat kode baru..."
+      );
 
       continue;
 
     }
 
 
+    // Error selain duplicate booking_code
+    // langsung tampilkan error sebenarnya.
     throw error;
 
   }
 
 
   throw new Error(
-    "Gagal membuat kode booking."
+    "Tidak berhasil mendapatkan kode booking unik. Silakan coba lagi."
   );
 
 }
@@ -1932,9 +2063,18 @@ async function createBooking() {
 
   catch (error) {
 
+    console.error(
+      "SEAT CHECK ERROR:",
+      error
+    );
+
+
     alert(
       "Gagal mengecek kursi:\n" +
-      error.message
+      (
+        error.message ||
+        "Terjadi kesalahan."
+      )
     );
 
     return;
@@ -2027,6 +2167,10 @@ async function createBooking() {
   let bookingCode;
 
 
+  // ==========================================================
+  // SIMPAN KE SUPABASE
+  // ==========================================================
+
   try {
 
     bookingCode =
@@ -2045,12 +2189,28 @@ async function createBooking() {
     );
 
 
+    let errorMessage =
+      error.message ||
+      "Terjadi kesalahan saat membuat booking.";
+
+
+    if (
+      errorMessage
+        .toLowerCase()
+        .includes(
+          "row-level security"
+        )
+    ) {
+
+      errorMessage =
+        "Booking ditolak oleh keamanan database Supabase.";
+
+    }
+
+
     alert(
       "Booking gagal:\n" +
-      (
-        error.message ||
-        "Terjadi kesalahan."
-      )
+      errorMessage
     );
 
 
@@ -2152,7 +2312,9 @@ Mohon konfirmasi booking saya.
         line-height:1.65;
       ">
 
-        <strong>
+        <strong style="
+          font-size:18px;
+        ">
           Booking berhasil
         </strong>
 
@@ -2162,6 +2324,49 @@ Mohon konfirmasi booking saya.
         <b>${bookingCode}</b>
 
         <br>
+
+        Nama:
+        <b>${passengerName}</b>
+
+        <br>
+
+        Rute:
+        <b>
+          ${selectedSchedule.displayOrigin}
+          →
+          ${selectedSchedule.displayDestination}
+        </b>
+
+        <br>
+
+        Tanggal:
+        <b>${travelDate}</b>
+
+        <br>
+
+        Jam:
+        <b>${departureTime}</b>
+
+        <br>
+
+        Kendaraan:
+        <b>${vehicle}</b>
+
+        <br>
+
+        Kursi:
+        <b>${seatNumber}</b>
+
+        <br>
+
+        Total:
+        <b>
+          ${rupiah(
+            selectedSchedule.displayPrice
+          )}
+        </b>
+
+        <br><br>
 
         Status:
         <b>Menunggu Pembayaran</b>
@@ -2176,8 +2381,10 @@ Mohon konfirmasi booking saya.
   }
 
 
-  // Jangan tunggu refresh kursi sebelum membuka WhatsApp.
-  // Ini penting untuk browser Android.
+  // ==========================================================
+  // REDIRECT WHATSAPP
+  // ==========================================================
+
   setTimeout(
     () => {
 
@@ -2186,6 +2393,7 @@ Mohon konfirmasi booking saya.
       );
 
     },
+
     250
   );
 
