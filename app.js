@@ -13,7 +13,11 @@
 // - Status pending
 // - Kursi pending = kuning
 // - Kursi paid = merah
-// - Redirect WhatsApp admin
+// - Redirect WhatsApp berdasarkan lokasi keberangkatan
+//
+// PEMBAGIAN WHATSAPP:
+// - Sofifi / Loleo  → WA 1
+// - Weda / Lelilef → WA 2
 // ============================================================
 
 const HSM_CONFIG = window.HSM_CONFIG;
@@ -1885,7 +1889,6 @@ function generateBookingCode() {
   const chars = [];
 
 
-  // Minimal 1 huruf
   chars.push(
     letters.charAt(
       Math.floor(
@@ -1896,7 +1899,6 @@ function generateBookingCode() {
   );
 
 
-  // Minimal 1 angka
   chars.push(
     numbers.charAt(
       Math.floor(
@@ -1907,7 +1909,6 @@ function generateBookingCode() {
   );
 
 
-  // Isi sampai 6 karakter
   while (
     chars.length < 6
   ) {
@@ -1924,7 +1925,6 @@ function generateBookingCode() {
   }
 
 
-  // Acak posisi
   for (
     let i =
       chars.length - 1;
@@ -2144,15 +2144,82 @@ function getPassengerData() {
 // ============================================================
 // ADMIN NUMBER
 // ============================================================
+// BERDASARKAN LOKASI KEBERANGKATAN:
+//
+// SOFIFI  → WA 1
+// LOLEO   → WA 1
+//
+// WEDA    → WA 2
+// LELILEF → WA 2
+// ============================================================
 
-function getAdminNumber() {
+function getAdminNumber(origin) {
 
-  let adminNumber =
-    String(
-      HSM_CONFIG.WHATSAPP_ADMIN ||
+  const cleanOrigin =
+    String(origin || "")
+      .trim()
+      .toLowerCase();
+
+
+  let adminNumber = "";
+
+
+  // ==========================================================
+  // WA 1 — SOFIFI & LOLEO
+  // ==========================================================
+
+  if (
+    cleanOrigin === "sofifi" ||
+    cleanOrigin === "loleo"
+  ) {
+
+    adminNumber =
+      String(
+        HSM_CONFIG.WHATSAPP_ADMIN ||
+        ""
+      );
+
+  }
+
+
+  // ==========================================================
+  // WA 2 — WEDA & LELILEF
+  // ==========================================================
+
+  else if (
+    cleanOrigin === "weda" ||
+    cleanOrigin === "lelilef"
+  ) {
+
+    adminNumber =
+      String(
+        HSM_CONFIG.WHATSAPP_ADMIN_2 ||
+        ""
+      );
+
+  }
+
+
+  // ==========================================================
+  // FALLBACK KE WA 1
+  // ==========================================================
+
+  else {
+
+    adminNumber =
+      String(
+        HSM_CONFIG.WHATSAPP_ADMIN ||
+        ""
+      );
+
+  }
+
+
+  adminNumber =
+    adminNumber.replace(
+      /\D/g,
       ""
-    )
-      .replace(/\D/g, "");
+    );
 
 
   if (
@@ -2162,6 +2229,17 @@ function getAdminNumber() {
     adminNumber =
       "62" +
       adminNumber.substring(1);
+
+  }
+
+
+  else if (
+    adminNumber.startsWith("8")
+  ) {
+
+    adminNumber =
+      "62" +
+      adminNumber;
 
   }
 
@@ -2176,11 +2254,25 @@ function getAdminNumber() {
 // ============================================================
 
 function redirectWhatsApp(
-  message
+  message,
+  origin
 ) {
 
   const adminNumber =
-    getAdminNumber();
+    getAdminNumber(
+      origin
+    );
+
+
+  if (!adminNumber) {
+
+    alert(
+      "Nomor WhatsApp admin belum dikonfigurasi."
+    );
+
+    return;
+
+  }
 
 
   const whatsappURL =
@@ -2474,8 +2566,6 @@ async function createBooking() {
 
   const bookingData = {
 
-    // Kolom tambahan hasil update database.
-    // Semua booking dari website sekarang adalah Hiace.
     booking_type:
       "hiace",
 
@@ -2527,7 +2617,6 @@ async function createBooking() {
     departure_time:
       departureTime,
 
-    // Kolom fleksibel tidak digunakan.
     requested_time:
       null,
 
@@ -2706,7 +2795,8 @@ Mohon konfirmasi booking saya.
   // ==========================================================
 
   redirectWhatsApp(
-    message
+    message,
+    selectedSchedule.displayOrigin
   );
 
 }
