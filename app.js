@@ -4,6 +4,7 @@
 // FINAL:
 // - Dari → Tujuan
 // - Jadwal otomatis
+// - Jadwal yang tanggal/jamnya lewat otomatis hilang
 // - Harga otomatis
 // - Segment kursi
 // - 14 kursi + kernet
@@ -186,6 +187,94 @@ function formatTime(time) {
 
   return String(time)
     .substring(0, 5);
+
+}
+
+
+// ============================================================
+// CEK JADWAL SUDAH LEWAT
+// ============================================================
+// PENTING:
+// Yang dicek adalah travel_date + displayTime.
+//
+// Contoh:
+// Sofifi 09:00  → hilang setelah 09:00
+// Loleo 09:30   → hilang setelah 09:30
+// Weda 11:30    → hilang setelah 11:30
+//
+// Jadi setiap titik keberangkatan mengikuti jam keberangkatannya
+// sendiri, bukan hanya jam awal kendaraan.
+// ============================================================
+
+function isScheduleExpired(service) {
+
+  if (!service) {
+    return true;
+  }
+
+  const travelDate =
+    String(
+      service.travel_date || ""
+    ).trim();
+
+  const departureTime =
+    String(
+      service.displayTime || ""
+    ).substring(0, 5);
+
+  if (
+    !travelDate ||
+    !departureTime
+  ) {
+    return false;
+  }
+
+  const dateParts =
+    travelDate.split("-");
+
+  const timeParts =
+    departureTime.split(":");
+
+  if (
+    dateParts.length !== 3 ||
+    timeParts.length !== 2
+  ) {
+    return false;
+  }
+
+  const year =
+    Number(dateParts[0]);
+
+  const month =
+    Number(dateParts[1]) - 1;
+
+  const day =
+    Number(dateParts[2]);
+
+  const hour =
+    Number(timeParts[0]);
+
+  const minute =
+    Number(timeParts[1]);
+
+  const departureDateTime =
+    new Date(
+      year,
+      month,
+      day,
+      hour,
+      minute,
+      0,
+      0
+    );
+
+  const now =
+    new Date();
+
+  return (
+    departureDateTime.getTime() <=
+    now.getTime()
+  );
 
 }
 
@@ -738,15 +827,39 @@ async function loadSchedules() {
       buildServices(rows);
 
 
+    // ========================================================
+    // FILTER RUTE + JADWAL YANG BELUM LEWAT
+    // ========================================================
+
     const filtered =
       services.filter(service => {
 
-        return (
+        const correctRoute =
           service.displayOrigin ===
             selectedOrigin &&
           service.displayDestination ===
-            selectedDestination
-        );
+            selectedDestination;
+
+
+        if (!correctRoute) {
+          return false;
+        }
+
+
+        // Kalau tanggal + jam keberangkatan
+        // sudah lewat, jangan tampilkan.
+        if (
+          isScheduleExpired(
+            service
+          )
+        ) {
+
+          return false;
+
+        }
+
+
+        return true;
 
       });
 
@@ -761,7 +874,7 @@ async function loadSchedules() {
           padding:15px;
           text-align:center;
         ">
-          Jadwal tidak tersedia untuk rute dan tanggal ini.
+          Jadwal tidak tersedia atau waktu keberangkatan sudah lewat.
         </div>
       `;
 
@@ -1684,14 +1797,6 @@ function normalizePhone(value) {
 // ============================================================
 // BOOKING CODE
 // 6 KARAKTER HURUF + ANGKA
-//
-// CONTOH:
-// A7K29B
-// H4M8Q2
-// 7X3P9L
-//
-// O, 0, I, 1 tidak digunakan supaya tidak membingungkan.
-// Minimal selalu ada 1 huruf dan 1 angka.
 // ============================================================
 
 function generateBookingCode() {
@@ -1709,7 +1814,6 @@ function generateBookingCode() {
   const chars = [];
 
 
-  // Pastikan ada minimal 1 huruf
   chars.push(
     letters.charAt(
       Math.floor(
@@ -1720,7 +1824,6 @@ function generateBookingCode() {
   );
 
 
-  // Pastikan ada minimal 1 angka
   chars.push(
     numbers.charAt(
       Math.floor(
@@ -1731,7 +1834,6 @@ function generateBookingCode() {
   );
 
 
-  // Tambah 4 karakter acak
   while (
     chars.length < 6
   ) {
@@ -1748,8 +1850,6 @@ function generateBookingCode() {
   }
 
 
-  // Fisher-Yates shuffle
-  // Supaya posisi huruf/angka benar-benar acak
   for (
     let i =
       chars.length - 1;
@@ -1781,7 +1881,7 @@ function generateBookingCode() {
 
 
 // ============================================================
-// CEK APAKAH ERROR BENAR-BENAR DUPLIKAT BOOKING CODE
+// CEK DUPLIKAT BOOKING CODE
 // ============================================================
 
 function isBookingCodeDuplicate(error) {
@@ -1829,7 +1929,6 @@ async function insertBooking(
   bookingData
 ) {
 
-  // Maksimal 10 kali hanya jika kode booking kebetulan sama
   for (
     let attempt = 1;
     attempt <= 10;
@@ -1875,8 +1974,6 @@ async function insertBooking(
     );
 
 
-    // Kalau memang booking_code yang sama,
-    // buat kode baru dan coba lagi.
     if (
       isBookingCodeDuplicate(
         error
@@ -1892,8 +1989,6 @@ async function insertBooking(
     }
 
 
-    // Error selain duplicate booking_code
-    // langsung tampilkan error sebenarnya.
     throw error;
 
   }
@@ -1939,6 +2034,34 @@ async function createBooking() {
     alert(
       "Pilih jadwal terlebih dahulu."
     );
+
+    return;
+
+  }
+
+
+  // ==========================================================
+  // CEK JADWAL SEKALI LAGI SEBELUM BOOKING
+  // ==========================================================
+  // Misalnya penumpang memilih jadwal 09:00 pada 08:59,
+  // tetapi baru menekan tombol booking setelah 09:00,
+  // booking akan ditolak.
+  // ==========================================================
+
+  if (
+    isScheduleExpired(
+      selectedSchedule
+    )
+  ) {
+
+    alert(
+      "Maaf, waktu keberangkatan untuk jadwal ini sudah lewat."
+    );
+
+
+    resetTripSelection();
+
+    await loadSchedules();
 
     return;
 
@@ -2497,6 +2620,9 @@ loadSchedules();
 // ============================================================
 // AUTO REFRESH
 // ============================================================
+// Setiap 30 detik web mengecek kembali jadwal.
+// Kalau jam keberangkatan sudah lewat, jadwal otomatis hilang.
+// ============================================================
 
 setInterval(
   () => {
@@ -2509,10 +2635,35 @@ setInterval(
     }
 
 
+    // Kalau penumpang sedang memilih kursi,
+    // jangan tiba-tiba reset tampilannya.
     if (
       selectedSchedule
     ) {
+
+      // Tetapi kalau jadwal yang sedang dipilih
+      // ternyata sudah lewat, hapus pilihan.
+      if (
+        isScheduleExpired(
+          selectedSchedule
+        )
+      ) {
+
+        resetTripSelection();
+
+        if (
+          selectedOrigin &&
+          selectedDestination
+        ) {
+
+          loadSchedules();
+
+        }
+
+      }
+
       return;
+
     }
 
 
