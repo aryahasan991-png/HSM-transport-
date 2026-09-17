@@ -2,6 +2,7 @@
 <html lang="id">
 
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -9,18 +10,18 @@
     content="width=device-width, initial-scale=1.0"
   >
 
+  <meta
+    name="theme-color"
+    content="#0754a6"
+  >
+
   <title>
-    HSM Transport | Travel Sofifi Weda Lelilef - Pesan Tiket Online
+    HSM Transport | Travel Sofifi, Loleo, Weda & Lelilef
   </title>
 
   <meta
     name="description"
-    content="HSM Transport melayani travel Hiace Sofifi, Loleo, Weda dan Lelilef. Pesan tiket dan pilih kursi secara online."
-  >
-
-  <meta
-    name="keywords"
-    content="HSM Transport, travel Sofifi Weda, travel Sofifi Lelilef, travel Weda Sofifi, travel Lelilef Sofifi, travel Maluku Utara"
+    content="HSM Transport melayani perjalanan Sofifi, Loleo, Weda dan Lelilef di Maluku Utara. Pesan tiket dan pilih kursi secara online."
   >
 
   <meta
@@ -28,384 +29,765 @@
     content="index, follow"
   >
 
-  <!-- SUPABASE -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta
+    property="og:title"
+    content="HSM Transport"
+  >
+
+  <meta
+    property="og:description"
+    content="Travel Sofifi, Loleo, Weda dan Lelilef. Pesan tiket dan pilih kursi secara online."
+  >
+
+  <meta
+    property="og:type"
+    content="website"
+  >
+
+  <meta
+    property="og:url"
+    content="https://hsm-transport.vercel.app/"
+  >
+
+  <meta
+    property="og:image"
+    content="https://hsm-transport.vercel.app/hsm-hiace-commuter.png"
+  >
+
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
 
 
   <style>
 
-    /* =====================================================
-       RESET
-    ===================================================== */
+    :root {
+
+      --blue:#0754a6;
+      --blue-dark:#063d79;
+
+      --red:#e31e2d;
+      --red-dark:#b91422;
+
+      --text:#172033;
+      --muted:#687386;
+
+      --border:#dce3ec;
+
+    }
+
 
     * {
-      box-sizing: border-box;
+      box-sizing:border-box;
     }
+
 
     html {
-      scroll-behavior: smooth;
+      scroll-behavior:smooth;
     }
 
+
     body {
-      margin: 0;
+
+      margin:0;
 
       font-family:
         Arial,
         Helvetica,
         sans-serif;
 
-      background:
-        linear-gradient(
-          180deg,
-          #f3f6fa 0%,
-          #eef3f8 100%
-        );
+      color:var(--text);
 
-      color: #172033;
+      background:#f5f7fa;
+
     }
+
 
     button,
     input,
     select {
-      font-family: inherit;
+
+      font-family:inherit;
+
     }
+
 
     button {
-      cursor: pointer;
+
+      cursor:pointer;
+
     }
 
 
-    /* =====================================================
-       HERO LAMA HSM
-    ===================================================== */
 
-    .hero {
-      min-height: 430px;
+    /* ========================================================
+       HEADER
+       ======================================================== */
 
-      position: relative;
+    .header {
 
-      display: flex;
+      position:sticky;
 
-      align-items: center;
-      justify-content: center;
+      top:0;
 
-      text-align: center;
+      z-index:1000;
 
-      padding: 40px 20px;
+      background:#ffffff;
 
-      color: white;
+      border-bottom:
+        3px solid var(--blue);
+
+      box-shadow:
+        0 3px 15px rgba(0,0,0,.05);
+
+    }
+
+
+    .header-inner {
+
+      max-width:1100px;
+
+      margin:auto;
+
+      padding:
+        10px 16px;
+
+      display:flex;
+
+      align-items:center;
+
+      justify-content:
+        space-between;
+
+      gap:15px;
+
+    }
+
+
+    .header-logo {
+
+      display:block;
+
+      width:185px;
+
+      max-width:100%;
+
+      height:auto;
+
+    }
+
+
+    .brand-company {
+
+      margin-top:2px;
+
+      font-size:10px;
+
+      font-weight:700;
+
+      color:#687386;
+
+    }
+
+
+    .header-link {
+
+      display:inline-flex;
+
+      align-items:center;
+
+      justify-content:center;
+
+      min-height:40px;
+
+      padding:
+        0 16px;
+
+      border-radius:10px;
 
       background:
         linear-gradient(
-          rgba(0, 35, 80, 0.35),
-          rgba(0, 20, 50, 0.65)
-        ),
-        url("./hsm-hero.png")
-        center center / cover
-        no-repeat;
+          135deg,
+          var(--blue),
+          var(--blue-dark)
+        );
+
+      color:#ffffff;
+
+      text-decoration:none;
+
+      font-size:13px;
+
+      font-weight:900;
+
+    }
+
+
+
+    /* ========================================================
+       HERO
+       ======================================================== */
+
+    .hero {
+
+      position:relative;
+
+      width:100%;
+
+      height:500px;
+
+      overflow:hidden;
+
+      background:#dceaf1;
+
+      border-bottom:
+        5px solid var(--blue);
+
+    }
+
+
+    .hero-photo {
+
+      position:absolute;
+
+      inset:0;
+
+      width:100%;
+
+      height:100%;
+
+      object-fit:cover;
+
+      object-position:center;
+
+      z-index:0;
+
+    }
+
+
+    .hero-shade {
+
+      position:absolute;
+
+      inset:0;
+
+      z-index:1;
+
+      pointer-events:none;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(3,30,60,.10),
+          rgba(3,30,60,.01) 65%,
+          rgba(3,30,60,.14)
+        );
+
     }
 
 
     .hero-content {
-      width: 100%;
 
-      max-width: 760px;
+      position:relative;
 
-      position: relative;
+      z-index:3;
 
-      z-index: 2;
+      width:100%;
+
+      height:100%;
+
+      max-width:760px;
+
+      margin:auto;
+
+      text-align:center;
+
     }
 
 
-    /* =====================================================
-       BRAND LAMA
-    ===================================================== */
+    .hero-badge {
 
-    .brand {
-      margin: 0;
+      position:absolute;
 
-      color: #1684ff;
+      top:18px;
 
-      font-size:
-        clamp(
-          55px,
-          13vw,
-          80px
-        );
+      left:50%;
 
-      font-weight: 900;
+      transform:
+        translateX(-50%);
 
-      line-height: 0.95;
+      white-space:nowrap;
 
-      letter-spacing: 6px;
+      padding:
+        7px 13px;
 
-      text-shadow:
-        0 3px 10px
-        rgba(0,0,0,.30);
+      border-radius:999px;
+
+      background:
+        rgba(3,47,91,.88);
+
+      color:#ffffff;
+
+      font-size:11px;
+
+      font-weight:900;
+
     }
 
 
-    .transport {
-      margin-top: 8px;
+    .hero-logo {
 
-      color: #e63946;
+      position:absolute;
 
-      font-size:
-        clamp(
-          20px,
-          5vw,
-          30px
+      top:60px;
+
+      left:50%;
+
+      transform:
+        translateX(-50%);
+
+      width:220px;
+
+      max-width:58vw;
+
+      height:auto;
+
+      filter:
+        drop-shadow(
+          0 3px 6px rgba(0,0,0,.28)
         );
 
-      font-weight: 800;
-
-      letter-spacing: 5px;
-
-      text-transform: uppercase;
-
-      text-shadow:
-        0 2px 8px
-        rgba(0,0,0,.35);
     }
 
 
-    .hero-title {
-      margin:
-        26px 0 8px;
+    .hero-description {
 
-      font-size:
-        clamp(
-          22px,
-          5vw,
-          32px
+      position:absolute;
+
+      top:135px;
+
+      left:50%;
+
+      transform:
+        translateX(-50%);
+
+      width:
+        min(
+          520px,
+          calc(100% - 32px)
         );
 
-      font-weight: 800;
+      margin:0;
 
-      color: #ffffff;
+      padding:
+        8px 12px;
 
-      text-shadow:
-        0 2px 8px
-        rgba(0,0,0,.35);
+      border-radius:9px;
+
+      background:
+        rgba(3,47,91,.60);
+
+      border:
+        1px solid rgba(255,255,255,.16);
+
+      color:#ffffff;
+
+      font-size:12px;
+
+      font-weight:700;
+
+      line-height:1.45;
+
+      backdrop-filter:
+        blur(3px);
+
     }
 
 
-    .hero-subtitle {
-      max-width: 600px;
+    .hero-button {
 
-      margin:
-        0 auto;
+      position:absolute;
 
-      color:
-        rgba(
-          255,
-          255,
-          255,
-          .92
+      z-index:5;
+
+      top:315px;
+
+      left:50%;
+
+      transform:
+        translateX(-50%);
+
+      min-width:175px;
+
+      padding:
+        12px 19px;
+
+      border-radius:10px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--red),
+          var(--red-dark)
         );
 
-      font-size: 15px;
+      color:#ffffff;
 
-      line-height: 1.6;
+      text-decoration:none;
+
+      font-size:13px;
+
+      font-weight:900;
+
+      box-shadow:
+        0 6px 18px rgba(0,0,0,.25);
+
     }
 
 
     .hero-route {
-      display: inline-block;
 
-      margin-top: 20px;
+      position:absolute;
+
+      left:50%;
+
+      bottom:18px;
+
+      transform:
+        translateX(-50%);
+
+      white-space:nowrap;
 
       padding:
-        9px 17px;
+        8px 13px;
 
-      border:
-        1px solid
-        rgba(
-          255,
-          255,
-          255,
-          .45
-        );
-
-      border-radius: 30px;
+      border-radius:9px;
 
       background:
-        rgba(
-          0,
-          0,
-          0,
-          .22
-        );
+        rgba(3,47,91,.90);
 
-      backdrop-filter:
-        blur(4px);
+      color:#ffffff;
 
-      font-size: 14px;
+      font-size:12px;
 
-      font-weight: 800;
+      font-weight:900;
 
-      letter-spacing: .3px;
     }
 
 
-    /* =====================================================
-       MAIN CONTAINER
-    ===================================================== */
 
-    .container {
-      width: 100%;
+    /* ========================================================
+       MAIN
+       ======================================================== */
 
-      max-width: 760px;
+    main {
 
-      margin:
-        0 auto;
+      width:100%;
+
+      max-width:1100px;
+
+      margin:auto;
 
       padding:
-        20px 14px 50px;
+        35px 18px 60px;
+
     }
 
 
-    /* =====================================================
-       FEATURE CARDS
-    ===================================================== */
+    .booking-card {
 
-    .features {
-      display: grid;
+      position:relative;
+
+      overflow:hidden;
+
+      padding:28px;
+
+      border:
+        1px solid #e1e7ef;
+
+      border-radius:20px;
+
+      background:#ffffff;
+
+      box-shadow:
+        0 15px 45px rgba(21,45,80,.09);
+
+    }
+
+
+    .booking-card::before {
+
+      content:"";
+
+      position:absolute;
+
+      top:0;
+
+      left:0;
+
+      width:72%;
+
+      height:4px;
+
+      background:var(--blue);
+
+    }
+
+
+    .booking-card::after {
+
+      content:"";
+
+      position:absolute;
+
+      top:0;
+
+      right:0;
+
+      width:28%;
+
+      height:4px;
+
+      background:var(--red);
+
+    }
+
+
+    .section-title {
+
+      margin:
+        0 0 8px;
+
+      font-size:29px;
+
+      color:#15233a;
+
+    }
+
+
+    .section-description {
+
+      margin:
+        0 0 27px;
+
+      color:var(--muted);
+
+      line-height:1.55;
+
+      font-size:14px;
+
+    }
+
+
+
+    /* ========================================================
+       FROM TO
+       ======================================================== */
+
+    .trip-selector {
+
+      display:grid;
 
       grid-template-columns:
-        repeat(
-          3,
-          1fr
-        );
+        1fr 48px 1fr;
 
-      gap: 12px;
+      gap:10px;
 
-      margin-top: 4px;
+      align-items:end;
 
-      margin-bottom: 22px;
+      margin-bottom:27px;
+
     }
 
 
-    .feature {
-      background: #ffffff;
+    .trip-field label {
 
-      border-radius: 15px;
+      display:block;
+
+      margin-bottom:8px;
+
+      color:#17233a;
+
+      font-size:13px;
+
+      font-weight:900;
+
+    }
+
+
+    .trip-arrow {
+
+      height:52px;
+
+      display:flex;
+
+      align-items:center;
+
+      justify-content:center;
+
+      color:var(--blue);
+
+      font-size:24px;
+
+      font-weight:900;
+
+    }
+
+
+    .select-wrap {
+
+      position:relative;
+
+    }
+
+
+    .select-wrap::after {
+
+      content:"▼";
+
+      position:absolute;
+
+      top:50%;
+
+      right:15px;
+
+      transform:
+        translateY(-50%);
+
+      pointer-events:none;
+
+      color:var(--blue);
+
+      font-size:11px;
+
+    }
+
+
+    .route-select {
+
+      width:100%;
+
+      height:52px;
 
       padding:
-        17px 10px;
-
-      text-align: center;
-
-      box-shadow:
-        0 4px 18px
-        rgba(
-          0,
-          0,
-          0,
-          .07
-        );
+        0 42px 0 14px;
 
       border:
-        1px solid
-        rgba(
-          0,
-          0,
-          0,
-          .035
-        );
+        1.5px solid var(--border);
+
+      border-radius:11px;
+
+      appearance:none;
+
+      -webkit-appearance:none;
+
+      outline:none;
+
+      background:#fbfcfe;
+
+      color:#172033;
+
+      font-size:15px;
+
+      font-weight:800;
+
     }
 
 
-    .feature-icon {
-      font-size: 25px;
+    .route-select:focus {
 
-      margin-bottom: 7px;
-    }
+      border-color:
+        var(--blue);
 
-
-    .feature strong {
-      display: block;
-
-      color: #17365d;
-
-      font-size: 13px;
-    }
-
-
-    .feature span {
-      display: block;
-
-      margin-top: 4px;
-
-      color: #758195;
-
-      font-size: 11px;
-    }
-
-
-    /* =====================================================
-       CARD
-    ===================================================== */
-
-    .card {
-      background: #ffffff;
-
-      border-radius: 17px;
-
-      padding: 20px;
-
-      margin-bottom: 16px;
+      background:#ffffff;
 
       box-shadow:
-        0 4px 18px
-        rgba(
-          0,
-          0,
-          0,
-          .07
-        );
+        0 0 0 4px rgba(7,84,166,.10);
 
-      border:
-        1px solid
-        rgba(
-          0,
-          0,
-          0,
-          .035
-        );
     }
 
 
-    .card-title {
-      margin:
-        0 0 6px;
+    .route-select:disabled {
 
-      color: #17365d;
+      opacity:.55;
 
-      font-size: 19px;
+      cursor:not-allowed;
 
-      font-weight: 800;
     }
 
 
-    .card-description {
-      margin:
-        0 0 17px;
 
-      color: #7b8798;
-
-      font-size: 13px;
-
-      line-height: 1.5;
-    }
-
-
-    /* =====================================================
+    /* ========================================================
        FORM
-    ===================================================== */
+       ======================================================== */
 
-    .form-grid {
-      display: grid;
+    .form-group {
+
+      margin-bottom:26px;
+
+    }
+
+
+    .form-group > label {
+
+      display:block;
+
+      margin-bottom:9px;
+
+      font-size:14px;
+
+      font-weight:900;
+
+    }
+
+
+    .input {
+
+      width:100%;
+
+      min-height:51px;
+
+      padding:
+        12px 14px;
+
+      border:
+        1.5px solid var(--border);
+
+      border-radius:11px;
+
+      outline:none;
+
+      background:#fbfcfe;
+
+      color:#172033;
+
+      font-size:15px;
+
+    }
+
+
+    .input:focus {
+
+      border-color:
+        var(--blue);
+
+      background:#ffffff;
+
+      box-shadow:
+        0 0 0 4px rgba(7,84,166,.10);
+
+    }
+
+
+
+    /* ========================================================
+       SCHEDULE
+       ======================================================== */
+
+    #schedule {
+
+      display:grid;
 
       grid-template-columns:
         repeat(
@@ -413,673 +795,740 @@
           minmax(0,1fr)
         );
 
-      gap: 14px;
-    }
+      gap:12px;
 
-
-    .form-group {
-      min-width: 0;
-    }
-
-
-    .form-group.full {
-      grid-column:
-        1 / -1;
-    }
-
-
-    label {
-      display: block;
-
-      margin-bottom: 7px;
-
-      color: #34445a;
-
-      font-size: 13px;
-
-      font-weight: 700;
-    }
-
-
-    .form-control {
-      width: 100%;
-
-      height: 48px;
-
-      padding:
-        0 13px;
-
-      border:
-        1px solid #d8e0ea;
-
-      border-radius: 10px;
-
-      outline: none;
-
-      background: #ffffff;
-
-      color: #172033;
-
-      font-size: 14px;
-
-      transition:
-        .2s ease;
-    }
-
-
-    .form-control:focus {
-      border-color: #1684ff;
-
-      box-shadow:
-        0 0 0 3px
-        rgba(
-          22,
-          132,
-          255,
-          .12
-        );
-    }
-
-
-    .form-control:disabled {
-      background: #f1f3f6;
-
-      color: #a0a8b3;
-
-      cursor: not-allowed;
-    }
-
-
-    /* =====================================================
-       SCHEDULE
-    ===================================================== */
-
-    #schedule {
-      display: grid;
-
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(
-            0,
-            1fr
-          )
-        );
-
-      gap: 11px;
     }
 
 
     .schedule-card {
-      width: 100%;
 
-      min-height: 92px;
+      width:100%;
+
+      min-height:105px;
+
+      padding:0;
+
+      display:flex;
+
+      overflow:hidden;
 
       border:
-        2px solid #e5eaf0;
+        1.5px solid var(--border);
 
-      border-radius: 13px;
+      border-radius:14px;
 
-      padding:
-        13px;
+      background:#ffffff;
 
-      background: #ffffff;
+      color:#172033;
 
-      display: flex;
-
-      align-items: center;
-
-      gap: 12px;
-
-      text-align: left;
-
-      color: #172033;
-
-      transition:
-        .18s ease;
+      text-align:left;
 
       box-shadow:
-        0 2px 8px
-        rgba(
-          0,
-          0,
-          0,
-          .035
-        );
-    }
+        0 5px 15px rgba(20,40,70,.05);
 
-
-    .schedule-card:hover {
-      border-color: #1684ff;
-
-      transform:
-        translateY(-1px);
-    }
-
-
-    .schedule-card.selected {
-      border-color: #1684ff;
-
-      background: #edf6ff;
-
-      box-shadow:
-        0 0 0 3px
-        rgba(
-          22,
-          132,
-          255,
-          .12
-        );
     }
 
 
     .schedule-time {
-      min-width: 62px;
 
-      color: #1684ff;
+      min-width:88px;
 
-      font-size: 22px;
+      display:flex;
 
-      font-weight: 900;
+      align-items:center;
+
+      justify-content:center;
+
+      padding:12px;
+
+      background:
+        linear-gradient(
+          145deg,
+          var(--blue),
+          var(--blue-dark)
+        );
+
+      color:#ffffff;
+
+      font-size:20px;
+
+      font-weight:900;
+
     }
 
 
     .schedule-info {
-      min-width: 0;
 
-      display: flex;
+      flex:1;
 
-      flex-direction: column;
+      padding:14px;
 
-      gap: 3px;
+      display:flex;
+
+      flex-direction:column;
+
+      justify-content:center;
+
+      gap:5px;
+
     }
 
 
     .schedule-info strong {
-      color: #26364c;
 
-      font-size: 13px;
+      color:var(--blue);
+
+      font-size:14px;
+
     }
 
 
     .schedule-info span {
-      color: #7a8798;
 
-      font-size: 11px;
+      color:#687386;
 
-      line-height: 1.3;
+      font-size:12px;
+
     }
 
 
-    /* =====================================================
-       SEAT LEGEND
-    ===================================================== */
+    .schedule-info span:last-child {
+
+      color:var(--red);
+
+      font-size:14px;
+
+      font-weight:900;
+
+    }
+
+
+    .schedule-card.selected {
+
+      border-color:
+        var(--blue);
+
+      background:#f5f9ff;
+
+      box-shadow:
+        0 8px 24px rgba(7,84,166,.16);
+
+    }
+
+
+
+    /* ========================================================
+       SEAT
+       ======================================================== */
+
+    #seats {
+
+      margin-top:8px;
+
+      padding:20px;
+
+      overflow-x:auto;
+
+      border:
+        1.5px solid #dce5f0;
+
+      border-radius:16px;
+
+      background:#f8fbff;
+
+    }
+
 
     .seatLegend {
-      display: flex;
 
-      align-items: center;
-      justify-content: center;
+      display:flex;
 
-      flex-wrap: wrap;
+      flex-wrap:wrap;
 
-      gap:
-        10px 16px;
+      justify-content:center;
 
-      margin-bottom: 18px;
+      gap:8px;
 
-      padding:
-        11px;
+      margin-bottom:18px;
 
-      border-radius: 11px;
+      color:#4b5563;
 
-      background: #f7f9fc;
+      font-size:11px;
 
-      font-size: 11px;
+      font-weight:800;
 
-      color: #64748b;
     }
 
 
     .seatLegend span {
-      display: flex;
 
-      align-items: center;
+      display:inline-flex;
 
-      gap: 6px;
+      align-items:center;
+
+      gap:5px;
+
+      padding:
+        6px 8px;
+
+      border:
+        1px solid #e0e5eb;
+
+      border-radius:999px;
+
+      background:#ffffff;
+
     }
 
 
     .seatLegend i {
-      display: inline-block;
 
-      width: 15px;
+      width:11px;
 
-      height: 15px;
+      height:11px;
 
-      border-radius: 4px;
+      display:inline-block;
+
+      border-radius:3px;
+
     }
 
-
-    /* TERSEDIA = HIJAU */
 
     .legendAvailable {
-      background: #22c55e;
 
-      border:
-        2px solid #16a34a;
+      background:#22c55e;
+
     }
 
-
-    /* PENDING = KUNING */
 
     .legendPending {
-      background: #fbbf24;
 
-      border:
-        2px solid #d97706;
+      background:#facc15;
+
     }
 
-
-    /* PAID = MERAH */
 
     .legendPaid {
-      background: #ef4444;
 
-      border:
-        2px solid #dc2626;
-    }
+      background:#ef4444;
 
-
-    /* =====================================================
-       SEATS
-    ===================================================== */
-
-    #seats {
-      width: 100%;
     }
 
 
     .seat {
-      width: 54px;
 
-      height: 48px;
+      width:54px;
 
-      padding: 0;
+      height:48px;
 
-      display: flex;
+      border:0;
 
-      align-items: center;
-      justify-content: center;
+      border-radius:10px;
 
-      border-radius: 9px;
+      font-size:14px;
 
-      font-size: 12px;
-
-      font-weight: 900;
-
-      transition:
-        .15s ease;
-
-      box-sizing: border-box;
-    }
-
-
-    /* =====================================================
-       KURSI TERSEDIA = HIJAU MUDA
-    ===================================================== */
-
-    .seat.available {
-      background: #dcfce7 !important;
-
-      border:
-        2px solid #22c55e !important;
-
-      color: #15803d !important;
-    }
-
-
-    .seat.available:hover {
-      background: #bbf7d0 !important;
-
-      border-color: #16a34a !important;
-
-      transform:
-        scale(1.05);
-    }
-
-
-    /* =====================================================
-       KURSI DIPILIH = HIJAU PEKAT
-    ===================================================== */
-
-    .seat.available.selected {
-      background: #16a34a !important;
-
-      border-color: #15803d !important;
-
-      color: #ffffff !important;
-
-      transform:
-        scale(1.05);
+      font-weight:900;
 
       box-shadow:
-        0 0 0 4px
-        rgba(
-          22,
-          163,
-          74,
-          .18
-        );
+        0 4px 10px rgba(0,0,0,.08);
+
     }
 
 
-    /* =====================================================
-       PENDING = KUNING
-    ===================================================== */
+    .seat.available {
+
+      background:#22c55e;
+
+      color:#ffffff;
+
+    }
+
+
+    .seat.available.selected {
+
+      outline:
+        4px solid rgba(7,84,166,.30);
+
+      transform:
+        scale(1.06);
+
+    }
+
 
     .seat.pending {
-      background: #fbbf24 !important;
 
-      border:
-        2px solid #d97706 !important;
+      background:#facc15;
 
-      color: #513500 !important;
+      color:#302b00;
 
-      cursor: not-allowed;
+      cursor:not-allowed;
+
     }
 
-
-    /* =====================================================
-       PAID = MERAH
-    ===================================================== */
 
     .seat.paid {
-      background: #ef4444 !important;
 
-      border:
-        2px solid #dc2626 !important;
+      background:#ef4444;
 
-      color: #ffffff !important;
+      color:#ffffff;
 
-      cursor: not-allowed;
+      cursor:not-allowed;
+
     }
 
 
-    /* =====================================================
-       BOOKING SUMMARY
-    ===================================================== */
+
+    /* ========================================================
+       SUMMARY
+       ======================================================== */
 
     .bookingSummary {
-      display: grid;
+
+      margin-top:18px;
+
+      padding:18px;
+
+      display:grid;
 
       grid-template-columns:
         repeat(
           2,
-          minmax(
-            0,
-            1fr
-          )
+          minmax(0,1fr)
         );
 
-      gap: 9px;
-
-      margin-top: 16px;
-
-      padding: 14px;
-
-      border-radius: 12px;
-
-      background: #f4f9ff;
+      gap:14px;
 
       border:
-        1px solid #dcecff;
+        1px solid #dce5f0;
 
-      font-size: 12px;
-    }
+      border-radius:14px;
 
+      background:#f6faff;
 
-    .bookingSummary div {
-      padding: 9px;
+      line-height:1.5;
 
-      background: #ffffff;
-
-      border-radius: 8px;
-
-      border:
-        1px solid #e7eef7;
-
-      color: #64748b;
     }
 
 
     .bookingSummary strong {
-      color: #1684ff;
+
+      color:
+        var(--blue-dark);
+
     }
 
 
-    /* =====================================================
-       BOOK BUTTON
-    ===================================================== */
+
+    /* ========================================================
+       BOOK
+       ======================================================== */
 
     #book {
-      width: 100%;
 
-      min-height: 52px;
+      width:100%;
 
-      margin-top: 18px;
+      min-height:55px;
 
-      border: 0;
+      margin-top:8px;
 
-      border-radius: 11px;
+      border:0;
+
+      border-radius:12px;
 
       background:
         linear-gradient(
           135deg,
-          #1684ff,
-          #0069df
+          var(--blue),
+          var(--blue-dark)
         );
 
-      color: #ffffff;
+      color:#ffffff;
 
-      font-size: 15px;
+      font-size:16px;
 
-      font-weight: 900;
+      font-weight:900;
 
       box-shadow:
-        0 7px 18px
-        rgba(
-          22,
-          132,
-          255,
-          .24
-        );
+        0 9px 22px rgba(7,84,166,.24);
 
-      transition:
-        .2s ease;
-    }
-
-
-    #book:hover {
-      transform:
-        translateY(-1px);
-
-      box-shadow:
-        0 9px 20px
-        rgba(
-          22,
-          132,
-          255,
-          .30
-        );
     }
 
 
     #book:disabled {
-      opacity: .6;
 
-      cursor: not-allowed;
+      opacity:.6;
 
-      transform: none;
+      cursor:not-allowed;
+
     }
 
 
-    #result {
-      margin-top: 14px;
+
+    /* ========================================================
+       INFO
+       ======================================================== */
+
+    .info-section {
+
+      margin-top:35px;
+
+      padding:27px;
+
+      border:
+        1px solid #e1e7ef;
+
+      border-radius:18px;
+
+      background:#ffffff;
+
+      line-height:1.75;
+
+      box-shadow:
+        0 10px 30px rgba(20,40,70,.06);
+
     }
 
 
-    /* =====================================================
+    .info-section h2 {
+
+      margin-top:0;
+
+      color:var(--blue-dark);
+
+    }
+
+
+    .info-section p {
+
+      color:#596579;
+
+    }
+
+
+
+    /* ========================================================
        FOOTER
-    ===================================================== */
+       ======================================================== */
 
     footer {
+
       padding:
-        28px 15px;
+        38px 18px;
 
-      text-align: center;
-
-      background: #10233d;
-
-      color: #ffffff;
-    }
-
-
-    .footer-brand {
-      color: #1684ff;
-
-      font-size: 20px;
-
-      font-weight: 900;
-
-      letter-spacing: 2px;
-    }
-
-
-    .footer-brand span {
-      color: #e63946;
-    }
-
-
-    .footer-company {
-      margin-top: 5px;
-
-      color:
-        rgba(
-          255,
-          255,
-          255,
-          .75
+      background:
+        linear-gradient(
+          135deg,
+          #052d59,
+          #071d36
         );
 
-      font-size: 12px;
+      color:#cbd5e1;
+
+      text-align:center;
+
+      line-height:1.75;
+
+      border-top:
+        4px solid var(--red);
+
     }
 
 
-    .footer-route {
-      margin-top: 8px;
+    footer strong {
 
-      color:
-        rgba(
-          255,
-          255,
-          255,
-          .55
-        );
+      color:#ffffff;
 
-      font-size: 11px;
+      font-size:18px;
+
     }
 
 
-    /* =====================================================
+
+    /* ========================================================
        MOBILE
-    ===================================================== */
+       ======================================================== */
 
-    @media (
-      max-width: 700px
-    ) {
+    @media(max-width:760px) {
+
+
+      .header-inner {
+
+        padding:
+          9px 13px;
+
+      }
+
+
+      .header-logo {
+
+        width:145px;
+
+      }
+
+
+      .brand-company {
+
+        font-size:8px;
+
+      }
+
+
+      .header-link {
+
+        min-height:36px;
+
+        padding:
+          0 12px;
+
+        font-size:11px;
+
+      }
+
+
+
+      /* HERO */
 
       .hero {
-        min-height: 390px;
+
+        height:440px;
+
+      }
+
+
+      .hero-photo {
+
+        width:112%;
+
+        max-width:none;
+
+        height:100%;
+
+        left:50%;
+
+        right:auto;
+
+        transform:
+          translateX(-50%);
+
+        object-fit:cover;
+
+        object-position:
+          50% 57%;
+
+      }
+
+
+      .hero-badge {
+
+        top:13px;
 
         padding:
-          35px 15px;
+          5px 10px;
+
+        font-size:9.5px;
+
       }
 
 
-      .features {
-        gap: 8px;
+      .hero-logo {
+
+        top:48px;
+
+        width:155px;
+
+        max-width:44vw;
+
       }
 
 
-      .feature {
+      .hero-description {
+
+        top:104px;
+
+        width:
+          calc(100% - 50px);
+
+        max-width:350px;
+
         padding:
-          14px 6px;
+          6px 9px;
+
+        font-size:10.5px;
+
+        line-height:1.35;
+
       }
 
 
-      .feature strong {
-        font-size: 11px;
+      /*
+        Tombol berada di area body mobil
+        untuk membantu menutup logo pada foto.
+      */
+
+      .hero-button {
+
+        top:292px;
+
+        min-width:155px;
+
+        padding:
+          10px 15px;
+
+        font-size:11.5px;
+
       }
 
 
-      .feature span {
-        font-size: 9px;
+      .hero-route {
+
+        bottom:13px;
+
+        padding:
+          7px 10px;
+
+        font-size:10px;
+
       }
 
 
-      .card {
-        padding: 16px;
 
-        border-radius: 15px;
+      /* MAIN */
+
+      main {
+
+        padding:
+          26px 13px 45px;
+
       }
 
 
-      .form-grid {
+      .booking-card {
+
+        padding:
+          19px 15px 21px;
+
+        border-radius:16px;
+
+      }
+
+
+      .section-title {
+
+        font-size:25px;
+
+      }
+
+
+
+      /*
+        DARI + TUJUAN
+
+        Di HP tetap berdampingan agar
+        simpel seperti aplikasi tiket.
+      */
+
+      .trip-selector {
+
         grid-template-columns:
-          1fr;
+          1fr 28px 1fr;
+
+        gap:5px;
+
       }
 
 
-      .form-group.full {
-        grid-column: auto;
+      .trip-arrow {
+
+        height:51px;
+
+        font-size:18px;
+
       }
+
+
+      .trip-field label {
+
+        font-size:12px;
+
+      }
+
+
+      .route-select {
+
+        height:51px;
+
+        padding:
+          0 28px 0 10px;
+
+        font-size:13px;
+
+      }
+
+
+      .select-wrap::after {
+
+        right:10px;
+
+        font-size:9px;
+
+      }
+
 
 
       #schedule {
+
         grid-template-columns:
           1fr;
+
       }
 
 
-      .bookingSummary {
-        grid-template-columns:
-          1fr;
-      }
+      .schedule-card {
 
-    }
+        min-height:94px;
 
-
-    @media (
-      max-width: 390px
-    ) {
-
-      .container {
-        padding-left: 10px;
-        padding-right: 10px;
       }
 
 
-      .card {
+      .schedule-time {
+
+        min-width:82px;
+
+        font-size:19px;
+
+      }
+
+
+      #seats {
+
         padding:
-          14px 10px;
+          15px 8px;
+
       }
 
 
       .seat {
-        width: 50px;
 
-        height: 46px;
+        width:48px;
+
+        height:45px;
+
+      }
+
+
+      .bookingSummary {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .info-section {
+
+        padding:
+          22px 20px;
+
       }
 
     }
@@ -1092,342 +1541,315 @@
 <body>
 
 
-  <!-- =====================================================
-       HERO
-  ====================================================== -->
+  <!-- HEADER -->
+
+  <header class="header">
+
+    <div class="header-inner">
+
+      <div>
+
+        <img
+          src="hsm-logo.png"
+          alt="HSM Transport"
+          class="header-logo"
+        >
+
+        <div class="brand-company">
+          PT Hidayah Sarana Mulia
+        </div>
+
+      </div>
+
+
+      <a
+        href="#booking"
+        class="header-link"
+      >
+        Pesan Tiket
+      </a>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- HERO -->
 
   <section class="hero">
 
+    <img
+      src="hsm-hiace-commuter.png"
+      alt="Hiace HSM Transport"
+      class="hero-photo"
+    >
+
+
+    <div class="hero-shade"></div>
+
+
     <div class="hero-content">
 
-      <div class="brand">
-        HSM
-      </div>
 
-      <div class="transport">
-        Transport
+      <div class="hero-badge">
+        Travel Maluku Utara
       </div>
 
 
-      <h1 class="hero-title">
-        Travel Nyaman di Maluku Utara
-      </h1>
+      <img
+        src="hsm-logo.png"
+        alt="HSM Transport"
+        class="hero-logo"
+      >
 
 
-      <p class="hero-subtitle">
-        Nikmati perjalanan bersama HSM Transport
-        dengan armada Hiace yang nyaman untuk
-        perjalanan Sofifi, Loleo, Weda dan Lelilef.
+      <p class="hero-description">
+
+        Layanan perjalanan yang nyaman untuk
+        Sofifi, Loleo, Weda dan Lelilef.
+        Pilih rute, jadwal dan kursi langsung
+        melalui website.
+
       </p>
+
+
+      <a
+        href="#booking"
+        class="hero-button"
+      >
+        Pesan Sekarang
+      </a>
 
 
       <div class="hero-route">
         Sofifi ↔ Loleo ↔ Weda ↔ Lelilef
       </div>
 
+
     </div>
 
   </section>
 
 
-  <!-- =====================================================
-       CONTENT
-  ====================================================== -->
 
-  <main class="container">
+  <!-- BOOKING -->
 
-
-    <!-- ===================================================
-         FEATURES
-    ==================================================== -->
-
-    <section class="features">
-
-      <div class="feature">
-
-        <div class="feature-icon">
-          ❄️
-        </div>
-
-        <strong>
-          Full AC
-        </strong>
-
-        <span>
-          Perjalanan nyaman
-        </span>
-
-      </div>
+  <main>
 
 
-      <div class="feature">
-
-        <div class="feature-icon">
-          🚐
-        </div>
-
-        <strong>
-          Hiace
-        </strong>
-
-        <span>
-          Armada nyaman
-        </span>
-
-      </div>
+    <section
+      id="booking"
+      class="booking-card"
+    >
 
 
-      <div class="feature">
-
-        <div class="feature-icon">
-          👨‍✈️
-        </div>
-
-        <strong>
-          Supir Berpengalaman
-        </strong>
-
-        <span>
-          Perjalanan aman
-        </span>
-
-      </div>
-
-    </section>
-
-
-    <!-- ===================================================
-         RUTE & TANGGAL
-    ==================================================== -->
-
-    <section class="card">
-
-      <h2 class="card-title">
+      <h1 class="section-title">
         Pesan Tiket
-      </h2>
+      </h1>
 
 
-      <p class="card-description">
-        Pilih lokasi keberangkatan, tujuan
-        dan tanggal perjalanan.
+      <p class="section-description">
+        Tentukan lokasi keberangkatan dan tujuan perjalanan Anda.
       </p>
 
 
-      <div class="form-grid">
+
+      <!-- DARI / TUJUAN -->
+
+      <div class="trip-selector">
 
 
-        <div class="form-group">
+        <div class="trip-field">
 
           <label for="from">
             Dari
           </label>
 
 
-          <select
-            id="from"
-            class="form-control"
-          >
+          <div class="select-wrap">
 
-            <option value="">
-              Pilih keberangkatan
-            </option>
+            <select
+              id="from"
+              class="route-select"
+            >
 
-            <option value="Sofifi">
-              Sofifi
-            </option>
+              <option value="">
+                Pilih lokasi
+              </option>
 
-            <option value="Loleo">
-              Loleo
-            </option>
+              <option value="Sofifi">
+                Sofifi
+              </option>
 
-            <option value="Weda">
-              Weda
-            </option>
+              <option value="Loleo">
+                Loleo
+              </option>
 
-            <option value="Lelilef">
-              Lelilef
-            </option>
+              <option value="Weda">
+                Weda
+              </option>
 
-          </select>
+              <option value="Lelilef">
+                Lelilef
+              </option>
+
+            </select>
+
+          </div>
 
         </div>
 
 
-        <div class="form-group">
+
+        <div class="trip-arrow">
+          →
+        </div>
+
+
+
+        <div class="trip-field">
 
           <label for="to">
             Tujuan
           </label>
 
 
-          <select
-            id="to"
-            class="form-control"
-            disabled
-          >
+          <div class="select-wrap">
 
-            <option value="">
-              Pilih tujuan
-            </option>
+            <select
+              id="to"
+              class="route-select"
+              disabled
+            >
 
-          </select>
+              <option value="">
+                Pilih tujuan
+              </option>
 
-        </div>
+            </select>
 
-
-        <div class="form-group full">
-
-          <label for="date">
-            Tanggal Keberangkatan
-          </label>
-
-
-          <input
-            type="date"
-            id="date"
-            class="form-control"
-          >
+          </div>
 
         </div>
+
 
       </div>
 
-    </section>
 
 
-    <!-- ===================================================
-         JADWAL
-    ==================================================== -->
+      <!-- TANGGAL -->
 
-    <section class="card">
+      <div class="form-group">
 
-      <h2 class="card-title">
-        Pilih Jadwal
-      </h2>
+        <label for="date">
+          Tanggal Keberangkatan
+        </label>
 
 
-      <p class="card-description">
-        Pilih jadwal keberangkatan yang tersedia.
-      </p>
+        <input
+          type="date"
+          id="date"
+          class="input"
+          required
+        >
+
+      </div>
 
 
-      <div id="schedule">
 
-        <div
-          style="
-            grid-column:1/-1;
+      <!-- JADWAL -->
+
+      <div class="form-group">
+
+        <label>
+          Pilih Jadwal
+        </label>
+
+
+        <div id="schedule">
+
+          <div style="
             padding:15px;
             text-align:center;
-            color:#7b8798;
-          "
-        >
-          Pilih rute dan tanggal terlebih dahulu.
+          ">
+            Pilih lokasi keberangkatan dan tujuan.
+          </div>
+
         </div>
 
       </div>
 
-    </section>
 
 
-    <!-- ===================================================
-         KURSI
-    ==================================================== -->
+      <!-- KURSI -->
 
-    <section class="card">
+      <div class="form-group">
 
-      <h2 class="card-title">
-        Pilih Kursi
-      </h2>
+        <label>
+          Pilih Kursi
+        </label>
 
 
-      <p class="card-description">
-        Hijau tersedia, kuning menunggu pembayaran,
-        dan merah sudah terisi.
-      </p>
+        <div id="seats">
 
-
-      <div id="seats">
-
-        <div
-          style="
+          <div style="
             padding:15px;
             text-align:center;
-            color:#7b8798;
-          "
+          ">
+            Pilih jadwal terlebih dahulu.
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- NAMA -->
+
+      <div class="form-group">
+
+        <label for="name">
+          Nama Penumpang
+        </label>
+
+
+        <input
+          type="text"
+          id="name"
+          class="input"
+          placeholder="Masukkan nama penumpang"
+          autocomplete="name"
         >
-          Pilih jadwal terlebih dahulu.
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- ===================================================
-         DATA PENUMPANG
-    ==================================================== -->
-
-    <section class="card">
-
-      <h2 class="card-title">
-        Data Penumpang
-      </h2>
-
-
-      <p class="card-description">
-        Masukkan nama dan nomor WhatsApp
-        untuk melanjutkan pemesanan.
-      </p>
-
-
-      <div class="form-grid">
-
-
-        <div class="form-group">
-
-          <label for="name">
-            Nama Penumpang
-          </label>
-
-
-          <input
-            type="text"
-            id="name"
-            class="form-control"
-            placeholder="Masukkan nama"
-            autocomplete="name"
-          >
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="phone">
-            Nomor WhatsApp
-          </label>
-
-
-          <input
-            type="tel"
-            id="phone"
-            class="form-control"
-            placeholder="Contoh: 081234567890"
-            autocomplete="tel"
-            inputmode="numeric"
-          >
-
-        </div>
 
       </div>
 
 
-      <!-- SUMMARY -->
 
-      <div id="result"></div>
+      <!-- WHATSAPP -->
+
+      <div class="form-group">
+
+        <label for="phone">
+          Nomor WhatsApp
+        </label>
 
 
-      <!-- BOOK BUTTON -->
+        <input
+          type="tel"
+          id="phone"
+          class="input"
+          placeholder="Contoh: 081234567890"
+          autocomplete="tel"
+          inputmode="numeric"
+        >
+
+      </div>
+
+
+
+      <!-- BOOK -->
 
       <button
         type="button"
@@ -1436,38 +1858,70 @@
         Pesan Sekarang
       </button>
 
+
+      <div id="result"></div>
+
+
+    </section>
+
+
+
+    <!-- INFO -->
+
+    <section class="info-section">
+
+      <h2>
+        Travel Sofifi, Loleo, Weda & Lelilef
+      </h2>
+
+
+      <p>
+        HSM Transport melayani perjalanan
+        penumpang di wilayah Maluku Utara
+        dengan rute Sofifi, Loleo, Weda
+        dan Lelilef.
+      </p>
+
+
+      <p>
+        Pilih lokasi keberangkatan dan tujuan,
+        kemudian tentukan tanggal, jadwal
+        dan kursi yang masih tersedia.
+      </p>
+
     </section>
 
 
   </main>
 
 
-  <!-- =====================================================
-       FOOTER
-  ====================================================== -->
+
+  <!-- FOOTER -->
 
   <footer>
 
-    <div class="footer-brand">
-      HSM <span>TRANSPORT</span>
-    </div>
+    <strong>
+      HSM Transport
+    </strong>
 
+    <br>
 
-    <div class="footer-company">
-      Hidayah Sarana Mulia Transport
-    </div>
+    PT Hidayah Sarana Mulia
 
+    <br>
 
-    <div class="footer-route">
-      Travel Sofifi ↔ Loleo ↔ Weda ↔ Lelilef
-    </div>
+    Sofifi • Loleo • Weda • Lelilef
+
+    <br><br>
+
+    <small>
+      © 2026 HSM Transport.
+      All rights reserved.
+    </small>
 
   </footer>
 
 
-  <!-- =====================================================
-       SCRIPT
-  ====================================================== -->
 
   <script src="config.js"></script>
 
