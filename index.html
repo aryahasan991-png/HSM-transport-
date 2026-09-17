@@ -21,7 +21,7 @@
 
   <meta
     name="description"
-    content="HSM Transport melayani perjalanan Sofifi, Loleo, Weda dan Lelilef di Maluku Utara. Pesan tiket dan pilih kursi secara online."
+    content="HSM Transport melayani perjalanan Sofifi, Loleo, Weda dan Lelilef di Maluku Utara. Pesan tiket Hiace atau gunakan Armada Fleksibel secara online."
   >
 
   <meta
@@ -36,7 +36,7 @@
 
   <meta
     property="og:description"
-    content="Travel Sofifi, Loleo, Weda dan Lelilef. Pesan tiket dan pilih kursi secara online."
+    content="Travel Sofifi, Loleo, Weda dan Lelilef. Pesan Hiace atau Armada Fleksibel secara online."
   >
 
   <meta
@@ -54,7 +54,6 @@
     content="https://hsm-transport.vercel.app/hsm-hiace-commuter.png"
   >
 
-
   <script
     src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
   ></script>
@@ -63,62 +62,42 @@
   <style>
 
     :root {
-
       --blue:#0754a6;
       --blue-dark:#063d79;
-
       --red:#e31e2d;
       --red-dark:#b91422;
-
       --text:#172033;
       --muted:#687386;
-
       --border:#dce3ec;
-
+      --green:#16a34a;
+      --green-dark:#15803d;
     }
-
 
     * {
       box-sizing:border-box;
     }
 
-
     html {
       scroll-behavior:smooth;
     }
 
-
     body {
-
       margin:0;
-
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+      font-family:Arial, Helvetica, sans-serif;
       color:var(--text);
-
       background:#f5f7fa;
-
     }
-
 
     button,
     input,
-    select {
-
+    select,
+    textarea {
       font-family:inherit;
-
     }
-
 
     button {
-
       cursor:pointer;
-
     }
-
 
 
     /* ========================================================
@@ -126,103 +105,55 @@
        ======================================================== */
 
     .header {
-
       position:sticky;
-
       top:0;
-
       z-index:1000;
-
       background:#ffffff;
-
-      border-bottom:
-        3px solid var(--blue);
-
-      box-shadow:
-        0 3px 15px rgba(0,0,0,.05);
-
+      border-bottom:3px solid var(--blue);
+      box-shadow:0 3px 15px rgba(0,0,0,.05);
     }
-
 
     .header-inner {
-
       max-width:1100px;
-
       margin:auto;
-
-      padding:
-        10px 16px;
-
+      padding:10px 16px;
       display:flex;
-
       align-items:center;
-
-      justify-content:
-        space-between;
-
+      justify-content:space-between;
       gap:15px;
-
     }
-
 
     .header-logo {
-
       display:block;
-
       width:185px;
-
       max-width:100%;
-
       height:auto;
-
     }
-
 
     .brand-company {
-
       margin-top:2px;
-
       font-size:10px;
-
       font-weight:700;
-
       color:#687386;
-
     }
-
 
     .header-link {
-
       display:inline-flex;
-
       align-items:center;
-
       justify-content:center;
-
       min-height:40px;
-
-      padding:
-        0 16px;
-
+      padding:0 16px;
       border-radius:10px;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--blue),
-          var(--blue-dark)
-        );
-
+      background:linear-gradient(
+        135deg,
+        var(--blue),
+        var(--blue-dark)
+      );
       color:#ffffff;
-
       text-decoration:none;
-
       font-size:13px;
-
       font-weight:900;
-
     }
-
 
 
     /* ========================================================
@@ -230,251 +161,129 @@
        ======================================================== */
 
     .hero {
-
       position:relative;
-
       width:100%;
-
       height:500px;
-
       overflow:hidden;
-
       background:#dceaf1;
-
-      border-bottom:
-        5px solid var(--blue);
-
+      border-bottom:5px solid var(--blue);
     }
-
 
     .hero-photo {
-
       position:absolute;
-
       inset:0;
-
       width:100%;
-
       height:100%;
-
       object-fit:cover;
-
       object-position:center;
-
       z-index:0;
-
     }
-
 
     .hero-shade {
-
       position:absolute;
-
       inset:0;
-
       z-index:1;
-
       pointer-events:none;
-
-      background:
-        linear-gradient(
-          180deg,
-          rgba(3,30,60,.10),
-          rgba(3,30,60,.01) 65%,
-          rgba(3,30,60,.14)
-        );
-
+      background:linear-gradient(
+        180deg,
+        rgba(3,30,60,.10),
+        rgba(3,30,60,.01) 65%,
+        rgba(3,30,60,.14)
+      );
     }
-
 
     .hero-content {
-
       position:relative;
-
       z-index:3;
-
       width:100%;
-
       height:100%;
-
       max-width:760px;
-
       margin:auto;
-
       text-align:center;
-
     }
-
 
     .hero-badge {
-
       position:absolute;
-
       top:18px;
-
       left:50%;
-
-      transform:
-        translateX(-50%);
-
+      transform:translateX(-50%);
       white-space:nowrap;
-
-      padding:
-        7px 13px;
-
+      padding:7px 13px;
       border-radius:999px;
-
-      background:
-        rgba(3,47,91,.88);
-
+      background:rgba(3,47,91,.88);
       color:#ffffff;
-
       font-size:11px;
-
       font-weight:900;
-
     }
-
 
     .hero-logo {
-
       position:absolute;
-
       top:60px;
-
       left:50%;
-
-      transform:
-        translateX(-50%);
-
+      transform:translateX(-50%);
       width:220px;
-
       max-width:58vw;
-
       height:auto;
-
-      filter:
-        drop-shadow(
-          0 3px 6px rgba(0,0,0,.28)
-        );
-
+      filter:drop-shadow(
+        0 3px 6px rgba(0,0,0,.28)
+      );
     }
-
 
     .hero-description {
-
       position:absolute;
-
       top:135px;
-
       left:50%;
-
-      transform:
-        translateX(-50%);
-
-      width:
-        min(
-          520px,
-          calc(100% - 32px)
-        );
-
+      transform:translateX(-50%);
+      width:min(
+        520px,
+        calc(100% - 32px)
+      );
       margin:0;
-
-      padding:
-        8px 12px;
-
+      padding:8px 12px;
       border-radius:9px;
-
-      background:
-        rgba(3,47,91,.60);
-
-      border:
-        1px solid rgba(255,255,255,.16);
-
+      background:rgba(3,47,91,.60);
+      border:1px solid rgba(255,255,255,.16);
       color:#ffffff;
-
       font-size:12px;
-
       font-weight:700;
-
       line-height:1.45;
-
-      backdrop-filter:
-        blur(3px);
-
+      backdrop-filter:blur(3px);
     }
-
 
     .hero-button {
-
       position:absolute;
-
       z-index:5;
-
       top:315px;
-
       left:50%;
-
-      transform:
-        translateX(-50%);
-
+      transform:translateX(-50%);
       min-width:175px;
-
-      padding:
-        12px 19px;
-
+      padding:12px 19px;
       border-radius:10px;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--red),
-          var(--red-dark)
-        );
-
+      background:linear-gradient(
+        135deg,
+        var(--red),
+        var(--red-dark)
+      );
       color:#ffffff;
-
       text-decoration:none;
-
       font-size:13px;
-
       font-weight:900;
-
-      box-shadow:
-        0 6px 18px rgba(0,0,0,.25);
-
+      box-shadow:0 6px 18px rgba(0,0,0,.25);
     }
-
 
     .hero-route {
-
       position:absolute;
-
       left:50%;
-
       bottom:18px;
-
-      transform:
-        translateX(-50%);
-
+      transform:translateX(-50%);
       white-space:nowrap;
-
-      padding:
-        8px 13px;
-
+      padding:8px 13px;
       border-radius:9px;
-
-      background:
-        rgba(3,47,91,.90);
-
+      background:rgba(3,47,91,.90);
       color:#ffffff;
-
       font-size:12px;
-
       font-weight:900;
-
     }
-
 
 
     /* ========================================================
@@ -482,103 +291,54 @@
        ======================================================== */
 
     main {
-
       width:100%;
-
       max-width:1100px;
-
       margin:auto;
-
-      padding:
-        35px 18px 60px;
-
+      padding:35px 18px 60px;
     }
-
 
     .booking-card {
-
       position:relative;
-
       overflow:hidden;
-
       padding:28px;
-
-      border:
-        1px solid #e1e7ef;
-
+      border:1px solid #e1e7ef;
       border-radius:20px;
-
       background:#ffffff;
-
-      box-shadow:
-        0 15px 45px rgba(21,45,80,.09);
-
+      box-shadow:0 15px 45px rgba(21,45,80,.09);
     }
-
 
     .booking-card::before {
-
       content:"";
-
       position:absolute;
-
       top:0;
-
       left:0;
-
       width:72%;
-
       height:4px;
-
       background:var(--blue);
-
     }
-
 
     .booking-card::after {
-
       content:"";
-
       position:absolute;
-
       top:0;
-
       right:0;
-
       width:28%;
-
       height:4px;
-
       background:var(--red);
-
     }
-
 
     .section-title {
-
-      margin:
-        0 0 8px;
-
+      margin:0 0 8px;
       font-size:29px;
-
       color:#15233a;
-
     }
-
 
     .section-description {
-
-      margin:
-        0 0 27px;
-
+      margin:0 0 27px;
       color:var(--muted);
-
       line-height:1.55;
-
       font-size:14px;
-
     }
-
 
 
     /* ========================================================
@@ -586,136 +346,71 @@
        ======================================================== */
 
     .trip-selector {
-
       display:grid;
-
-      grid-template-columns:
-        1fr 48px 1fr;
-
+      grid-template-columns:1fr 48px 1fr;
       gap:10px;
-
       align-items:end;
-
       margin-bottom:27px;
-
     }
-
 
     .trip-field label {
-
       display:block;
-
       margin-bottom:8px;
-
       color:#17233a;
-
       font-size:13px;
-
       font-weight:900;
-
     }
-
 
     .trip-arrow {
-
       height:52px;
-
       display:flex;
-
       align-items:center;
-
       justify-content:center;
-
       color:var(--blue);
-
       font-size:24px;
-
       font-weight:900;
-
     }
-
 
     .select-wrap {
-
       position:relative;
-
     }
-
 
     .select-wrap::after {
-
       content:"▼";
-
       position:absolute;
-
       top:50%;
-
       right:15px;
-
-      transform:
-        translateY(-50%);
-
+      transform:translateY(-50%);
       pointer-events:none;
-
       color:var(--blue);
-
       font-size:11px;
-
     }
-
 
     .route-select {
-
       width:100%;
-
       height:52px;
-
-      padding:
-        0 42px 0 14px;
-
-      border:
-        1.5px solid var(--border);
-
+      padding:0 42px 0 14px;
+      border:1.5px solid var(--border);
       border-radius:11px;
-
       appearance:none;
-
       -webkit-appearance:none;
-
       outline:none;
-
       background:#fbfcfe;
-
       color:#172033;
-
       font-size:15px;
-
       font-weight:800;
-
     }
-
 
     .route-select:focus {
-
-      border-color:
-        var(--blue);
-
+      border-color:var(--blue);
       background:#ffffff;
-
-      box-shadow:
-        0 0 0 4px rgba(7,84,166,.10);
-
+      box-shadow:0 0 0 4px rgba(7,84,166,.10);
     }
-
 
     .route-select:disabled {
-
       opacity:.55;
-
       cursor:not-allowed;
-
     }
-
 
 
     /* ========================================================
@@ -723,62 +418,177 @@
        ======================================================== */
 
     .form-group {
-
       margin-bottom:26px;
-
     }
 
-
-    .form-group > label {
-
+    .form-group > label,
+    .form-label {
       display:block;
-
       margin-bottom:9px;
-
       font-size:14px;
-
       font-weight:900;
-
     }
-
 
     .input {
-
       width:100%;
-
       min-height:51px;
-
-      padding:
-        12px 14px;
-
-      border:
-        1.5px solid var(--border);
-
+      padding:12px 14px;
+      border:1.5px solid var(--border);
       border-radius:11px;
-
       outline:none;
-
       background:#fbfcfe;
-
       color:#172033;
-
       font-size:15px;
-
     }
-
 
     .input:focus {
-
-      border-color:
-        var(--blue);
-
+      border-color:var(--blue);
       background:#ffffff;
-
-      box-shadow:
-        0 0 0 4px rgba(7,84,166,.10);
-
+      box-shadow:0 0 0 4px rgba(7,84,166,.10);
     }
 
+    textarea.input {
+      min-height:95px;
+      resize:vertical;
+      line-height:1.5;
+    }
+
+
+    /* ========================================================
+       SERVICE TYPE
+       ======================================================== */
+
+    .service-options {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .service-card {
+      position:relative;
+      width:100%;
+      min-height:150px;
+      padding:18px;
+      border:2px solid var(--border);
+      border-radius:16px;
+      background:#ffffff;
+      text-align:left;
+      color:var(--text);
+      transition:.18s ease;
+      box-shadow:0 6px 18px rgba(20,40,70,.05);
+    }
+
+    .service-card:hover {
+      transform:translateY(-1px);
+      border-color:#b7c9df;
+    }
+
+    .service-card.selected {
+      border-color:var(--blue);
+      background:#f4f9ff;
+      box-shadow:0 8px 24px rgba(7,84,166,.14);
+    }
+
+    .service-card-icon {
+      width:45px;
+      height:45px;
+      margin-bottom:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:12px;
+      background:#edf5ff;
+      font-size:25px;
+    }
+
+    .service-card.flexible .service-card-icon {
+      background:#eefbf2;
+    }
+
+    .service-card-title {
+      display:block;
+      margin-bottom:6px;
+      color:#17233a;
+      font-size:16px;
+      font-weight:900;
+    }
+
+    .service-card-description {
+      display:block;
+      color:#687386;
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .service-card-badge {
+      display:inline-block;
+      margin-top:10px;
+      padding:5px 8px;
+      border-radius:999px;
+      background:#eaf3ff;
+      color:var(--blue);
+      font-size:10px;
+      font-weight:900;
+    }
+
+    .service-card.flexible .service-card-badge {
+      background:#eaf8ee;
+      color:var(--green-dark);
+    }
+
+
+    /* ========================================================
+       FLEXIBLE BOOKING
+       ======================================================== */
+
+    #flexibleFields {
+      display:none;
+    }
+
+    .flexible-box {
+      padding:20px;
+      border:1.5px solid #dce8df;
+      border-radius:16px;
+      background:#f8fdf9;
+    }
+
+    .flexible-notice {
+      margin-bottom:20px;
+      padding:13px 14px;
+      border-radius:11px;
+      background:#eaf8ee;
+      color:#245c34;
+      font-size:12px;
+      line-height:1.55;
+    }
+
+    .flexible-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .passenger-counter {
+      display:grid;
+      grid-template-columns:52px 1fr 52px;
+      gap:8px;
+      align-items:center;
+    }
+
+    .counter-button {
+      height:51px;
+      border:0;
+      border-radius:11px;
+      background:#e9f2fc;
+      color:var(--blue-dark);
+      font-size:24px;
+      font-weight:900;
+    }
+
+    #passengerCount {
+      text-align:center;
+      font-weight:900;
+    }
 
 
     /* ========================================================
@@ -786,135 +596,71 @@
        ======================================================== */
 
     #schedule {
-
       display:grid;
-
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0,1fr)
-        );
-
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:12px;
-
     }
-
 
     .schedule-card {
-
       width:100%;
-
       min-height:105px;
-
       padding:0;
-
       display:flex;
-
       overflow:hidden;
-
-      border:
-        1.5px solid var(--border);
-
+      border:1.5px solid var(--border);
       border-radius:14px;
-
       background:#ffffff;
-
       color:#172033;
-
       text-align:left;
-
-      box-shadow:
-        0 5px 15px rgba(20,40,70,.05);
-
+      box-shadow:0 5px 15px rgba(20,40,70,.05);
     }
-
 
     .schedule-time {
-
       min-width:88px;
-
       display:flex;
-
       align-items:center;
-
       justify-content:center;
-
       padding:12px;
-
-      background:
-        linear-gradient(
-          145deg,
-          var(--blue),
-          var(--blue-dark)
-        );
-
+      background:linear-gradient(
+        145deg,
+        var(--blue),
+        var(--blue-dark)
+      );
       color:#ffffff;
-
       font-size:20px;
-
       font-weight:900;
-
     }
-
 
     .schedule-info {
-
       flex:1;
-
       padding:14px;
-
       display:flex;
-
       flex-direction:column;
-
       justify-content:center;
-
       gap:5px;
-
     }
-
 
     .schedule-info strong {
-
       color:var(--blue);
-
       font-size:14px;
-
     }
-
 
     .schedule-info span {
-
       color:#687386;
-
       font-size:12px;
-
     }
-
 
     .schedule-info span:last-child {
-
       color:var(--red);
-
       font-size:14px;
-
       font-weight:900;
-
     }
-
 
     .schedule-card.selected {
-
-      border-color:
-        var(--blue);
-
+      border-color:var(--blue);
       background:#f5f9ff;
-
-      box-shadow:
-        0 8px 24px rgba(7,84,166,.16);
-
+      box-shadow:0 8px 24px rgba(7,84,166,.16);
     }
-
 
 
     /* ========================================================
@@ -922,160 +668,85 @@
        ======================================================== */
 
     #seats {
-
       margin-top:8px;
-
       padding:20px;
-
       overflow-x:auto;
-
-      border:
-        1.5px solid #dce5f0;
-
+      border:1.5px solid #dce5f0;
       border-radius:16px;
-
       background:#f8fbff;
-
     }
-
 
     .seatLegend {
-
       display:flex;
-
       flex-wrap:wrap;
-
       justify-content:center;
-
       gap:8px;
-
       margin-bottom:18px;
-
       color:#4b5563;
-
       font-size:11px;
-
       font-weight:800;
-
     }
-
 
     .seatLegend span {
-
       display:inline-flex;
-
       align-items:center;
-
       gap:5px;
-
-      padding:
-        6px 8px;
-
-      border:
-        1px solid #e0e5eb;
-
+      padding:6px 8px;
+      border:1px solid #e0e5eb;
       border-radius:999px;
-
       background:#ffffff;
-
     }
-
 
     .seatLegend i {
-
       width:11px;
-
       height:11px;
-
       display:inline-block;
-
       border-radius:3px;
-
     }
-
 
     .legendAvailable {
-
       background:#22c55e;
-
     }
-
 
     .legendPending {
-
       background:#facc15;
-
     }
-
 
     .legendPaid {
-
       background:#ef4444;
-
     }
-
 
     .seat {
-
       width:54px;
-
       height:48px;
-
       border:0;
-
       border-radius:10px;
-
       font-size:14px;
-
       font-weight:900;
-
-      box-shadow:
-        0 4px 10px rgba(0,0,0,.08);
-
+      box-shadow:0 4px 10px rgba(0,0,0,.08);
     }
-
 
     .seat.available {
-
       background:#22c55e;
-
       color:#ffffff;
-
     }
-
 
     .seat.available.selected {
-
-      outline:
-        4px solid rgba(7,84,166,.30);
-
-      transform:
-        scale(1.06);
-
+      outline:4px solid rgba(7,84,166,.30);
+      transform:scale(1.06);
     }
-
 
     .seat.pending {
-
       background:#facc15;
-
       color:#302b00;
-
       cursor:not-allowed;
-
     }
-
 
     .seat.paid {
-
       background:#ef4444;
-
       color:#ffffff;
-
       cursor:not-allowed;
-
     }
-
 
 
     /* ========================================================
@@ -1083,40 +754,20 @@
        ======================================================== */
 
     .bookingSummary {
-
       margin-top:18px;
-
       padding:18px;
-
       display:grid;
-
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0,1fr)
-        );
-
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
-
-      border:
-        1px solid #dce5f0;
-
+      border:1px solid #dce5f0;
       border-radius:14px;
-
       background:#f6faff;
-
       line-height:1.5;
-
     }
-
 
     .bookingSummary strong {
-
-      color:
-        var(--blue-dark);
-
+      color:var(--blue-dark);
     }
-
 
 
     /* ========================================================
@@ -1124,44 +775,26 @@
        ======================================================== */
 
     #book {
-
       width:100%;
-
       min-height:55px;
-
       margin-top:8px;
-
       border:0;
-
       border-radius:12px;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--blue),
-          var(--blue-dark)
-        );
-
+      background:linear-gradient(
+        135deg,
+        var(--blue),
+        var(--blue-dark)
+      );
       color:#ffffff;
-
       font-size:16px;
-
       font-weight:900;
-
-      box-shadow:
-        0 9px 22px rgba(7,84,166,.24);
-
+      box-shadow:0 9px 22px rgba(7,84,166,.24);
     }
-
 
     #book:disabled {
-
       opacity:.6;
-
       cursor:not-allowed;
-
     }
-
 
 
     /* ========================================================
@@ -1169,41 +802,23 @@
        ======================================================== */
 
     .info-section {
-
       margin-top:35px;
-
       padding:27px;
-
-      border:
-        1px solid #e1e7ef;
-
+      border:1px solid #e1e7ef;
       border-radius:18px;
-
       background:#ffffff;
-
       line-height:1.75;
-
-      box-shadow:
-        0 10px 30px rgba(20,40,70,.06);
-
+      box-shadow:0 10px 30px rgba(20,40,70,.06);
     }
-
 
     .info-section h2 {
-
       margin-top:0;
-
       color:var(--blue-dark);
-
     }
-
 
     .info-section p {
-
       color:#596579;
-
     }
-
 
 
     /* ========================================================
@@ -1211,37 +826,22 @@
        ======================================================== */
 
     footer {
-
-      padding:
-        38px 18px;
-
-      background:
-        linear-gradient(
-          135deg,
-          #052d59,
-          #071d36
-        );
-
+      padding:38px 18px;
+      background:linear-gradient(
+        135deg,
+        #052d59,
+        #071d36
+      );
       color:#cbd5e1;
-
       text-align:center;
-
       line-height:1.75;
-
-      border-top:
-        4px solid var(--red);
-
+      border-top:4px solid var(--red);
     }
-
 
     footer strong {
-
       color:#ffffff;
-
       font-size:18px;
-
     }
-
 
 
     /* ========================================================
@@ -1250,285 +850,151 @@
 
     @media(max-width:760px) {
 
-
       .header-inner {
-
-        padding:
-          9px 13px;
-
+        padding:9px 13px;
       }
-
 
       .header-logo {
-
         width:145px;
-
       }
-
 
       .brand-company {
-
         font-size:8px;
-
       }
-
 
       .header-link {
-
         min-height:36px;
-
-        padding:
-          0 12px;
-
+        padding:0 12px;
         font-size:11px;
-
       }
-
-
-
-      /* HERO */
 
       .hero {
-
         height:440px;
-
       }
-
 
       .hero-photo {
-
         width:112%;
-
         max-width:none;
-
         height:100%;
-
         left:50%;
-
         right:auto;
-
-        transform:
-          translateX(-50%);
-
+        transform:translateX(-50%);
         object-fit:cover;
-
-        object-position:
-          50% 57%;
-
+        object-position:50% 57%;
       }
-
 
       .hero-badge {
-
         top:13px;
-
-        padding:
-          5px 10px;
-
+        padding:5px 10px;
         font-size:9.5px;
-
       }
-
 
       .hero-logo {
-
         top:48px;
-
         width:155px;
-
         max-width:44vw;
-
       }
-
 
       .hero-description {
-
         top:104px;
-
-        width:
-          calc(100% - 50px);
-
+        width:calc(100% - 50px);
         max-width:350px;
-
-        padding:
-          6px 9px;
-
+        padding:6px 9px;
         font-size:10.5px;
-
         line-height:1.35;
-
       }
-
-
-      /*
-        Tombol berada di area body mobil
-        untuk membantu menutup logo pada foto.
-      */
 
       .hero-button {
-
         top:292px;
-
         min-width:155px;
-
-        padding:
-          10px 15px;
-
+        padding:10px 15px;
         font-size:11.5px;
-
       }
-
 
       .hero-route {
-
         bottom:13px;
-
-        padding:
-          7px 10px;
-
+        padding:7px 10px;
         font-size:10px;
-
       }
-
-
-
-      /* MAIN */
 
       main {
-
-        padding:
-          26px 13px 45px;
-
+        padding:26px 13px 45px;
       }
-
 
       .booking-card {
-
-        padding:
-          19px 15px 21px;
-
+        padding:19px 15px 21px;
         border-radius:16px;
-
       }
-
 
       .section-title {
-
         font-size:25px;
-
       }
-
-
-
-      /*
-        DARI + TUJUAN
-
-        Di HP tetap berdampingan agar
-        simpel seperti aplikasi tiket.
-      */
 
       .trip-selector {
-
-        grid-template-columns:
-          1fr 28px 1fr;
-
+        grid-template-columns:1fr 28px 1fr;
         gap:5px;
-
       }
-
 
       .trip-arrow {
-
         height:51px;
-
         font-size:18px;
-
       }
-
 
       .trip-field label {
-
         font-size:12px;
-
       }
-
 
       .route-select {
-
         height:51px;
-
-        padding:
-          0 28px 0 10px;
-
+        padding:0 28px 0 10px;
         font-size:13px;
-
       }
-
 
       .select-wrap::after {
-
         right:10px;
-
         font-size:9px;
-
       }
 
+      .service-options {
+        grid-template-columns:1fr;
+      }
 
+      .service-card {
+        min-height:130px;
+      }
+
+      .flexible-grid {
+        grid-template-columns:1fr;
+      }
 
       #schedule {
-
-        grid-template-columns:
-          1fr;
-
+        grid-template-columns:1fr;
       }
-
 
       .schedule-card {
-
         min-height:94px;
-
       }
-
 
       .schedule-time {
-
         min-width:82px;
-
         font-size:19px;
-
       }
-
 
       #seats {
-
-        padding:
-          15px 8px;
-
+        padding:15px 8px;
       }
-
 
       .seat {
-
         width:48px;
-
         height:45px;
-
       }
-
 
       .bookingSummary {
-
-        grid-template-columns:
-          1fr;
-
+        grid-template-columns:1fr;
       }
 
-
       .info-section {
-
-        padding:
-          22px 20px;
-
+        padding:22px 20px;
       }
 
     }
@@ -1561,7 +1027,6 @@
 
       </div>
 
-
       <a
         href="#booking"
         class="header-link"
@@ -1574,28 +1039,23 @@
   </header>
 
 
-
   <!-- HERO -->
 
   <section class="hero">
 
     <img
       src="hsm-hiace-commuter.png"
-      alt="Hiace HSM Transport"
+      alt="HSM Transport"
       class="hero-photo"
     >
 
-
     <div class="hero-shade"></div>
 
-
     <div class="hero-content">
-
 
       <div class="hero-badge">
         Travel Maluku Utara
       </div>
-
 
       <img
         src="hsm-logo.png"
@@ -1603,16 +1063,12 @@
         class="hero-logo"
       >
 
-
       <p class="hero-description">
-
         Layanan perjalanan yang nyaman untuk
         Sofifi, Loleo, Weda dan Lelilef.
-        Pilih rute, jadwal dan kursi langsung
-        melalui website.
-
+        Pilih Hiace terjadwal atau Armada Fleksibel
+        sesuai kebutuhan perjalanan Anda.
       </p>
-
 
       <a
         href="#booking"
@@ -1621,51 +1077,42 @@
         Pesan Sekarang
       </a>
 
-
       <div class="hero-route">
         Sofifi ↔ Loleo ↔ Weda ↔ Lelilef
       </div>
-
 
     </div>
 
   </section>
 
 
-
   <!-- BOOKING -->
 
   <main>
-
 
     <section
       id="booking"
       class="booking-card"
     >
 
-
       <h1 class="section-title">
         Pesan Tiket
       </h1>
 
-
       <p class="section-description">
-        Tentukan lokasi keberangkatan dan tujuan perjalanan Anda.
+        Tentukan rute, tanggal dan jenis layanan perjalanan Anda.
       </p>
-
 
 
       <!-- DARI / TUJUAN -->
 
       <div class="trip-selector">
 
-
         <div class="trip-field">
 
           <label for="from">
             Dari
           </label>
-
 
           <div class="select-wrap">
 
@@ -1701,11 +1148,9 @@
         </div>
 
 
-
         <div class="trip-arrow">
           →
         </div>
-
 
 
         <div class="trip-field">
@@ -1713,7 +1158,6 @@
           <label for="to">
             Tujuan
           </label>
-
 
           <div class="select-wrap">
 
@@ -1733,9 +1177,7 @@
 
         </div>
 
-
       </div>
-
 
 
       <!-- TANGGAL -->
@@ -1745,7 +1187,6 @@
         <label for="date">
           Tanggal Keberangkatan
         </label>
-
 
         <input
           type="date"
@@ -1757,23 +1198,118 @@
       </div>
 
 
-
-      <!-- JADWAL -->
+      <!-- PILIH JENIS LAYANAN -->
 
       <div class="form-group">
 
         <label>
-          Pilih Jadwal
+          Pilih Layanan
         </label>
 
+        <div class="service-options">
 
-        <div id="schedule">
+          <button
+            type="button"
+            id="serviceHiace"
+            class="service-card"
+          >
 
-          <div style="
-            padding:15px;
-            text-align:center;
-          ">
-            Pilih lokasi keberangkatan dan tujuan.
+            <span class="service-card-icon">
+              🚌
+            </span>
+
+            <span class="service-card-title">
+              Hiace HSM
+            </span>
+
+            <span class="service-card-description">
+              Keberangkatan sesuai jadwal HSM.
+              Pilih jadwal dan kursi yang masih tersedia.
+            </span>
+
+            <span class="service-card-badge">
+              Jadwal Tetap • Pilih Kursi
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            id="serviceFlexible"
+            class="service-card flexible"
+          >
+
+            <span class="service-card-icon">
+              🚙
+            </span>
+
+            <span class="service-card-title">
+              Armada Fleksibel
+            </span>
+
+            <span class="service-card-description">
+              Tentukan waktu keberangkatan Anda.
+              Armada disesuaikan dengan kendaraan yang tersedia.
+            </span>
+
+            <span class="service-card-badge">
+              Waktu Fleksibel
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- ====================================================
+           HIACE
+           ==================================================== -->
+
+      <div id="hiaceFields">
+
+
+        <!-- JADWAL -->
+
+        <div class="form-group">
+
+          <label>
+            Pilih Jadwal
+          </label>
+
+          <div id="schedule">
+
+            <div style="
+              padding:15px;
+              text-align:center;
+            ">
+              Pilih lokasi keberangkatan dan tujuan.
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- KURSI -->
+
+        <div class="form-group">
+
+          <label>
+            Pilih Kursi
+          </label>
+
+          <div id="seats">
+
+            <div style="
+              padding:15px;
+              text-align:center;
+            ">
+              Pilih jadwal terlebih dahulu.
+            </div>
+
           </div>
 
         </div>
@@ -1781,29 +1317,121 @@
       </div>
 
 
+      <!-- ====================================================
+           ARMADA FLEKSIBEL
+           ==================================================== -->
 
-      <!-- KURSI -->
+      <div id="flexibleFields">
 
-      <div class="form-group">
+        <div class="form-group flexible-box">
 
-        <label>
-          Pilih Kursi
-        </label>
+          <div class="flexible-notice">
+            <strong>Armada Fleksibel</strong><br>
+            Kendaraan dapat berupa Avanza, Rush, Innova,
+            Almaz atau kendaraan partner lain yang tersedia.
+            Detail kendaraan akan dikonfirmasi setelah
+            armada ditemukan.
+          </div>
 
 
-        <div id="seats">
+          <div class="flexible-grid">
 
-          <div style="
-            padding:15px;
-            text-align:center;
-          ">
-            Pilih jadwal terlebih dahulu.
+
+            <!-- JAM -->
+
+            <div>
+
+              <label
+                for="requestedTime"
+                class="form-label"
+              >
+                Waktu Keberangkatan
+              </label>
+
+              <input
+                type="time"
+                id="requestedTime"
+                class="input"
+              >
+
+            </div>
+
+
+            <!-- JUMLAH PENUMPANG -->
+
+            <div>
+
+              <label
+                for="passengerCount"
+                class="form-label"
+              >
+                Jumlah Penumpang
+              </label>
+
+              <div class="passenger-counter">
+
+                <button
+                  type="button"
+                  id="passengerMinus"
+                  class="counter-button"
+                >
+                  −
+                </button>
+
+                <input
+                  type="number"
+                  id="passengerCount"
+                  class="input"
+                  value="1"
+                  min="1"
+                  max="20"
+                  readonly
+                >
+
+                <button
+                  type="button"
+                  id="passengerPlus"
+                  class="counter-button"
+                >
+                  +
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- CATATAN -->
+
+          <div style="margin-top:18px;">
+
+            <label
+              for="passengerNote"
+              class="form-label"
+            >
+              Catatan / Lokasi Jemput
+              <span style="
+                font-weight:400;
+                color:#687386;
+              ">
+                (opsional)
+              </span>
+            </label>
+
+            <textarea
+              id="passengerNote"
+              class="input"
+              placeholder="Contoh: Jemput di Pelabuhan Sofifi"
+              maxlength="300"
+            ></textarea>
+
           </div>
 
         </div>
 
       </div>
-
 
 
       <!-- NAMA -->
@@ -1813,7 +1441,6 @@
         <label for="name">
           Nama Penumpang
         </label>
-
 
         <input
           type="text"
@@ -1826,7 +1453,6 @@
       </div>
 
 
-
       <!-- WHATSAPP -->
 
       <div class="form-group">
@@ -1834,7 +1460,6 @@
         <label for="phone">
           Nomor WhatsApp
         </label>
-
 
         <input
           type="tel"
@@ -1846,7 +1471,6 @@
         >
 
       </div>
-
 
 
       <!-- BOOK -->
@@ -1861,9 +1485,7 @@
 
       <div id="result"></div>
 
-
     </section>
-
 
 
     <!-- INFO -->
@@ -1874,7 +1496,6 @@
         Travel Sofifi, Loleo, Weda & Lelilef
       </h2>
 
-
       <p>
         HSM Transport melayani perjalanan
         penumpang di wilayah Maluku Utara
@@ -1882,18 +1503,17 @@
         dan Lelilef.
       </p>
 
-
       <p>
-        Pilih lokasi keberangkatan dan tujuan,
-        kemudian tentukan tanggal, jadwal
-        dan kursi yang masih tersedia.
+        Gunakan Hiace HSM untuk perjalanan
+        terjadwal dengan pilihan kursi,
+        atau pilih Armada Fleksibel untuk
+        keberangkatan yang menyesuaikan
+        kebutuhan perjalanan Anda.
       </p>
 
     </section>
 
-
   </main>
-
 
 
   <!-- FOOTER -->
@@ -1922,9 +1542,7 @@
   </footer>
 
 
-
   <script src="config.js"></script>
-
   <script src="app.js"></script>
 
 
