@@ -3,6 +3,12 @@
 window.HSM_CONFIG = {
   SUPABASE_URL: "https://lbykbgtxxlnbdixkkcsw.supabase.co",
   SUPABASE_PUBLISHABLE_KEY: "sb_publishable_WWiUp2cyOX6TrNy-xt9qBQ_neVFXzC5",
+
+  // Sofifi + Loleo
   WHATSAPP_ADMIN: "6281356902006",
+
+  // Weda + Lelilef
+  WHATSAPP_ADMIN_2: "6285313297492",
+
   DEFAULT_PRICE: 150000
 };
