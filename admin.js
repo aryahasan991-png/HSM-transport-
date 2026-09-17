@@ -3,10 +3,11 @@
 // ============================================================
 // - Login Supabase email + password
 // - Verifikasi akun admin
-// - Lihat semua booking
-// - Statistik status
+// - Lihat booking berdasarkan tanggal perjalanan
+// - Statistik status berdasarkan tanggal
 // - Cari nama / kode / WA
 // - Filter tanggal & status
+// - Ganti tanggal = otomatis load data
 // - Tandai Lunas
 // - Tandai Selesai
 // - Batalkan booking
@@ -303,7 +304,6 @@ function normalizeStatus(value) {
   }
 
 
-  // Termasuk pending / Belum Bayar
   return "pending";
 
 }
@@ -491,7 +491,6 @@ async function verifyAdmin() {
   }
 
 
-  // Cek tabel admin langsung.
   const {
     data,
     error
@@ -516,7 +515,6 @@ async function verifyAdmin() {
     );
 
 
-    // Fallback RPC jika tersedia
     const rpcResult =
       await adminDb.rpc(
         "is_hsm_admin"
@@ -719,6 +717,10 @@ async function logout() {
 // ============================================================
 // LOAD BOOKINGS
 // ============================================================
+// PENTING:
+// Kalau tanggal dipilih, Supabase HANYA mengambil booking
+// dengan travel_date sesuai tanggal tersebut.
+// ============================================================
 
 async function loadBookings() {
 
@@ -755,19 +757,60 @@ async function loadBookings() {
     }
 
 
+    // ========================================================
+    // TANGGAL YANG DIPILIH
+    // ========================================================
+
+    const selectedDate =
+      dateFilter
+        ? dateFilter.value
+        : "";
+
+
+    // ========================================================
+    // QUERY DASAR
+    // ========================================================
+
+    let query =
+      adminDb
+        .from("bookings")
+        .select("*");
+
+
+    // ========================================================
+    // FILTER TANGGAL LANGSUNG DI DATABASE
+    // ========================================================
+
+    if (selectedDate) {
+
+      query =
+        query.eq(
+          "travel_date",
+          selectedDate
+        );
+
+    }
+
+
+    // ========================================================
+    // URUTKAN BOOKING TERBARU
+    // ========================================================
+
+    query =
+      query.order(
+        "created_at",
+        {
+          ascending:
+            false
+        }
+      );
+
+
     const {
       data,
       error
     } =
-      await adminDb
-        .from("bookings")
-        .select("*")
-        .order(
-          "created_at",
-          {
-            ascending:false
-          }
-        );
+      await query;
 
 
     if (error) {
@@ -781,8 +824,11 @@ async function loadBookings() {
         : [];
 
 
+    // Statistik mengikuti data tanggal terpilih
     updateStats();
 
+
+    // Tampilkan booking
     renderBookings();
 
   }
@@ -914,6 +960,9 @@ function updateStats() {
 // ============================================================
 // FILTER
 // ============================================================
+// Tanggal sudah difilter langsung dari Supabase.
+// Di sini tinggal filter status + pencarian.
+// ============================================================
 
 function getFilteredBookings() {
 
@@ -924,12 +973,6 @@ function getFilteredBookings() {
         )
           .trim()
           .toLowerCase()
-      : "";
-
-
-  const selectedDate =
-    dateFilter
-      ? dateFilter.value
       : "";
 
 
@@ -948,6 +991,10 @@ function getFilteredBookings() {
         );
 
 
+      // ======================================================
+      // STATUS
+      // ======================================================
+
       if (
         selectedStatus &&
         status !==
@@ -959,16 +1006,9 @@ function getFilteredBookings() {
       }
 
 
-      if (
-        selectedDate &&
-        item.travel_date !==
-          selectedDate
-      ) {
-
-        return false;
-
-      }
-
+      // ======================================================
+      // PENCARIAN
+      // ======================================================
 
       if (search) {
 
@@ -1029,11 +1069,38 @@ function renderBookings() {
 
   if (!rows.length) {
 
-    bookingList.innerHTML = `
-      <div class="empty">
-        Belum ada data booking.
-      </div>
-    `;
+    const selectedDate =
+      dateFilter
+        ? dateFilter.value
+        : "";
+
+
+    if (selectedDate) {
+
+      bookingList.innerHTML = `
+        <div class="empty">
+          Tidak ada booking untuk tanggal
+          <strong>
+            ${escapeHtml(
+              formatDate(
+                selectedDate
+              )
+            )}
+          </strong>.
+        </div>
+      `;
+
+    }
+
+    else {
+
+      bookingList.innerHTML = `
+        <div class="empty">
+          Belum ada data booking.
+        </div>
+      `;
+
+    }
 
 
     return;
@@ -1099,6 +1166,10 @@ Status: ${statusLabel(item.payment_status)}
         "";
 
 
+      // ======================================================
+      // PENDING
+      // ======================================================
+
       if (
         status === "pending"
       ) {
@@ -1130,6 +1201,10 @@ Status: ${statusLabel(item.payment_status)}
 
       }
 
+
+      // ======================================================
+      // PAID
+      // ======================================================
 
       else if (
         status === "paid"
@@ -1163,6 +1238,10 @@ Status: ${statusLabel(item.payment_status)}
       }
 
 
+      // ======================================================
+      // WHATSAPP
+      // ======================================================
+
       if (phone) {
 
         actions += `
@@ -1178,6 +1257,10 @@ Status: ${statusLabel(item.payment_status)}
 
       }
 
+
+      // ======================================================
+      // CARD
+      // ======================================================
 
       card.innerHTML = `
 
@@ -1568,6 +1651,10 @@ async function changeStatus(
     }
 
 
+    // ========================================================
+    // LOAD ULANG TANGGAL YANG SEDANG DIPILIH
+    // ========================================================
+
     await loadBookings();
 
   }
@@ -1638,15 +1725,27 @@ if (logoutBtn) {
 }
 
 
+// ============================================================
+// REFRESH
+// ============================================================
+
 if (refreshBtn) {
 
   refreshBtn.addEventListener(
     "click",
-    loadBookings
+    async () => {
+
+      await loadBookings();
+
+    }
   );
 
 }
 
+
+// ============================================================
+// SEARCH
+// ============================================================
 
 if (searchInput) {
 
@@ -1658,15 +1757,40 @@ if (searchInput) {
 }
 
 
+// ============================================================
+// DATE FILTER
+// ============================================================
+// Begitu tanggal/bulan/tahun diganti,
+// data langsung diambil ulang dari Supabase.
+// Tidak perlu pencet tombol Refresh.
+// ============================================================
+
 if (dateFilter) {
 
   dateFilter.addEventListener(
     "change",
-    renderBookings
+    async () => {
+
+      // Reset pencarian supaya tidak membingungkan
+      if (searchInput) {
+
+        searchInput.value =
+          "";
+
+      }
+
+
+      await loadBookings();
+
+    }
   );
 
 }
 
+
+// ============================================================
+// STATUS FILTER
+// ============================================================
 
 if (statusFilter) {
 
@@ -1736,6 +1860,10 @@ async function initAdmin() {
 
     showDashboard();
 
+
+    // ========================================================
+    // LOAD DATA SESUAI TANGGAL YANG SUDAH ADA DI FILTER
+    // ========================================================
 
     await loadBookings();
 
