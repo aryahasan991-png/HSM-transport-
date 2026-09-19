@@ -98,6 +98,7 @@ let allBookings = [];
 // ============================================================
 
 function rupiah(value) {
+
   return "Rp" +
     Number(value || 0)
       .toLocaleString("id-ID");
@@ -105,6 +106,7 @@ function rupiah(value) {
 
 
 function escapeHtml(value) {
+
   return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -161,9 +163,7 @@ function formatCreatedAt(value) {
       }
     );
 
-  }
-
-  catch {
+  } catch {
 
     return String(value);
 
@@ -253,9 +253,7 @@ function whatsappNumber(phone) {
       "62" +
       value.substring(1);
 
-  }
-
-  else if (value.startsWith("8")) {
+  } else if (value.startsWith("8")) {
 
     value =
       "62" + value;
@@ -334,18 +332,15 @@ function getVehicle(booking) {
 function showLogin() {
 
   if (loginSection) {
-    loginSection.style.display =
-      "flex";
+    loginSection.style.display = "flex";
   }
 
   if (dashboard) {
-    dashboard.style.display =
-      "none";
+    dashboard.style.display = "none";
   }
 
   if (logoutBtn) {
-    logoutBtn.style.display =
-      "none";
+    logoutBtn.style.display = "none";
   }
 }
 
@@ -353,18 +348,15 @@ function showLogin() {
 function showDashboard() {
 
   if (loginSection) {
-    loginSection.style.display =
-      "none";
+    loginSection.style.display = "none";
   }
 
   if (dashboard) {
-    dashboard.style.display =
-      "block";
+    dashboard.style.display = "block";
   }
 
   if (logoutBtn) {
-    logoutBtn.style.display =
-      "block";
+    logoutBtn.style.display = "block";
   }
 }
 
@@ -457,8 +449,7 @@ async function login() {
 
   if (loginBtn) {
 
-    loginBtn.disabled =
-      true;
+    loginBtn.disabled = true;
 
     loginBtn.textContent =
       "Memeriksa...";
@@ -501,9 +492,7 @@ async function login() {
 
     await loadBookings();
 
-  }
-
-  catch (error) {
+  } catch (error) {
 
     console.error(
       "LOGIN ERROR:",
@@ -520,14 +509,11 @@ async function login() {
         "Login gagal.";
     }
 
-  }
-
-  finally {
+  } finally {
 
     if (loginBtn) {
 
-      loginBtn.disabled =
-        false;
+      loginBtn.disabled = false;
 
       loginBtn.textContent =
         "Masuk";
@@ -627,9 +613,7 @@ async function loadBookings() {
 
     renderBookings();
 
-  }
-
-  catch (error) {
+  } catch (error) {
 
     console.error(
       "LOAD BOOKINGS ERROR:",
@@ -693,23 +677,19 @@ function updateStats() {
   );
 
   if (statPending) {
-    statPending.textContent =
-      pending;
+    statPending.textContent = pending;
   }
 
   if (statPaid) {
-    statPaid.textContent =
-      paid;
+    statPaid.textContent = paid;
   }
 
   if (statCompleted) {
-    statCompleted.textContent =
-      completed;
+    statCompleted.textContent = completed;
   }
 
   if (statCancelled) {
-    statCancelled.textContent =
-      cancelled;
+    statCancelled.textContent = cancelled;
   }
 }
 
@@ -764,9 +744,7 @@ function getFilteredBookings() {
           .toLowerCase();
 
         if (
-          !haystack.includes(
-            search
-          )
+          !haystack.includes(search)
         ) {
           return false;
         }
@@ -1085,9 +1063,7 @@ Status: ${statusLabel(item.payment_status)}
         </div>
       `;
 
-      bookingList.appendChild(
-        card
-      );
+      bookingList.appendChild(card);
     }
   );
 
@@ -1122,9 +1098,7 @@ function bindActionButtons() {
             const action =
               button.dataset.action;
 
-            if (
-              action === "print"
-            ) {
+            if (action === "print") {
 
               printTicket(id);
 
@@ -1175,43 +1149,32 @@ async function changeStatus(
       `Konfirmasi pembayaran CASH untuk ${booking.booking_code} dan tandai sebagai LUNAS?`;
   }
 
-  else if (
-    newStatus === "completed"
-  ) {
+  else if (newStatus === "completed") {
 
     question =
       `Tandai booking ${booking.booking_code} sebagai SELESAI?`;
   }
 
-  else if (
-    newStatus === "cancelled"
-  ) {
+  else if (newStatus === "cancelled") {
 
     const currentStatus =
       normalizeStatus(
         booking.payment_status
       );
 
-    if (
-      currentStatus === "paid"
-    ) {
+    if (currentStatus === "paid") {
 
       question =
         `Batalkan tiket LUNAS ${booking.booking_code}?\n\nBooking tetap tersimpan sebagai riwayat dan kursi dapat tersedia kembali. Pengembalian uang ditangani secara terpisah.`;
 
-    }
-
-    else {
+    } else {
 
       question =
         `Batalkan booking ${booking.booking_code}?\n\nData tidak akan dihapus dan kursi dapat tersedia kembali.`;
-
     }
   }
 
-  if (
-    !window.confirm(question)
-  ) {
+  if (!window.confirm(question)) {
     return;
   }
 
@@ -1251,9 +1214,7 @@ async function changeStatus(
 
     await loadBookings();
 
-  }
-
-  catch (error) {
+  } catch (error) {
 
     console.error(
       "UPDATE STATUS ERROR:",
@@ -1293,10 +1254,12 @@ function printTicket(id) {
     return;
   }
 
+
   const status =
     normalizeStatus(
       booking.payment_status
     );
+
 
   if (
     status !== "paid" &&
@@ -1310,25 +1273,37 @@ function printTicket(id) {
     return;
   }
 
+
   const vehicle =
     getVehicle(booking);
+
 
   const code =
     String(
       booking.booking_code || "-"
     );
 
-  // QR mengarah ke halaman verifikasi publik.
+
+  // ==========================================================
+  // QR VERIFIKASI
+  // ==========================================================
+
   const verificationUrl =
     "https://hsm-transport.vercel.app/tiket.html?kode=" +
     encodeURIComponent(code);
+
+
+  // ==========================================================
+  // BUKA WINDOW PRINT
+  // ==========================================================
 
   const printWindow =
     window.open(
       "",
       "_blank",
-      "width=420,height=900"
+      "width=260,height=900"
     );
+
 
   if (!printWindow) {
 
@@ -1338,6 +1313,11 @@ function printTicket(id) {
 
     return;
   }
+
+
+  // ==========================================================
+  // HTML TIKET
+  // ==========================================================
 
   const ticketHtml = `
 <!DOCTYPE html>
@@ -1350,222 +1330,402 @@ function printTicket(id) {
 
 <meta
   name="viewport"
-  content="width=device-width,initial-scale=1.0"
+  content="width=device-width,initial-scale=1.0,maximum-scale=1.0"
 >
 
 <title>
 Tiket ${escapeHtml(code)}
 </title>
 
+
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"><\/script>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
 
+
 <style>
 
+
+/* ==========================================================
+   THERMAL 58MM
+========================================================== */
+
 @page {
-  size: 58mm auto;
-  margin: 1.5mm;
+
+  size:
+    58mm
+    200mm;
+
+  margin:
+    0;
 }
+
 
 * {
-  box-sizing: border-box;
+
+  box-sizing:
+    border-box;
 }
 
-html,
+
+html {
+
+  margin:
+    0;
+
+  padding:
+    0;
+
+  width:
+    58mm;
+
+  background:
+    #ffffff;
+}
+
+
 body {
-  margin: 0;
-  padding: 0;
-  background: #fff;
-  color: #000;
+
+  margin:
+    0;
+
+  padding:
+    0;
+
+  width:
+    58mm;
+
+  min-width:
+    58mm;
+
+  max-width:
+    58mm;
+
+  background:
+    #ffffff;
+
+  color:
+    #000000;
 
   font-family:
     Arial,
     Helvetica,
     sans-serif;
+
+  -webkit-print-color-adjust:
+    exact;
+
+  print-color-adjust:
+    exact;
 }
+
+
+/* ==========================================================
+   TICKET
+========================================================== */
 
 .ticket {
-  width: 55mm;
-  margin: 0 auto;
+
+  width:
+    58mm;
+
+  max-width:
+    58mm;
+
+  margin:
+    0;
+
   padding:
     2mm
-    1.5mm
-    5mm;
+    3mm
+    3mm;
+
+  overflow:
+    hidden;
+
+  background:
+    #ffffff;
 }
 
 
-/* =========================
+/* ==========================================================
    LOGO
-========================= */
+========================================================== */
 
 .logo {
-  text-align: center;
+
+  width:
+    100%;
+
+  text-align:
+    center;
 }
 
+
 .logo-hsm {
+
+  margin:
+    0;
+
+  padding:
+    0;
+
   font-family:
     Arial Black,
     Arial,
     sans-serif;
 
-  font-size: 27px;
-  line-height: 26px;
-  font-weight: 900;
-  letter-spacing: -2px;
-}
+  font-size:
+    23px;
 
-.logo-transport {
-  margin-top: 1px;
+  line-height:
+    22px;
 
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 3.2px;
-}
-
-.company-name {
-  margin-top: 5px;
-
-  text-align: center;
-
-  font-size: 8px;
-  font-weight: 800;
-}
-
-.tagline-top {
-  margin-top: 3px;
-
-  text-align: center;
-
-  font-size: 7px;
-  font-style: italic;
-}
-
-
-/* =========================
-   DIVIDER
-========================= */
-
-.line {
-  border-top:
-    1px dashed #000;
-
-  margin:
-    7px 0;
-}
-
-
-/* =========================
-   TITLE
-========================= */
-
-.ticket-title {
-  text-align: center;
-
-  font-size: 13px;
-  font-weight: 900;
+  font-weight:
+    900;
 
   letter-spacing:
-    .5px;
+    -1.5px;
 }
 
 
-/* =========================
-   DATA
-========================= */
+.logo-transport {
 
-.row {
-  display: flex;
-  align-items: flex-start;
-
-  margin:
-    3px 0;
-
-  font-size:
-    9px;
-
-  line-height:
-    1.35;
-}
-
-.label {
-  width: 34%;
-}
-
-.separator {
-  width: 5%;
-}
-
-.value {
-  width: 61%;
-
-  font-weight:
-    800;
-
-  word-break:
-    break-word;
-}
-
-.code-value {
-  font-size:
-    11px;
-
-  font-weight:
-    900;
-}
-
-.seat-value {
-  font-size:
-    16px;
-
-  line-height:
-    16px;
-
-  font-weight:
-    900;
-}
-
-.paid-value {
-  font-size:
-    11px;
-
-  font-weight:
-    900;
-}
-
-
-/* =========================
-   NOTICE
-========================= */
-
-.notice {
-  margin:
-    5px 1px;
-
-  text-align:
-    center;
+  margin-top:
+    1px;
 
   font-size:
     7px;
 
   line-height:
-    1.45;
+    8px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    2.6px;
 }
 
 
-/* =========================
-   QR
-========================= */
+.company-name {
 
-.qr-section {
+  margin-top:
+    3px;
+
   text-align:
     center;
 
-  margin-top:
-    5px;
+  font-size:
+    6.5px;
+
+  line-height:
+    8px;
+
+  font-weight:
+    800;
 }
 
+
+.tagline-top {
+
+  margin-top:
+    1px;
+
+  text-align:
+    center;
+
+  font-size:
+    6px;
+
+  line-height:
+    8px;
+
+  font-style:
+    italic;
+}
+
+
+/* ==========================================================
+   DIVIDER
+========================================================== */
+
+.line {
+
+  width:
+    100%;
+
+  margin:
+    4px 0;
+
+  border-top:
+    .3mm dashed #000000;
+}
+
+
+/* ==========================================================
+   TITLE
+========================================================== */
+
+.ticket-title {
+
+  width:
+    100%;
+
+  text-align:
+    center;
+
+  font-size:
+    10px;
+
+  line-height:
+    12px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    .3px;
+}
+
+
+/* ==========================================================
+   ROW
+========================================================== */
+
+.row {
+
+  display:
+    flex;
+
+  width:
+    100%;
+
+  margin:
+    1.5px 0;
+
+  align-items:
+    flex-start;
+
+  font-size:
+    7px;
+
+  line-height:
+    9px;
+}
+
+
+.label {
+
+  flex:
+    0 0 31%;
+}
+
+
+.separator {
+
+  flex:
+    0 0 5%;
+
+  text-align:
+    center;
+}
+
+
+.value {
+
+  flex:
+    1;
+
+  min-width:
+    0;
+
+  font-weight:
+    800;
+
+  overflow-wrap:
+    anywhere;
+
+  word-break:
+    break-word;
+}
+
+
+.code-value {
+
+  font-size:
+    8px;
+
+  font-weight:
+    900;
+}
+
+
+.seat-value {
+
+  font-size:
+    10px;
+
+  line-height:
+    10px;
+
+  font-weight:
+    900;
+}
+
+
+.paid-value {
+
+  font-size:
+    8px;
+
+  font-weight:
+    900;
+}
+
+
+/* ==========================================================
+   NOTICE
+========================================================== */
+
+.notice {
+
+  width:
+    100%;
+
+  margin:
+    3px 0;
+
+  text-align:
+    center;
+
+  font-size:
+    5.5px;
+
+  line-height:
+    7.5px;
+}
+
+
+/* ==========================================================
+   QR
+========================================================== */
+
+.qr-section {
+
+  width:
+    100%;
+
+  margin-top:
+    3px;
+
+  text-align:
+    center;
+}
+
+
 #ticketQr {
+
   display:
     flex;
 
@@ -1576,95 +1736,112 @@ body {
     center;
 
   width:
-    26mm;
+    23mm;
 
   height:
-    26mm;
+    23mm;
 
   margin:
-    0 auto 4px;
+    0 auto 2px;
 }
+
 
 #ticketQr img,
 #ticketQr canvas {
+
   display:
-    block;
+    block !important;
 
   width:
-    25mm !important;
+    22mm !important;
 
   height:
-    25mm !important;
+    22mm !important;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 !important;
 }
 
+
 .qr-title {
+
+  margin-top:
+    1px;
+
   font-size:
+    6px;
+
+  line-height:
     8px;
 
   font-weight:
     900;
 }
 
+
 .qr-subtitle {
+
   margin-top:
-    2px;
+    1px;
 
   font-size:
-    6.5px;
+    5px;
 
   line-height:
-    1.3;
+    6.5px;
 }
 
 
-/* =========================
+/* ==========================================================
    BARCODE
-========================= */
+========================================================== */
 
 .barcode {
-  text-align:
-    center;
+
+  width:
+    100%;
+
+  margin-top:
+    2px;
 
   overflow:
     hidden;
 
-  margin-top:
-    4px;
-}
-
-.barcode svg {
-  width:
-    100%;
-
-  max-width:
-    50mm;
-
-  height:
-    auto;
-}
-
-
-/* =========================
-   FOOTER
-========================= */
-
-.thank-you {
-  margin-top:
-    6px;
-
   text-align:
     center;
-
-  font-size:
-    9px;
-
-  font-weight:
-    900;
 }
 
-.contact {
+
+#ticketBarcode {
+
+  display:
+    block;
+
+  width:
+    48mm !important;
+
+  max-width:
+    48mm !important;
+
+  height:
+    15mm !important;
+
+  margin:
+    0 auto;
+}
+
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+.thank-you {
+
   margin-top:
-    5px;
+    3px;
 
   text-align:
     center;
@@ -1673,12 +1850,33 @@ body {
     7px;
 
   line-height:
-    1.55;
+    9px;
+
+  font-weight:
+    900;
 }
 
-.story {
+
+.contact {
+
   margin-top:
-    8px;
+    2px;
+
+  text-align:
+    center;
+
+  font-size:
+    5.5px;
+
+  line-height:
+    7px;
+}
+
+
+.story {
+
+  margin-top:
+    4px;
 
   text-align:
     center;
@@ -1688,7 +1886,10 @@ body {
     cursive;
 
   font-size:
-    11px;
+    8px;
+
+  line-height:
+    10px;
 
   font-style:
     italic;
@@ -1698,33 +1899,42 @@ body {
 }
 
 
-/* =========================
-   BUTTON
-========================= */
+/* ==========================================================
+   BUTTON PRINT
+========================================================== */
 
 .no-print {
+
   margin-top:
-    18px;
+    20px;
 
   text-align:
     center;
 }
 
+
 .no-print button {
+
+  min-width:
+    150px;
+
   border:
-    none;
+    0;
 
   border-radius:
-    7px;
+    8px;
 
   padding:
-    11px 20px;
+    12px 20px;
 
   background:
-    #111;
+    #111827;
 
   color:
-    #fff;
+    #ffffff;
+
+  font-size:
+    14px;
 
   font-weight:
     900;
@@ -1734,17 +1944,116 @@ body {
 }
 
 
-@media print {
+/* ==========================================================
+   PRINT MODE
+========================================================== */
 
-  .no-print {
-    display:
-      none;
-  }
+@media print {
 
   html,
   body {
+
+    width:
+      58mm !important;
+
+    min-width:
+      58mm !important;
+
+    max-width:
+      58mm !important;
+
+    height:
+      auto !important;
+
+    margin:
+      0 !important;
+
+    padding:
+      0 !important;
+
+    overflow:
+      visible !important;
+  }
+
+
+  .ticket {
+
+    width:
+      58mm !important;
+
+    min-width:
+      58mm !important;
+
+    max-width:
+      58mm !important;
+
+    margin:
+      0 !important;
+
+    padding:
+      2mm
+      3mm
+      3mm !important;
+  }
+
+
+  .no-print {
+
+    display:
+      none !important;
+  }
+}
+
+
+/* ==========================================================
+   PREVIEW HP
+========================================================== */
+
+@media screen {
+
+  html {
+
+    width:
+      100%;
+  }
+
+
+  body {
+
+    width:
+      100%;
+
+    min-width:
+      0;
+
+    max-width:
+      none;
+
+    padding:
+      15px 0;
+
+    background:
+      #eeeeee;
+  }
+
+
+  .ticket {
+
     width:
       58mm;
+
+    max-width:
+      58mm;
+
+    margin:
+      0 auto;
+
+    background:
+      #ffffff;
+
+    box-shadow:
+      0 3px 15px
+      rgba(0,0,0,.15);
   }
 }
 
@@ -1755,10 +2064,13 @@ body {
 
 <body>
 
+
 <div class="ticket">
 
 
-  <!-- LOGO -->
+  <!-- ======================================================
+       LOGO
+  ======================================================= -->
 
   <div class="logo">
 
@@ -1786,7 +2098,9 @@ body {
   <div class="line"></div>
 
 
-  <!-- TITLE -->
+  <!-- ======================================================
+       TITLE
+  ======================================================= -->
 
   <div class="ticket-title">
     TIKET PENUMPANG
@@ -1796,7 +2110,9 @@ body {
   <div class="line"></div>
 
 
-  <!-- BOOKING -->
+  <!-- ======================================================
+       DATA TIKET
+  ======================================================= -->
 
   <div class="row">
 
@@ -1893,7 +2209,8 @@ body {
         formatTime(
           booking.departure_time
         )
-      )} WIT
+      )}
+      WIT
     </div>
 
   </div>
@@ -1995,7 +2312,9 @@ body {
   <div class="line"></div>
 
 
-  <!-- NOTICE -->
+  <!-- ======================================================
+       NOTICE
+  ======================================================= -->
 
   <div class="notice">
 
@@ -2016,7 +2335,9 @@ body {
   <div class="line"></div>
 
 
-  <!-- QR -->
+  <!-- ======================================================
+       QR VERIFIKASI
+  ======================================================= -->
 
   <div class="qr-section">
 
@@ -2036,17 +2357,25 @@ body {
   <div class="line"></div>
 
 
-  <!-- BARCODE -->
+  <!-- ======================================================
+       BARCODE
+  ======================================================= -->
 
   <div class="barcode">
-    <svg id="ticketBarcode"></svg>
+
+    <svg
+      id="ticketBarcode"
+    ></svg>
+
   </div>
 
 
   <div class="line"></div>
 
 
-  <!-- FOOTER -->
+  <!-- ======================================================
+       FOOTER
+  ======================================================= -->
 
   <div class="thank-you">
     TERIMA KASIH
@@ -2076,12 +2405,14 @@ body {
   <div class="no-print">
 
     <button
+      type="button"
       onclick="window.print()"
     >
       CETAK TIKET
     </button>
 
   </div>
+
 
 </div>
 
@@ -2092,7 +2423,10 @@ window.addEventListener(
   "load",
   function () {
 
+
+    // ========================================================
     // BARCODE
+    // ========================================================
 
     try {
 
@@ -2100,6 +2434,7 @@ window.addEventListener(
         "#ticketBarcode",
         ${JSON.stringify(code)},
         {
+
           format:
             "CODE128",
 
@@ -2107,32 +2442,34 @@ window.addEventListener(
             true,
 
           fontSize:
-            10,
+            8,
+
+          textMargin:
+            1,
 
           height:
-            35,
+            32,
 
           margin:
             0,
 
           width:
-            1.15
+            1.1
         }
       );
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
       console.error(
         "BARCODE ERROR:",
         error
       );
-
     }
 
 
+    // ========================================================
     // QR VERIFIKASI
+    // ========================================================
 
     try {
 
@@ -2141,16 +2478,17 @@ window.addEventListener(
           "ticketQr"
         ),
         {
+
           text:
             ${JSON.stringify(
               verificationUrl
             )},
 
           width:
-            180,
+            160,
 
           height:
-            180,
+            160,
 
           colorDark:
             "#000000",
@@ -2163,15 +2501,12 @@ window.addEventListener(
         }
       );
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
       console.error(
         "QR ERROR:",
         error
       );
-
     }
 
   }
@@ -2179,11 +2514,16 @@ window.addEventListener(
 
 <\/script>
 
+
 </body>
 
 </html>
   `;
 
+
+  // ==========================================================
+  // WRITE PRINT PAGE
+  // ==========================================================
 
   printWindow.document.open();
 
@@ -2214,9 +2554,7 @@ if (adminPassword) {
     "keydown",
     event => {
 
-      if (
-        event.key === "Enter"
-      ) {
+      if (event.key === "Enter") {
         login();
       }
     }
@@ -2330,9 +2668,7 @@ async function initAdmin() {
 
     await loadBookings();
 
-  }
-
-  catch (error) {
+  } catch (error) {
 
     console.error(
       "ADMIN INIT ERROR:",
