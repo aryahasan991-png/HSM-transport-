@@ -2,6 +2,7 @@
 <html lang="id">
 
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -14,566 +15,1605 @@
     content="#0754a6"
   >
 
-  <meta
-    name="robots"
-    content="noindex,nofollow"
-  >
+  <title>
+    Admin HSM Transport
+  </title>
 
-  <title>Admin HSM Transport</title>
 
-  <!-- SUPABASE -->
+  <!-- ======================================================
+       SUPABASE
+  ======================================================= -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- BARCODE -->
+
+  <!-- ======================================================
+       BARCODE
+  ======================================================= -->
+
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 
+
+  <!-- ======================================================
+       QR CODE
+  ======================================================= -->
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+
   <style>
+
+    /* ======================================================
+       RESET
+    ======================================================= */
+
     * {
       box-sizing: border-box;
     }
 
-    :root {
-      --blue: #0754a6;
-      --dark: #172033;
-      --muted: #667085;
-      --border: #e1e7ef;
-      --bg: #f4f7fb;
-      --green: #16a34a;
-      --yellow: #d99b00;
-      --red: #dc2626;
-      --purple: #7c3aed;
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--dark);
-      font-family: Arial, Helvetica, sans-serif;
+
+      background:
+        #f3f6fa;
+
+      color:
+        #111827;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
     }
 
     button,
     input,
     select {
-      font: inherit;
+      font:
+        inherit;
     }
 
     button {
-      cursor: pointer;
+      cursor:
+        pointer;
     }
 
-    .header {
-      background: #fff;
-      border-bottom: 4px solid var(--blue);
-      box-shadow: 0 2px 15px rgba(0,0,0,.06);
+
+    /* ======================================================
+       HEADER
+    ======================================================= */
+
+    .topbar {
+      position:
+        sticky;
+
+      top:
+        0;
+
+      z-index:
+        100;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        space-between;
+
+      gap:
+        12px;
+
+      padding:
+        13px 16px;
+
+      background:
+        #0754a6;
+
+      color:
+        #ffffff;
+
+      box-shadow:
+        0 3px 14px
+        rgba(0, 0, 0, .15);
     }
 
-    .header-inner {
-      max-width: 1150px;
-      margin: auto;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-    }
 
     .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      gap:
+        10px;
     }
 
-    .brand img {
-      width: 75px;
-      max-height: 52px;
-      object-fit: contain;
+
+    .brand-logo {
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      width:
+        43px;
+
+      height:
+        43px;
+
+      flex:
+        0 0 43px;
+
+      border-radius:
+        11px;
+
+      background:
+        #ffffff;
+
+      color:
+        #0754a6;
+
+      font-size:
+        17px;
+
+      font-weight:
+        900;
     }
 
-    .brand strong {
-      display: block;
-      color: var(--blue);
-      font-size: 16px;
+
+    .brand-text strong {
+      display:
+        block;
+
+      font-size:
+        17px;
+
+      font-weight:
+        900;
     }
 
-    .brand small {
-      color: var(--muted);
+
+    .brand-text span {
+      display:
+        block;
+
+      margin-top:
+        2px;
+
+      font-size:
+        10px;
+
+      opacity:
+        .9;
     }
 
-    #logoutBtn {
-      display: none;
-      border: 0;
-      padding: 10px 14px;
-      border-radius: 9px;
-      font-weight: 800;
+
+    .logout-btn {
+      display:
+        none;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, .6);
+
+      border-radius:
+        8px;
+
+      padding:
+        8px 11px;
+
+      background:
+        rgba(255, 255, 255, .12);
+
+      color:
+        #ffffff;
+
+      font-size:
+        12px;
+
+      font-weight:
+        800;
     }
 
-    main {
-      width: 100%;
-      max-width: 1150px;
-      margin: auto;
-      padding: 25px 14px 60px;
+
+    .logout-btn:active {
+      transform:
+        scale(.98);
     }
 
-    .login-wrap {
-      min-height: 70vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+
+    /* ======================================================
+       MAIN
+    ======================================================= */
+
+    .container {
+      width:
+        min(1100px, 100%);
+
+      margin:
+        0 auto;
+
+      padding:
+        18px 14px 45px;
     }
+
+
+    /* ======================================================
+       LOGIN
+    ======================================================= */
+
+    #loginSection {
+      display:
+        flex;
+
+      justify-content:
+        center;
+
+      align-items:
+        center;
+
+      min-height:
+        calc(100vh - 100px);
+    }
+
 
     .login-card {
-      width: 100%;
-      max-width: 410px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 25px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.08);
+      width:
+        min(420px, 100%);
+
+      padding:
+        25px 20px;
+
+      border:
+        1px solid #e5e7eb;
+
+      border-radius:
+        17px;
+
+      background:
+        #ffffff;
+
+      box-shadow:
+        0 8px 30px
+        rgba(15, 23, 42, .08);
     }
 
-    .login-card h1 {
-      margin: 0 0 7px;
-      font-size: 25px;
+
+    .login-title {
+      margin:
+        0;
+
+      text-align:
+        center;
+
+      font-size:
+        24px;
+
+      font-weight:
+        900;
     }
 
-    .login-card p {
-      margin: 0 0 22px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
+
+    .login-subtitle {
+      margin:
+        7px 0 22px;
+
+      text-align:
+        center;
+
+      color:
+        #6b7280;
+
+      font-size:
+        13px;
+
+      line-height:
+        1.5;
     }
 
-    .field {
-      margin-bottom: 15px;
+
+    .form-group {
+      margin-bottom:
+        14px;
     }
 
-    .field label {
-      display: block;
-      font-size: 12px;
-      font-weight: 800;
-      margin-bottom: 6px;
+
+    .form-group label {
+      display:
+        block;
+
+      margin-bottom:
+        6px;
+
+      color:
+        #374151;
+
+      font-size:
+        12px;
+
+      font-weight:
+        800;
     }
 
-    .field input,
-    .filters input,
-    .filters select {
-      width: 100%;
-      height: 47px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 0 12px;
-      background: #fff;
-      outline: none;
+
+    .form-control {
+      width:
+        100%;
+
+      height:
+        45px;
+
+      border:
+        1px solid #d1d5db;
+
+      border-radius:
+        9px;
+
+      padding:
+        0 12px;
+
+      outline:
+        none;
+
+      background:
+        #ffffff;
+
+      color:
+        #111827;
     }
 
-    .field input:focus,
-    .filters input:focus,
-    .filters select:focus {
-      border-color: var(--blue);
+
+    .form-control:focus {
+      border-color:
+        #0754a6;
+
+      box-shadow:
+        0 0 0 3px
+        rgba(7, 84, 166, .12);
     }
 
-    #loginBtn {
-      width: 100%;
-      height: 49px;
-      border: 0;
-      border-radius: 10px;
-      background: var(--blue);
-      color: #fff;
-      font-weight: 900;
+
+    .login-btn {
+      width:
+        100%;
+
+      min-height:
+        46px;
+
+      margin-top:
+        5px;
+
+      border:
+        0;
+
+      border-radius:
+        9px;
+
+      background:
+        #0754a6;
+
+      color:
+        #ffffff;
+
+      font-weight:
+        900;
     }
 
-    #loginMessage {
-      margin-top: 15px;
-      font-size: 13px;
-      line-height: 1.5;
+
+    .login-btn:disabled {
+      cursor:
+        wait;
+
+      opacity:
+        .65;
     }
+
+
+    .login-message {
+      min-height:
+        20px;
+
+      margin-top:
+        12px;
+
+      text-align:
+        center;
+
+      font-size:
+        12px;
+
+      font-weight:
+        700;
+    }
+
+
+    /* ======================================================
+       DASHBOARD
+    ======================================================= */
 
     #dashboard {
-      display: none;
+      display:
+        none;
     }
 
-    .top-title {
-      margin-bottom: 20px;
+
+    .dashboard-head {
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        space-between;
+
+      gap:
+        10px;
+
+      margin-bottom:
+        16px;
     }
 
-    .top-title h1 {
-      margin: 0 0 5px;
-      font-size: 25px;
+
+    .dashboard-head h1 {
+      margin:
+        0;
+
+      font-size:
+        22px;
+
+      font-weight:
+        900;
     }
 
-    .top-title p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
+
+    .dashboard-head p {
+      margin:
+        4px 0 0;
+
+      color:
+        #6b7280;
+
+      font-size:
+        12px;
     }
+
+
+    .refresh-btn {
+      min-height:
+        40px;
+
+      border:
+        0;
+
+      border-radius:
+        9px;
+
+      padding:
+        0 13px;
+
+      background:
+        #111827;
+
+      color:
+        #ffffff;
+
+      font-size:
+        12px;
+
+      font-weight:
+        800;
+    }
+
+
+    /* ======================================================
+       STATS
+    ======================================================= */
 
     .stats {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 12px;
-      margin-bottom: 18px;
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap:
+        10px;
+
+      margin-bottom:
+        16px;
     }
 
-    .stat {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      padding: 16px;
+
+    .stat-card {
+      min-width:
+        0;
+
+      padding:
+        14px;
+
+      border:
+        1px solid #e5e7eb;
+
+      border-radius:
+        12px;
+
+      background:
+        #ffffff;
+
+      box-shadow:
+        0 2px 8px
+        rgba(15, 23, 42, .04);
     }
 
-    .stat span {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-      margin-bottom: 8px;
+
+    .stat-card span {
+      display:
+        block;
+
+      color:
+        #6b7280;
+
+      font-size:
+        11px;
+
+      font-weight:
+        700;
     }
 
-    .stat strong {
-      font-size: 25px;
+
+    .stat-card strong {
+      display:
+        block;
+
+      margin-top:
+        5px;
+
+      font-size:
+        25px;
+
+      font-weight:
+        900;
     }
+
+
+    /* ======================================================
+       FILTER
+    ======================================================= */
 
     .filters {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      padding: 14px;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr auto;
-      gap: 10px;
-      margin-bottom: 15px;
+      display:
+        grid;
+
+      grid-template-columns:
+        2fr 1fr 1fr;
+
+      gap:
+        10px;
+
+      margin-bottom:
+        16px;
+
+      padding:
+        13px;
+
+      border:
+        1px solid #e5e7eb;
+
+      border-radius:
+        12px;
+
+      background:
+        #ffffff;
     }
 
-    #refreshBtn {
-      border: 0;
-      border-radius: 9px;
-      padding: 0 16px;
-      background: var(--blue);
-      color: #fff;
-      font-weight: 800;
+
+    .filter-item label {
+      display:
+        block;
+
+      margin-bottom:
+        5px;
+
+      color:
+        #6b7280;
+
+      font-size:
+        10px;
+
+      font-weight:
+        800;
+
+      text-transform:
+        uppercase;
+
+      letter-spacing:
+        .3px;
     }
+
+
+    .filter-control {
+      width:
+        100%;
+
+      height:
+        41px;
+
+      border:
+        1px solid #d1d5db;
+
+      border-radius:
+        8px;
+
+      padding:
+        0 10px;
+
+      outline:
+        none;
+
+      background:
+        #ffffff;
+    }
+
+
+    .filter-control:focus {
+      border-color:
+        #0754a6;
+    }
+
+
+    /* ======================================================
+       BOOKING LIST
+    ======================================================= */
 
     .booking-list {
-      display: grid;
-      gap: 12px;
+      display:
+        grid;
+
+      gap:
+        13px;
     }
+
 
     .booking-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px;
+      overflow:
+        hidden;
+
+      border:
+        1px solid #e5e7eb;
+
+      border-radius:
+        14px;
+
+      background:
+        #ffffff;
+
+      box-shadow:
+        0 3px 12px
+        rgba(15, 23, 42, .05);
     }
+
 
     .booking-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
+      display:
+        flex;
+
+      align-items:
+        flex-start;
+
+      justify-content:
+        space-between;
+
+      gap:
+        10px;
+
+      padding:
+        14px 15px;
+
+      border-bottom:
+        1px solid #eef0f3;
+
+      background:
+        #fafafa;
     }
+
 
     .booking-code {
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--blue);
+      font-size:
+        17px;
+
+      font-weight:
+        900;
+
+      letter-spacing:
+        .3px;
     }
+
 
     .created {
-      color: var(--muted);
-      font-size: 11px;
-      margin-top: 3px;
+      margin-top:
+        4px;
+
+      color:
+        #6b7280;
+
+      font-size:
+        10px;
     }
+
+
+    /* ======================================================
+       STATUS
+    ======================================================= */
 
     .status {
-      display: inline-block;
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 10px;
-      font-weight: 900;
+      display:
+        inline-flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      min-height:
+        27px;
+
+      border-radius:
+        999px;
+
+      padding:
+        5px 9px;
+
+      white-space:
+        nowrap;
+
+      font-size:
+        10px;
+
+      font-weight:
+        900;
     }
+
 
     .status.pending {
-      background: #fff3c4;
-      color: #8a6100;
+      background:
+        #fff4cc;
+
+      color:
+        #8a5b00;
     }
+
 
     .status.paid {
-      background: #dcfce7;
-      color: #166534;
+      background:
+        #dcfce7;
+
+      color:
+        #166534;
     }
+
 
     .status.completed {
-      background: #dbeafe;
-      color: #1e40af;
+      background:
+        #dbeafe;
+
+      color:
+        #1e40af;
     }
 
-    .status.cancelled,
-    .status.failed {
-      background: #fee2e2;
-      color: #991b1b;
+
+    .status.cancelled {
+      background:
+        #fee2e2;
+
+      color:
+        #991b1b;
     }
+
+
+    /* ======================================================
+       BOOKING DATA
+    ======================================================= */
 
     .booking-grid {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 13px;
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(5, 1fr);
+
+      gap:
+        1px;
+
+      background:
+        #eef0f3;
     }
+
+
+    .info {
+      min-width:
+        0;
+
+      padding:
+        11px;
+
+      background:
+        #ffffff;
+    }
+
 
     .info span {
-      display: block;
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      margin-bottom: 4px;
+      display:
+        block;
+
+      margin-bottom:
+        4px;
+
+      color:
+        #6b7280;
+
+      font-size:
+        9px;
+
+      font-weight:
+        700;
+
+      text-transform:
+        uppercase;
     }
+
 
     .info strong {
-      font-size: 13px;
-      word-break: break-word;
+      display:
+        block;
+
+      overflow-wrap:
+        anywhere;
+
+      font-size:
+        12px;
+
+      line-height:
+        1.35;
     }
 
+
+    /* ======================================================
+       ACTIONS
+    ======================================================= */
+
     .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding-top: 15px;
-      margin-top: 15px;
-      border-top: 1px solid var(--border);
+      display:
+        flex;
+
+      flex-wrap:
+        wrap;
+
+      gap:
+        8px;
+
+      padding:
+        13px 15px;
+
+      border-top:
+        1px solid #eef0f3;
     }
+
 
     .actions button,
     .actions a {
-      border: 0;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 11px;
-      font-weight: 900;
-      text-decoration: none;
+      display:
+        inline-flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      min-height:
+        39px;
+
+      border:
+        0;
+
+      border-radius:
+        8px;
+
+      padding:
+        8px 12px;
+
+      text-decoration:
+        none;
+
+      font-size:
+        11px;
+
+      font-weight:
+        900;
     }
+
 
     .btn-paid {
-      background: #dcfce7;
-      color: #166534;
+      background:
+        #16a34a;
+
+      color:
+        #ffffff;
     }
 
-    .btn-completed {
-      background: #dbeafe;
-      color: #1e40af;
-    }
-
-    .btn-cancel {
-      background: #fee2e2;
-      color: #991b1b;
-    }
 
     .btn-print {
-      background: #ede9fe;
-      color: #5b21b6;
+      background:
+        #111827;
+
+      color:
+        #ffffff;
     }
+
+
+    .btn-completed {
+      background:
+        #0754a6;
+
+      color:
+        #ffffff;
+    }
+
+
+    .btn-cancel {
+      background:
+        #dc2626;
+
+      color:
+        #ffffff;
+    }
+
 
     .btn-wa {
-      background: #25D366;
-      color: #fff;
+      background:
+        #25d366;
+
+      color:
+        #ffffff;
     }
+
+
+    .actions button:active,
+    .actions a:active {
+      transform:
+        scale(.98);
+    }
+
+
+    /* ======================================================
+       EMPTY
+    ======================================================= */
 
     .empty {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      padding: 35px 15px;
-      text-align: center;
-      color: var(--muted);
+      padding:
+        35px 18px;
+
+      border:
+        1px dashed #cbd5e1;
+
+      border-radius:
+        12px;
+
+      background:
+        #ffffff;
+
+      color:
+        #6b7280;
+
+      text-align:
+        center;
+
+      font-size:
+        13px;
+
+      line-height:
+        1.5;
     }
 
-    @media(max-width:760px) {
+
+    /* ======================================================
+       FOOTER
+    ======================================================= */
+
+    .admin-footer {
+      margin-top:
+        30px;
+
+      padding-top:
+        18px;
+
+      border-top:
+        1px solid #e5e7eb;
+
+      text-align:
+        center;
+
+      color:
+        #6b7280;
+
+      font-size:
+        10px;
+
+      line-height:
+        1.6;
+    }
+
+
+    .admin-footer strong {
+      color:
+        #111827;
+    }
+
+
+    /* ======================================================
+       TABLET
+    ======================================================= */
+
+    @media (
+      max-width: 850px
+    ) {
+
+      .booking-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
       .stats {
-        grid-template-columns: repeat(2,1fr);
+        grid-template-columns:
+          repeat(2, 1fr);
       }
 
       .filters {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr 1fr;
       }
 
-      #refreshBtn {
-        height: 47px;
-      }
-
-      .booking-grid {
-        grid-template-columns: repeat(2,1fr);
-      }
-
-      .brand img {
-        width: 58px;
-      }
-
-      .brand strong {
-        font-size: 13px;
+      .filter-search {
+        grid-column:
+          1 / -1;
       }
     }
+
+
+    /* ======================================================
+       MOBILE
+    ======================================================= */
+
+    @media (
+      max-width: 560px
+    ) {
+
+      .topbar {
+        padding:
+          11px 12px;
+      }
+
+
+      .brand-logo {
+        width:
+          38px;
+
+        height:
+          38px;
+
+        flex-basis:
+          38px;
+
+        font-size:
+          15px;
+      }
+
+
+      .brand-text strong {
+        font-size:
+          14px;
+      }
+
+
+      .brand-text span {
+        font-size:
+          8px;
+      }
+
+
+      .container {
+        padding:
+          14px 10px 40px;
+      }
+
+
+      .dashboard-head {
+        align-items:
+          flex-start;
+      }
+
+
+      .dashboard-head h1 {
+        font-size:
+          18px;
+      }
+
+
+      .refresh-btn {
+        min-width:
+          76px;
+      }
+
+
+      .stats {
+        gap:
+          7px;
+      }
+
+
+      .stat-card {
+        padding:
+          11px;
+      }
+
+
+      .stat-card strong {
+        font-size:
+          21px;
+      }
+
+
+      .filters {
+        grid-template-columns:
+          1fr;
+
+        padding:
+          10px;
+      }
+
+
+      .filter-search {
+        grid-column:
+          auto;
+      }
+
+
+      .booking-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+
+      .booking-head {
+        padding:
+          12px;
+      }
+
+
+      .booking-code {
+        font-size:
+          15px;
+      }
+
+
+      .info {
+        padding:
+          10px;
+      }
+
+
+      .actions {
+        padding:
+          11px;
+      }
+
+
+      .actions button,
+      .actions a {
+        flex:
+          1 1
+          calc(50% - 4px);
+
+        min-width:
+          125px;
+      }
+    }
+
+
+    /* ======================================================
+       VERY SMALL PHONE
+    ======================================================= */
+
+    @media (
+      max-width: 370px
+    ) {
+
+      .booking-grid {
+        grid-template-columns:
+          1fr;
+      }
+
+
+      .actions button,
+      .actions a {
+        flex:
+          1 1 100%;
+      }
+
+
+      .brand-text span {
+        display:
+          none;
+      }
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
-<header class="header">
-  <div class="header-inner">
+
+  <!-- ======================================================
+       HEADER
+  ======================================================= -->
+
+  <header class="topbar">
 
     <div class="brand">
-      <img src="hsm-logo.png" alt="HSM Transport">
 
-      <div>
-        <strong>HSM Transport</strong>
-        <small>Dashboard Admin</small>
+      <div class="brand-logo">
+        HSM
       </div>
+
+      <div class="brand-text">
+
+        <strong>
+          HSM Transport
+        </strong>
+
+        <span>
+          PT Hidayah Sarana Mulia
+        </span>
+
+      </div>
+
     </div>
 
-    <button id="logoutBtn">
+
+    <button
+      id="logoutBtn"
+      class="logout-btn"
+      type="button"
+    >
       Keluar
     </button>
 
-  </div>
-</header>
+  </header>
 
-<main>
 
-  <section id="loginSection" class="login-wrap">
+  <main class="container">
 
-    <div class="login-card">
 
-      <h1>Login Admin</h1>
+    <!-- ====================================================
+         LOGIN
+    ===================================================== -->
 
-      <p>
-        Masuk menggunakan akun administrator
-        HSM Transport.
-      </p>
+    <section id="loginSection">
 
-      <div class="field">
-        <label for="adminEmail">
-          Email
-        </label>
+      <div class="login-card">
 
-        <input
-          id="adminEmail"
-          type="email"
-          autocomplete="username"
-          placeholder="Email admin"
+        <h1 class="login-title">
+          Admin HSM
+        </h1>
+
+        <p class="login-subtitle">
+          Masuk menggunakan akun administrator
+          HSM Transport.
+        </p>
+
+
+        <div class="form-group">
+
+          <label for="adminEmail">
+            Email Admin
+          </label>
+
+          <input
+            id="adminEmail"
+            class="form-control"
+            type="email"
+            autocomplete="username"
+            placeholder="Email admin"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="adminPassword">
+            Password
+          </label>
+
+          <input
+            id="adminPassword"
+            class="form-control"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Password"
+          >
+
+        </div>
+
+
+        <button
+          id="loginBtn"
+          class="login-btn"
+          type="button"
         >
+          Masuk
+        </button>
+
+
+        <div
+          id="loginMessage"
+          class="login-message"
+        ></div>
+
       </div>
 
-      <div class="field">
-        <label for="adminPassword">
-          Password
-        </label>
+    </section>
 
-        <input
-          id="adminPassword"
-          type="password"
-          autocomplete="current-password"
-          placeholder="Password"
+
+    <!-- ====================================================
+         DASHBOARD
+    ===================================================== -->
+
+    <section id="dashboard">
+
+
+      <!-- DASHBOARD HEADER -->
+
+      <div class="dashboard-head">
+
+        <div>
+
+          <h1>
+            Booking HSM Transport
+          </h1>
+
+          <p>
+            Kelola pembayaran, tiket,
+            perjalanan dan pembatalan.
+          </p>
+
+        </div>
+
+
+        <button
+          id="refreshBtn"
+          class="refresh-btn"
+          type="button"
         >
+          Refresh
+        </button>
+
       </div>
 
-      <button id="loginBtn">
-        Masuk
-      </button>
 
-      <div id="loginMessage"></div>
+      <!-- ==================================================
+           STATISTICS
+      =================================================== -->
 
-    </div>
+      <div class="stats">
 
-  </section>
+        <div class="stat-card">
 
-  <section id="dashboard">
+          <span>
+            MENUNGGU
+          </span>
 
-    <div class="top-title">
-      <h1>Data Booking</h1>
+          <strong id="statPending">
+            0
+          </strong>
 
-      <p>
-        Booking aktif dan riwayat perjalanan
-        HSM Transport.
-      </p>
-    </div>
+        </div>
 
-    <div class="stats">
 
-      <div class="stat">
-        <span>MENUNGGU</span>
-        <strong id="statPending">0</strong>
+        <div class="stat-card">
+
+          <span>
+            LUNAS
+          </span>
+
+          <strong id="statPaid">
+            0
+          </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <span>
+            SELESAI
+          </span>
+
+          <strong id="statCompleted">
+            0
+          </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <span>
+            DIBATALKAN
+          </span>
+
+          <strong id="statCancelled">
+            0
+          </strong>
+
+        </div>
+
       </div>
 
-      <div class="stat">
-        <span>LUNAS</span>
-        <strong id="statPaid">0</strong>
+
+      <!-- ==================================================
+           FILTERS
+      =================================================== -->
+
+      <div class="filters">
+
+
+        <div class="filter-item filter-search">
+
+          <label for="searchInput">
+            Cari Booking
+          </label>
+
+          <input
+            id="searchInput"
+            class="filter-control"
+            type="search"
+            placeholder="Kode, nama, nomor WA, rute, armada..."
+          >
+
+        </div>
+
+
+        <div class="filter-item">
+
+          <label for="dateFilter">
+            Tanggal Perjalanan
+          </label>
+
+          <input
+            id="dateFilter"
+            class="filter-control"
+            type="date"
+          >
+
+        </div>
+
+
+        <div class="filter-item">
+
+          <label for="statusFilter">
+            Status
+          </label>
+
+          <select
+            id="statusFilter"
+            class="filter-control"
+          >
+
+            <option value="">
+              Semua Status
+            </option>
+
+            <option value="pending">
+              Menunggu Pembayaran
+            </option>
+
+            <option value="paid">
+              Lunas
+            </option>
+
+            <option value="completed">
+              Selesai
+            </option>
+
+            <option value="cancelled">
+              Dibatalkan
+            </option>
+
+          </select>
+
+        </div>
+
       </div>
 
-      <div class="stat">
-        <span>SELESAI</span>
-        <strong id="statCompleted">0</strong>
-      </div>
 
-      <div class="stat">
-        <span>DIBATALKAN</span>
-        <strong id="statCancelled">0</strong>
-      </div>
+      <!-- ==================================================
+           BOOKING LIST
+      =================================================== -->
 
-    </div>
-
-    <div class="filters">
-
-      <input
-        id="searchInput"
-        type="search"
-        placeholder="Cari kode booking, nama atau WA..."
+      <div
+        id="bookingList"
+        class="booking-list"
       >
 
-      <input
-        id="dateFilter"
-        type="date"
-      >
+        <div class="empty">
+          Memuat data booking...
+        </div>
 
-      <select id="statusFilter">
+      </div>
 
-        <option value="">
-          Semua status
-        </option>
 
-        <option value="pending">
-          Menunggu Pembayaran
-        </option>
+      <!-- ==================================================
+           FOOTER
+      =================================================== -->
 
-        <option value="paid">
-          Lunas
-        </option>
+      <footer class="admin-footer">
 
-        <option value="completed">
-          Selesai
-        </option>
+        <strong>
+          HSM Transport
+        </strong>
 
-        <option value="cancelled">
-          Dibatalkan
-        </option>
+        <br>
 
-      </select>
+        PT Hidayah Sarana Mulia
 
-      <button id="refreshBtn">
-        Refresh
-      </button>
+        <br>
 
-    </div>
+        081356902006
 
-    <div
-      id="bookingList"
-      class="booking-list"
-    ></div>
+        <br>
 
-  </section>
+        Satu Perjalanan, Banyak Cerita
 
-</main>
+      </footer>
 
-<script src="config.js"></script>
-<script src="admin.js"></script>
+
+    </section>
+
+  </main>
+
+
+  <!-- ======================================================
+       CONFIG
+       Jangan taruh Supabase service_role key di browser.
+       config.js cukup publishable/anon key seperti sebelumnya.
+  ======================================================= -->
+
+  <script src="config.js"></script>
+
+
+  <!-- ======================================================
+       ADMIN SYSTEM
+  ======================================================= -->
+
+  <script src="admin.js"></script>
+
 
 </body>
+
 </html>
