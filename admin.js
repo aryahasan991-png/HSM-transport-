@@ -5,16 +5,14 @@
 // - Login admin Supabase
 // - Verifikasi admin
 // - Data booking
-// - Filter tanggal
-// - Filter status
-// - Pencarian
+// - Filter tanggal / status / pencarian
 // - Statistik
-// - Konfirmasi pembayaran CASH / LUNAS
+// - Konfirmasi CASH / LUNAS
 // - Tandai perjalanan selesai
-// - Batalkan tiket termasuk tiket lunas
-// - Data pembatalan tidak dihapus
+// - Batalkan tiket
 // - Cetak tiket thermal 58mm
-// - Barcode dari booking_code
+// - Barcode booking_code
+// - QR verifikasi tiket
 // - Armada HSM-01 / HSM-02
 // ============================================================
 
@@ -163,7 +161,9 @@ function formatCreatedAt(value) {
       }
     );
 
-  } catch {
+  }
+
+  catch {
 
     return String(value);
 
@@ -248,14 +248,18 @@ function whatsappNumber(phone) {
       .replace(/\D/g, "");
 
   if (value.startsWith("0")) {
+
     value =
       "62" +
       value.substring(1);
+
   }
 
   else if (value.startsWith("8")) {
+
     value =
       "62" + value;
+
   }
 
   return value;
@@ -265,12 +269,6 @@ function whatsappNumber(phone) {
 // ============================================================
 // ARMADA
 // ============================================================
-// Prioritas pertama:
-// booking.vehicle
-//
-// Kalau data vehicle kosong, sistem mencoba menentukan
-// berdasarkan titik awal + jam.
-// ============================================================
 
 function getVehicle(booking) {
 
@@ -278,9 +276,11 @@ function getVehicle(booking) {
     booking.vehicle &&
     String(booking.vehicle).trim()
   ) {
+
     return String(
       booking.vehicle
     ).trim();
+
   }
 
   const origin =
@@ -295,7 +295,6 @@ function getVehicle(booking) {
       booking.departure_time
     );
 
-  // PAGI
   if (
     origin === "sofifi" &&
     time === "09:00"
@@ -310,7 +309,6 @@ function getVehicle(booking) {
     return "HSM-02";
   }
 
-  // SIANG
   if (
     origin === "lelilef" &&
     time === "13:00"
@@ -467,8 +465,7 @@ async function login() {
   }
 
   if (loginMessage) {
-    loginMessage.textContent =
-      "";
+    loginMessage.textContent = "";
   }
 
   try {
@@ -489,8 +486,7 @@ async function login() {
 
     if (!isAdmin) {
 
-      await adminDb.auth
-        .signOut();
+      await adminDb.auth.signOut();
 
       throw new Error(
         "Akun ini bukan administrator HSM."
@@ -498,8 +494,7 @@ async function login() {
     }
 
     if (adminPassword) {
-      adminPassword.value =
-        "";
+      adminPassword.value = "";
     }
 
     showDashboard();
@@ -643,6 +638,7 @@ async function loadBookings() {
 
     bookingList.innerHTML = `
       <div class="empty">
+
         <strong>
           Gagal memuat data booking
         </strong>
@@ -652,6 +648,7 @@ async function loadBookings() {
         ${escapeHtml(
           error.message
         )}
+
       </div>
     `;
   }
@@ -766,7 +763,11 @@ function getFilteredBookings() {
           .join(" ")
           .toLowerCase();
 
-        if (!haystack.includes(search)) {
+        if (
+          !haystack.includes(
+            search
+          )
+        ) {
           return false;
         }
       }
@@ -778,7 +779,7 @@ function getFilteredBookings() {
 
 
 // ============================================================
-// RENDER
+// RENDER BOOKINGS
 // ============================================================
 
 function renderBookings() {
@@ -790,8 +791,7 @@ function renderBookings() {
   const rows =
     getFilteredBookings();
 
-  bookingList.innerHTML =
-    "";
+  bookingList.innerHTML = "";
 
   if (!rows.length) {
 
@@ -867,7 +867,6 @@ Status: ${statusLabel(item.payment_status)}
 
       let actions = "";
 
-      // PENDING
       if (status === "pending") {
 
         actions += `
@@ -889,7 +888,6 @@ Status: ${statusLabel(item.payment_status)}
         `;
       }
 
-      // PAID
       else if (status === "paid") {
 
         actions += `
@@ -919,7 +917,6 @@ Status: ${statusLabel(item.payment_status)}
         `;
       }
 
-      // COMPLETED
       else if (status === "completed") {
 
         actions += `
@@ -970,7 +967,9 @@ Status: ${statusLabel(item.payment_status)}
 
           </div>
 
-          <span class="status ${escapeHtml(status)}">
+          <span
+            class="status ${escapeHtml(status)}"
+          >
             ${escapeHtml(
               statusLabel(
                 item.payment_status
@@ -979,6 +978,7 @@ Status: ${statusLabel(item.payment_status)}
           </span>
 
         </div>
+
 
         <div class="booking-grid">
 
@@ -1096,7 +1096,7 @@ Status: ${statusLabel(item.payment_status)}
 
 
 // ============================================================
-// BUTTON EVENTS
+// ACTION BUTTONS
 // ============================================================
 
 function bindActionButtons() {
@@ -1122,7 +1122,9 @@ function bindActionButtons() {
             const action =
               button.dataset.action;
 
-            if (action === "print") {
+            if (
+              action === "print"
+            ) {
 
               printTicket(id);
 
@@ -1190,20 +1192,26 @@ async function changeStatus(
         booking.payment_status
       );
 
-    if (currentStatus === "paid") {
+    if (
+      currentStatus === "paid"
+    ) {
 
       question =
-        `Batalkan tiket LUNAS ${booking.booking_code}?\n\nBooking tetap tersimpan sebagai riwayat dan kursi dapat tersedia kembali. Pastikan urusan pengembalian uang ditangani secara terpisah.`;
+        `Batalkan tiket LUNAS ${booking.booking_code}?\n\nBooking tetap tersimpan sebagai riwayat dan kursi dapat tersedia kembali. Pengembalian uang ditangani secara terpisah.`;
+
     }
 
     else {
 
       question =
         `Batalkan booking ${booking.booking_code}?\n\nData tidak akan dihapus dan kursi dapat tersedia kembali.`;
+
     }
   }
 
-  if (!window.confirm(question)) {
+  if (
+    !window.confirm(question)
+  ) {
     return;
   }
 
@@ -1216,9 +1224,13 @@ async function changeStatus(
       await adminDb
         .from("bookings")
         .update({
-          payment_status: newStatus
+          payment_status:
+            newStatus
         })
-        .eq("id", id)
+        .eq(
+          "id",
+          id
+        )
         .select(
           "id,payment_status"
         );
@@ -1227,7 +1239,10 @@ async function changeStatus(
       throw error;
     }
 
-    if (!data || data.length === 0) {
+    if (
+      !data ||
+      data.length === 0
+    ) {
 
       throw new Error(
         "Database tidak mengubah booking. Periksa policy UPDATE admin."
@@ -1257,7 +1272,7 @@ async function changeStatus(
 
 
 // ============================================================
-// PRINT TICKET
+// PRINT TICKET - THERMAL 58MM
 // ============================================================
 
 function printTicket(id) {
@@ -1283,7 +1298,6 @@ function printTicket(id) {
       booking.payment_status
     );
 
-  // Hanya tiket lunas / selesai yang boleh dicetak
   if (
     status !== "paid" &&
     status !== "completed"
@@ -1304,11 +1318,16 @@ function printTicket(id) {
       booking.booking_code || "-"
     );
 
+  // QR mengarah ke halaman verifikasi publik.
+  const verificationUrl =
+    "https://hsm-transport.vercel.app/tiket.html?kode=" +
+    encodeURIComponent(code);
+
   const printWindow =
     window.open(
       "",
       "_blank",
-      "width=420,height=700"
+      "width=420,height=900"
     );
 
   if (!printWindow) {
@@ -1329,17 +1348,24 @@ function printTicket(id) {
 
 <meta charset="UTF-8">
 
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0"
+>
+
 <title>
 Tiket ${escapeHtml(code)}
 </title>
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"><\/script>
 
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
+
 <style>
 
 @page {
   size: 58mm auto;
-  margin: 2mm;
+  margin: 1.5mm;
 }
 
 * {
@@ -1352,6 +1378,7 @@ body {
   padding: 0;
   background: #fff;
   color: #000;
+
   font-family:
     Arial,
     Helvetica,
@@ -1359,168 +1386,443 @@ body {
 }
 
 .ticket {
-  width: 54mm;
+  width: 55mm;
   margin: 0 auto;
-  padding: 2mm 1mm 4mm;
+  padding:
+    2mm
+    1.5mm
+    5mm;
 }
 
-.center {
+
+/* =========================
+   LOGO
+========================= */
+
+.logo {
   text-align: center;
 }
 
-.company {
-  font-size: 18px;
+.logo-hsm {
+  font-family:
+    Arial Black,
+    Arial,
+    sans-serif;
+
+  font-size: 27px;
+  line-height: 26px;
   font-weight: 900;
-  margin-bottom: 2px;
+  letter-spacing: -2px;
+}
+
+.logo-transport {
+  margin-top: 1px;
+
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 3.2px;
 }
 
 .company-name {
-  font-size: 9px;
-  font-weight: 700;
+  margin-top: 5px;
+
+  text-align: center;
+
+  font-size: 8px;
+  font-weight: 800;
 }
 
-.ticket-title {
-  margin-top: 7px;
-  font-size: 12px;
-  font-weight: 900;
+.tagline-top {
+  margin-top: 3px;
+
+  text-align: center;
+
+  font-size: 7px;
+  font-style: italic;
 }
+
+
+/* =========================
+   DIVIDER
+========================= */
 
 .line {
-  border-top: 1px dashed #000;
-  margin: 7px 0;
+  border-top:
+    1px dashed #000;
+
+  margin:
+    7px 0;
 }
 
-.booking-code {
+
+/* =========================
+   TITLE
+========================= */
+
+.ticket-title {
   text-align: center;
-  font-size: 16px;
+
+  font-size: 13px;
   font-weight: 900;
-  margin: 5px 0;
+
+  letter-spacing:
+    .5px;
 }
+
+
+/* =========================
+   DATA
+========================= */
 
 .row {
   display: flex;
-  justify-content: space-between;
-  gap: 6px;
-  font-size: 10px;
-  margin: 4px 0;
+  align-items: flex-start;
+
+  margin:
+    3px 0;
+
+  font-size:
+    9px;
+
+  line-height:
+    1.35;
 }
 
-.row .label {
+.label {
   width: 34%;
 }
 
-.row .value {
-  width: 66%;
-  text-align: right;
-  font-weight: 700;
-  word-break: break-word;
+.separator {
+  width: 5%;
 }
 
-.route {
-  text-align: center;
-  font-size: 14px;
-  font-weight: 900;
-  margin: 8px 0;
+.value {
+  width: 61%;
+
+  font-weight:
+    800;
+
+  word-break:
+    break-word;
 }
 
-.seat {
-  text-align: center;
-  margin: 8px 0;
+.code-value {
+  font-size:
+    11px;
+
+  font-weight:
+    900;
 }
 
-.seat small {
-  display: block;
-  font-size: 9px;
+.seat-value {
+  font-size:
+    16px;
+
+  line-height:
+    16px;
+
+  font-weight:
+    900;
 }
 
-.seat strong {
-  font-size: 28px;
+.paid-value {
+  font-size:
+    11px;
+
+  font-weight:
+    900;
 }
 
-.paid {
-  border: 2px solid #000;
-  padding: 5px;
-  margin: 8px 0;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 900;
+
+/* =========================
+   NOTICE
+========================= */
+
+.notice {
+  margin:
+    5px 1px;
+
+  text-align:
+    center;
+
+  font-size:
+    7px;
+
+  line-height:
+    1.45;
 }
+
+
+/* =========================
+   QR
+========================= */
+
+.qr-section {
+  text-align:
+    center;
+
+  margin-top:
+    5px;
+}
+
+#ticketQr {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  width:
+    26mm;
+
+  height:
+    26mm;
+
+  margin:
+    0 auto 4px;
+}
+
+#ticketQr img,
+#ticketQr canvas {
+  display:
+    block;
+
+  width:
+    25mm !important;
+
+  height:
+    25mm !important;
+}
+
+.qr-title {
+  font-size:
+    8px;
+
+  font-weight:
+    900;
+}
+
+.qr-subtitle {
+  margin-top:
+    2px;
+
+  font-size:
+    6.5px;
+
+  line-height:
+    1.3;
+}
+
+
+/* =========================
+   BARCODE
+========================= */
 
 .barcode {
-  text-align: center;
-  margin-top: 8px;
-  overflow: hidden;
+  text-align:
+    center;
+
+  overflow:
+    hidden;
+
+  margin-top:
+    4px;
 }
 
 .barcode svg {
-  max-width: 100%;
-  height: auto;
+  width:
+    100%;
+
+  max-width:
+    50mm;
+
+  height:
+    auto;
 }
 
-.footer {
-  text-align: center;
-  font-size: 8px;
-  line-height: 1.4;
-  margin-top: 8px;
+
+/* =========================
+   FOOTER
+========================= */
+
+.thank-you {
+  margin-top:
+    6px;
+
+  text-align:
+    center;
+
+  font-size:
+    9px;
+
+  font-weight:
+    900;
 }
+
+.contact {
+  margin-top:
+    5px;
+
+  text-align:
+    center;
+
+  font-size:
+    7px;
+
+  line-height:
+    1.55;
+}
+
+.story {
+  margin-top:
+    8px;
+
+  text-align:
+    center;
+
+  font-family:
+    "Brush Script MT",
+    cursive;
+
+  font-size:
+    11px;
+
+  font-style:
+    italic;
+
+  font-weight:
+    700;
+}
+
+
+/* =========================
+   BUTTON
+========================= */
 
 .no-print {
-  margin-top: 15px;
-  text-align: center;
+  margin-top:
+    18px;
+
+  text-align:
+    center;
 }
 
 .no-print button {
-  border: 0;
-  background: #0754a6;
-  color: white;
-  font-weight: 800;
-  border-radius: 7px;
-  padding: 10px 18px;
+  border:
+    none;
+
+  border-radius:
+    7px;
+
+  padding:
+    11px 20px;
+
+  background:
+    #111;
+
+  color:
+    #fff;
+
+  font-weight:
+    900;
+
+  cursor:
+    pointer;
 }
+
 
 @media print {
 
   .no-print {
-    display: none;
+    display:
+      none;
   }
 
+  html,
+  body {
+    width:
+      58mm;
+  }
 }
 
 </style>
 
 </head>
 
+
 <body>
 
 <div class="ticket">
 
-  <div class="center">
 
-    <div class="company">
-      HSM TRANSPORT
+  <!-- LOGO -->
+
+  <div class="logo">
+
+    <div class="logo-hsm">
+      HSM
     </div>
 
-    <div class="company-name">
-      PT HIDAYAH SARANA MULIA
-    </div>
-
-    <div class="ticket-title">
-      TIKET PENUMPANG
+    <div class="logo-transport">
+      TRANSPORT
     </div>
 
   </div>
 
-  <div class="line"></div>
 
-  <div class="booking-code">
-    ${escapeHtml(code)}
+  <div class="company-name">
+    PT HIDAYAH SARANA MULIA
   </div>
 
+
+  <div class="tagline-top">
+    Perjalanan Nyaman, Sampai Tujuan
+  </div>
+
+
   <div class="line"></div>
+
+
+  <!-- TITLE -->
+
+  <div class="ticket-title">
+    TIKET PENUMPANG
+  </div>
+
+
+  <div class="line"></div>
+
+
+  <!-- BOOKING -->
 
   <div class="row">
+
+    <div class="label">
+      Kode Booking
+    </div>
+
+    <div class="separator">
+      :
+    </div>
+
+    <div class="value code-value">
+      ${escapeHtml(code)}
+    </div>
+
+  </div>
+
+
+  <div class="row">
+
     <div class="label">
       Nama
+    </div>
+
+    <div class="separator">
+      :
     </div>
 
     <div class="value">
@@ -1528,21 +1830,41 @@ body {
         booking.passenger_name || "-"
       )}
     </div>
+
   </div>
 
-  <div class="route">
-    ${escapeHtml(
-      booking.origin || "-"
-    )}
-    →
-    ${escapeHtml(
-      booking.destination || "-"
-    )}
-  </div>
 
   <div class="row">
+
+    <div class="label">
+      Rute
+    </div>
+
+    <div class="separator">
+      :
+    </div>
+
+    <div class="value">
+      ${escapeHtml(
+        booking.origin || "-"
+      )}
+      →
+      ${escapeHtml(
+        booking.destination || "-"
+      )}
+    </div>
+
+  </div>
+
+
+  <div class="row">
+
     <div class="label">
       Tanggal
+    </div>
+
+    <div class="separator">
+      :
     </div>
 
     <div class="value">
@@ -1552,11 +1874,18 @@ body {
         )
       )}
     </div>
+
   </div>
 
+
   <div class="row">
+
     <div class="label">
       Jam
+    </div>
+
+    <div class="separator">
+      :
     </div>
 
     <div class="value">
@@ -1566,37 +1895,56 @@ body {
         )
       )} WIT
     </div>
+
   </div>
 
+
   <div class="row">
+
     <div class="label">
       Armada
+    </div>
+
+    <div class="separator">
+      :
     </div>
 
     <div class="value">
       ${escapeHtml(vehicle)}
     </div>
+
   </div>
 
-  <div class="seat">
 
-    <small>
-      NOMOR KURSI
-    </small>
+  <div class="row">
 
-    <strong>
+    <div class="label">
+      No. Kursi
+    </div>
+
+    <div class="separator">
+      :
+    </div>
+
+    <div class="value seat-value">
       ${escapeHtml(
         String(
           booking.seat_number || "-"
         )
       )}
-    </strong>
+    </div>
 
   </div>
 
+
   <div class="row">
+
     <div class="label">
       Tarif
+    </div>
+
+    <div class="separator">
+      :
     </div>
 
     <div class="value">
@@ -1606,43 +1954,130 @@ body {
         )
       )}
     </div>
+
   </div>
 
-  <div class="paid">
-    LUNAS
+
+  <div class="row">
+
+    <div class="label">
+      Pembayaran
+    </div>
+
+    <div class="separator">
+      :
+    </div>
+
+    <div class="value">
+      CASH
+    </div>
+
   </div>
+
+
+  <div class="row">
+
+    <div class="label">
+      Status
+    </div>
+
+    <div class="separator">
+      :
+    </div>
+
+    <div class="value paid-value">
+      LUNAS
+    </div>
+
+  </div>
+
 
   <div class="line"></div>
 
-  <div class="barcode">
-    <svg id="ticketBarcode"></svg>
-  </div>
 
-  <div class="footer">
+  <!-- NOTICE -->
 
-    Barcode:
-    ${escapeHtml(code)}
+  <div class="notice">
 
-    <br><br>
+    Harap hadir sebelum waktu keberangkatan.
+
+    <br>
 
     Simpan tiket ini selama perjalanan.
 
     <br>
 
-    Terima kasih telah menggunakan
-    <strong>HSM Transport</strong>.
+    Tunjukkan tiket kepada petugas
+    HSM Transport apabila diperlukan.
 
   </div>
+
 
   <div class="line"></div>
 
-  <div class="footer">
-    Nyaman • Aman • Mudah Booking
+
+  <!-- QR -->
+
+  <div class="qr-section">
+
+    <div id="ticketQr"></div>
+
+    <div class="qr-title">
+      SCAN UNTUK VERIFIKASI TIKET
+    </div>
+
+    <div class="qr-subtitle">
+      Status tiket diperiksa melalui sistem HSM Transport
+    </div>
+
   </div>
+
+
+  <div class="line"></div>
+
+
+  <!-- BARCODE -->
+
+  <div class="barcode">
+    <svg id="ticketBarcode"></svg>
+  </div>
+
+
+  <div class="line"></div>
+
+
+  <!-- FOOTER -->
+
+  <div class="thank-you">
+    TERIMA KASIH
+  </div>
+
+
+  <div class="contact">
+
+    HSM Transport
+
+    <br>
+
+    081356902006
+
+    <br>
+
+    hsm-transport.vercel.app
+
+  </div>
+
+
+  <div class="story">
+    Satu Perjalanan, Banyak Cerita
+  </div>
+
 
   <div class="no-print">
 
-    <button onclick="window.print()">
+    <button
+      onclick="window.print()"
+    >
       CETAK TIKET
     </button>
 
@@ -1650,11 +2085,14 @@ body {
 
 </div>
 
+
 <script>
 
 window.addEventListener(
   "load",
   function () {
+
+    // BARCODE
 
     try {
 
@@ -1662,12 +2100,23 @@ window.addEventListener(
         "#ticketBarcode",
         ${JSON.stringify(code)},
         {
-          format: "CODE128",
-          displayValue: true,
-          fontSize: 11,
-          height: 42,
-          margin: 0,
-          width: 1.35
+          format:
+            "CODE128",
+
+          displayValue:
+            true,
+
+          fontSize:
+            10,
+
+          height:
+            35,
+
+          margin:
+            0,
+
+          width:
+            1.15
         }
       );
 
@@ -1682,14 +2131,59 @@ window.addEventListener(
 
     }
 
+
+    // QR VERIFIKASI
+
+    try {
+
+      new QRCode(
+        document.getElementById(
+          "ticketQr"
+        ),
+        {
+          text:
+            ${JSON.stringify(
+              verificationUrl
+            )},
+
+          width:
+            180,
+
+          height:
+            180,
+
+          colorDark:
+            "#000000",
+
+          colorLight:
+            "#ffffff",
+
+          correctLevel:
+            QRCode.CorrectLevel.M
+        }
+      );
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "QR ERROR:",
+        error
+      );
+
+    }
+
   }
 );
 
 <\/script>
 
 </body>
+
 </html>
   `;
+
 
   printWindow.document.open();
 
@@ -1720,7 +2214,9 @@ if (adminPassword) {
     "keydown",
     event => {
 
-      if (event.key === "Enter") {
+      if (
+        event.key === "Enter"
+      ) {
         login();
       }
     }
@@ -1742,7 +2238,9 @@ if (refreshBtn) {
   refreshBtn.addEventListener(
     "click",
     async () => {
+
       await loadBookings();
+
     }
   );
 }
@@ -1764,11 +2262,11 @@ if (dateFilter) {
     async () => {
 
       if (searchInput) {
-        searchInput.value =
-          "";
+        searchInput.value = "";
       }
 
       await loadBookings();
+
     }
   );
 }
