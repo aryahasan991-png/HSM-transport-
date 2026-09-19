@@ -1,7 +1,7 @@
 // ============================================================
 // HSM TRANSPORT - APP.JS FINAL
-// FULL SEAT + SEGMENTED SEAT
-// 14 KURSI PENUMPANG + KERNET
+// FULL SEAT + SEGMENTED SEAT + ROUTE DROPDOWN
+// 14 KURSI PENUMPANG
 // TIMEZONE: ASIA/JAYAPURA / WIT
 // ============================================================
 
@@ -70,6 +70,37 @@ let selectedDestination = "";
 let currentBookings = [];
 
 let isProcessingBooking = false;
+
+
+// ============================================================
+// KONFIGURASI RUTE
+// ============================================================
+
+const HSM_DESTINATIONS = {
+
+  Sofifi: [
+    "Weda",
+    "Lelilef"
+  ],
+
+  Loleo: [
+    "Weda",
+    "Lelilef"
+  ],
+
+  Weda: [
+    "Loleo",
+    "Sofifi",
+    "Lelilef"
+  ],
+
+  Lelilef: [
+    "Weda",
+    "Loleo",
+    "Sofifi"
+  ]
+
+};
 
 
 // ============================================================
@@ -237,7 +268,7 @@ function formatTime(time) {
 
 
 // ============================================================
-// NORMALIZE STATUS BOOKING
+// STATUS BOOKING
 // ============================================================
 
 function getBookingStatus(
@@ -247,13 +278,17 @@ function getBookingStatus(
   const status =
     String(
       booking?.payment_status ||
+      booking?.status ||
       ""
     )
       .trim()
       .toLowerCase();
 
 
-  // LUNAS
+  // ==========================================================
+  // PAID
+  // ==========================================================
+
   if (
     status === "paid" ||
     status === "lunas" ||
@@ -267,8 +302,10 @@ function getBookingStatus(
   }
 
 
-  // PERJALANAN SELESAI
+  // ==========================================================
+  // COMPLETED
   // TETAP MENGUNCI KURSI
+  // ==========================================================
 
   if (
     status === "completed" ||
@@ -280,8 +317,10 @@ function getBookingStatus(
   }
 
 
-  // DIBATALKAN
-  // HANYA STATUS INI YANG MEMBUKA KURSI
+  // ==========================================================
+  // CANCELLED
+  // HANYA CANCELLED YANG MEMBUKA KURSI
+  // ==========================================================
 
   if (
     status === "cancelled" ||
@@ -302,58 +341,154 @@ function getBookingStatus(
 
 
 // ============================================================
-// ROUTE TERPILIH
+// ISI DROPDOWN TUJUAN
 // ============================================================
 
-function getSelectedRoute() {
+function updateDestinationOptions(
+  keepCurrent = true
+) {
 
-  const checked =
-    document.querySelector(
-      'input[name="route"]:checked'
+  if (
+    !fromEl ||
+    !toEl
+  ) {
+    return;
+  }
+
+
+  const origin =
+    String(
+      fromEl.value || ""
+    ).trim();
+
+
+  const oldDestination =
+    String(
+      toEl.value || ""
+    ).trim();
+
+
+  const destinations =
+    HSM_DESTINATIONS[
+      origin
+    ] || [];
+
+
+  // HAPUS OPTION LAMA
+
+  toEl.innerHTML = "";
+
+
+  // PLACEHOLDER
+
+  const placeholder =
+    document.createElement(
+      "option"
     );
 
 
-  if (!checked) {
+  placeholder.value =
+    "";
 
-    return {
 
-      origin:
-        fromEl
-          ? fromEl.value
-          : "",
+  placeholder.textContent =
+    "Pilih tujuan";
 
-      destination:
-        toEl
-          ? toEl.value
-          : ""
 
-    };
+  placeholder.disabled =
+    true;
+
+
+  placeholder.selected =
+    true;
+
+
+  toEl.appendChild(
+    placeholder
+  );
+
+
+  // TAMBAHKAN TUJUAN
+
+  destinations.forEach(
+    destination => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      option.value =
+        destination;
+
+
+      option.textContent =
+        destination;
+
+
+      toEl.appendChild(
+        option
+      );
+
+    }
+  );
+
+
+  // PERTAHANKAN TUJUAN
+  // JIKA MASIH VALID
+
+  if (
+    keepCurrent &&
+    destinations.includes(
+      oldDestination
+    )
+  ) {
+
+    toEl.value =
+      oldDestination;
+
+  }
+
+  else {
+
+    toEl.value =
+      "";
 
   }
 
 
-  const value =
-    checked.value ||
-    "";
+  selectedOrigin =
+    origin;
 
 
-  const parts =
-    value.split("|");
+  selectedDestination =
+    toEl.value || "";
 
+}
+
+
+// ============================================================
+// GET SELECTED ROUTE
+// ============================================================
+
+function getSelectedRoute() {
 
   return {
 
     origin:
-      (
-        parts[0] ||
-        ""
-      ).trim(),
+      fromEl
+        ? String(
+            fromEl.value || ""
+          ).trim()
+        : "",
 
     destination:
-      (
-        parts[1] ||
-        ""
-      ).trim()
+      toEl
+        ? String(
+            toEl.value || ""
+          ).trim()
+        : ""
 
   };
 
@@ -361,43 +496,21 @@ function getSelectedRoute() {
 
 
 // ============================================================
-// UPDATE ROUTE
+// RESET PILIHAN JADWAL
 // ============================================================
 
-function updateSelectedRoute() {
-
-  const route =
-    getSelectedRoute();
-
-
-  selectedOrigin =
-    route.origin;
-
-  selectedDestination =
-    route.destination;
-
-
-  if (fromEl) {
-
-    fromEl.value =
-      route.origin;
-
-  }
-
-
-  if (toEl) {
-
-    toEl.value =
-      route.destination;
-
-  }
-
+function resetScheduleSelection() {
 
   selectedSchedule =
     null;
 
+
   selectedSeat =
     null;
+
+
+  currentBookings =
+    [];
 
 
   if (seatsEl) {
@@ -415,32 +528,11 @@ function updateSelectedRoute() {
 
   }
 
-
-  loadSchedules();
-
 }
 
 
 // ============================================================
-// EVENT ROUTE RADIO
-// ============================================================
-
-document
-  .querySelectorAll(
-    'input[name="route"]'
-  )
-  .forEach(input => {
-
-    input.addEventListener(
-      "change",
-      updateSelectedRoute
-    );
-
-  });
-
-
-// ============================================================
-// SELECT FROM / TO
+// EVENT ASAL
 // ============================================================
 
 if (fromEl) {
@@ -449,16 +541,36 @@ if (fromEl) {
     "change",
     () => {
 
-      selectedOrigin =
-        fromEl.value;
+      updateDestinationOptions(
+        false
+      );
 
-      selectedSchedule =
-        null;
 
-      selectedSeat =
-        null;
+      resetScheduleSelection();
 
-      loadSchedules();
+
+      if (resultEl) {
+
+        resultEl.innerHTML =
+          "";
+
+      }
+
+
+      if (scheduleEl) {
+
+        scheduleEl.innerHTML = `
+          <div
+            style="
+              padding:15px;
+              text-align:center;
+            "
+          >
+            Pilih tujuan terlebih dahulu.
+          </div>
+        `;
+
+      }
 
     }
   );
@@ -466,20 +578,36 @@ if (fromEl) {
 }
 
 
+// ============================================================
+// EVENT TUJUAN
+// ============================================================
+
 if (toEl) {
 
   toEl.addEventListener(
     "change",
     () => {
 
+      selectedOrigin =
+        fromEl
+          ? fromEl.value
+          : "";
+
+
       selectedDestination =
         toEl.value;
 
-      selectedSchedule =
-        null;
 
-      selectedSeat =
-        null;
+      resetScheduleSelection();
+
+
+      if (resultEl) {
+
+        resultEl.innerHTML =
+          "";
+
+      }
+
 
       loadSchedules();
 
@@ -490,7 +618,7 @@ if (toEl) {
 
 
 // ============================================================
-// FETCH SCHEDULE
+// FETCH SCHEDULES
 // ============================================================
 
 async function fetchSchedules() {
@@ -535,29 +663,27 @@ async function fetchSchedules() {
 
 
 // ============================================================
-// BUILD SERVICE
+// BUILD SERVICES
 // ============================================================
 
 function buildServices(rows) {
 
-  const services = [];
+  const services =
+    [];
 
 
   // ==========================================================
-  // SEGMENT
+  // SEGMENT ARAH SOFIFI
   //
-  // ARAH TIMUR:
+  // 1 = SOFIFI -> LOLEO
+  // 2 = LOLEO -> WEDA
+  // 3 = WEDA -> LELILEF
   //
-  // Sofifi -> Loleo = ruas 1
-  // Loleo -> Weda = ruas 2
-  // Weda -> Lelilef = ruas 3
+  // SEGMENT ARAH LELILEF
   //
-  //
-  // ARAH BARAT:
-  //
-  // Lelilef -> Weda = ruas 1
-  // Weda -> Loleo = ruas 2
-  // Loleo -> Sofifi = ruas 3
+  // 1 = LELILEF -> WEDA
+  // 2 = WEDA -> LOLEO
+  // 3 = LOLEO -> SOFIFI
   // ==========================================================
 
 
@@ -809,7 +935,7 @@ async function fetchBookings(
 ) {
 
   // ==========================================================
-  // COBA RPC TERLEBIH DAHULU
+  // COBA RPC
   // ==========================================================
 
   try {
@@ -837,10 +963,11 @@ async function fetchBookings(
     }
 
   }
+
   catch (rpcError) {
 
     console.warn(
-      "Seat RPC fallback:",
+      "RPC seat fallback:",
       rpcError
     );
 
@@ -848,7 +975,7 @@ async function fetchBookings(
 
 
   // ==========================================================
-  // FALLBACK KE TABLE BOOKINGS
+  // FALLBACK TABLE BOOKINGS
   // ==========================================================
 
   const {
@@ -882,7 +1009,7 @@ async function fetchBookings(
 
 
 // ============================================================
-// STATUS KURSI DARI ARRAY BOOKING
+// GET SEAT STATUS
 // ============================================================
 
 function getSeatStatusFromBookings(
@@ -936,7 +1063,7 @@ function getSeatStatusFromBookings(
 
 
     // ========================================================
-    // HANYA CANCELLED YANG MEMBUKA KURSI
+    // CANCELLED TIDAK MENGUNCI
     // ========================================================
 
     if (
@@ -963,13 +1090,11 @@ function getSeatStatusFromBookings(
       );
 
 
-    // ========================================================
-    // CEK OVERLAP SEGMENT
-    // ========================================================
-
     const overlap =
-      bookingStart <= newEnd &&
-      bookingEnd >= newStart;
+      bookingStart <=
+        newEnd &&
+      bookingEnd >=
+        newStart;
 
 
     if (!overlap) {
@@ -980,7 +1105,7 @@ function getSeatStatusFromBookings(
 
 
     // ========================================================
-    // PAID / COMPLETED
+    // PAID / COMPLETED = MERAH
     // ========================================================
 
     if (
@@ -999,7 +1124,7 @@ function getSeatStatusFromBookings(
 
 
     // ========================================================
-    // PENDING
+    // PENDING = KUNING
     // ========================================================
 
     if (
@@ -1023,7 +1148,7 @@ function getSeatStatusFromBookings(
 
 
 // ============================================================
-// STATUS KURSI CURRENT BOOKINGS
+// GET CURRENT SEAT STATUS
 // ============================================================
 
 function getSeatStatus(
@@ -1085,48 +1210,13 @@ function countAvailableSeats(
 
 
 // ============================================================
-// LOAD SCHEDULE
+// LOAD SCHEDULES
 // ============================================================
 
 async function loadSchedules() {
 
   if (!scheduleEl) {
     return;
-  }
-
-
-  scheduleEl.innerHTML = `
-    <div
-      style="
-        padding:15px;
-        text-align:center;
-      "
-    >
-      Memuat jadwal...
-    </div>
-  `;
-
-
-  selectedSchedule =
-    null;
-
-  selectedSeat =
-    null;
-
-
-  if (seatsEl) {
-
-    seatsEl.innerHTML = `
-      <div
-        style="
-          padding:15px;
-          text-align:center;
-        "
-      >
-        Pilih jadwal terlebih dahulu.
-      </div>
-    `;
-
   }
 
 
@@ -1143,8 +1233,65 @@ async function loadSchedules() {
   selectedOrigin =
     route.origin;
 
+
   selectedDestination =
     route.destination;
+
+
+  // ==========================================================
+  // BELUM PILIH ASAL
+  // ==========================================================
+
+  if (!route.origin) {
+
+    scheduleEl.innerHTML = `
+      <div
+        style="
+          padding:15px;
+          text-align:center;
+        "
+      >
+        Pilih lokasi keberangkatan terlebih dahulu.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  // ==========================================================
+  // BELUM PILIH TUJUAN
+  // ==========================================================
+
+  if (!route.destination) {
+
+    scheduleEl.innerHTML = `
+      <div
+        style="
+          padding:15px;
+          text-align:center;
+        "
+      >
+        Pilih tujuan terlebih dahulu.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  scheduleEl.innerHTML = `
+    <div
+      style="
+        padding:15px;
+        text-align:center;
+      "
+    >
+      Memuat jadwal...
+    </div>
+  `;
 
 
   try {
@@ -1195,7 +1342,7 @@ async function loadSchedules() {
 
 
     // ========================================================
-    // FILTER ROUTE
+    // FILTER ASAL + TUJUAN
     // ========================================================
 
     const services =
@@ -1208,6 +1355,7 @@ async function loadSchedules() {
               service.displayOrigin
             )
               .toLowerCase() ===
+
             String(
               route.origin
             )
@@ -1219,6 +1367,7 @@ async function loadSchedules() {
               service.displayDestination
             )
               .toLowerCase() ===
+
             String(
               route.destination
             )
@@ -1234,7 +1383,9 @@ async function loadSchedules() {
     // HAPUS DUPLIKAT
     // ========================================================
 
-    const unique = [];
+    const unique =
+      [];
+
 
     const seen =
       new Set();
@@ -1287,16 +1438,21 @@ async function loadSchedules() {
             text-align:center;
           "
         >
+
           Tidak ada jadwal tersedia untuk
+
           <b>
             ${route.origin}
             →
             ${route.destination}
           </b>
+
           pada tanggal
+
           <b>
             ${selectedDate}
           </b>.
+
         </div>
       `;
 
@@ -1305,6 +1461,10 @@ async function loadSchedules() {
 
     }
 
+
+    // ========================================================
+    // SORT JAM
+    // ========================================================
 
     unique.sort(
       (a, b) => {
@@ -1321,10 +1481,7 @@ async function loadSchedules() {
 
 
     // ========================================================
-    // CACHE BOOKING PER SCHEDULE
-    //
-    // SATU SCHEDULE BISA MUNCUL DI BEBERAPA RUTE,
-    // JADI DATABASE TIDAK PERLU DIPANGGIL BERULANG.
+    // CACHE BOOKING
     // ========================================================
 
     const bookingCache =
@@ -1371,7 +1528,6 @@ async function loadSchedules() {
 
             console.error(
               "AVAILABILITY ERROR:",
-              scheduleId,
               error
             );
 
@@ -1393,7 +1549,7 @@ async function loadSchedules() {
 
 
     // ========================================================
-    // RENDER JADWAL
+    // RENDER CARD
     // ========================================================
 
     scheduleEl.innerHTML =
@@ -1449,13 +1605,13 @@ async function loadSchedules() {
           0;
 
 
-        // ====================================================
-        // STATUS KETERSEDIAAN
-        // ====================================================
-
         let availabilityHTML =
           "";
 
+
+        // ====================================================
+        // GAGAL CEK
+        // ====================================================
 
         if (
           availableSeats ===
@@ -1477,7 +1633,14 @@ async function loadSchedules() {
 
         }
 
-        else if (isFull) {
+
+        // ====================================================
+        // FULL
+        // ====================================================
+
+        else if (
+          isFull
+        ) {
 
           availabilityHTML = `
             <div
@@ -1493,6 +1656,11 @@ async function loadSchedules() {
           `;
 
         }
+
+
+        // ====================================================
+        // TERSEDIA
+        // ====================================================
 
         else {
 
@@ -1514,10 +1682,6 @@ async function loadSchedules() {
         }
 
 
-        // ====================================================
-        // CARD
-        // ====================================================
-
         button.innerHTML = `
 
           <div>
@@ -1526,6 +1690,7 @@ async function loadSchedules() {
             </strong>
           </div>
 
+
           <div
             style="
               font-size:20px;
@@ -1533,7 +1698,9 @@ async function loadSchedules() {
             "
           >
             ${service.displayTime}
+            WIT
           </div>
+
 
           <div
             style="
@@ -1544,6 +1711,7 @@ async function loadSchedules() {
               service.displayPrice
             )}
           </div>
+
 
           <small
             style="
@@ -1559,16 +1727,19 @@ async function loadSchedules() {
             }
           </small>
 
+
           ${availabilityHTML}
 
         `;
 
 
         // ====================================================
-        // FULL SEAT
+        // FULL = TIDAK BISA DIKLIK
         // ====================================================
 
-        if (isFull) {
+        if (
+          isFull
+        ) {
 
           button.disabled =
             true;
@@ -1583,9 +1754,14 @@ async function loadSchedules() {
 
 
           button.title =
-            "Semua 14 kursi pada segmen ini sudah terisi";
+            "Semua kursi pada rute ini sudah terisi";
 
         }
+
+
+        // ====================================================
+        // BISA DIPILIH
+        // ====================================================
 
         else {
 
@@ -1737,7 +1913,7 @@ function createSeat(
 
 
   // ==========================================================
-  // AVAILABLE
+  // TERSEDIA
   // ==========================================================
 
   if (
@@ -1951,9 +2127,7 @@ function createSlidingDoor() {
 // AISLE
 // ============================================================
 
-function createAisle(
-  width = 48
-) {
+function createAisle() {
 
   const aisle =
     document.createElement(
@@ -1962,7 +2136,7 @@ function createAisle(
 
 
   aisle.style.width =
-    `${width}px`;
+    "48px";
 
 
   aisle.style.height =
@@ -2124,10 +2298,6 @@ function renderSeats(
     "";
 
 
-  // ==========================================================
-  // HITUNG TERSEDIA
-  // ==========================================================
-
   const available =
     countAvailableSeats(
       schedule,
@@ -2201,22 +2371,17 @@ function renderSeats(
   front.style.textAlign =
     "center";
 
-
   front.style.fontSize =
     "12px";
-
 
   front.style.fontWeight =
     "bold";
 
-
   front.style.marginBottom =
     "10px";
 
-
   front.style.opacity =
     "0.7";
-
 
   front.textContent =
     "DEPAN";
@@ -2229,12 +2394,6 @@ function renderSeats(
 
   // ==========================================================
   // LAYOUT HIACE
-  //
-  // 1 2 - SUPIR
-  // PINTU 3 4 5
-  // KERNET - 6 7
-  // 8 - 9 10
-  // 11 12 13 14
   // ==========================================================
 
   seatsEl.appendChild(
@@ -2310,18 +2469,14 @@ function renderSeats(
   back.style.textAlign =
     "center";
 
-
   back.style.fontSize =
     "11px";
-
 
   back.style.opacity =
     "0.6";
 
-
   back.style.marginTop =
     "3px";
-
 
   back.textContent =
     "BELAKANG";
@@ -2333,7 +2488,7 @@ function renderSeats(
 
 
   // ==========================================================
-  // LEGEND
+  // LEGENDA
   // ==========================================================
 
   const legend =
@@ -2345,22 +2500,17 @@ function renderSeats(
   legend.style.display =
     "flex";
 
-
   legend.style.justifyContent =
     "center";
-
 
   legend.style.flexWrap =
     "wrap";
 
-
   legend.style.gap =
     "12px";
 
-
   legend.style.marginTop =
     "18px";
-
 
   legend.style.fontSize =
     "12px";
@@ -2369,78 +2519,15 @@ function renderSeats(
   legend.innerHTML = `
 
     <span>
-
-      <span
-        style="
-          display:inline-block;
-          width:15px;
-          height:15px;
-          background:#22c55e;
-          border-radius:4px;
-          vertical-align:middle;
-          margin-right:4px;
-        "
-      ></span>
-
-      Tersedia
-
+      🟢 Tersedia
     </span>
 
-
     <span>
-
-      <span
-        style="
-          display:inline-block;
-          width:15px;
-          height:15px;
-          background:#facc15;
-          border-radius:4px;
-          vertical-align:middle;
-          margin-right:4px;
-        "
-      ></span>
-
-      Menunggu pembayaran
-
+      🟡 Menunggu pembayaran
     </span>
 
-
     <span>
-
-      <span
-        style="
-          display:inline-block;
-          width:15px;
-          height:15px;
-          background:#ef4444;
-          border-radius:4px;
-          vertical-align:middle;
-          margin-right:4px;
-        "
-      ></span>
-
-      Terisi / Lunas
-
-    </span>
-
-
-    <span>
-
-      <span
-        style="
-          display:inline-block;
-          width:15px;
-          height:15px;
-          background:#111;
-          border-radius:4px;
-          vertical-align:middle;
-          margin-right:4px;
-        "
-      ></span>
-
-      Kernet / Pintu
-
+      🔴 Terisi / Lunas
     </span>
 
   `;
@@ -2464,10 +2551,8 @@ function renderSeats(
   info.style.textAlign =
     "center";
 
-
   info.style.marginTop =
     "15px";
-
 
   info.style.fontSize =
     "13px";
@@ -2597,7 +2682,7 @@ function generateBookingCode() {
 
 
 // ============================================================
-// NORMALIZE WA
+// NORMALIZE WHATSAPP
 // ============================================================
 
 function normalizeWhatsApp(
@@ -2634,7 +2719,7 @@ function normalizeWhatsApp(
 
 
 // ============================================================
-// ADMIN WA BERDASARKAN POOL
+// ADMIN WHATSAPP PER POOL
 // ============================================================
 
 function getAdminWhatsApp(
@@ -2650,7 +2735,6 @@ function getAdminWhatsApp(
       .toLowerCase();
 
 
-  // WEDA / LELILEF
   if (
     pool === "weda" ||
     pool === "lelilef"
@@ -2666,8 +2750,6 @@ function getAdminWhatsApp(
 
   }
 
-
-  // SOFIFI / LOLEO
 
   return normalizeWhatsApp(
 
@@ -2741,9 +2823,7 @@ async function createBooking() {
 
 
     if (nameEl) {
-
       nameEl.focus();
-
     }
 
 
@@ -2760,9 +2840,7 @@ async function createBooking() {
 
 
     if (phoneEl) {
-
       phoneEl.focus();
-
     }
 
 
@@ -2796,7 +2874,7 @@ async function createBooking() {
     ) {
 
       alert(
-        "Maaf, kursi tersebut baru saja dipesan penumpang lain. Silakan pilih kursi lain."
+        "Maaf, kursi tersebut baru saja dipesan. Silakan pilih kursi lain."
       );
 
 
@@ -2818,6 +2896,7 @@ async function createBooking() {
   catch (error) {
 
     console.error(
+      "FINAL SEAT CHECK ERROR:",
       error
     );
 
@@ -2869,13 +2948,16 @@ async function createBooking() {
 
 
   // ==========================================================
-  // INSERT DATA
+  // DATA BOOKING
   // ==========================================================
 
   const bookingData = {
 
     booking_code:
       bookingCode,
+
+    booking_type:
+      "online",
 
     schedule_id:
       selectedSchedule.id,
@@ -2922,6 +3004,15 @@ async function createBooking() {
 
     departure_time:
       selectedSchedule.displayTime,
+
+    requested_time:
+      selectedSchedule.displayTime,
+
+    passenger_note:
+      null,
+
+    assigned_vehicle_id:
+      null,
 
     vehicle:
       vehicle ||
@@ -3077,9 +3168,11 @@ Mohon konfirmasi booking saya.`;
             Menunggu pembayaran
           </b>
 
+
           ${
             adminNumber
               ? `
+
                 <br><br>
 
                 <a
@@ -3098,6 +3191,7 @@ Mohon konfirmasi booking saya.`;
                 >
                   Konfirmasi via WhatsApp
                 </a>
+
               `
               : ""
           }
@@ -3120,12 +3214,6 @@ Mohon konfirmasi booking saya.`;
     await loadSeats(
       selectedSchedule
     );
-
-
-    // Update angka tersedia pada card
-    // tanpa mengganggu hasil booking.
-    // loadSchedules sengaja tidak dipanggil
-    // karena akan mereset selectedSchedule.
 
   }
 
@@ -3190,13 +3278,19 @@ if (dateEl) {
     "change",
     () => {
 
-      selectedSchedule =
-        null;
+      resetScheduleSelection();
 
-      selectedSeat =
-        null;
 
-      loadSchedules();
+      if (
+        fromEl &&
+        toEl &&
+        fromEl.value &&
+        toEl.value
+      ) {
+
+        loadSchedules();
+
+      }
 
     }
   );
@@ -3220,52 +3314,90 @@ if (
 
 
 // ============================================================
-// INITIAL ROUTE
+// INITIALIZE DROPDOWN
 // ============================================================
-
-const initialRoute =
-  getSelectedRoute();
-
-
-selectedOrigin =
-  initialRoute.origin;
-
-
-selectedDestination =
-  initialRoute.destination;
-
 
 if (fromEl) {
 
-  fromEl.value =
-    selectedOrigin;
+  // Jika index.html belum memilih asal,
+  // gunakan Sofifi sebagai default.
+
+  if (
+    !fromEl.value
+  ) {
+
+    fromEl.value =
+      "Sofifi";
+
+  }
+
+
+  selectedOrigin =
+    fromEl.value;
 
 }
 
 
-if (toEl) {
+updateDestinationOptions(
+  true
+);
 
-  toEl.value =
-    selectedDestination;
 
-}
+// ============================================================
+// INITIAL STATE
+// ============================================================
+
+selectedOrigin =
+  fromEl
+    ? fromEl.value
+    : "";
+
+
+selectedDestination =
+  toEl
+    ? toEl.value
+    : "";
 
 
 // ============================================================
 // INITIAL LOAD
 // ============================================================
 
-loadSchedules();
+if (
+  selectedOrigin &&
+  selectedDestination
+) {
+
+  loadSchedules();
+
+}
+
+else if (
+  scheduleEl
+) {
+
+  scheduleEl.innerHTML = `
+    <div
+      style="
+        padding:15px;
+        text-align:center;
+      "
+    >
+      Pilih tujuan terlebih dahulu.
+    </div>
+  `;
+
+}
 
 
 // ============================================================
-// AUTO REFRESH 30 DETIK
+// AUTO REFRESH
 // ============================================================
 
 setInterval(
   () => {
 
-    // Jangan reset halaman ketika user sedang booking.
+    // Jangan ganggu user yang sedang booking
 
     if (
       isProcessingBooking ||
@@ -3286,7 +3418,18 @@ setInterval(
     }
 
 
-    loadSchedules();
+    const route =
+      getSelectedRoute();
+
+
+    if (
+      route.origin &&
+      route.destination
+    ) {
+
+      loadSchedules();
+
+    }
 
   },
   30000
