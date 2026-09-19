@@ -1,9 +1,20 @@
 // ============================================================
 // HSM TRANSPORT - APP.JS FINAL
-// ROUTE DROPDOWN + FULL SEAT + SEGMENTED SEAT
-// FILTER JADWAL LEWAT BERDASARKAN WIT
-// 14 KURSI PENUMPANG
-// TIMEZONE: ASIA/JAYAPURA / WIT
+// ============================================================
+// FITUR:
+// - Route dropdown
+// - Jadwal berdasarkan tanggal
+// - Filter jadwal yang sudah lewat berdasarkan WIT
+// - FULL SEAT
+// - Segmented seat
+// - 14 kursi penumpang
+// - Pending mengunci kursi
+// - Paid mengunci kursi
+// - Completed tetap mengunci kursi
+// - Cancelled membuka kursi
+// - Booking type = hiace
+// - WhatsApp admin per pool
+// - Timezone Asia/Jayapura / WIT
 // ============================================================
 
 
@@ -31,15 +42,32 @@ const db = window.supabase.createClient(
 // ELEMENT
 // ============================================================
 
-const scheduleEl = document.getElementById("schedule");
-const seatsEl = document.getElementById("seats");
-const dateEl = document.getElementById("date");
-const nameEl = document.getElementById("name");
-const phoneEl = document.getElementById("phone");
-const bookBtn = document.getElementById("book");
-const resultEl = document.getElementById("result");
-const fromEl = document.getElementById("from");
-const toEl = document.getElementById("to");
+const scheduleEl =
+  document.getElementById("schedule");
+
+const seatsEl =
+  document.getElementById("seats");
+
+const dateEl =
+  document.getElementById("date");
+
+const nameEl =
+  document.getElementById("name");
+
+const phoneEl =
+  document.getElementById("phone");
+
+const bookBtn =
+  document.getElementById("book");
+
+const resultEl =
+  document.getElementById("result");
+
+const fromEl =
+  document.getElementById("from");
+
+const toEl =
+  document.getElementById("to");
 
 
 // ============================================================
@@ -47,16 +75,22 @@ const toEl = document.getElementById("to");
 // ============================================================
 
 let schedules = [];
+
 let selectedSchedule = null;
+
 let selectedSeat = null;
+
 let selectedOrigin = "";
+
 let selectedDestination = "";
+
 let currentBookings = [];
+
 let isProcessingBooking = false;
 
 
 // ============================================================
-// KONFIGURASI RUTE
+// RUTE YANG DIIZINKAN
 // ============================================================
 
 const HSM_DESTINATIONS = {
@@ -102,7 +136,7 @@ function rupiah(value) {
 
 
 // ============================================================
-// TANGGAL SEKARANG WIT
+// TANGGAL WIT
 // ============================================================
 
 function getLocalDate() {
@@ -112,12 +146,15 @@ function getLocalDate() {
       "en-CA",
       {
         timeZone: "Asia/Jayapura",
+
         year: "numeric",
         month: "2-digit",
         day: "2-digit"
       }
     )
-    .formatToParts(new Date());
+    .formatToParts(
+      new Date()
+    );
 
 
   const values =
@@ -160,7 +197,9 @@ function getCurrentWIT() {
         hourCycle: "h23"
       }
     )
-    .formatToParts(new Date());
+    .formatToParts(
+      new Date()
+    );
 
 
   const values =
@@ -191,7 +230,7 @@ function getCurrentWIT() {
 
 
 // ============================================================
-// UBAH JAM KE MENIT
+// JAM KE MENIT
 // ============================================================
 
 function timeToMinutes(time) {
@@ -208,11 +247,15 @@ function timeToMinutes(time) {
 
 
   const hour =
-    Number(parts[0] || 0);
+    Number(
+      parts[0] || 0
+    );
 
 
   const minute =
-    Number(parts[1] || 0);
+    Number(
+      parts[1] || 0
+    );
 
 
   return (
@@ -224,7 +267,7 @@ function timeToMinutes(time) {
 
 
 // ============================================================
-// CEK APAKAH JADWAL SUDAH LEWAT
+// CEK JADWAL SUDAH LEWAT
 // ============================================================
 
 function isDeparturePassed(
@@ -248,12 +291,13 @@ function isDeparturePassed(
 
   const date =
     String(travelDate)
-      .substring(0, 10);
+      .substring(
+        0,
+        10
+      );
 
 
-  // ==========================================================
-  // TANGGAL SUDAH LEWAT
-  // ==========================================================
+  // Tanggal lampau
 
   if (
     date < now.date
@@ -264,9 +308,7 @@ function isDeparturePassed(
   }
 
 
-  // ==========================================================
-  // TANGGAL MASIH AKAN DATANG
-  // ==========================================================
+  // Tanggal masa depan
 
   if (
     date > now.date
@@ -277,9 +319,7 @@ function isDeparturePassed(
   }
 
 
-  // ==========================================================
-  // HARI INI
-  // ==========================================================
+  // Hari ini
 
   const currentMinutes =
     now.hour * 60 +
@@ -291,9 +331,6 @@ function isDeparturePassed(
       departureTime
     );
 
-
-  // Begitu jam keberangkatan tercapai,
-  // jadwal tidak dapat dipesan lagi.
 
   return (
     currentMinutes >=
@@ -336,7 +373,10 @@ function formatTime(time) {
 
 
   return String(time)
-    .substring(0, 5);
+    .substring(
+      0,
+      5
+    );
 
 }
 
@@ -420,7 +460,7 @@ function resolveVehicle(
     );
 
 
-  // ARAH SOFIFI -> LELILEF
+  // Sofifi -> Lelilef
 
   if (
     direction === "forward"
@@ -446,7 +486,7 @@ function resolveVehicle(
   }
 
 
-  // ARAH LELILEF -> SOFIFI
+  // Lelilef -> Sofifi
 
   if (
     direction === "reverse"
@@ -493,9 +533,7 @@ function getBookingStatus(booking) {
       .toLowerCase();
 
 
-  // ==========================================================
   // PAID
-  // ==========================================================
 
   if (
     status === "paid" ||
@@ -510,10 +548,8 @@ function getBookingStatus(booking) {
   }
 
 
-  // ==========================================================
   // COMPLETED
-  // TETAP MENGUNCI KURSI
-  // ==========================================================
+  // Tetap mengunci kursi
 
   if (
     status === "completed" ||
@@ -525,10 +561,8 @@ function getBookingStatus(booking) {
   }
 
 
-  // ==========================================================
   // CANCELLED
-  // HANYA CANCELLED YANG MEMBUKA KURSI
-  // ==========================================================
+  // Membuka kursi
 
   if (
     status === "cancelled" ||
@@ -542,6 +576,8 @@ function getBookingStatus(booking) {
 
   }
 
+
+  // Default = pending
 
   return "pending";
 
@@ -569,13 +605,15 @@ function updateDestinationOptions(
   const origin =
     String(
       fromEl.value || ""
-    ).trim();
+    )
+      .trim();
 
 
   const oldDestination =
     String(
       toEl.value || ""
-    ).trim();
+    )
+      .trim();
 
 
   const destinations =
@@ -584,12 +622,13 @@ function updateDestinationOptions(
     ] || [];
 
 
-  // ==========================================================
-  // RESET TUJUAN
-  // ==========================================================
+  // Bersihkan tujuan lama
 
-  toEl.innerHTML = "";
+  toEl.innerHTML =
+    "";
 
+
+  // Placeholder
 
   const placeholder =
     document.createElement(
@@ -616,9 +655,7 @@ function updateDestinationOptions(
   );
 
 
-  // ==========================================================
-  // BELUM PILIH ASAL
-  // ==========================================================
+  // Belum pilih asal
 
   if (!origin) {
 
@@ -639,9 +676,7 @@ function updateDestinationOptions(
   }
 
 
-  // ==========================================================
-  // TAMBAHKAN TUJUAN
-  // ==========================================================
+  // Tambahkan tujuan
 
   destinations.forEach(
     destination => {
@@ -668,17 +703,13 @@ function updateDestinationOptions(
   );
 
 
-  // ==========================================================
-  // AKTIFKAN TUJUAN
-  // ==========================================================
+  // Aktifkan dropdown tujuan
 
   toEl.disabled =
     destinations.length === 0;
 
 
-  // ==========================================================
-  // PERTAHANKAN PILIHAN JIKA MASIH VALID
-  // ==========================================================
+  // Pertahankan pilihan jika valid
 
   if (
     keepCurrent &&
@@ -722,14 +753,16 @@ function getSelectedRoute() {
       fromEl
         ? String(
             fromEl.value || ""
-          ).trim()
+          )
+          .trim()
         : "",
 
     destination:
       toEl
         ? String(
             toEl.value || ""
-          ).trim()
+          )
+          .trim()
         : ""
 
   };
@@ -738,7 +771,7 @@ function getSelectedRoute() {
 
 
 // ============================================================
-// RESET PILIHAN JADWAL
+// RESET JADWAL
 // ============================================================
 
 function resetScheduleSelection() {
@@ -999,6 +1032,7 @@ function buildServices(rows) {
 
 
       // ======================================================
+      // ARAH:
       // SOFIFI -> LOLEO -> WEDA -> LELILEF
       // ======================================================
 
@@ -1108,6 +1142,7 @@ function buildServices(rows) {
 
 
       // ======================================================
+      // ARAH:
       // LELILEF -> WEDA -> LOLEO -> SOFIFI
       // ======================================================
 
@@ -1260,7 +1295,7 @@ async function fetchBookings(
     if (error) {
 
       console.warn(
-        "RPC get_hsm_seat_statuses gagal, memakai fallback:",
+        "RPC seat gagal, memakai fallback:",
         error.message
       );
 
@@ -1347,6 +1382,8 @@ function getSeatStatusFromBookings(
   .forEach(
     booking => {
 
+      // Beda kursi
+
       if (
         Number(
           booking.seat_number
@@ -1368,7 +1405,7 @@ function getSeatStatusFromBookings(
 
 
       // ======================================================
-      // CANCELLED = BEBAS
+      // CANCELLED = TIDAK MENGUNCI
       // ======================================================
 
       if (
@@ -1394,6 +1431,10 @@ function getSeatStatusFromBookings(
           bookingStart
         );
 
+
+      // ======================================================
+      // CEK OVERLAP SEGMENT
+      // ======================================================
 
       const overlap =
         bookingStart <= newEnd &&
@@ -1606,7 +1647,7 @@ async function loadSchedules() {
 
 
   // ==========================================================
-  // TANGGAL LAMPAU
+  // TANGGAL SUDAH LEWAT
   // ==========================================================
 
   if (
@@ -1630,6 +1671,10 @@ async function loadSchedules() {
 
   }
 
+
+  // ==========================================================
+  // LOADING
+  // ==========================================================
 
   scheduleEl.innerHTML = `
     <div
@@ -1725,14 +1770,8 @@ async function loadSchedules() {
               .toLowerCase();
 
 
-          // PENTING:
-          // Pakai displayTime karena waktu naik
-          // berbeda sesuai pool.
-          //
-          // Contoh:
-          // Sofifi 13:00
-          // Loleo 13:30
-          // Weda 15:30
+          // Pakai displayTime karena waktu
+          // naik penumpang berbeda per pool.
 
           const departurePassed =
             isDeparturePassed(
@@ -1799,8 +1838,7 @@ async function loadSchedules() {
     // ========================================================
 
     if (
-      unique.length ===
-      0
+      unique.length === 0
     ) {
 
       const today =
@@ -1820,13 +1858,21 @@ async function loadSchedules() {
             today
               ? `
                 Tidak ada jadwal keberangkatan berikutnya
-                untuk <b>${route.origin} → ${route.destination}</b>
+                untuk
+                <b>
+                  ${route.origin} → ${route.destination}
+                </b>
                 hari ini.
               `
               : `
                 Tidak ada jadwal tersedia untuk
-                <b>${route.origin} → ${route.destination}</b>
-                pada tanggal <b>${selectedDate}</b>.
+                <b>
+                  ${route.origin} → ${route.destination}
+                </b>
+                pada tanggal
+                <b>
+                  ${selectedDate}
+                </b>.
               `
           }
 
@@ -1858,7 +1904,7 @@ async function loadSchedules() {
 
 
     // ========================================================
-    // CACHE BOOKINGS
+    // CACHE BOOKING PER SCHEDULE
     // ========================================================
 
     const bookingCache =
@@ -1986,7 +2032,7 @@ async function loadSchedules() {
 
 
         // ====================================================
-        // GAGAL CEK
+        // GAGAL CEK KURSI
         // ====================================================
 
         if (
@@ -2008,7 +2054,7 @@ async function loadSchedules() {
 
 
         // ====================================================
-        // FULL
+        // FULL SEAT
         // ====================================================
 
         else if (
@@ -2058,7 +2104,7 @@ async function loadSchedules() {
 
 
         // ====================================================
-        // CARD
+        // CARD JADWAL
         // ====================================================
 
         button.innerHTML = `
@@ -2091,7 +2137,7 @@ async function loadSchedules() {
 
 
         // ====================================================
-        // FULL SEAT
+        // FULL = TIDAK BISA DIPILIH
         // ====================================================
 
         if (isFull) {
@@ -2124,9 +2170,7 @@ async function loadSchedules() {
             "click",
             async () => {
 
-              // Cek lagi jam saat card ditekan.
-              // Mencegah card yang sudah terbuka lama
-              // tetap bisa dipakai setelah jam lewat.
+              // Cek jam lagi
 
               if (
                 isDeparturePassed(
@@ -2485,7 +2529,7 @@ function createAisle() {
 
 
 // ============================================================
-// CREATE ROW
+// CREATE SEAT ROW
 // ============================================================
 
 function createSeatRow(
@@ -2648,7 +2692,7 @@ function renderSeats(
 
 
   // ==========================================================
-  // AVAILABILITY
+  // KETERSEDIAAN
   // ==========================================================
 
   const availability =
@@ -2963,15 +3007,15 @@ async function loadSeats(
   }
 
 
-  // ==========================================================
-  // CEK JADWAL SEKALI LAGI
-  // ==========================================================
-
   const travelDate =
     dateEl
       ? dateEl.value
       : getLocalDate();
 
+
+  // ==========================================================
+  // CEK JADWAL SUDAH LEWAT
+  // ==========================================================
 
   if (
     isDeparturePassed(
@@ -3124,6 +3168,8 @@ function getAdminWhatsApp(
       .toLowerCase();
 
 
+  // WEDA / LELILEF
+
   if (
     pool === "weda" ||
     pool === "lelilef"
@@ -3139,6 +3185,8 @@ function getAdminWhatsApp(
 
   }
 
+
+  // SOFIFI / LOLEO
 
   return normalizeWhatsApp(
 
@@ -3183,15 +3231,15 @@ async function createBooking() {
   }
 
 
-  // ==========================================================
-  // CEK JAM SEKALI LAGI SEBELUM BOOKING
-  // ==========================================================
-
   const travelDate =
     dateEl
       ? dateEl.value
       : getLocalDate();
 
+
+  // ==========================================================
+  // CEK JAM JADWAL
+  // ==========================================================
 
   if (
     isDeparturePassed(
@@ -3313,7 +3361,8 @@ async function createBooking() {
 
 
     if (
-      seatStatus !== "available"
+      seatStatus !==
+      "available"
     ) {
 
       alert(
@@ -3355,7 +3404,7 @@ async function createBooking() {
 
 
   // ==========================================================
-  // CEK JAM SEKALI LAGI SETELAH FINAL SEAT CHECK
+  // CEK JAM LAGI SETELAH FINAL CHECK
   // ==========================================================
 
   if (
@@ -3416,6 +3465,10 @@ async function createBooking() {
   // ==========================================================
   // DATA BOOKING
   // ==========================================================
+  // PENTING:
+  // booking_type sekarang HIACE.
+  // FLEXIBLE sudah tidak dipakai.
+  // ==========================================================
 
   const bookingData = {
 
@@ -3423,7 +3476,7 @@ async function createBooking() {
       bookingCode,
 
     booking_type:
-      "online",
+      "hiace",
 
     schedule_id:
       selectedSchedule.id,
@@ -3488,6 +3541,10 @@ async function createBooking() {
 
   try {
 
+    // ========================================================
+    // INSERT BOOKING
+    // ========================================================
+
     const {
       error
     } =
@@ -3517,7 +3574,7 @@ async function createBooking() {
 
 
     // ========================================================
-    // MESSAGE
+    // MESSAGE WHATSAPP
     // ========================================================
 
     const message =
@@ -3772,8 +3829,9 @@ if (dateEl) {
       }
 
 
-      // Jangan izinkan tanggal lampau
-      // walaupun dipaksa dari browser.
+      // ======================================================
+      // CEGAH TANGGAL LAMPAU
+      // ======================================================
 
       if (
         dateEl.value <
@@ -3828,7 +3886,7 @@ if (dateEl) {
 
 if (dateEl) {
 
-  // Tidak bisa pilih tanggal sebelum hari ini WIT.
+  // Minimum tanggal = hari ini WIT
 
   dateEl.min =
     getLocalDate();
@@ -3940,7 +3998,7 @@ if (
 
 
 // ============================================================
-// AUTO REFRESH
+// AUTO REFRESH 30 DETIK
 // ============================================================
 
 setInterval(
@@ -3951,7 +4009,7 @@ setInterval(
 
 
     // ========================================================
-    // JIKA ADA JADWAL TERPILIH DAN JAMNYA SUDAH LEWAT
+    // JADWAL TERPILIH TIBA-TIBA SUDAH LEWAT
     // ========================================================
 
     if (
@@ -3982,7 +4040,7 @@ setInterval(
 
 
     // ========================================================
-    // JANGAN GANGGU USER YANG SEDANG ISI DATA
+    // JANGAN GANGGU USER YANG SEDANG BOOKING
     // ========================================================
 
     if (
