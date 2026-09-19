@@ -1,8 +1,13 @@
 // ============================================================
 // HSM TRANSPORT - APP.JS FINAL
-// FULL SEAT + SEGMENTED SEAT + ROUTE DROPDOWN
+// ROUTE DROPDOWN + FULL SEAT + SEGMENTED SEAT
 // 14 KURSI PENUMPANG
 // TIMEZONE: ASIA/JAYAPURA / WIT
+// ============================================================
+
+
+// ============================================================
+// CONFIG
 // ============================================================
 
 const HSM_CONFIG = window.HSM_CONFIG;
@@ -126,7 +131,7 @@ function getLocalDate() {
 
   const parts =
     new Intl.DateTimeFormat(
-      "en-US",
+      "en-CA",
       {
         timeZone:
           "Asia/Jayapura",
@@ -146,32 +151,19 @@ function getLocalDate() {
     );
 
 
-  const values = {};
-
-
-  parts.forEach(part => {
-
-    if (
-      part.type !==
-      "literal"
-    ) {
-
-      values[
-        part.type
-      ] =
-        part.value;
-
-    }
-
-  });
+  const values =
+    Object.fromEntries(
+      parts.map(
+        part => [
+          part.type,
+          part.value
+        ]
+      )
+    );
 
 
   return (
-    values.year +
-    "-" +
-    values.month +
-    "-" +
-    values.day
+    `${values.year}-${values.month}-${values.day}`
   );
 
 }
@@ -208,21 +200,23 @@ function normalizeVehicle(vehicle) {
     vehicle === null ||
     vehicle === undefined
   ) {
+
     return "";
+
   }
 
 
-  const v =
+  const value =
     String(vehicle)
       .trim()
       .toUpperCase();
 
 
   if (
-    v === "HSM-01" ||
-    v === "HSM01" ||
-    v === "01" ||
-    v === "1"
+    value === "HSM-01" ||
+    value === "HSM01" ||
+    value === "01" ||
+    value === "1"
   ) {
 
     return "HSM-01";
@@ -231,10 +225,10 @@ function normalizeVehicle(vehicle) {
 
 
   if (
-    v === "HSM-02" ||
-    v === "HSM02" ||
-    v === "02" ||
-    v === "2"
+    value === "HSM-02" ||
+    value === "HSM02" ||
+    value === "02" ||
+    value === "2"
   ) {
 
     return "HSM-02";
@@ -242,7 +236,70 @@ function normalizeVehicle(vehicle) {
   }
 
 
-  return v;
+  return value;
+
+}
+
+
+// ============================================================
+// RESOLVE VEHICLE
+// ============================================================
+
+function resolveVehicle(
+  row,
+  direction = ""
+) {
+
+  const dbVehicle =
+    normalizeVehicle(
+      row?.vehicle
+    );
+
+
+  if (dbVehicle) {
+
+    return dbVehicle;
+
+  }
+
+
+  const time =
+    formatTime(
+      row?.departure_time
+    );
+
+
+  if (
+    direction === "forward"
+  ) {
+
+    if (time === "09:00") {
+      return "HSM-01";
+    }
+
+    if (time === "13:00") {
+      return "HSM-02";
+    }
+
+  }
+
+
+  if (
+    direction === "reverse"
+  ) {
+
+    if (time === "09:00") {
+      return "HSM-02";
+    }
+
+    if (time === "13:00") {
+      return "HSM-01";
+    }
+
+  }
+
+
+  return "";
 
 }
 
@@ -268,7 +325,7 @@ function formatTime(time) {
 
 
 // ============================================================
-// STATUS BOOKING
+// NORMALIZE BOOKING STATUS
 // ============================================================
 
 function getBookingStatus(
@@ -285,9 +342,7 @@ function getBookingStatus(
       .toLowerCase();
 
 
-  // ==========================================================
   // PAID
-  // ==========================================================
 
   if (
     status === "paid" ||
@@ -302,10 +357,8 @@ function getBookingStatus(
   }
 
 
-  // ==========================================================
   // COMPLETED
   // TETAP MENGUNCI KURSI
-  // ==========================================================
 
   if (
     status === "completed" ||
@@ -317,10 +370,8 @@ function getBookingStatus(
   }
 
 
-  // ==========================================================
   // CANCELLED
   // HANYA CANCELLED YANG MEMBUKA KURSI
-  // ==========================================================
 
   if (
     status === "cancelled" ||
@@ -341,7 +392,7 @@ function getBookingStatus(
 
 
 // ============================================================
-// ISI DROPDOWN TUJUAN
+// UPDATE DROPDOWN TUJUAN
 // ============================================================
 
 function updateDestinationOptions(
@@ -352,7 +403,9 @@ function updateDestinationOptions(
     !fromEl ||
     !toEl
   ) {
+
     return;
+
   }
 
 
@@ -374,12 +427,16 @@ function updateDestinationOptions(
     ] || [];
 
 
-  // HAPUS OPTION LAMA
+  // ==========================================================
+  // HAPUS PILIHAN LAMA
+  // ==========================================================
 
   toEl.innerHTML = "";
 
 
+  // ==========================================================
   // PLACEHOLDER
+  // ==========================================================
 
   const placeholder =
     document.createElement(
@@ -392,11 +449,9 @@ function updateDestinationOptions(
 
 
   placeholder.textContent =
-    "Pilih tujuan";
-
-
-  placeholder.disabled =
-    true;
+    origin
+      ? "Pilih tujuan"
+      : "Pilih lokasi dahulu";
 
 
   placeholder.selected =
@@ -408,7 +463,32 @@ function updateDestinationOptions(
   );
 
 
-  // TAMBAHKAN TUJUAN
+  // ==========================================================
+  // BELUM PILIH ASAL
+  // ==========================================================
+
+  if (!origin) {
+
+    toEl.disabled =
+      true;
+
+
+    selectedOrigin =
+      "";
+
+
+    selectedDestination =
+      "";
+
+
+    return;
+
+  }
+
+
+  // ==========================================================
+  // TAMBAHKAN PILIHAN TUJUAN
+  // ==========================================================
 
   destinations.forEach(
     destination => {
@@ -435,8 +515,18 @@ function updateDestinationOptions(
   );
 
 
-  // PERTAHANKAN TUJUAN
+  // ==========================================================
+  // AKTIFKAN DROPDOWN TUJUAN
+  // ==========================================================
+
+  toEl.disabled =
+    destinations.length === 0;
+
+
+  // ==========================================================
+  // PERTAHANKAN TUJUAN LAMA
   // JIKA MASIH VALID
+  // ==========================================================
 
   if (
     keepCurrent &&
@@ -513,6 +603,22 @@ function resetScheduleSelection() {
     [];
 
 
+  document
+    .querySelectorAll(
+      ".schedule-card, .scheduleBtn"
+    )
+    .forEach(
+      button => {
+
+        button.classList.remove(
+          "selected",
+          "active"
+        );
+
+      }
+    );
+
+
   if (seatsEl) {
 
     seatsEl.innerHTML = `
@@ -540,6 +646,9 @@ if (fromEl) {
   fromEl.addEventListener(
     "change",
     () => {
+
+      // Update pilihan tujuan
+      // sekaligus mengaktifkan select tujuan.
 
       updateDestinationOptions(
         false
@@ -609,7 +718,14 @@ if (toEl) {
       }
 
 
-      loadSchedules();
+      if (
+        selectedOrigin &&
+        selectedDestination
+      ) {
+
+        loadSchedules();
+
+      }
 
     }
   );
@@ -628,7 +744,9 @@ async function fetchSchedules() {
     error
   } =
     await db
-      .from("schedules")
+      .from(
+        "schedules"
+      )
       .select("*")
       .eq(
         "active",
@@ -672,21 +790,6 @@ function buildServices(rows) {
     [];
 
 
-  // ==========================================================
-  // SEGMENT ARAH SOFIFI
-  //
-  // 1 = SOFIFI -> LOLEO
-  // 2 = LOLEO -> WEDA
-  // 3 = WEDA -> LELILEF
-  //
-  // SEGMENT ARAH LELILEF
-  //
-  // 1 = LELILEF -> WEDA
-  // 2 = WEDA -> LOLEO
-  // 3 = LOLEO -> SOFIFI
-  // ==========================================================
-
-
   function addService(
     row,
     origin,
@@ -695,7 +798,8 @@ function buildServices(rows) {
     price,
     segmentStart,
     segmentEnd,
-    serviceType
+    serviceType,
+    vehicle
   ) {
 
     services.push({
@@ -724,201 +828,250 @@ function buildServices(rows) {
         segmentEnd,
 
       serviceType:
-        serviceType
+        serviceType,
+
+      displayVehicle:
+        vehicle
 
     });
 
   }
 
 
-  rows.forEach(row => {
+  rows.forEach(
+    row => {
 
-    const route =
-      normalizeRoute(
-        row.route
-      );
-
-
-    const time =
-      formatTime(
-        row.departure_time
-      );
+      const route =
+        normalizeRoute(
+          row.route
+        );
 
 
-    // ========================================================
-    // SOFIFI -> LOLEO -> WEDA -> LELILEF
-    // ========================================================
-
-    if (
-      route ===
-        "Sofifi→Weda" ||
-      route ===
-        "Sofifi→Lelilef"
-    ) {
-
-      const loleoTime =
-        time === "09:00"
-          ? "09:30"
-          : time === "13:00"
-            ? "13:30"
-            : time;
+      const time =
+        formatTime(
+          row.departure_time
+        );
 
 
-      const wedaTime =
-        time === "09:00"
-          ? "11:30"
-          : time === "13:00"
-            ? "15:30"
-            : time;
+      // ======================================================
+      // SOFIFI -> LOLEO -> WEDA -> LELILEF
+      // ======================================================
+
+      if (
+        route ===
+          "Sofifi→Weda" ||
+        route ===
+          "Sofifi→Lelilef"
+      ) {
+
+        const vehicle =
+          resolveVehicle(
+            row,
+            "forward"
+          );
 
 
-      addService(
-        row,
-        "Sofifi",
-        "Weda",
-        time,
-        225000,
-        1,
-        2,
-        "SOFIFI_WEDA"
-      );
+        const loleoTime =
+          time === "09:00"
+            ? "09:30"
+            : time === "13:00"
+              ? "13:30"
+              : time;
 
 
-      addService(
-        row,
-        "Sofifi",
-        "Lelilef",
-        time,
-        300000,
-        1,
-        3,
-        "SOFIFI_LELILEF"
-      );
+        const wedaTime =
+          time === "09:00"
+            ? "11:30"
+            : time === "13:00"
+              ? "15:30"
+              : time;
 
 
-      addService(
-        row,
-        "Loleo",
-        "Weda",
-        loleoTime,
-        200000,
-        2,
-        2,
-        "LOLEO_WEDA"
-      );
+        // SOFIFI -> WEDA
+
+        addService(
+          row,
+          "Sofifi",
+          "Weda",
+          time,
+          225000,
+          1,
+          2,
+          "SOFIFI_WEDA",
+          vehicle
+        );
 
 
-      addService(
-        row,
-        "Loleo",
-        "Lelilef",
-        loleoTime,
-        275000,
-        2,
-        3,
-        "LOLEO_LELILEF"
-      );
+        // SOFIFI -> LELILEF
+
+        addService(
+          row,
+          "Sofifi",
+          "Lelilef",
+          time,
+          300000,
+          1,
+          3,
+          "SOFIFI_LELILEF",
+          vehicle
+        );
 
 
-      addService(
-        row,
-        "Weda",
-        "Lelilef",
-        wedaTime,
-        100000,
-        3,
-        3,
-        "WEDA_LELILEF"
-      );
+        // LOLEO -> WEDA
+
+        addService(
+          row,
+          "Loleo",
+          "Weda",
+          loleoTime,
+          200000,
+          2,
+          2,
+          "LOLEO_WEDA",
+          vehicle
+        );
+
+
+        // LOLEO -> LELILEF
+
+        addService(
+          row,
+          "Loleo",
+          "Lelilef",
+          loleoTime,
+          275000,
+          2,
+          3,
+          "LOLEO_LELILEF",
+          vehicle
+        );
+
+
+        // WEDA -> LELILEF
+
+        addService(
+          row,
+          "Weda",
+          "Lelilef",
+          wedaTime,
+          100000,
+          3,
+          3,
+          "WEDA_LELILEF",
+          vehicle
+        );
+
+      }
+
+
+      // ======================================================
+      // LELILEF -> WEDA -> LOLEO -> SOFIFI
+      // ======================================================
+
+      if (
+        route ===
+          "Weda→Sofifi" ||
+        route ===
+          "Lelilef→Sofifi"
+      ) {
+
+        const vehicle =
+          resolveVehicle(
+            row,
+            "reverse"
+          );
+
+
+        const lelilefTime =
+          time;
+
+
+        const wedaTime =
+          time === "09:00"
+            ? "09:45"
+            : time === "13:00"
+              ? "13:45"
+              : time;
+
+
+        // LELILEF -> WEDA
+
+        addService(
+          row,
+          "Lelilef",
+          "Weda",
+          lelilefTime,
+          100000,
+          1,
+          1,
+          "LELILEF_WEDA",
+          vehicle
+        );
+
+
+        // LELILEF -> LOLEO
+
+        addService(
+          row,
+          "Lelilef",
+          "Loleo",
+          lelilefTime,
+          275000,
+          1,
+          2,
+          "LELILEF_LOLEO",
+          vehicle
+        );
+
+
+        // LELILEF -> SOFIFI
+
+        addService(
+          row,
+          "Lelilef",
+          "Sofifi",
+          lelilefTime,
+          300000,
+          1,
+          3,
+          "LELILEF_SOFIFI",
+          vehicle
+        );
+
+
+        // WEDA -> LOLEO
+
+        addService(
+          row,
+          "Weda",
+          "Loleo",
+          wedaTime,
+          200000,
+          2,
+          2,
+          "WEDA_LOLEO",
+          vehicle
+        );
+
+
+        // WEDA -> SOFIFI
+
+        addService(
+          row,
+          "Weda",
+          "Sofifi",
+          wedaTime,
+          225000,
+          2,
+          3,
+          "WEDA_SOFIFI",
+          vehicle
+        );
+
+      }
 
     }
-
-
-    // ========================================================
-    // LELILEF -> WEDA -> LOLEO -> SOFIFI
-    // ========================================================
-
-    if (
-      route ===
-        "Weda→Sofifi" ||
-      route ===
-        "Lelilef→Sofifi"
-    ) {
-
-      const lelilefTime =
-        time;
-
-
-      const wedaTime =
-        time === "09:00"
-          ? "09:45"
-          : time === "13:00"
-            ? "13:45"
-            : time;
-
-
-      addService(
-        row,
-        "Lelilef",
-        "Weda",
-        lelilefTime,
-        100000,
-        1,
-        1,
-        "LELILEF_WEDA"
-      );
-
-
-      addService(
-        row,
-        "Lelilef",
-        "Loleo",
-        lelilefTime,
-        275000,
-        1,
-        2,
-        "LELILEF_LOLEO"
-      );
-
-
-      addService(
-        row,
-        "Lelilef",
-        "Sofifi",
-        lelilefTime,
-        300000,
-        1,
-        3,
-        "LELILEF_SOFIFI"
-      );
-
-
-      addService(
-        row,
-        "Weda",
-        "Loleo",
-        wedaTime,
-        200000,
-        2,
-        2,
-        "WEDA_LOLEO"
-      );
-
-
-      addService(
-        row,
-        "Weda",
-        "Sofifi",
-        wedaTime,
-        225000,
-        2,
-        3,
-        "WEDA_SOFIFI"
-      );
-
-    }
-
-  });
+  );
 
 
   return services;
@@ -935,7 +1088,7 @@ async function fetchBookings(
 ) {
 
   // ==========================================================
-  // COBA RPC
+  // COBA RPC DULU
   // ==========================================================
 
   try {
@@ -962,6 +1115,16 @@ async function fetchBookings(
 
     }
 
+
+    if (error) {
+
+      console.warn(
+        "RPC get_hsm_seat_statuses gagal, memakai fallback:",
+        error.message
+      );
+
+    }
+
   }
 
   catch (rpcError) {
@@ -975,7 +1138,7 @@ async function fetchBookings(
 
 
   // ==========================================================
-  // FALLBACK TABLE BOOKINGS
+  // FALLBACK KE TABLE BOOKINGS
   // ==========================================================
 
   const {
@@ -983,7 +1146,9 @@ async function fetchBookings(
     error
   } =
     await db
-      .from("bookings")
+      .from(
+        "bookings"
+      )
       .select(`
         seat_number,
         payment_status,
@@ -1009,7 +1174,7 @@ async function fetchBookings(
 
 
 // ============================================================
-// GET SEAT STATUS
+// STATUS KURSI BERDASARKAN SEGMENT
 // ============================================================
 
 function getSeatStatusFromBookings(
@@ -1028,7 +1193,7 @@ function getSeatStatusFromBookings(
   const newEnd =
     Number(
       schedule.segmentEnd ||
-      2
+      1
     );
 
 
@@ -1040,106 +1205,102 @@ function getSeatStatusFromBookings(
     bookingRows ||
     []
   )
-  .forEach(booking => {
+  .forEach(
+    booking => {
 
-    if (
-      Number(
-        booking.seat_number
-      ) !==
-      Number(
-        seatNumber
-      )
-    ) {
+      if (
+        Number(
+          booking.seat_number
+        ) !==
+        Number(
+          seatNumber
+        )
+      ) {
 
-      return;
+        return;
 
-    }
-
-
-    const bookingStatus =
-      getBookingStatus(
-        booking
-      );
+      }
 
 
-    // ========================================================
-    // CANCELLED TIDAK MENGUNCI
-    // ========================================================
-
-    if (
-      bookingStatus ===
-      "cancelled"
-    ) {
-
-      return;
-
-    }
+      const bookingStatus =
+        getBookingStatus(
+          booking
+        );
 
 
-    const bookingStart =
-      Number(
-        booking.segment_start ||
-        1
-      );
+      // CANCELLED = KURSI BEBAS
+
+      if (
+        bookingStatus ===
+        "cancelled"
+      ) {
+
+        return;
+
+      }
 
 
-    const bookingEnd =
-      Number(
-        booking.segment_end ||
-        2
-      );
+      const bookingStart =
+        Number(
+          booking.segment_start ||
+          1
+        );
 
 
-    const overlap =
-      bookingStart <=
-        newEnd &&
-      bookingEnd >=
-        newStart;
+      const bookingEnd =
+        Number(
+          booking.segment_end ||
+          bookingStart
+        );
 
 
-    if (!overlap) {
-
-      return;
-
-    }
-
-
-    // ========================================================
-    // PAID / COMPLETED = MERAH
-    // ========================================================
-
-    if (
-      bookingStatus ===
-        "paid" ||
-      bookingStatus ===
-        "completed"
-    ) {
-
-      seatStatus =
-        "paid";
-
-      return;
-
-    }
+      const overlap =
+        bookingStart <=
+          newEnd &&
+        bookingEnd >=
+          newStart;
 
 
-    // ========================================================
-    // PENDING = KUNING
-    // ========================================================
+      if (!overlap) {
 
-    if (
-      bookingStatus ===
-        "pending" &&
-      seatStatus !==
-        "paid"
-    ) {
+        return;
 
-      seatStatus =
-        "pending";
+      }
+
+
+      // PAID / COMPLETED = MERAH
+
+      if (
+        bookingStatus ===
+          "paid" ||
+        bookingStatus ===
+          "completed"
+      ) {
+
+        seatStatus =
+          "paid";
+
+        return;
+
+      }
+
+
+      // PENDING = KUNING
+
+      if (
+        bookingStatus ===
+          "pending" &&
+        seatStatus !==
+          "paid"
+      ) {
+
+        seatStatus =
+          "pending";
+
+      }
 
     }
-
-  });
+  );
 
 
   return seatStatus;
@@ -1148,7 +1309,7 @@ function getSeatStatusFromBookings(
 
 
 // ============================================================
-// GET CURRENT SEAT STATUS
+// STATUS KURSI CURRENT
 // ============================================================
 
 function getSeatStatus(
@@ -1216,7 +1377,9 @@ function countAvailableSeats(
 async function loadSchedules() {
 
   if (!scheduleEl) {
+
     return;
+
   }
 
 
@@ -1282,6 +1445,28 @@ async function loadSchedules() {
   }
 
 
+  // ==========================================================
+  // BELUM PILIH TANGGAL
+  // ==========================================================
+
+  if (!selectedDate) {
+
+    scheduleEl.innerHTML = `
+      <div
+        style="
+          padding:15px;
+          text-align:center;
+        "
+      >
+        Pilih tanggal keberangkatan terlebih dahulu.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
   scheduleEl.innerHTML = `
     <div
       style="
@@ -1309,30 +1494,32 @@ async function loadSchedules() {
     // ========================================================
 
     const dateRows =
-      rows.filter(row => {
+      rows.filter(
+        row => {
 
-        const rowDate =
-          row.travel_date
-            ? String(
-                row.travel_date
-              )
-              .substring(
-                0,
-                10
-              )
-            : "";
+          const rowDate =
+            row.travel_date
+              ? String(
+                  row.travel_date
+                )
+                .substring(
+                  0,
+                  10
+                )
+              : "";
 
 
-        return (
-          rowDate ===
-          selectedDate
-        );
+          return (
+            rowDate ===
+            selectedDate
+          );
 
-      });
+        }
+      );
 
 
     // ========================================================
-    // BUILD SERVICES
+    // BUILD SEMUA SERVICE
     // ========================================================
 
     const allServices =
@@ -1438,7 +1625,6 @@ async function loadSchedules() {
             text-align:center;
           "
         >
-
           Tidak ada jadwal tersedia untuk
 
           <b>
@@ -1452,7 +1638,6 @@ async function loadSchedules() {
           <b>
             ${selectedDate}
           </b>.
-
         </div>
       `;
 
@@ -1481,7 +1666,7 @@ async function loadSchedules() {
 
 
     // ========================================================
-    // CACHE BOOKING
+    // CACHE BOOKING PER SCHEDULE
     // ========================================================
 
     const bookingCache =
@@ -1549,7 +1734,7 @@ async function loadSchedules() {
 
 
     // ========================================================
-    // RENDER CARD
+    // RENDER JADWAL
     // ========================================================
 
     scheduleEl.innerHTML =
@@ -1569,8 +1754,10 @@ async function loadSchedules() {
           "button";
 
 
+        // Sesuai CSS index.html yang user kirim.
+
         button.className =
-          "scheduleBtn";
+          "schedule-card scheduleBtn";
 
 
         const bookings =
@@ -1605,13 +1792,13 @@ async function loadSchedules() {
           0;
 
 
+        // ====================================================
+        // STATUS KETERSEDIAAN
+        // ====================================================
+
         let availabilityHTML =
           "";
 
-
-        // ====================================================
-        // GAGAL CEK
-        // ====================================================
 
         if (
           availableSeats ===
@@ -1619,134 +1806,106 @@ async function loadSchedules() {
         ) {
 
           availabilityHTML = `
-            <div
+            <span
               style="
-                margin-top:7px;
-                font-size:12px;
+                color:#687386;
                 font-weight:800;
-                color:#6b7280;
               "
             >
-              Ketersediaan kursi akan dicek
-            </div>
+              Ketersediaan dicek saat memilih
+            </span>
           `;
 
         }
-
-
-        // ====================================================
-        // FULL
-        // ====================================================
 
         else if (
           isFull
         ) {
 
           availabilityHTML = `
-            <div
+            <span
               style="
-                margin-top:7px;
-                font-size:13px;
-                font-weight:900;
                 color:#dc2626;
+                font-weight:900;
               "
             >
               🔴 FULL SEAT
-            </div>
+            </span>
           `;
 
         }
 
-
-        // ====================================================
-        // TERSEDIA
-        // ====================================================
-
         else {
 
           availabilityHTML = `
-            <div
+            <span
               style="
-                margin-top:7px;
-                font-size:12px;
-                font-weight:900;
                 color:#16a34a;
+                font-weight:900;
               "
             >
               🟢 Tersedia
               ${availableSeats}
               kursi
-            </div>
+            </span>
           `;
 
         }
 
 
+        const vehicle =
+          service.displayVehicle ||
+          normalizeVehicle(
+            service.vehicle
+          ) ||
+          "-";
+
+
+        // ====================================================
+        // CARD SESUAI DESAIN INDEX.HTML
+        // ====================================================
+
         button.innerHTML = `
 
-          <div>
+          <div class="schedule-time">
+            ${service.displayTime}
+          </div>
+
+          <div class="schedule-info">
+
             <strong>
               ${service.displayRoute}
             </strong>
+
+            <span>
+              ${vehicle}
+            </span>
+
+            ${availabilityHTML}
+
+            <span>
+              ${rupiah(
+                service.displayPrice
+              )}
+            </span>
+
           </div>
-
-
-          <div
-            style="
-              font-size:20px;
-              margin-top:5px;
-            "
-          >
-            ${service.displayTime}
-            WIT
-          </div>
-
-
-          <div
-            style="
-              margin-top:5px;
-            "
-          >
-            ${rupiah(
-              service.displayPrice
-            )}
-          </div>
-
-
-          <small
-            style="
-              display:block;
-              margin-top:5px;
-            "
-          >
-            ${
-              normalizeVehicle(
-                service.vehicle
-              ) ||
-              "-"
-            }
-          </small>
-
-
-          ${availabilityHTML}
 
         `;
 
 
         // ====================================================
-        // FULL = TIDAK BISA DIKLIK
+        // FULL = TIDAK BISA DIPILIH
         // ====================================================
 
-        if (
-          isFull
-        ) {
+        if (isFull) {
 
           button.disabled =
             true;
 
 
           button.style.opacity =
-            "0.68";
+            "0.62";
 
 
           button.style.cursor =
@@ -1760,7 +1919,7 @@ async function loadSchedules() {
 
 
         // ====================================================
-        // BISA DIPILIH
+        // JADWAL BISA DIPILIH
         // ====================================================
 
         else {
@@ -1771,20 +1930,21 @@ async function loadSchedules() {
 
               document
                 .querySelectorAll(
-                  ".scheduleBtn"
+                  ".schedule-card"
                 )
-                .forEach(btn => {
+                .forEach(
+                  btn => {
 
-                  btn.classList
-                    .remove(
-                      "active"
+                    btn.classList.remove(
+                      "selected"
                     );
 
-                });
+                  }
+                );
 
 
               button.classList.add(
-                "active"
+                "selected"
               );
 
 
@@ -1794,6 +1954,14 @@ async function loadSchedules() {
 
               selectedSeat =
                 null;
+
+
+              if (resultEl) {
+
+                resultEl.innerHTML =
+                  "";
+
+              }
 
 
               await loadSeats(
@@ -1830,7 +1998,6 @@ async function loadSchedules() {
           color:#b00020;
         "
       >
-
         <strong>
           Gagal memuat jadwal.
         </strong>
@@ -1838,7 +2005,6 @@ async function loadSchedules() {
         <br><br>
 
         ${error.message}
-
       </div>
     `;
 
@@ -1874,35 +2040,8 @@ function createSeat(
     number;
 
 
-  seat.style.width =
-    "48px";
-
-  seat.style.height =
-    "48px";
-
-  seat.style.boxSizing =
-    "border-box";
-
-  seat.style.border =
-    "none";
-
-  seat.style.borderRadius =
-    "8px";
-
-  seat.style.fontWeight =
-    "bold";
-
-  seat.style.fontSize =
-    "15px";
-
-  seat.style.cursor =
-    "pointer";
-
-  seat.style.color =
-    "#fff";
-
-  seat.style.flexShrink =
-    "0";
+  seat.dataset.seat =
+    String(number);
 
 
   const status =
@@ -1912,8 +2051,12 @@ function createSeat(
     );
 
 
+  seat.dataset.status =
+    status;
+
+
   // ==========================================================
-  // TERSEDIA
+  // AVAILABLE
   // ==========================================================
 
   if (
@@ -1921,8 +2064,9 @@ function createSeat(
     "available"
   ) {
 
-    seat.style.background =
-      "#22c55e";
+    seat.classList.add(
+      "available"
+    );
 
 
     seat.title =
@@ -1937,16 +2081,20 @@ function createSeat(
           .querySelectorAll(
             ".seat-passenger"
           )
-          .forEach(s => {
+          .forEach(
+            otherSeat => {
 
-            s.style.outline =
-              "none";
+              otherSeat.classList.remove(
+                "selected"
+              );
 
-          });
+            }
+          );
 
 
-        seat.style.outline =
-          "3px solid #111";
+        seat.classList.add(
+          "selected"
+        );
 
 
         selectedSeat =
@@ -1967,20 +2115,13 @@ function createSeat(
     "pending"
   ) {
 
-    seat.style.background =
-      "#facc15";
-
-
-    seat.style.color =
-      "#111";
+    seat.classList.add(
+      "pending"
+    );
 
 
     seat.disabled =
       true;
-
-
-    seat.style.cursor =
-      "not-allowed";
 
 
     seat.title =
@@ -1995,30 +2136,19 @@ function createSeat(
 
   else {
 
-    seat.style.background =
-      "#ef4444";
+    seat.classList.add(
+      "paid"
+    );
 
 
     seat.disabled =
       true;
 
 
-    seat.style.cursor =
-      "not-allowed";
-
-
     seat.title =
       `Kursi ${number} sudah terisi`;
 
   }
-
-
-  seat.dataset.status =
-    status;
-
-
-  seat.dataset.seat =
-    number;
 
 
   return seat;
@@ -2044,81 +2174,64 @@ function createFixedBlock(
   block.style.width =
     "48px";
 
+
   block.style.height =
-    "48px";
+    "45px";
+
 
   block.style.boxSizing =
     "border-box";
 
+
   block.style.borderRadius =
-    "8px";
+    "9px";
+
 
   block.style.background =
     background;
 
+
   block.style.color =
     "#fff";
+
 
   block.style.display =
     "flex";
 
+
   block.style.alignItems =
     "center";
+
 
   block.style.justifyContent =
     "center";
 
+
   block.style.fontSize =
     "9px";
+
 
   block.style.fontWeight =
     "bold";
 
+
   block.style.textAlign =
     "center";
+
 
   block.style.lineHeight =
     "11px";
 
-  block.style.flexShrink =
-    "0";
 
   block.textContent =
     label;
+
 
   block.title =
     label;
 
 
   return block;
-
-}
-
-
-// ============================================================
-// KERNET
-// ============================================================
-
-function createKernetSeat() {
-
-  return createFixedBlock(
-    "KERNET",
-    "#111"
-  );
-
-}
-
-
-// ============================================================
-// PINTU SLIDING
-// ============================================================
-
-function createSlidingDoor() {
-
-  return createFixedBlock(
-    "PINTU SLIDING",
-    "#111"
-  );
 
 }
 
@@ -2140,11 +2253,7 @@ function createAisle() {
 
 
   aisle.style.height =
-    "48px";
-
-
-  aisle.style.flexShrink =
-    "0";
+    "45px";
 
 
   return aisle;
@@ -2157,7 +2266,8 @@ function createAisle() {
 // ============================================================
 
 function createSeatRow(
-  items
+  items,
+  schedule
 ) {
 
   const row =
@@ -2187,93 +2297,101 @@ function createSeatRow(
 
 
   row.style.minHeight =
-    "48px";
+    "45px";
 
 
   row.style.alignItems =
     "center";
 
 
-  items.forEach(item => {
+  items.forEach(
+    item => {
 
-    if (
-      item ===
-      "AISLE"
-    ) {
+      if (
+        item === "AISLE"
+      ) {
 
-      row.appendChild(
-        createAisle()
-      );
+        row.appendChild(
+          createAisle()
+        );
 
-      return;
+        return;
+
+      }
+
+
+      if (
+        item === "KERNET"
+      ) {
+
+        row.appendChild(
+
+          createFixedBlock(
+            "KERNET",
+            "#111"
+          )
+
+        );
+
+        return;
+
+      }
+
+
+      if (
+        item === "SLIDING"
+      ) {
+
+        row.appendChild(
+
+          createFixedBlock(
+            "PINTU",
+            "#111"
+          )
+
+        );
+
+        return;
+
+      }
+
+
+      if (
+        item === "SUPIR"
+      ) {
+
+        row.appendChild(
+
+          createFixedBlock(
+            "SUPIR",
+            "#374151"
+          )
+
+        );
+
+        return;
+
+      }
+
+
+      if (
+        typeof item ===
+        "number"
+      ) {
+
+        row.appendChild(
+
+          createSeat(
+            item,
+            schedule
+          )
+
+        );
+
+      }
 
     }
-
-
-    if (
-      item ===
-      "KERNET"
-    ) {
-
-      row.appendChild(
-        createKernetSeat()
-      );
-
-      return;
-
-    }
-
-
-    if (
-      item ===
-      "SLIDING"
-    ) {
-
-      row.appendChild(
-        createSlidingDoor()
-      );
-
-      return;
-
-    }
-
-
-    if (
-      item ===
-      "SUPIR"
-    ) {
-
-      row.appendChild(
-
-        createFixedBlock(
-          "SUPIR",
-          "#374151"
-        )
-
-      );
-
-      return;
-
-    }
-
-
-    if (
-      typeof item ===
-      "number"
-    ) {
-
-      row.appendChild(
-
-        createSeat(
-          item,
-          selectedSchedule
-        )
-
-      );
-
-    }
-
-  });
+  );
 
 
   return row;
@@ -2290,7 +2408,9 @@ function renderSeats(
 ) {
 
   if (!seatsEl) {
+
     return;
+
   }
 
 
@@ -2306,55 +2426,84 @@ function renderSeats(
 
 
   // ==========================================================
-  // TITLE
+  // STATUS KETERSEDIAAN
   // ==========================================================
 
-  const title =
+  const availability =
     document.createElement(
       "div"
     );
 
 
-  title.style.textAlign =
+  availability.style.textAlign =
     "center";
 
 
-  title.style.marginBottom =
-    "10px";
+  availability.style.marginBottom =
+    "14px";
 
 
-  title.innerHTML = `
+  availability.style.fontWeight =
+    "900";
 
-    <strong>
-      Pilih Kursi
-    </strong>
 
-    <div
-      style="
-        margin-top:5px;
-        font-size:12px;
-        font-weight:800;
-        color:${
-          available === 0
-            ? "#dc2626"
-            : "#16a34a"
-        };
-      "
-    >
+  availability.style.fontSize =
+    "13px";
 
-      ${
-        available === 0
-          ? "🔴 FULL SEAT"
-          : `🟢 Tersedia ${available} kursi`
-      }
 
-    </div>
+  availability.style.color =
+    available === 0
+      ? "#dc2626"
+      : "#16a34a";
+
+
+  availability.innerHTML =
+    available === 0
+      ? "🔴 FULL SEAT"
+      : `🟢 Tersedia ${available} kursi`;
+
+
+  seatsEl.appendChild(
+    availability
+  );
+
+
+  // ==========================================================
+  // LEGENDA
+  // ==========================================================
+
+  const legend =
+    document.createElement(
+      "div"
+    );
+
+
+  legend.className =
+    "seatLegend";
+
+
+  legend.innerHTML = `
+
+    <span>
+      <i class="legendAvailable"></i>
+      Tersedia
+    </span>
+
+    <span>
+      <i class="legendPending"></i>
+      Menunggu pembayaran
+    </span>
+
+    <span>
+      <i class="legendPaid"></i>
+      Terisi / Lunas
+    </span>
 
   `;
 
 
   seatsEl.appendChild(
-    title
+    legend
   );
 
 
@@ -2371,17 +2520,22 @@ function renderSeats(
   front.style.textAlign =
     "center";
 
+
   front.style.fontSize =
-    "12px";
+    "11px";
+
 
   front.style.fontWeight =
-    "bold";
+    "900";
+
 
   front.style.marginBottom =
     "10px";
 
-  front.style.opacity =
-    "0.7";
+
+  front.style.color =
+    "#687386";
+
 
   front.textContent =
     "DEPAN";
@@ -2398,60 +2552,75 @@ function renderSeats(
 
   seatsEl.appendChild(
 
-    createSeatRow([
-      1,
-      2,
-      "AISLE",
-      "SUPIR"
-    ])
+    createSeatRow(
+      [
+        1,
+        2,
+        "AISLE",
+        "SUPIR"
+      ],
+      schedule
+    )
 
   );
 
 
   seatsEl.appendChild(
 
-    createSeatRow([
-      "SLIDING",
-      3,
-      4,
-      5
-    ])
+    createSeatRow(
+      [
+        "SLIDING",
+        3,
+        4,
+        5
+      ],
+      schedule
+    )
 
   );
 
 
   seatsEl.appendChild(
 
-    createSeatRow([
-      "KERNET",
-      "AISLE",
-      6,
-      7
-    ])
+    createSeatRow(
+      [
+        "KERNET",
+        "AISLE",
+        6,
+        7
+      ],
+      schedule
+    )
 
   );
 
 
   seatsEl.appendChild(
 
-    createSeatRow([
-      8,
-      "AISLE",
-      9,
-      10
-    ])
+    createSeatRow(
+      [
+        8,
+        "AISLE",
+        9,
+        10
+      ],
+      schedule
+    )
 
   );
 
 
   seatsEl.appendChild(
 
-    createSeatRow([
-      11,
-      12,
-      13,
-      14
-    ])
+    createSeatRow(
+      [
+        11,
+        12,
+        13,
+        14
+      ],
+      schedule
+    )
 
   );
 
@@ -2469,14 +2638,18 @@ function renderSeats(
   back.style.textAlign =
     "center";
 
+
   back.style.fontSize =
     "11px";
 
-  back.style.opacity =
-    "0.6";
+
+  back.style.color =
+    "#687386";
+
 
   back.style.marginTop =
-    "3px";
+    "4px";
+
 
   back.textContent =
     "BELAKANG";
@@ -2488,104 +2661,66 @@ function renderSeats(
 
 
   // ==========================================================
-  // LEGENDA
+  // SUMMARY
   // ==========================================================
 
-  const legend =
+  const summary =
     document.createElement(
       "div"
     );
 
 
-  legend.style.display =
-    "flex";
-
-  legend.style.justifyContent =
-    "center";
-
-  legend.style.flexWrap =
-    "wrap";
-
-  legend.style.gap =
-    "12px";
-
-  legend.style.marginTop =
-    "18px";
-
-  legend.style.fontSize =
-    "12px";
+  summary.className =
+    "bookingSummary";
 
 
-  legend.innerHTML = `
+  summary.innerHTML = `
 
-    <span>
-      🟢 Tersedia
-    </span>
+    <div>
+      Rute
+      <br>
+      <strong>
+        ${schedule.displayRoute}
+      </strong>
+    </div>
 
-    <span>
-      🟡 Menunggu pembayaran
-    </span>
+    <div>
+      Jam
+      <br>
+      <strong>
+        ${schedule.displayTime} WIT
+      </strong>
+    </div>
 
-    <span>
-      🔴 Terisi / Lunas
-    </span>
+    <div>
+      Armada
+      <br>
+      <strong>
+        ${
+          schedule.displayVehicle ||
+          normalizeVehicle(
+            schedule.vehicle
+          ) ||
+          "-"
+        }
+      </strong>
+    </div>
 
-  `;
-
-
-  seatsEl.appendChild(
-    legend
-  );
-
-
-  // ==========================================================
-  // INFO
-  // ==========================================================
-
-  const info =
-    document.createElement(
-      "div"
-    );
-
-
-  info.style.textAlign =
-    "center";
-
-  info.style.marginTop =
-    "15px";
-
-  info.style.fontSize =
-    "13px";
-
-
-  info.innerHTML = `
-
-    Rute:
-    <b>
-      ${schedule.displayRoute}
-    </b>
-
-    <br>
-
-    Jam:
-    <b>
-      ${schedule.displayTime} WIT
-    </b>
-
-    <br>
-
-    Harga:
-    <b>
-      ${rupiah(
-        schedule.displayPrice
-      )}
-    </b>
+    <div>
+      Harga
+      <br>
+      <strong>
+        ${rupiah(
+          schedule.displayPrice
+        )}
+      </strong>
+    </div>
 
   `;
 
 
   seatsEl.appendChild(
-    info
+    summary
   );
 
 }
@@ -2600,7 +2735,9 @@ async function loadSeats(
 ) {
 
   if (!seatsEl) {
+
     return;
+
   }
 
 
@@ -2643,15 +2780,14 @@ async function loadSeats(
         style="
           padding:15px;
           color:#b00020;
+          text-align:center;
         "
       >
-
         Gagal memuat kursi.
 
         <br><br>
 
         ${error.message}
-
       </div>
     `;
 
@@ -2669,7 +2805,10 @@ function generateBookingCode() {
   const random =
     Math.random()
       .toString(16)
-      .substring(2, 8)
+      .substring(
+        2,
+        8
+      )
       .toUpperCase();
 
 
@@ -2691,8 +2830,7 @@ function normalizeWhatsApp(
 
   let number =
     String(
-      value ||
-      ""
+      value || ""
     )
       .replace(
         /\D/g,
@@ -2728,12 +2866,13 @@ function getAdminWhatsApp(
 
   const pool =
     String(
-      origin ||
-      ""
+      origin || ""
     )
       .trim()
       .toLowerCase();
 
+
+  // WEDA / LELILEF
 
   if (
     pool === "weda" ||
@@ -2750,6 +2889,8 @@ function getAdminWhatsApp(
 
   }
 
+
+  // SOFIFI / LOLEO
 
   return normalizeWhatsApp(
 
@@ -2777,6 +2918,10 @@ async function createBooking() {
   }
 
 
+  // ==========================================================
+  // VALIDASI JADWAL
+  // ==========================================================
+
   if (
     !selectedSchedule
   ) {
@@ -2789,6 +2934,10 @@ async function createBooking() {
 
   }
 
+
+  // ==========================================================
+  // VALIDASI KURSI
+  // ==========================================================
 
   if (
     !selectedSeat
@@ -2803,19 +2952,19 @@ async function createBooking() {
   }
 
 
+  // ==========================================================
+  // NAMA
+  // ==========================================================
+
   const passengerName =
     nameEl
       ? nameEl.value.trim()
       : "";
 
 
-  const phone =
-    phoneEl
-      ? phoneEl.value.trim()
-      : "";
-
-
-  if (!passengerName) {
+  if (
+    !passengerName
+  ) {
 
     alert(
       "Masukkan nama penumpang."
@@ -2823,13 +2972,25 @@ async function createBooking() {
 
 
     if (nameEl) {
+
       nameEl.focus();
+
     }
 
 
     return;
 
   }
+
+
+  // ==========================================================
+  // WHATSAPP
+  // ==========================================================
+
+  const phone =
+    phoneEl
+      ? phoneEl.value.trim()
+      : "";
 
 
   if (!phone) {
@@ -2840,7 +3001,9 @@ async function createBooking() {
 
 
     if (phoneEl) {
+
       phoneEl.focus();
+
     }
 
 
@@ -2942,13 +3105,15 @@ async function createBooking() {
 
 
   const vehicle =
+    selectedSchedule.displayVehicle ||
     normalizeVehicle(
       selectedSchedule.vehicle
-    );
+    ) ||
+    null;
 
 
   // ==========================================================
-  // DATA BOOKING
+  // DATA INSERT
   // ==========================================================
 
   const bookingData = {
@@ -3015,8 +3180,7 @@ async function createBooking() {
       null,
 
     vehicle:
-      vehicle ||
-      null
+      vehicle
 
   };
 
@@ -3043,7 +3207,7 @@ async function createBooking() {
 
 
     // ========================================================
-    // WHATSAPP
+    // ADMIN WHATSAPP
     // ========================================================
 
     const adminNumber =
@@ -3053,7 +3217,12 @@ async function createBooking() {
       );
 
 
-    const message = `Halo HSM Transport 👋
+    // ========================================================
+    // MESSAGE
+    // ========================================================
+
+    const message =
+`Halo HSM Transport 👋
 
 Saya sudah melakukan booking tiket.
 
@@ -3073,6 +3242,7 @@ Total: ${rupiah(selectedSchedule.displayPrice)}
 Status: Menunggu pembayaran.
 
 Mohon konfirmasi booking saya.`;
+
 
 
     const whatsappURL =
@@ -3099,74 +3269,87 @@ Mohon konfirmasi booking saya.`;
         <div
           style="
             padding:18px;
-            margin-top:15px;
-            border-radius:10px;
-            background:#fff3cd;
+            margin-top:18px;
+            border:1px solid #f2d889;
+            border-radius:14px;
+            background:#fff9e8;
+            line-height:1.65;
           "
         >
 
-          <strong>
-            Booking berhasil! 🟡
+          <strong
+            style="
+              font-size:17px;
+            "
+          >
+            Booking berhasil 🟡
           </strong>
 
           <br><br>
 
           Kode Booking:
-          <b>
+          <strong>
             ${bookingCode}
-          </b>
+          </strong>
+
+          <br>
+
+          Nama:
+          <strong>
+            ${passengerName}
+          </strong>
 
           <br>
 
           Rute:
-          <b>
+          <strong>
             ${selectedSchedule.displayRoute}
-          </b>
+          </strong>
 
           <br>
 
           Tanggal:
-          <b>
+          <strong>
             ${travelDate}
-          </b>
+          </strong>
 
           <br>
 
           Jam:
-          <b>
+          <strong>
             ${selectedSchedule.displayTime}
             WIT
-          </b>
+          </strong>
 
           <br>
 
           Armada:
-          <b>
+          <strong>
             ${vehicle || "-"}
-          </b>
+          </strong>
 
           <br>
 
           Kursi:
-          <b>
+          <strong>
             ${selectedSeat}
-          </b>
+          </strong>
 
           <br>
 
           Total:
-          <b>
+          <strong>
             ${rupiah(
               selectedSchedule.displayPrice
             )}
-          </b>
+          </strong>
 
           <br><br>
 
           Status:
-          <b>
+          <strong>
             Menunggu pembayaran
-          </b>
+          </strong>
 
 
           ${
@@ -3180,13 +3363,14 @@ Mohon konfirmasi booking saya.`;
                   target="_blank"
                   rel="noopener noreferrer"
                   style="
-                    display:inline-block;
-                    padding:12px 18px;
-                    border-radius:8px;
+                    display:block;
+                    padding:13px 18px;
+                    border-radius:10px;
                     background:#25D366;
-                    color:white;
+                    color:#ffffff;
                     text-decoration:none;
-                    font-weight:bold;
+                    text-align:center;
+                    font-weight:900;
                   "
                 >
                   Konfirmasi via WhatsApp
@@ -3269,7 +3453,7 @@ if (bookBtn) {
 
 
 // ============================================================
-// EVENT DATE
+// EVENT TANGGAL
 // ============================================================
 
 if (dateEl) {
@@ -3281,14 +3465,41 @@ if (dateEl) {
       resetScheduleSelection();
 
 
+      if (resultEl) {
+
+        resultEl.innerHTML =
+          "";
+
+      }
+
+
+      const route =
+        getSelectedRoute();
+
+
       if (
-        fromEl &&
-        toEl &&
-        fromEl.value &&
-        toEl.value
+        route.origin &&
+        route.destination
       ) {
 
         loadSchedules();
+
+      }
+
+      else if (
+        scheduleEl
+      ) {
+
+        scheduleEl.innerHTML = `
+          <div
+            style="
+              padding:15px;
+              text-align:center;
+            "
+          >
+            Pilih lokasi keberangkatan dan tujuan.
+          </div>
+        `;
 
       }
 
@@ -3302,41 +3513,46 @@ if (dateEl) {
 // INITIAL DATE
 // ============================================================
 
-if (
-  dateEl &&
-  !dateEl.value
-) {
+if (dateEl) {
 
-  dateEl.value =
+  // Tanggal minimum = hari ini WIT.
+
+  dateEl.min =
     getLocalDate();
 
-}
-
-
-// ============================================================
-// INITIALIZE DROPDOWN
-// ============================================================
-
-if (fromEl) {
-
-  // Jika index.html belum memilih asal,
-  // gunakan Sofifi sebagai default.
 
   if (
-    !fromEl.value
+    !dateEl.value
   ) {
 
-    fromEl.value =
-      "Sofifi";
+    dateEl.value =
+      getLocalDate();
 
   }
 
+}
+
+
+// ============================================================
+// INITIAL ROUTE
+// ============================================================
+
+// Jangan otomatis memilih Sofifi.
+// Biarkan sesuai index.html:
+// Dari = Pilih lokasi
+// Tujuan = terkunci sampai asal dipilih.
+
+if (fromEl) {
 
   selectedOrigin =
-    fromEl.value;
+    fromEl.value || "";
 
 }
 
+
+// ============================================================
+// INITIALIZE DESTINATION
+// ============================================================
 
 updateDestinationOptions(
   true
@@ -3360,7 +3576,7 @@ selectedDestination =
 
 
 // ============================================================
-// INITIAL LOAD
+// INITIAL SCHEDULE MESSAGE
 // ============================================================
 
 if (
@@ -3383,7 +3599,7 @@ else if (
         text-align:center;
       "
     >
-      Pilih tujuan terlebih dahulu.
+      Pilih lokasi keberangkatan dan tujuan.
     </div>
   `;
 
@@ -3391,13 +3607,37 @@ else if (
 
 
 // ============================================================
-// AUTO REFRESH
+// INITIAL SEAT MESSAGE
+// ============================================================
+
+if (
+  seatsEl &&
+  !selectedSchedule
+) {
+
+  seatsEl.innerHTML = `
+    <div
+      style="
+        padding:15px;
+        text-align:center;
+      "
+    >
+      Pilih jadwal terlebih dahulu.
+    </div>
+  `;
+
+}
+
+
+// ============================================================
+// AUTO REFRESH SETIAP 30 DETIK
 // ============================================================
 
 setInterval(
   () => {
 
-    // Jangan ganggu user yang sedang booking
+    // Jangan refresh saat user sedang
+    // memilih / mengisi booking.
 
     if (
       isProcessingBooking ||
