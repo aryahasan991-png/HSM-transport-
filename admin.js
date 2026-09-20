@@ -5,7 +5,7 @@
 // - Login admin Supabase
 // - Password diverifikasi Supabase
 // - Verifikasi hsm_admins
-// - Pilih Pool: Sofifi / Loleo / Weda / Lelilef
+// - Pilih Pool: Sofifi / Loleo / Weda
 // - Booking otomatis difilter berdasarkan origin pool
 // - Filter tanggal / status / pencarian
 // - Statistik
@@ -131,8 +131,7 @@ let currentAdminUser =
 const VALID_POOLS = [
   "Sofifi",
   "Loleo",
-  "Weda",
-  "Lelilef"
+  "Weda"
 ];
 
 
@@ -423,6 +422,10 @@ function getVehicle(booking) {
       .substring(0, 5);
 
 
+  // ==========================================================
+  // SOFIFI -> WEDA
+  // ==========================================================
+
   if (
     origin === "sofifi" &&
     time === "09:00"
@@ -432,7 +435,19 @@ function getVehicle(booking) {
 
 
   if (
-    origin === "lelilef" &&
+    origin === "sofifi" &&
+    time === "13:00"
+  ) {
+    return "HSM-02";
+  }
+
+
+  // ==========================================================
+  // WEDA -> SOFIFI
+  // ==========================================================
+
+  if (
+    origin === "weda" &&
     time === "09:00"
   ) {
     return "HSM-02";
@@ -440,16 +455,35 @@ function getVehicle(booking) {
 
 
   if (
-    origin === "lelilef" &&
+    origin === "weda" &&
     time === "13:00"
   ) {
     return "HSM-01";
   }
 
 
+  // ==========================================================
+  // LOLEO -> WEDA
+  //
+  // Loleo merupakan titik naik di tengah perjalanan
+  // Sofifi -> Weda.
+  //
+  // Jadwal:
+  // 09:30 = HSM-01
+  // 13:30 = HSM-02
+  // ==========================================================
+
   if (
-    origin === "sofifi" &&
-    time === "13:00"
+    origin === "loleo" &&
+    time === "09:30"
+  ) {
+    return "HSM-01";
+  }
+
+
+  if (
+    origin === "loleo" &&
+    time === "13:30"
   ) {
     return "HSM-02";
   }
@@ -806,11 +840,6 @@ async function loginAdmin() {
 
 
   try {
-
-    // ========================================================
-    // SUPABASE AUTH
-    // PASSWORD SALAH AKAN GAGAL DI SINI
-    // ========================================================
 
     const {
       data,
@@ -1406,8 +1435,6 @@ function renderBookings() {
         "";
 
 
-      // PENDING
-
       if (
         status === "pending"
       ) {
@@ -1440,8 +1467,6 @@ function renderBookings() {
         `;
       }
 
-
-      // PAID
 
       else if (
         status === "paid"
@@ -1490,9 +1515,6 @@ function renderBookings() {
       }
 
 
-      // COMPLETED
-      // TETAP BISA DIBATALKAN
-
       else if (
         status === "completed"
       ) {
@@ -1526,8 +1548,6 @@ function renderBookings() {
       }
 
 
-      // CANCELLED
-
       else if (
         status === "cancelled"
       ) {
@@ -1544,8 +1564,6 @@ function renderBookings() {
         `;
       }
 
-
-      // WHATSAPP
 
       if (phone) {
 
@@ -1840,10 +1858,6 @@ async function confirmPaid(id) {
     );
 
 
-    // ========================================================
-    // UPDATE LOCAL STATE SEBELUM PRINT
-    // ========================================================
-
     booking.payment_status =
       "paid";
 
@@ -1851,16 +1865,10 @@ async function confirmPaid(id) {
     renderBookings();
 
 
-    // ========================================================
-    // CETAK OTOMATIS
-    // ========================================================
-
     printTicket(
       id
     );
 
-
-    // Refresh dari database
 
     await loadBookings();
 
@@ -2092,10 +2100,6 @@ function printTicket(id) {
     );
 
 
-  // ==========================================================
-  // HANYA LUNAS / SELESAI
-  // ==========================================================
-
   if (
     status !== "paid" &&
     status !== "completed"
@@ -2128,10 +2132,6 @@ function printTicket(id) {
       bookingCodeValue
     );
 
-
-  // ==========================================================
-  // SAFE PRINT VALUES
-  // ==========================================================
 
   const safeBookingCode =
     escapeHtml(
@@ -2953,10 +2953,6 @@ async function initializeAdmin() {
     }
 
 
-    // ========================================================
-    // USER SUDAH LOGIN
-    // ========================================================
-
     const allowed =
       await verifyAdmin();
 
@@ -2990,7 +2986,8 @@ async function initializeAdmin() {
 
 
     // ========================================================
-    // SESSION ADA TAPI POOL BELUM DIPILIH
+    // HAPUS SESSION POOL LAMA / TIDAK VALID
+    // TERMASUK LELILEF
     // ========================================================
 
     if (
@@ -3000,11 +2997,26 @@ async function initializeAdmin() {
       )
     ) {
 
+      sessionStorage.removeItem(
+        "hsm_admin_pool"
+      );
+
+
+      selectedPool =
+        "";
+
+
+      if (poolSelect) {
+        poolSelect.value =
+          "";
+      }
+
+
       showLogin();
 
 
       setLoginMessage(
-        "Pilih pool lalu masuk kembali.",
+        "Pilih Pool Sofifi, Loleo, atau Weda lalu masuk kembali.",
         "error"
       );
 
