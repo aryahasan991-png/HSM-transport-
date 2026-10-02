@@ -2552,24 +2552,48 @@ async function createBooking() {
   // ==========================================================
 
   const phone =
-    phoneEl
-      ? phoneEl.value.trim()
-      : "";
+  phoneEl
+    ? phoneEl.value.trim()
+    : "";
 
 
-  if (!phone) {
-    alert(
-      "Masukkan nomor WhatsApp."
-    );
+// Nomor wajib diisi
+if (!phone) {
+  alert(
+    "Masukkan nomor WhatsApp."
+  );
 
-
-    if (phoneEl) {
-      phoneEl.focus();
-    }
-
-
-    return;
+  if (phoneEl) {
+    phoneEl.focus();
   }
+
+  return;
+}
+
+
+// Hapus spasi dan tanda strip
+const cleanPhone =
+  phone.replace(/[\s-]/g, "");
+
+
+// Validasi nomor Indonesia
+const validPhone =
+  /^(08[0-9]{8,11}|628[0-9]{8,11})$/;
+
+
+// Tolak nomor yang tidak valid
+if (!validPhone.test(cleanPhone)) {
+  alert(
+    "Nomor WhatsApp tidak valid.\n\nContoh: 081234567890"
+  );
+
+  if (phoneEl) {
+    phoneEl.focus();
+  }
+
+  return;
+}
+  
 
 
   // ==========================================================
@@ -2701,7 +2725,7 @@ async function createBooking() {
       passengerName,
 
     phone:
-      phone,
+      cleanPhone,
 
     seat_number:
       selectedSeat,
@@ -2792,7 +2816,7 @@ Saya sudah melakukan booking tiket.
 Kode Booking: ${bookingCode}
 
 Nama: ${passengerName}
-No. WhatsApp: ${phone}
+No. WhatsApp: ${cleanPhone}
 
 Rute: ${selectedSchedule.displayRoute}
 Tanggal: ${travelDate}
