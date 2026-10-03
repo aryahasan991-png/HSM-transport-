@@ -5,7 +5,7 @@
 // - Login admin Supabase
 // - Password diverifikasi Supabase
 // - Verifikasi hsm_admins
-// - Pilih Pool: Sofifi / Loleo / Weda
+// - Pilih Pool: Sofifi / Loleo / Weda / Lelilef
 // - Booking otomatis difilter berdasarkan origin pool
 // - Filter tanggal / status / pencarian
 // - Statistik
@@ -18,6 +18,7 @@
 // - Barcode booking_code
 // - QR verifikasi tiket
 // - Armada HSM-01 / HSM-02
+// - Mendukung booking multi-kursi dengan kode booking terpisah
 // ============================================================
 
 
@@ -131,7 +132,8 @@ let currentAdminUser =
 const VALID_POOLS = [
   "Sofifi",
   "Loleo",
-  "Weda"
+  "Weda",
+  "Lelilef"
 ];
 
 
@@ -394,6 +396,10 @@ function normalizePhone(value) {
 
 function getVehicle(booking) {
 
+  // ==========================================================
+  // UTAMAKAN ARMADA YANG SUDAH TERSIMPAN DI BOOKING
+  // ==========================================================
+
   if (
     booking.vehicle &&
     String(
@@ -423,7 +429,7 @@ function getVehicle(booking) {
 
 
   // ==========================================================
-  // SOFIFI -> WEDA
+  // SOFIFI -> WEDA / LELILEF
   // ==========================================================
 
   if (
@@ -443,32 +449,9 @@ function getVehicle(booking) {
 
 
   // ==========================================================
-  // WEDA -> SOFIFI
-  // ==========================================================
-
-  if (
-    origin === "weda" &&
-    time === "09:00"
-  ) {
-    return "HSM-02";
-  }
-
-
-  if (
-    origin === "weda" &&
-    time === "13:00"
-  ) {
-    return "HSM-01";
-  }
-
-
-  // ==========================================================
-  // LOLEO -> WEDA
+  // LOLEO -> WEDA / LELILEF
   //
-  // Loleo merupakan titik naik di tengah perjalanan
-  // Sofifi -> Weda.
-  //
-  // Jadwal:
+  // ARAH SOFIFI -> LELILEF:
   // 09:30 = HSM-01
   // 13:30 = HSM-02
   // ==========================================================
@@ -484,6 +467,86 @@ function getVehicle(booking) {
   if (
     origin === "loleo" &&
     time === "13:30"
+  ) {
+    return "HSM-02";
+  }
+
+
+  // ==========================================================
+  // LELILEF -> WEDA / LOLEO / SOFIFI
+  //
+  // 09:00 = HSM-02
+  // 13:00 = HSM-01
+  // ==========================================================
+
+  if (
+    origin === "lelilef" &&
+    time === "09:00"
+  ) {
+    return "HSM-02";
+  }
+
+
+  if (
+    origin === "lelilef" &&
+    time === "13:00"
+  ) {
+    return "HSM-01";
+  }
+
+
+  // ==========================================================
+  // WEDA -> LOLEO / SOFIFI
+  //
+  // JADWAL BARU:
+  // 09:45 = HSM-02
+  // 13:45 = HSM-01
+  //
+  // JAM LAMA 09:00 / 13:00 TETAP DIDUKUNG
+  // AGAR BOOKING LAMA TIDAK BERMASALAH.
+  // ==========================================================
+
+  if (
+    origin === "weda" &&
+    (
+      time === "09:45" ||
+      time === "09:00"
+    )
+  ) {
+    return "HSM-02";
+  }
+
+
+  if (
+    origin === "weda" &&
+    (
+      time === "13:45" ||
+      time === "13:00"
+    )
+  ) {
+    return "HSM-01";
+  }
+
+
+  // ==========================================================
+  // WEDA -> LELILEF
+  //
+  // ARAH SOFIFI -> LELILEF:
+  // 11:30 = HSM-01
+  // 15:30 = HSM-02
+  // ==========================================================
+
+  if (
+    origin === "weda" &&
+    time === "11:30"
+  ) {
+    return "HSM-01";
+  }
+
+
+  if (
+    origin === "weda" &&
+    time === "15:30"
   ) {
     return "HSM-02";
   }
@@ -2986,8 +3049,7 @@ async function initializeAdmin() {
 
 
     // ========================================================
-    // HAPUS SESSION POOL LAMA / TIDAK VALID
-    // TERMASUK LELILEF
+    // HAPUS SESSION POOL TIDAK VALID
     // ========================================================
 
     if (
@@ -3016,7 +3078,7 @@ async function initializeAdmin() {
 
 
       setLoginMessage(
-        "Pilih Pool Sofifi, Loleo, atau Weda lalu masuk kembali.",
+        "Pilih Pool Sofifi, Loleo, Weda, atau Lelilef lalu masuk kembali.",
         "error"
       );
 
