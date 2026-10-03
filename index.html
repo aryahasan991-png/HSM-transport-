@@ -18,12 +18,12 @@
   >
 
   <title>
-    HSM Transport | Travel Sofifi, Loleo & Weda
+    HSM Transport | Travel Sofifi, Loleo, Weda & Lelilef
   </title>
 
   <meta
     name="description"
-    content="HSM Transport melayani perjalanan Sofifi, Loleo dan Weda di Maluku Utara. Pesan tiket dan pilih kursi secara online."
+    content="HSM Transport melayani perjalanan Sofifi, Loleo, Weda dan Lelilef di Maluku Utara. Pesan tiket dan pilih kursi secara online."
   >
 
   <meta
@@ -34,14 +34,16 @@
   <meta
     property="og:title"
     content="HSM Transport"
-  ><meta
-  property="og:site_name"
-  content="HSM Transport"
->
+  >
+
+  <meta
+    property="og:site_name"
+    content="HSM Transport"
+  >
 
   <meta
     property="og:description"
-    content="Travel Sofifi, Loleo dan Weda. Pesan tiket dan pilih kursi secara online."
+    content="Travel Sofifi, Loleo, Weda dan Lelilef. Pesan tiket dan pilih kursi secara online."
   >
 
   <meta
@@ -58,15 +60,16 @@
     property="og:image"
     content="https://hsm-transport.vercel.app/hsm-hiace-commuter.png"
   >
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "HSM Transport",
-  "alternateName": "HSM Transport",
-  "url": "https://hsm-transport.vercel.app/"
-}
-</script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "HSM Transport",
+    "alternateName": "HSM Transport",
+    "url": "https://hsm-transport.vercel.app/"
+  }
+  </script>
 
   <script
     src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
@@ -1133,6 +1136,19 @@
 
 
     /* ========================================================
+       PASSENGER FORMS
+       ======================================================== */
+
+    #passengerForms {
+
+      margin-top:4px;
+      margin-bottom:8px;
+
+    }
+
+
+
+    /* ========================================================
        BOOK
        ======================================================== */
 
@@ -1606,7 +1622,7 @@
       <p class="hero-description">
 
         Layanan perjalanan yang nyaman untuk
-        Sofifi, Loleo dan Weda.
+        Sofifi, Loleo, Weda dan Lelilef.
         Pilih rute, jadwal dan kursi langsung
         melalui website.
 
@@ -1622,7 +1638,7 @@
 
 
       <div class="hero-route">
-        Sofifi ↔ Loleo ↔ Weda
+        Sofifi ↔ Loleo ↔ Weda ↔ Lelilef
       </div>
 
 
@@ -1687,6 +1703,10 @@
 
               <option value="Weda">
                 Weda
+              </option>
+
+              <option value="Lelilef">
+                Lelilef
               </option>
 
             </select>
@@ -1801,49 +1821,27 @@
 
 
 
-      <!-- NAMA -->
+      <!-- DATA PENUMPANG DINAMIS -->
 
-      <div class="form-group">
+      <div id="passengerForms">
 
-        <label for="name">
-          Nama Penumpang
-        </label>
-
-
-        <input
-          type="text"
-          id="name"
-          class="input"
-          placeholder="Masukkan nama penumpang"
-          autocomplete="name"
+        <div
+          style="
+            padding:15px;
+            margin-bottom:18px;
+            text-align:center;
+            border:1px solid #dce5f0;
+            border-radius:12px;
+            background:#f8fbff;
+            color:#687386;
+            font-size:13px;
+          "
         >
+          Pilih kursi untuk mengisi data penumpang.
+        </div>
 
       </div>
 
-
-
-      <!-- WHATSAPP -->
-
-<div class="form-group">
-
-  <label for="phone">
-    Nomor WhatsApp
-  </label>
-
-  <input
-    type="tel"
-    id="phone"
-    class="input"
-    placeholder="Contoh: 081234567890"
-    autocomplete="tel"
-    inputmode="numeric"
-    minlength="10"
-    maxlength="15"
-    pattern="^(08[0-9]{8,11}|628[0-9]{8,11})$"
-    required
-  >
-
-</div>
 
 
       <!-- BOOK -->
@@ -1868,14 +1866,15 @@
     <section class="info-section">
 
       <h2>
-        Travel Sofifi, Loleo & Weda
+        Travel Sofifi, Loleo, Weda & Lelilef
       </h2>
 
 
       <p>
         HSM Transport melayani perjalanan
         penumpang di wilayah Maluku Utara
-        dengan rute Sofifi, Loleo dan Weda.
+        dengan rute Sofifi, Loleo, Weda
+        dan Lelilef.
       </p>
 
 
@@ -1906,7 +1905,7 @@
 
     <br>
 
-    Sofifi • Loleo • Weda
+    Sofifi • Loleo • Weda • Lelilef
 
     <br><br>
 
