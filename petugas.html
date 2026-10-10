@@ -1,30 +1,21 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0754a6">
-
-  <title>Login Petugas | HSM Transport</title>
-
-  <meta name="robots" content="noindex, nofollow">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Portal Petugas | HSM Transport</title>
 
   <style>
     :root {
       --blue: #0754a6;
-      --blue-dark: #063b77;
+      --dark: #07396f;
       --red: #e53935;
-      --bg: #f2f6fb;
+      --bg: #f1f5fb;
       --text: #172b4d;
       --muted: #718096;
       --border: #dce5f0;
-      --white: #fff;
     }
 
     * {
@@ -33,82 +24,82 @@
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      min-height: 100vh;
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
-    .topbar {
-      background: linear-gradient(
-        135deg,
-        var(--blue),
-        var(--blue-dark)
-      );
+    button,
+    input {
+      font: inherit;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--blue), var(--dark));
       color: white;
-      padding: 24px 18px 44px;
       text-align: center;
+      padding: 30px 18px 55px;
     }
 
-    .brand {
-      font-size: 32px;
+    .logo {
+      font-size: 38px;
       font-weight: 900;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
     }
 
-    .brand .s {
+    .logo .red {
       color: #ff5252;
     }
 
-    .brand-sub {
-      margin-top: 4px;
+    .logo-sub {
       font-size: 12px;
-      opacity: .9;
-      letter-spacing: 1.5px;
+      font-weight: bold;
+      letter-spacing: 3px;
     }
 
-    .topbar h1 {
-      margin: 24px 0 6px;
+    .header h1 {
+      margin: 25px 0 7px;
       font-size: 22px;
     }
 
-    .topbar p {
+    .header p {
       margin: 0;
       font-size: 13px;
       opacity: .9;
     }
 
     .container {
-      width: min(100% - 28px, 440px);
-      margin: -24px auto 35px;
+      width: min(440px, calc(100% - 28px));
+      margin: -28px auto 32px;
       position: relative;
     }
 
     .card {
       background: white;
       border-radius: 18px;
-      padding: 24px 20px;
+      padding: 22px;
       box-shadow: 0 8px 30px rgba(15, 45, 85, .1);
     }
 
     .tabs {
       display: flex;
-      gap: 6px;
+      gap: 5px;
       padding: 5px;
       background: #edf3fa;
       border-radius: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
 
     .tab {
       flex: 1;
-      border: 0;
-      background: transparent;
-      color: #66788e;
-      padding: 12px 4px;
+      border: none;
       border-radius: 9px;
+      background: transparent;
+      color: #63758d;
+      padding: 12px 4px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: bold;
       cursor: pointer;
     }
 
@@ -126,40 +117,37 @@
       display: block;
     }
 
-    .form-title {
-      font-size: 19px;
-      font-weight: 800;
+    h2 {
       margin: 0 0 8px;
+      font-size: 20px;
     }
 
-    .form-desc {
+    .description {
+      margin: 0 0 22px;
       color: var(--muted);
       font-size: 13px;
       line-height: 1.6;
-      margin: 0 0 22px;
+    }
+
+    .field {
+      margin-bottom: 17px;
     }
 
     label {
       display: block;
-      font-size: 13px;
-      font-weight: 700;
       margin-bottom: 8px;
-    }
-
-    .field {
-      margin-bottom: 18px;
+      font-size: 13px;
+      font-weight: bold;
     }
 
     input {
-      display: block;
       width: 100%;
-      padding: 15px 14px;
+      padding: 14px;
       border: 1px solid var(--border);
       border-radius: 11px;
-      font-size: 15px;
-      color: var(--text);
-      outline: none;
       background: white;
+      font-size: 15px;
+      outline: none;
     }
 
     input:focus {
@@ -174,19 +162,15 @@
       line-height: 1.5;
     }
 
-    button {
-      font-family: inherit;
-    }
-
     .btn {
       width: 100%;
+      padding: 15px;
       border: 0;
       border-radius: 11px;
-      padding: 15px;
       background: var(--blue);
       color: white;
       font-size: 15px;
-      font-weight: 800;
+      font-weight: bold;
       cursor: pointer;
     }
 
@@ -204,10 +188,11 @@
     .message {
       display: none;
       padding: 13px;
-      border-radius: 10px;
       margin-bottom: 17px;
+      border-radius: 10px;
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
     }
 
     .message.error {
@@ -222,55 +207,46 @@
       color: #177245;
     }
 
-    .footer {
-      text-align: center;
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 22px;
-      line-height: 1.8;
-    }
-
     #dashboard {
       display: none;
     }
 
     .welcome {
       text-align: center;
-      padding: 10px 0 25px;
+      padding: 10px 0 24px;
     }
 
     .avatar {
-      width: 70px;
-      height: 70px;
+      width: 76px;
+      height: 76px;
       margin: 0 auto 14px;
       display: grid;
       place-items: center;
       border-radius: 50%;
       background: #e9f2fd;
-      font-size: 32px;
+      font-size: 34px;
     }
 
     .welcome h2 {
-      margin: 0 0 7px;
-      font-size: 21px;
+      margin-bottom: 10px;
     }
 
     .badge {
       display: inline-block;
-      background: #e9f7ed;
-      color: #208046;
       padding: 7px 13px;
       border-radius: 20px;
+      background: #e9f7ed;
+      color: #208046;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: bold;
     }
 
     .info {
-      background: #f6f9fd;
-      border: 1px solid var(--border);
-      border-radius: 12px;
       overflow: hidden;
       margin-bottom: 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f6f9fd;
     }
 
     .info-row {
@@ -286,7 +262,7 @@
       border-bottom: 0;
     }
 
-    .info-row span:first-child {
+    .info-row span {
       color: var(--muted);
     }
 
@@ -296,862 +272,828 @@
     }
 
     .notice {
-      background: #eef5ff;
-      border-left: 4px solid var(--blue);
       padding: 14px;
+      margin-bottom: 20px;
+      border-left: 4px solid var(--blue);
       border-radius: 9px;
+      background: #eef5ff;
       font-size: 12px;
       line-height: 1.7;
-      margin-bottom: 20px;
     }
 
-    .hidden {
-      display: none !important;
+    .footer {
+      margin-top: 22px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.8;
     }
   </style>
 </head>
 
 <body>
 
-  <header class="topbar">
-    <div class="brand">
-      H<span class="s">S</span>M
+<header class="header">
+  <div class="logo">H<span class="red">S</span>M</div>
+  <div class="logo-sub">TRANSPORT</div>
+  <h1>Portal Petugas</h1>
+  <p>PT Hidayah Sarana Mulia</p>
+</header>
+
+<main class="container">
+
+  <section class="card" id="authCard">
+
+    <div class="tabs">
+      <button type="button" class="tab active" data-tab="login">Login</button>
+      <button type="button" class="tab" data-tab="activate">Aktivasi</button>
+      <button type="button" class="tab" data-tab="recover">Lupa PIN</button>
     </div>
 
-    <div class="brand-sub">
-      TRANSPORT
+    <div id="authMessage" class="message" role="alert"></div>
+
+    <form id="loginForm" class="form active">
+      <h2>Login Petugas</h2>
+      <p class="description">
+        Masukkan nomor HP terdaftar dan PIN untuk masuk ke portal petugas.
+      </p>
+
+      <div class="field">
+        <label for="loginPhone">Nomor HP</label>
+        <input
+          id="loginPhone"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel"
+          placeholder="08xxxxxxxxxx"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label for="loginPin">PIN 6 Digit</label>
+        <input
+          id="loginPin"
+          type="password"
+          inputmode="numeric"
+          pattern="[0-9]{6}"
+          minlength="6"
+          maxlength="6"
+          autocomplete="off"
+          placeholder="Masukkan PIN"
+          required
+        >
+      </div>
+
+      <button class="btn" type="submit">Masuk</button>
+    </form>
+
+    <form id="activateForm" class="form">
+      <h2>Aktivasi Akun</h2>
+      <p class="description">
+        Gunakan kode aktivasi 8 digit yang diberikan admin HSM Transport.
+      </p>
+
+      <div class="field">
+        <label for="activatePhone">Nomor HP Terdaftar</label>
+        <input
+          id="activatePhone"
+          type="tel"
+          inputmode="tel"
+          placeholder="08xxxxxxxxxx"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label for="activateCode">Kode Aktivasi</label>
+        <input
+          id="activateCode"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]{8}"
+          minlength="8"
+          maxlength="8"
+          autocomplete="off"
+          placeholder="8 digit kode"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label for="activatePin">Buat PIN 6 Digit</label>
+        <input
+          id="activatePin"
+          type="password"
+          inputmode="numeric"
+          pattern="[0-9]{6}"
+          minlength="6"
+          maxlength="6"
+          autocomplete="new-password"
+          placeholder="PIN baru"
+          required
+        >
+        <div class="hint">Gunakan PIN yang tidak mudah ditebak.</div>
+      </div>
+
+      <div class="field">
+        <label for="activatePinConfirm">Ulangi PIN</label>
+        <input
+          id="activatePinConfirm"
+          type="password"
+          inputmode="numeric"
+          pattern="[0-9]{6}"
+          minlength="6"
+          maxlength="6"
+          autocomplete="new-password"
+          placeholder="Ulangi PIN"
+          required
+        >
+      </div>
+
+      <button class="btn" type="submit">Aktifkan Akun</button>
+    </form>
+
+    <form id="recoverForm" class="form">
+      <h2>Pemulihan PIN</h2>
+      <p class="description">
+        Minta kode pemulihan kepada admin HSM Transport untuk membuat PIN baru.
+      </p>
+
+      <div class="field">
+        <label for="recoverPhone">Nomor HP Terdaftar</label>
+        <input
+          id="recoverPhone"
+          type="tel"
+          inputmode="tel"
+          placeholder="08xxxxxxxxxx"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label for="recoverCode">Kode Pemulihan</label>
+        <input
+          id="recoverCode"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]{8}"
+          minlength="8"
+          maxlength="8"
+          autocomplete="off"
+          placeholder="8 digit kode"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label for="recoverPin">PIN Baru</label>
+        <input
+          id="recoverPin"
+          type="password"
+          inputmode="numeric"
+          pattern="[0-9]{6}"
+          minlength="6"
+          maxlength="6"
+          autocomplete="new-password"
+          placeholder="PIN baru"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label for="recoverPinConfirm">Ulangi PIN Baru</label>
+        <input
+          id="recoverPinConfirm"
+          type="password"
+          inputmode="numeric"
+          pattern="[0-9]{6}"
+          minlength="6"
+          maxlength="6"
+          autocomplete="new-password"
+          placeholder="Ulangi PIN"
+          required
+        >
+      </div>
+
+      <button class="btn" type="submit">Ganti PIN</button>
+    </form>
+
+  </section>
+
+  <section class="card" id="dashboard">
+
+    <div class="welcome">
+      <div class="avatar">👤</div>
+      <h2 id="staffName">Petugas HSM</h2>
+      <span class="badge">● Akun Aktif</span>
     </div>
 
-    <h1>Portal Petugas</h1>
-
-    <p>PT Hidayah Sarana Mulia</p>
-  </header>
-
-  <main class="container">
-
-    <!-- HALAMAN AUTENTIKASI -->
-
-    <section class="card" id="authCard">
-
-      <div class="tabs">
-
-        <button
-          type="button"
-          class="tab active"
-          data-tab="login"
-        >
-          Login
-        </button>
-
-        <button
-          type="button"
-          class="tab"
-          data-tab="activate"
-        >
-          Aktivasi
-        </button>
-
-        <button
-          type="button"
-          class="tab"
-          data-tab="recover"
-        >
-          Lupa PIN
-        </button>
-
+    <div class="info">
+      <div class="info-row">
+        <span>Nama</span>
+        <strong id="infoName">-</strong>
       </div>
-
-      <div id="authMessage" class="message"></div>
-
-      <!-- LOGIN -->
-
-      <form id="loginForm" class="form active">
-
-        <h2 class="form-title">Login Petugas</h2>
-
-        <p class="form-desc">
-          Masukkan nomor HP terdaftar dan PIN
-          untuk masuk ke portal petugas.
-        </p>
-
-        <div class="field">
-          <label for="loginPhone">Nomor HP</label>
-
-          <input
-            id="loginPhone"
-            type="tel"
-            inputmode="tel"
-            autocomplete="tel"
-            placeholder="08xxxxxxxxxx"
-            required
-          >
-        </div>
-
-        <div class="field">
-          <label for="loginPin">PIN 6 Digit</label>
-
-          <input
-            id="loginPin"
-            type="password"
-            inputmode="numeric"
-            pattern="[0-9]{6}"
-            minlength="6"
-            maxlength="6"
-            autocomplete="off"
-            placeholder="Masukkan PIN"
-            required
-          >
-        </div>
-
-        <button class="btn" type="submit">
-          Masuk
-        </button>
-
-      </form>
-
-      <!-- AKTIVASI -->
-
-      <form id="activateForm" class="form">
-
-        <h2 class="form-title">Aktivasi Akun</h2>
-
-        <p class="form-desc">
-          Aktivasi akun menggunakan kode
-          8 digit yang diberikan admin HSM.
-        </p>
-
-        <div class="field">
-          <label for="activatePhone">Nomor HP Terdaftar</label>
-
-          <input
-            id="activatePhone"
-            type="tel"
-            inputmode="tel"
-            placeholder="08xxxxxxxxxx"
-            required
-          >
-        </div>
-
-        <div class="field">
-          <label for="activateCode">Kode Aktivasi</label>
-
-          <input
-            id="activateCode"
-            type="text"
-            inputmode="numeric"
-            pattern="[0-9]{8}"
-            minlength="8"
-            maxlength="8"
-            autocomplete="off"
-            placeholder="8 digit kode aktivasi"
-            required
-          >
-        </div>
-
-        <div class="field">
-          <label for="activatePin">Buat PIN Baru</label>
-
-          <input
-            id="activatePin"
-            type="password"
-            inputmode="numeric"
-            pattern="[0-9]{6}"
-            minlength="6"
-            maxlength="6"
-            autocomplete="new-password"
-            placeholder="6 digit PIN"
-            required
-          >
-
-          <div class="hint">
-            Jangan gunakan PIN yang mudah ditebak.
-          </div>
-        </div>
-
-        <div class="field">
-          <label for="activatePinConfirm">
-            Ulangi PIN Baru
-          </label>
-
-          <input
-            id="activatePinConfirm"
-            type="password"
-            inputmode="numeric"
-            pattern="[0-9]{6}"
-            minlength="6"
-            maxlength="6"
-            autocomplete="new-password"
-            placeholder="Ulangi PIN"
-            required
-          >
-        </div>
-
-        <button class="btn" type="submit">
-          Aktifkan Akun
-        </button>
-
-      </form>
-
-      <!-- LUPA PIN -->
-
-      <form id="recoverForm" class="form">
-
-        <h2 class="form-title">Pemulihan PIN</h2>
-
-        <p class="form-desc">
-          Minta kode pemulihan kepada admin
-          HSM Transport untuk membuat PIN baru.
-        </p>
-
-        <div class="field">
-          <label for="recoverPhone">Nomor HP Terdaftar</label>
-
-          <input
-            id="recoverPhone"
-            type="tel"
-            inputmode="tel"
-            placeholder="08xxxxxxxxxx"
-            required
-          >
-        </div>
-
-        <div class="field">
-          <label for="recoverCode">Kode Pemulihan</label>
-
-          <input
-            id="recoverCode"
-            type="text"
-            inputmode="numeric"
-            pattern="[0-9]{8}"
-            minlength="8"
-            maxlength="8"
-            autocomplete="off"
-            placeholder="8 digit kode pemulihan"
-            required
-          >
-        </div>
-
-        <div class="field">
-          <label for="recoverPin">PIN Baru</label>
-
-          <input
-            id="recoverPin"
-            type="password"
-            inputmode="numeric"
-            pattern="[0-9]{6}"
-            minlength="6"
-            maxlength="6"
-            autocomplete="new-password"
-            placeholder="6 digit PIN baru"
-            required
-          >
-        </div>
-
-        <div class="field">
-          <label for="recoverPinConfirm">
-            Ulangi PIN Baru
-          </label>
-
-          <input
-            id="recoverPinConfirm"
-            type="password"
-            inputmode="numeric"
-            pattern="[0-9]{6}"
-            minlength="6"
-            maxlength="6"
-            autocomplete="new-password"
-            placeholder="Ulangi PIN"
-            required
-          >
-        </div>
-
-        <button class="btn" type="submit">
-          Ganti PIN
-        </button>
-
-      </form>
-
-    </section>
-
-    <!-- DASHBOARD PETUGAS -->
-
-    <section class="card" id="dashboard">
-
-      <div class="welcome">
-
-        <div class="avatar">👤</div>
-
-        <h2 id="staffName">Petugas HSM</h2>
-
-        <span class="badge">
-          ● Akun Aktif
-        </span>
-
+      <div class="info-row">
+        <span>Jabatan</span>
+        <strong id="infoRole">-</strong>
       </div>
-
-      <div class="info">
-
-        <div class="info-row">
-          <span>Nama</span>
-          <strong id="infoName">-</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Jabatan</span>
-          <strong id="infoRole">-</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Armada</span>
-          <strong id="infoVehicle">-</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Nomor HP</span>
-          <strong id="infoPhone">-</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Sesi Berakhir</span>
-          <strong id="infoExpiry">-</strong>
-        </div>
-
+      <div class="info-row">
+        <span>Armada</span>
+        <strong id="infoVehicle">-</strong>
       </div>
-
-      <div class="notice">
-        <strong>Informasi Petugas</strong><br>
-        Akun ini hanya digunakan untuk
-        operasional armada HSM Transport.
-        Fitur manifest dan konfirmasi
-        penumpang naik akan ditambahkan
-        setelah pengamanan akses armada selesai.
+      <div class="info-row">
+        <span>Nomor HP</span>
+        <strong id="infoPhone">-</strong>
       </div>
-
-      <button
-        class="btn btn-outline"
-        id="logoutBtn"
-        type="button"
-      >
-        Keluar dari Akun
-      </button>
-
-    </section>
-
-    <div class="footer">
-      © HSM Transport<br>
-      PT Hidayah Sarana Mulia<br>
-      Portal khusus petugas resmi
+      <div class="info-row">
+        <span>Sesi Berakhir</span>
+        <strong id="infoExpiry">-</strong>
+      </div>
     </div>
 
-  </main>
+    <div class="notice">
+      <strong>Informasi Operasional</strong><br>
+      Portal ini khusus petugas resmi HSM Transport.
+      Fitur manifest dan konfirmasi penumpang naik
+      akan ditambahkan setelah pengaturan akses armada selesai.
+    </div>
 
-  <script>
-    "use strict";
+    <button id="logoutBtn" class="btn btn-outline" type="button">
+      Keluar dari Akun
+    </button>
 
-    // =================================================
-    // KONFIGURASI
-    // =================================================
+  </section>
 
-    const SUPABASE_PROJECT_URL =
-      "ISI_SUPABASE_PROJECT_URL";
+  <div class="footer">
+    © HSM Transport<br>
+    PT Hidayah Sarana Mulia<br>
+    Portal Khusus Petugas
+  </div>
 
-    const AUTH_ENDPOINT =
-      SUPABASE_PROJECT_URL.replace(/\/$/, "") +
-      "/functions/v1/hsm-staff-auth";
+</main>
 
-    const TOKEN_KEY = "hsm_staff_session_token";
+<script>
+"use strict";
 
-    let sessionTimer = null;
+/* ======================================
+   KONFIGURASI
+====================================== */
 
-    // =================================================
-    // ELEMENT
-    // =================================================
+const AUTH_ENDPOINT =
+  "https://lbykbgtxxlnbdixkkcsw.supabase.co/functions/v1/hsm-staff-auth";
 
-    const authCard =
-      document.getElementById("authCard");
+const TOKEN_KEY = "hsm_staff_session_token";
 
-    const dashboard =
-      document.getElementById("dashboard");
+let sessionTimer = null;
+let sessionRequestId = 0;
 
-    const authMessage =
-      document.getElementById("authMessage");
+/* ======================================
+   ELEMENT
+====================================== */
 
-    const forms = {
-      login: document.getElementById("loginForm"),
-      activate: document.getElementById("activateForm"),
-      recover: document.getElementById("recoverForm")
-    };
+const authCard = document.getElementById("authCard");
+const dashboard = document.getElementById("dashboard");
+const authMessage = document.getElementById("authMessage");
 
-    // =================================================
-    // TAMPILKAN PESAN
-    // =================================================
+const forms = {
+  login: document.getElementById("loginForm"),
+  activate: document.getElementById("activateForm"),
+  recover: document.getElementById("recoverForm")
+};
 
-    function showMessage(text, type = "error") {
-      authMessage.textContent = text;
-      authMessage.className = "message " + type;
+/* ======================================
+   PESAN
+====================================== */
+
+function showMessage(text, type = "error") {
+  authMessage.textContent = text;
+  authMessage.className = "message " + type;
+}
+
+function clearMessage() {
+  authMessage.textContent = "";
+  authMessage.className = "message";
+}
+
+/* ======================================
+   TAB
+====================================== */
+
+function switchTab(name) {
+  clearMessage();
+
+  document.querySelectorAll(".tab").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.tab === name
+    );
+  });
+
+  Object.entries(forms).forEach(([key, form]) => {
+    form.classList.toggle("active", key === name);
+  });
+}
+
+document.querySelectorAll(".tab").forEach(button => {
+  button.addEventListener("click", () => {
+    switchTab(button.dataset.tab);
+  });
+});
+
+/* ======================================
+   VALIDASI
+====================================== */
+
+function normalizePhone(value) {
+  let phone = String(value || "").replace(/\D/g, "");
+
+  if (phone.startsWith("62")) {
+    phone = "0" + phone.slice(2);
+  }
+
+  return phone;
+}
+
+function validPhone(phone) {
+  return /^08\d{8,11}$/.test(phone);
+}
+
+function validPin(pin) {
+  return /^\d{6}$/.test(pin);
+}
+
+/* ======================================
+   REQUEST API
+   Penanganan respons non-JSON diperbaiki
+====================================== */
+
+async function api(action, data = {}) {
+  const controller = new AbortController();
+
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 20000);
+
+  try {
+    let response;
+
+    try {
+      response = await fetch(AUTH_ENDPOINT, {
+        method: "POST",
+        mode: "cors",
+        credentials: "omit",
+        cache: "no-store",
+        redirect: "error",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          action,
+          ...data
+        }),
+        signal: controller.signal
+      });
+    } catch (error) {
+      if (error.name === "AbortError") {
+        throw error;
+      }
+
+      throw new Error(
+        "Tidak dapat terhubung ke server login. " +
+        "Periksa koneksi internet, pengaturan CORS, " +
+        "dan status Edge Function Supabase."
+      );
     }
 
-    function clearMessage() {
-      authMessage.textContent = "";
-      authMessage.className = "message";
-    }
+    const contentType =
+      response.headers.get("content-type") || "";
 
-    // =================================================
-    // GANTI TAB
-    // =================================================
+    const raw = await response.text();
 
-    function switchTab(tabName) {
-      clearMessage();
+    let result = null;
 
-      document.querySelectorAll(".tab").forEach(btn => {
-        btn.classList.toggle(
-          "active",
-          btn.dataset.tab === tabName
+    if (
+      contentType.includes("application/json") ||
+      raw.trim().startsWith("{")
+    ) {
+      try {
+        result = JSON.parse(raw);
+      } catch {
+        throw new Error(
+          "Server mengirim JSON yang tidak valid. " +
+          "HTTP " + response.status + "."
         );
-      });
-
-      Object.entries(forms).forEach(([name, form]) => {
-        form.classList.toggle(
-          "active",
-          name === tabName
-        );
-      });
+      }
     }
 
-    document.querySelectorAll(".tab").forEach(btn => {
-      btn.addEventListener("click", () => {
-        switchTab(btn.dataset.tab);
-      });
+    if (!result) {
+      throw new Error(
+        "Server mengembalikan respons bukan JSON " +
+        "(HTTP " + response.status + "). " +
+        "Permintaan mungkin ditolak oleh gateway " +
+        "sebelum mencapai Edge Function."
+      );
+    }
+
+    if (!response.ok || result.success !== true) {
+      throw new Error(
+        result.error ||
+        result.message ||
+        "Permintaan gagal. HTTP " + response.status + "."
+      );
+    }
+
+    return result;
+
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+/* ======================================
+   LOADING
+====================================== */
+
+async function withLoading(form, callback) {
+  const button = form.querySelector(
+    'button[type="submit"]'
+  );
+
+  const originalText = button.textContent;
+
+  button.disabled = true;
+  button.textContent = "Memproses...";
+
+  clearMessage();
+
+  try {
+    await callback();
+  } catch (error) {
+    showMessage(
+      error.name === "AbortError"
+        ? "Koneksi terlalu lama. Silakan coba lagi."
+        : error.message
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = originalText;
+  }
+}
+
+/* ======================================
+   LOGIN
+====================================== */
+
+forms.login.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  await withLoading(forms.login, async () => {
+    const phone = normalizePhone(
+      document.getElementById("loginPhone").value
+    );
+
+    const pin = document.getElementById("loginPin").value;
+
+    if (!validPhone(phone) || !validPin(pin)) {
+      throw new Error(
+        "Periksa nomor HP dan PIN 6 digit."
+      );
+    }
+
+    const result = await api("login", {
+      phone,
+      pin,
+      device_name: navigator.userAgent.slice(0, 120)
     });
 
-    // =================================================
-    // VALIDASI INPUT
-    // =================================================
-
-    function normalizePhone(value) {
-      let phone = String(value || "").replace(/\D/g, "");
-
-      if (phone.startsWith("62")) {
-        phone = "0" + phone.slice(2);
-      }
-
-      return phone;
-    }
-
-    function validPhone(phone) {
-      return /^08\d{8,11}$/.test(phone);
-    }
-
-    function validPin(pin) {
-      return /^\d{6}$/.test(pin);
-    }
-
-    // =================================================
-    // REQUEST EDGE FUNCTION
-    // =================================================
-
-    async function api(action, data = {}) {
-      const controller = new AbortController();
-
-      const timeout = setTimeout(
-        () => controller.abort(),
-        15000
+    if (!result.token) {
+      throw new Error(
+        "Login diterima, tetapi token sesi tidak tersedia."
       );
-
-      try {
-        const response = await fetch(
-          AUTH_ENDPOINT,
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-              action,
-              ...data
-            }),
-
-            signal: controller.signal
-          }
-        );
-
-        const result = await response.json();
-
-        if (!response.ok || !result.success) {
-          throw new Error(
-            result.error ||
-            "Permintaan gagal diproses"
-          );
-        }
-
-        return result;
-
-      } finally {
-        clearTimeout(timeout);
-      }
     }
 
-    // =================================================
-    // LOADING BUTTON
-    // =================================================
+    sessionStorage.setItem(TOKEN_KEY, result.token);
 
-    async function withLoading(form, callback) {
-      const button = form.querySelector(
-        'button[type="submit"]'
+    document.getElementById("loginPin").value = "";
+
+    await loadSession(true);
+  });
+});
+
+/* ======================================
+   AKTIVASI
+====================================== */
+
+forms.activate.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  await withLoading(forms.activate, async () => {
+    const phone = normalizePhone(
+      document.getElementById("activatePhone").value
+    );
+
+    const code =
+      document.getElementById("activateCode").value.trim();
+
+    const pin =
+      document.getElementById("activatePin").value;
+
+    const confirm =
+      document.getElementById("activatePinConfirm").value;
+
+    if (!validPhone(phone)) {
+      throw new Error("Nomor HP tidak valid.");
+    }
+
+    if (!/^\d{8}$/.test(code)) {
+      throw new Error("Kode aktivasi harus 8 digit.");
+    }
+
+    if (!validPin(pin)) {
+      throw new Error("PIN harus 6 digit.");
+    }
+
+    if (pin !== confirm) {
+      throw new Error("Konfirmasi PIN tidak cocok.");
+    }
+
+    await api("activate", {
+      phone,
+      code,
+      pin
+    });
+
+    forms.activate.reset();
+    switchTab("login");
+
+    document.getElementById("loginPhone").value = phone;
+
+    showMessage(
+      "Akun berhasil diaktifkan. Silakan login.",
+      "success"
+    );
+  });
+});
+
+/* ======================================
+   PEMULIHAN PIN
+====================================== */
+
+forms.recover.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  await withLoading(forms.recover, async () => {
+    const phone = normalizePhone(
+      document.getElementById("recoverPhone").value
+    );
+
+    const code =
+      document.getElementById("recoverCode").value.trim();
+
+    const pin =
+      document.getElementById("recoverPin").value;
+
+    const confirm =
+      document.getElementById("recoverPinConfirm").value;
+
+    if (!validPhone(phone)) {
+      throw new Error("Nomor HP tidak valid.");
+    }
+
+    if (!/^\d{8}$/.test(code)) {
+      throw new Error("Kode pemulihan harus 8 digit.");
+    }
+
+    if (!validPin(pin)) {
+      throw new Error("PIN harus 6 digit.");
+    }
+
+    if (pin !== confirm) {
+      throw new Error("Konfirmasi PIN tidak cocok.");
+    }
+
+    await api("recover", {
+      phone,
+      code,
+      pin
+    });
+
+    sessionStorage.removeItem(TOKEN_KEY);
+
+    forms.recover.reset();
+    switchTab("login");
+
+    document.getElementById("loginPhone").value = phone;
+
+    showMessage(
+      "PIN berhasil diganti. Silakan login.",
+      "success"
+    );
+  });
+});
+
+/* ======================================
+   DASHBOARD
+====================================== */
+
+function showDashboard(staff) {
+  authCard.style.display = "none";
+  dashboard.style.display = "block";
+
+  const name = staff.name || "Petugas HSM";
+
+  document.getElementById("staffName").textContent = name;
+  document.getElementById("infoName").textContent = name;
+
+  document.getElementById("infoRole").textContent =
+    staff.role === "driver"
+      ? "Sopir"
+      : staff.role === "kernet"
+        ? "Kernet"
+        : "-";
+
+  document.getElementById("infoVehicle").textContent =
+    staff.vehicle || "-";
+
+  document.getElementById("infoPhone").textContent =
+    staff.phone || "-";
+
+  const expiry = new Date(staff.expires_at);
+
+  document.getElementById("infoExpiry").textContent =
+    expiry.toLocaleString("id-ID", {
+      timeZone: "Asia/Jayapura",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }) + " WIT";
+
+  startSessionTimer(expiry);
+}
+
+/* ======================================
+   TAMPILKAN LOGIN
+====================================== */
+
+function showLogin() {
+  dashboard.style.display = "none";
+  authCard.style.display = "block";
+
+  if (sessionTimer !== null) {
+    clearTimeout(sessionTimer);
+    sessionTimer = null;
+  }
+}
+
+/* ======================================
+   PERIKSA SESI
+====================================== */
+
+async function loadSession(reportError = false) {
+  const token = sessionStorage.getItem(TOKEN_KEY);
+
+  const requestId = ++sessionRequestId;
+
+  if (!token) {
+    showLogin();
+    return;
+  }
+
+  try {
+    const result = await api("session", {
+      token
+    });
+
+    if (requestId !== sessionRequestId) {
+      return;
+    }
+
+    if (
+      sessionStorage.getItem(TOKEN_KEY) !== token
+    ) {
+      return;
+    }
+
+    if (!result.expires_at) {
+      throw new Error(
+        "Server tidak mengirim waktu kedaluwarsa sesi."
       );
+    }
 
-      const originalText = button.textContent;
+    const expiry = new Date(result.expires_at);
 
-      button.disabled = true;
-      button.textContent = "Memproses...";
+    if (
+      !Number.isFinite(expiry.getTime()) ||
+      expiry.getTime() <= Date.now()
+    ) {
+      throw new Error("Sesi sudah berakhir.");
+    }
 
-      clearMessage();
+    showDashboard(result);
 
+  } catch (error) {
+    if (requestId !== sessionRequestId) {
+      return;
+    }
+
+    /*
+      Jika server tidak dapat dihubungi,
+      jangan otomatis menganggap PIN salah.
+      Namun dashboard tetap disembunyikan.
+    */
+
+    showLogin();
+
+    if (
+      /sesi|token|401|403/i.test(error.message)
+    ) {
+      sessionStorage.removeItem(TOKEN_KEY);
+    }
+
+    if (reportError) {
+      showMessage(error.message);
+    }
+  }
+}
+
+/* ======================================
+   TIMER SESI
+====================================== */
+
+function startSessionTimer(expiry) {
+  if (sessionTimer !== null) {
+    clearTimeout(sessionTimer);
+  }
+
+  const remaining = expiry.getTime() - Date.now();
+
+  if (remaining <= 0) {
+    sessionStorage.removeItem(TOKEN_KEY);
+    showLogin();
+    return;
+  }
+
+  sessionTimer = setTimeout(() => {
+    sessionStorage.removeItem(TOKEN_KEY);
+    showLogin();
+
+    showMessage(
+      "Sesi berakhir. Silakan login kembali."
+    );
+  }, Math.min(remaining, 2147483647));
+}
+
+/* ======================================
+   LOGOUT
+====================================== */
+
+document.getElementById("logoutBtn")
+  .addEventListener("click", async () => {
+
+    ++sessionRequestId;
+
+    const token =
+      sessionStorage.getItem(TOKEN_KEY);
+
+    sessionStorage.removeItem(TOKEN_KEY);
+
+    showLogin();
+
+    if (token) {
       try {
-        await callback();
-      } catch (error) {
-        showMessage(
-          error.name === "AbortError"
-            ? "Koneksi terlalu lama. Coba lagi."
-            : error.message
-        );
-      } finally {
-        button.disabled = false;
-        button.textContent = originalText;
-      }
-    }
-
-    // =================================================
-    // LOGIN
-    // =================================================
-
-    forms.login.addEventListener(
-      "submit",
-      async event => {
-        event.preventDefault();
-
-        await withLoading(forms.login, async () => {
-          const phone = normalizePhone(
-            document.getElementById("loginPhone").value
-          );
-
-          const pin =
-            document.getElementById("loginPin").value;
-
-          if (!validPhone(phone) || !validPin(pin)) {
-            throw new Error(
-              "Periksa nomor HP dan PIN 6 digit."
-            );
-          }
-
-          const result = await api("login", {
-            phone,
-            pin,
-            device_name: navigator.userAgent.slice(0, 120)
-          });
-
-          sessionStorage.setItem(
-            TOKEN_KEY,
-            result.token
-          );
-
-          document.getElementById("loginPin").value = "";
-
-          await loadSession();
-        });
-      }
-    );
-
-    // =================================================
-    // AKTIVASI
-    // =================================================
-
-    forms.activate.addEventListener(
-      "submit",
-      async event => {
-        event.preventDefault();
-
-        await withLoading(forms.activate, async () => {
-          const phone = normalizePhone(
-            document.getElementById("activatePhone").value
-          );
-
-          const code =
-            document.getElementById("activateCode").value;
-
-          const pin =
-            document.getElementById("activatePin").value;
-
-          const confirm =
-            document.getElementById("activatePinConfirm").value;
-
-          if (!validPhone(phone)) {
-            throw new Error("Nomor HP tidak valid.");
-          }
-
-          if (!/^\d{8}$/.test(code)) {
-            throw new Error(
-              "Kode aktivasi harus 8 digit."
-            );
-          }
-
-          if (!validPin(pin)) {
-            throw new Error("PIN harus 6 digit.");
-          }
-
-          if (pin !== confirm) {
-            throw new Error(
-              "Konfirmasi PIN tidak cocok."
-            );
-          }
-
-          await api("activate", {
-            phone,
-            code,
-            pin
-          });
-
-          forms.activate.reset();
-
-          switchTab("login");
-
-          document.getElementById("loginPhone").value =
-            phone;
-
-          showMessage(
-            "Akun berhasil diaktifkan. Silakan login.",
-            "success"
-          );
-        });
-      }
-    );
-
-    // =================================================
-    // PEMULIHAN PIN
-    // =================================================
-
-    forms.recover.addEventListener(
-      "submit",
-      async event => {
-        event.preventDefault();
-
-        await withLoading(forms.recover, async () => {
-          const phone = normalizePhone(
-            document.getElementById("recoverPhone").value
-          );
-
-          const code =
-            document.getElementById("recoverCode").value;
-
-          const pin =
-            document.getElementById("recoverPin").value;
-
-          const confirm =
-            document.getElementById("recoverPinConfirm").value;
-
-          if (!validPhone(phone)) {
-            throw new Error("Nomor HP tidak valid.");
-          }
-
-          if (!/^\d{8}$/.test(code)) {
-            throw new Error(
-              "Kode pemulihan harus 8 digit."
-            );
-          }
-
-          if (!validPin(pin)) {
-            throw new Error("PIN harus 6 digit.");
-          }
-
-          if (pin !== confirm) {
-            throw new Error(
-              "Konfirmasi PIN tidak cocok."
-            );
-          }
-
-          await api("recover", {
-            phone,
-            code,
-            pin
-          });
-
-          sessionStorage.removeItem(TOKEN_KEY);
-
-          forms.recover.reset();
-
-          switchTab("login");
-
-          document.getElementById("loginPhone").value =
-            phone;
-
-          showMessage(
-            "PIN berhasil diganti. Silakan login.",
-            "success"
-          );
-        });
-      }
-    );
-
-    // =================================================
-    // TAMPILKAN DASHBOARD
-    // =================================================
-
-    function showDashboard(staff) {
-      authCard.style.display = "none";
-      dashboard.style.display = "block";
-
-      document.getElementById("staffName").textContent =
-        staff.name || "Petugas HSM";
-
-      document.getElementById("infoName").textContent =
-        staff.name || "-";
-
-      document.getElementById("infoRole").textContent =
-        staff.role === "driver"
-          ? "Sopir"
-          : staff.role === "kernet"
-            ? "Kernet"
-            : "-";
-
-      document.getElementById("infoVehicle").textContent =
-        staff.vehicle || "-";
-
-      document.getElementById("infoPhone").textContent =
-        staff.phone || "-";
-
-      const expiry = new Date(staff.expires_at);
-
-      document.getElementById("infoExpiry").textContent =
-        expiry.toLocaleString(
-          "id-ID",
-          {
-            timeZone: "Asia/Jayapura",
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false
-          }
-        ) + " WIT";
-
-      startSessionTimer(expiry);
-    }
-
-    // =================================================
-    // KEMBALI KE LOGIN
-    // =================================================
-
-    function showLogin() {
-      dashboard.style.display = "none";
-      authCard.style.display = "block";
-
-      if (sessionTimer) {
-        clearTimeout(sessionTimer);
-        sessionTimer = null;
-      }
-    }
-
-    // =================================================
-    // VERIFIKASI SESI
-    // =================================================
-
-    async function loadSession() {
-      const token = sessionStorage.getItem(TOKEN_KEY);
-
-      if (!token) {
-        showLogin();
-        return;
-      }
-
-      try {
-        const staff = await api("session", {
-          token
-        });
-
-        showDashboard(staff);
-
+        await api("logout", { token });
       } catch {
-        sessionStorage.removeItem(TOKEN_KEY);
-        showLogin();
+        // Token lokal sudah dihapus.
       }
     }
 
-    // =================================================
-    // SESI BERAKHIR OTOMATIS
-    // =================================================
-
-    function startSessionTimer(expiry) {
-      if (sessionTimer) {
-        clearTimeout(sessionTimer);
-      }
-
-      const remaining =
-        expiry.getTime() - Date.now();
-
-      if (remaining <= 0) {
-        sessionStorage.removeItem(TOKEN_KEY);
-        showLogin();
-        return;
-      }
-
-      sessionTimer = setTimeout(() => {
-        sessionStorage.removeItem(TOKEN_KEY);
-        showLogin();
-
-        showMessage(
-          "Sesi telah berakhir. Silakan login kembali."
-        );
-      }, Math.min(remaining, 2147483647));
-    }
-
-    // =================================================
-    // LOGOUT
-    // =================================================
-
-    document.getElementById("logoutBtn")
-      .addEventListener("click", async () => {
-
-        const token =
-          sessionStorage.getItem(TOKEN_KEY);
-
-        sessionStorage.removeItem(TOKEN_KEY);
-
-        showLogin();
-
-        if (token) {
-          try {
-            await api("logout", { token });
-          } catch {
-            // Token lokal sudah dihapus.
-          }
-        }
-
-        showMessage(
-          "Anda telah keluar dari akun.",
-          "success"
-        );
-      });
-
-    // =================================================
-    // PERIKSA SESI SAAT HALAMAN DIBUKA
-    // =================================================
-
-    loadSession();
-
-    // Periksa ulang ketika pengguna kembali ke tab.
-    document.addEventListener(
-      "visibilitychange",
-      () => {
-        if (!document.hidden) {
-          loadSession();
-        }
-      }
+    showMessage(
+      "Berhasil keluar dari akun.",
+      "success"
     );
+  });
 
-  </script>
+/* ======================================
+   MULAI
+====================================== */
+
+loadSession();
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+    if (!document.hidden) {
+      loadSession();
+    }
+  }
+);
+
+</script>
 
 </body>
 </html>
