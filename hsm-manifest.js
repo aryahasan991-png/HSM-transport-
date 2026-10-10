@@ -913,7 +913,7 @@
   }
 
   // ==========================================================
-  // CETAK MANIFEST DENGAN LOGO HSM
+  // CETAK MANIFEST DENGAN LOGO DI ATAS
   // ==========================================================
 
   function printManifest(key, date) {
@@ -989,24 +989,33 @@
             color: #111111;
           }
 
+          /* ================================================
+             KOP SURAT - LOGO DI ATAS TULISAN
+             ================================================ */
+
           .manifest-header {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 8px;
+            text-align: center;
             border-bottom: 3px solid #0754a6;
             padding-bottom: 15px;
             margin-bottom: 20px;
           }
 
           .manifest-logo {
-            width: 95px;
-            height: 95px;
+            width: 130px;
+            height: 85px;
             object-fit: contain;
+            display: block;
+            margin: 0 auto;
           }
 
           .manifest-company {
             text-align: center;
+            width: 100%;
           }
 
           .manifest-company h1 {
