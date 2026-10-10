@@ -1,6 +1,6 @@
 /* ============================================================
    HSM TRANSPORT
-   MANIFEST PERJALANAN + BOARDING + NO SHOW
+   MANIFEST + BOARDING + NO SHOW
    PT HIDAYAH SARANA MULIA
    ============================================================ */
 
@@ -10,7 +10,7 @@
   const db = adminDb;
 
   // ==========================================================
-  // KONFIGURASI LOGO
+  // KONFIGURASI
   // ==========================================================
 
   const LOGO_FILE = "hsm-logo.png";
@@ -913,7 +913,7 @@
   }
 
   // ==========================================================
-  // CETAK MANIFEST DENGAN LOGO DI ATAS
+  // CETAK MANIFEST DENGAN LOGO BESAR DI ATAS
   // ==========================================================
 
   function printManifest(key, date) {
@@ -990,7 +990,7 @@
           }
 
           /* ================================================
-             KOP SURAT - LOGO DI ATAS TULISAN
+             KOP SURAT - LOGO BESAR DI ATAS TULISAN
              ================================================ */
 
           .manifest-header {
@@ -998,7 +998,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 2px;
             text-align: center;
             border-bottom: 3px solid #0754a6;
             padding-bottom: 15px;
@@ -1006,8 +1006,8 @@
           }
 
           .manifest-logo {
-            width: 130px;
-            height: 85px;
+            width: 260px;
+            height: 150px;
             object-fit: contain;
             display: block;
             margin: 0 auto;
@@ -1369,7 +1369,7 @@
 
   console.log(
     "HSM MANIFEST: Boarding, No Show, " +
-    "dan cetak manifest berlogo siap."
+    "dan cetak manifest berlogo besar siap."
   );
 
 })();
