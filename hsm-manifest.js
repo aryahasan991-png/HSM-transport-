@@ -1,11 +1,26 @@
 /* ============================================================
-   HSM TRANSPORT - MANIFEST PERJALANAN
+   HSM TRANSPORT
+   MANIFEST PERJALANAN + BOARDING + NO SHOW
+   PT HIDAYAH SARANA MULIA
    ============================================================ */
 
 (() => {
   "use strict";
 
   const db = adminDb;
+
+  // ==========================================================
+  // KONFIGURASI LOGO
+  // ==========================================================
+
+  const LOGO_FILE = "hsm-logo.png";
+
+  const LOGO_URL = new URL(
+    LOGO_FILE,
+    window.location.href
+  ).href;
+
+  const $ = id => document.getElementById(id);
 
   const esc = value =>
     escapeHtml(value == null ? "" : String(value));
@@ -27,10 +42,46 @@
     return getVehicle(row);
   };
 
-  const $ = id => document.getElementById(id);
+  // ==========================================================
+  // TANGGAL DAN WAKTU WIT
+  // ==========================================================
+
+  const todayWIT = () => {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Jayapura",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).formatToParts(new Date());
+
+    const get = type =>
+      parts.find(part => part.type === type)?.value;
+
+    return `${get("year")}-${get("month")}-${get("day")}`;
+  };
+
+  const formatDeadlineWIT = value => {
+    if (!value) return "Belum tersedia";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return "Waktu tidak valid";
+    }
+
+    return new Intl.DateTimeFormat("id-ID", {
+      timeZone: "Asia/Jayapura",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23"
+    }).format(date) + " WIT";
+  };
 
   // ==========================================================
-  // TAMPILAN
+  // CSS DASHBOARD
   // ==========================================================
 
   const style = document.createElement("style");
@@ -108,6 +159,44 @@
       padding: 10px 13px;
       font-weight: 800;
       margin: 5px 6px 5px 0;
+      cursor: pointer;
+    }
+
+    .hsm-wait-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 8px;
+      align-items: center;
+    }
+
+    .hsm-wait-deadline {
+      display: block;
+      width: 100%;
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+
+    .hsm-wait-btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #0754a6;
+      color: white;
+    }
+
+    .hsm-wait-restore {
+      background: #b45309;
+    }
+
+    .hsm-wait-btn:disabled {
+      opacity: 0.5;
+      cursor: wait;
     }
   `;
 
@@ -134,11 +223,11 @@
       </h2>
 
       <p class="hsm-extra-desc">
-        Hanya penumpang yang dikonfirmasi
-        <b>Sudah Naik</b> yang tercatat.
+        Manifest menampilkan penumpang yang sudah
+        dikonfirmasi naik.
 
-        Manifest menggabungkan seluruh pool
-        berdasarkan kode perjalanan.
+        Data digabungkan dari seluruh pool berdasarkan
+        kode perjalanan.
       </p>
 
       <div class="hsm-manifest-toolbar">
@@ -172,18 +261,6 @@
     </div>
   `;
 
-  // ==========================================================
-  // TANGGAL WIT
-  // ==========================================================
-
-  const todayWIT = () =>
-    new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Asia/Jayapura",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit"
-    }).format(new Date());
-
   $("hsmManifestDate").value = todayWIT();
 
   $("hsmManifestRefresh").addEventListener(
@@ -203,7 +280,30 @@
   }
 
   // ==========================================================
-  // TOMBOL KONFIRMASI PENUMPANG NAIK
+  // DATA BOARDING TERBARU
+  // ==========================================================
+
+  async function getBoardingDetails(bookingId) {
+
+    const { data, error } = await db
+      .from("bookings")
+      .select(`
+        id,
+        origin,
+        payment_status,
+        boarding_status,
+        boarding_deadline
+      `)
+      .eq("id", bookingId)
+      .single();
+
+    if (error) throw error;
+
+    return data;
+  }
+
+  // ==========================================================
+  // TOMBOL BOARDING
   // ==========================================================
 
   const list = $("bookingList");
@@ -230,21 +330,17 @@
           return;
         }
 
-        card.dataset.hsmBoardingReady = "1";
-
         const row = bookings.find(
           b => String(b.id) === String(id)
         );
 
-        if (!row) {
-          return;
-        }
+        if (!row) return;
 
         const actions = card.querySelector(".actions");
 
-        if (!actions) {
-          return;
-        }
+        if (!actions) return;
+
+        card.dataset.hsmBoardingReady = "1";
 
         const boarding = String(
           row.boarding_status || "not_boarded"
@@ -253,6 +349,102 @@
         const payment = normalizeStatus(
           row.payment_status
         );
+
+        // ====================================================
+        // KONTROL WAKTU TUNGGU
+        // ====================================================
+
+        if (
+          boarding === "not_boarded" ||
+          boarding === "no_show"
+        ) {
+
+          const controls = document.createElement("div");
+
+          controls.className = "hsm-wait-controls";
+
+          const deadlineLabel =
+            document.createElement("span");
+
+          deadlineLabel.className =
+            "hsm-wait-deadline";
+
+          deadlineLabel.textContent =
+            "Memuat batas waktu...";
+
+          controls.appendChild(deadlineLabel);
+
+          if (
+            boarding === "not_boarded" &&
+            payment === "paid"
+          ) {
+
+            [15, 30].forEach(minutes => {
+
+              const button =
+                document.createElement("button");
+
+              button.type = "button";
+
+              button.className = "hsm-wait-btn";
+
+              button.textContent =
+                `⏳ +${minutes} Menit`;
+
+              button.dataset.hsmExtendId = id;
+
+              button.dataset.hsmExtendMinutes =
+                minutes;
+
+              controls.appendChild(button);
+            });
+
+          } else if (boarding === "no_show") {
+
+            const button =
+              document.createElement("button");
+
+            button.type = "button";
+
+            button.className =
+              "hsm-wait-btn hsm-wait-restore";
+
+            button.textContent =
+              "🔄 Batalkan No Show";
+
+            button.dataset.hsmRestoreId = id;
+
+            controls.appendChild(button);
+          }
+
+          actions.appendChild(controls);
+
+          getBoardingDetails(id)
+            .then(data => {
+
+              if (!controls.isConnected) return;
+
+              deadlineLabel.textContent =
+                "🕒 Batas waktu: " +
+                formatDeadlineWIT(
+                  data.boarding_deadline
+                );
+
+            })
+            .catch(error => {
+
+              if (!controls.isConnected) return;
+
+              deadlineLabel.textContent =
+                "Gagal memuat batas waktu: " +
+                error.message;
+
+            });
+        }
+
+        // ====================================================
+        // STATUS PENUMPANG
+        // ====================================================
 
         if (boarding === "boarded") {
 
@@ -281,7 +473,8 @@
           payment === "completed"
         ) {
 
-          const button = document.createElement("button");
+          const button =
+            document.createElement("button");
 
           button.type = "button";
 
@@ -313,7 +506,7 @@
     decorateBookings();
 
     // ========================================================
-    // SIMPAN STATUS SUDAH NAIK
+    // KONFIRMASI SUDAH NAIK
     // ========================================================
 
     list.addEventListener(
@@ -324,9 +517,7 @@
           "[data-hsm-board-id]"
         );
 
-        if (!button) {
-          return;
-        }
+        if (!button) return;
 
         const id = button.dataset.hsmBoardId;
 
@@ -350,9 +541,7 @@
           } sudah naik di ${row.origin}?`
         );
 
-        if (!confirmed) {
-          return;
-        }
+        if (!confirmed) return;
 
         button.disabled = true;
 
@@ -386,14 +575,12 @@
             )
             .select("id");
 
-          if (error) {
-            throw error;
-          }
+          if (error) throw error;
 
           if (!data?.length) {
             throw new Error(
               "Booking sudah berubah, belum lunas, " +
-              "atau tidak bisa dikonfirmasi. Refresh data."
+              "atau tidak bisa dikonfirmasi."
             );
           }
 
@@ -413,6 +600,166 @@
             "Gagal konfirmasi naik: " +
             (error.message || error)
           );
+
+          button.disabled = false;
+        }
+      }
+    );
+
+    // ========================================================
+    // PERPANJANG WAKTU / BATALKAN NO SHOW
+    // ========================================================
+
+    list.addEventListener(
+      "click",
+      async event => {
+
+        const extendButton = event.target.closest(
+          "[data-hsm-extend-id]"
+        );
+
+        const restoreButton = event.target.closest(
+          "[data-hsm-restore-id]"
+        );
+
+        if (!extendButton && !restoreButton) {
+          return;
+        }
+
+        const button = extendButton || restoreButton;
+
+        if (button.disabled) return;
+
+        const bookingId =
+          extendButton?.dataset.hsmExtendId ||
+          restoreButton?.dataset.hsmRestoreId;
+
+        const minutes = extendButton
+          ? Number(
+              extendButton.dataset.hsmExtendMinutes
+            )
+          : 0;
+
+        button.disabled = true;
+
+        try {
+
+          const { data: auth, error: authError } =
+            await db.auth.getUser();
+
+          if (authError) throw authError;
+
+          if (
+            !auth?.user ||
+            !(await verifyAdmin())
+          ) {
+            throw new Error(
+              "Sesi admin tidak valid."
+            );
+          }
+
+          const current =
+            await getBoardingDetails(bookingId);
+
+          if (current.origin !== selectedPool) {
+            throw new Error(
+              "Booking bukan dari pool aktif."
+            );
+          }
+
+          if (extendButton) {
+
+            if (
+              current.boarding_status !== "not_boarded"
+            ) {
+              throw new Error(
+                "Penumpang tidak berstatus Belum Naik."
+              );
+            }
+
+            if (
+              normalizeStatus(
+                current.payment_status
+              ) !== "paid"
+            ) {
+              throw new Error(
+                "Booking harus lunas."
+              );
+            }
+
+            const confirmed = confirm(
+              `Perpanjang waktu tunggu ${minutes} menit?\n\n` +
+              `Batas waktu sekarang:\n` +
+              formatDeadlineWIT(
+                current.boarding_deadline
+              )
+            );
+
+            if (!confirmed) return;
+
+            const { data, error } = await db.rpc(
+              "hsm_extend_boarding",
+              {
+                p_booking_id: bookingId,
+                p_minutes: minutes
+              }
+            );
+
+            if (error) throw error;
+
+            alert(
+              "✅ Waktu berhasil diperpanjang.\n\n" +
+              "Batas waktu baru:\n" +
+              formatDeadlineWIT(data)
+            );
+
+          } else {
+
+            if (
+              current.boarding_status !== "no_show"
+            ) {
+              throw new Error(
+                "Booking tidak berstatus No Show."
+              );
+            }
+
+            const confirmed = confirm(
+              "Batalkan No Show?\n\n" +
+              "Penumpang kembali menjadi Belum Naik.\n" +
+              "Batas waktu baru 30 menit dari sekarang."
+            );
+
+            if (!confirmed) return;
+
+            const { error } = await db.rpc(
+              "hsm_restore_no_show",
+              {
+                p_booking_id: bookingId
+              }
+            );
+
+            if (error) throw error;
+
+            alert(
+              "✅ No Show berhasil dibatalkan."
+            );
+          }
+
+          await loadBookings();
+
+        } catch (error) {
+
+          console.error(
+            "HSM Boarding Control:",
+            error
+          );
+
+          alert(
+            "Gagal memproses: " +
+            (error.message || error)
+          );
+
+        } finally {
 
           button.disabled = false;
         }
@@ -456,9 +803,6 @@
 
       const rows = [];
 
-      // Ambil data secara bertahap agar tidak
-      // terpotong batas jumlah baris Supabase.
-
       for (
         let from = 0;
         from < 10000;
@@ -490,9 +834,7 @@
           })
           .range(from, from + 499);
 
-        if (error) {
-          throw error;
-        }
+        if (error) throw error;
 
         rows.push(...(data || []));
 
@@ -503,10 +845,6 @@
           break;
         }
       }
-
-      // ======================================================
-      // AMBIL DATA SOPIR DAN KERNET
-      // ======================================================
 
       const crewResult = await db
         .from("hsm_crew")
@@ -535,7 +873,7 @@
   }
 
   // ==========================================================
-  // KELOMPOKKAN BERDASARKAN TRIP CODE
+  // KELOMPOKKAN MANIFEST BERDASARKAN TRIP
   // ==========================================================
 
   function groupManifest() {
@@ -547,9 +885,6 @@
       const code = String(
         row.trip_code || ""
       ).trim();
-
-      // Jangan menggabungkan berdasarkan armada saja.
-      // Satu armada bisa punya beberapa perjalanan.
 
       const key = code ||
         `TANPA-TRIP-CODE:${row.id}`;
@@ -565,7 +900,7 @@
   }
 
   // ==========================================================
-  // CARI SOPIR DAN KERNET ARMADA
+  // CARI SOPIR DAN KERNET
   // ==========================================================
 
   function crewFor(vehicle) {
@@ -578,16 +913,14 @@
   }
 
   // ==========================================================
-  // CETAK MANIFEST
+  // CETAK MANIFEST DENGAN LOGO HSM
   // ==========================================================
 
   function printManifest(key, date) {
 
     const group = groupManifest().get(key);
 
-    if (!group?.length) {
-      return;
-    }
+    if (!group?.length) return;
 
     const vehicle = tripVehicle(group[0]);
 
@@ -601,9 +934,9 @@
       c => c.role !== "driver"
     );
 
-    const details = p =>
-      p
-        ? `${esc(p.name)} — ${esc(p.phone)}`
+    const details = person =>
+      person
+        ? `${esc(person.name)} — ${esc(person.phone)}`
         : "-";
 
     const tableRows = group.map(
@@ -649,18 +982,56 @@
         </title>
 
         <style>
+
           body {
             font-family: Arial, sans-serif;
             padding: 20px;
             color: #111111;
           }
 
-          h1 {
-            margin-bottom: 4px;
+          .manifest-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            border-bottom: 3px solid #0754a6;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
           }
 
-          p {
-            margin: 5px 0;
+          .manifest-logo {
+            width: 95px;
+            height: 95px;
+            object-fit: contain;
+          }
+
+          .manifest-company {
+            text-align: center;
+          }
+
+          .manifest-company h1 {
+            font-size: 22px;
+            margin: 0 0 5px;
+            color: #0754a6;
+          }
+
+          .manifest-company h2 {
+            font-size: 17px;
+            margin: 0 0 5px;
+          }
+
+          .manifest-company p {
+            font-size: 13px;
+            margin: 0;
+          }
+
+          .manifest-info {
+            margin-bottom: 15px;
+            line-height: 1.6;
+          }
+
+          .manifest-info p {
+            margin: 4px 0;
           }
 
           table {
@@ -677,71 +1048,130 @@
             text-align: left;
           }
 
+          th {
+            background: #eaf2fc;
+          }
+
+          .manifest-footer {
+            margin-top: 30px;
+            text-align: right;
+          }
+
+          .manifest-footer p {
+            margin-bottom: 50px;
+          }
+
+          .print-button {
+            margin-top: 20px;
+            background: #0754a6;
+            color: white;
+            padding: 10px 18px;
+            border: 0;
+            border-radius: 7px;
+            cursor: pointer;
+          }
+
           @page {
             size: A4 landscape;
             margin: 12mm;
           }
 
           @media print {
-            button {
+
+            body {
+              padding: 0;
+            }
+
+            .print-button {
               display: none;
             }
+
+            .manifest-header,
+            th {
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
           }
+
         </style>
 
       </head>
 
       <body>
 
-        <h1>
-          HSM TRANSPORT — MANIFEST
-        </h1>
+        <div class="manifest-header">
 
-        <p>
-          PT Hidayah Sarana Mulia
-        </p>
+          <img
+            src="${esc(LOGO_URL)}"
+            class="manifest-logo"
+            alt="Logo HSM Transport"
+          >
 
-        <p>
-          <b>Tanggal:</b>
-          ${esc(formatDate(date))}
+          <div class="manifest-company">
 
-          |
+            <h1>
+              PT HIDAYAH SARANA MULIA
+            </h1>
 
-          <b>Armada:</b>
-          ${esc(vehicle)}
+            <h2>
+              MANIFEST PENUMPANG
+            </h2>
 
-          |
+            <p>
+              HSM TRANSPORT
+            </p>
 
-          <b>Trip:</b>
-          ${esc(key)}
-        </p>
+          </div>
 
-        <p>
-          <b>Sopir:</b>
-          ${details(driver)}
-        </p>
+        </div>
 
-        <p>
-          <b>Kernet:</b>
-          ${details(assistant)}
-        </p>
+        <div class="manifest-info">
 
-        <p>
-          <b>Penumpang sudah naik:</b>
-          ${group.length}
-        </p>
+          <p>
+            <b>Tanggal:</b>
+            ${esc(formatDate(date))}
+          </p>
+
+          <p>
+            <b>Armada:</b>
+            ${esc(vehicle)}
+          </p>
+
+          <p>
+            <b>Kode Perjalanan:</b>
+            ${esc(key)}
+          </p>
+
+          <p>
+            <b>Sopir:</b>
+            ${details(driver)}
+          </p>
+
+          <p>
+            <b>Kernet:</b>
+            ${details(assistant)}
+          </p>
+
+          <p>
+            <b>Jumlah Penumpang Sudah Naik:</b>
+            ${group.length} orang
+          </p>
+
+        </div>
 
         <table>
 
           <thead>
+
             <tr>
               <th>No</th>
-              <th>Nama</th>
+              <th>Nama Penumpang</th>
               <th>WhatsApp</th>
               <th>Rute</th>
               <th>Kursi</th>
               <th>Kode Booking</th>
             </tr>
+
           </thead>
 
           <tbody>
@@ -750,13 +1180,23 @@
 
         </table>
 
-        <p style="margin-top:24px">
-          Tanda tangan petugas:
-          _____________________
-        </p>
+        <div class="manifest-footer">
 
-        <button onclick="window.print()">
-          Cetak
+          <p>
+            Petugas HSM Transport
+          </p>
+
+          <strong>
+            _______________________
+          </strong>
+
+        </div>
+
+        <button
+          class="print-button"
+          onclick="window.print()"
+        >
+          🖨 Cetak Manifest
         </button>
 
       </body>
@@ -919,8 +1359,8 @@
   }
 
   console.log(
-    "HSM MANIFEST: siap. " +
-    "No-show otomatis belum diaktifkan."
+    "HSM MANIFEST: Boarding, No Show, " +
+    "dan cetak manifest berlogo siap."
   );
 
 })();
