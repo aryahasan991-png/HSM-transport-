@@ -2,22 +2,29 @@
 // HSM TRANSPORT
 // PT HIDAYAH SARANA MULIA
 //
-// ADMIN MONITORING PERJALANAN
+// ADMIN MONITORING PERJALANAN - VERSI 3
 //
 // FITUR:
-// - Menu Monitoring
-// - Monitoring seluruh armada
-// - Filter tanggal
-// - Filter armada
+// - Monitoring seluruh armada HSM
 // - Status perjalanan
+// - Filter tanggal dan armada
 // - Titik keberangkatan terakhir
-// - Riwayat keberangkatan
-// - Statistik boarding
-// - Refresh otomatis
+// - Waktu keberangkatan WIT
+// - Nama petugas keberangkatan
+// - Nama petugas penyelesaian
+// - Riwayat aktivitas petugas
+// - Riwayat pembatalan keberangkatan
+// - Statistik boarding penumpang
+// - Peringatan penumpang Belum Naik
+// - Refresh otomatis setiap 60 detik
 //
-// TIDAK MENGUBAH STATUS PERJALANAN
-// TIDAK MENGUBAH BOOKING
-// TIDAK MENGUBAH PEMBAYARAN
+// KEAMANAN:
+// - Menggunakan login admin Supabase
+// - Verifikasi melalui is_hsm_admin
+// - Data melalui RPC hsm_admin_get_trip_monitor
+// - Tidak mengubah status perjalanan
+// - Tidak mengubah booking
+// - Tidak mengubah pembayaran
 // ============================================================
 
 (function () {
@@ -41,8 +48,18 @@
 
   let refreshTimer = null;
 
+  let monitorLoadedDate = "";
+
   // ==========================================================
-  // HELPERS
+  // ELEMENT
+  // ==========================================================
+
+  function el(id) {
+    return document.getElementById(id);
+  }
+
+  // ==========================================================
+  // ESCAPE HTML
   // ==========================================================
 
   function escapeText(value) {
@@ -57,6 +74,10 @@
       })[char]
     );
   }
+
+  // ==========================================================
+  // TANGGAL WIT
+  // ==========================================================
 
   function todayWIT() {
     const parts = new Intl.DateTimeFormat(
@@ -76,13 +97,15 @@
     }
 
     return (
-      values.year +
-      "-" +
-      values.month +
-      "-" +
+      values.year + "-" +
+      values.month + "-" +
       values.day
     );
   }
+
+  // ==========================================================
+  // FORMAT TANGGAL
+  // ==========================================================
 
   function formatDate(value) {
     if (!value) return "-";
@@ -92,7 +115,7 @@
     );
 
     if (Number.isNaN(date.getTime())) {
-      return String(value);
+      return "-";
     }
 
     return new Intl.DateTimeFormat(
@@ -106,11 +129,19 @@
     ).format(date);
   }
 
+  // ==========================================================
+  // FORMAT JAM JADWAL
+  // ==========================================================
+
   function formatTime(value) {
     if (!value) return "-";
 
     return String(value).slice(0, 5) + " WIT";
   }
+
+  // ==========================================================
+  // FORMAT TIMESTAMP WIT
+  // ==========================================================
 
   function formatWIT(value) {
     if (!value) return "-";
@@ -127,10 +158,48 @@
         timeZone: TIMEZONE,
         hour: "2-digit",
         minute: "2-digit",
+        second: "2-digit",
         hour12: false
       }
     ).format(date) + " WIT";
   }
+
+  // ==========================================================
+  // FORMAT NAMA JABATAN
+  // ==========================================================
+
+  function roleLabel(role) {
+    if (role === "driver") {
+      return "Sopir";
+    }
+
+    if (role === "kernet") {
+      return "Kernet";
+    }
+
+    return "Petugas";
+  }
+
+  // ==========================================================
+  // FORMAT IDENTITAS PETUGAS
+  // ==========================================================
+
+  function staffLabel(name, role) {
+    if (!name) {
+      return "Belum tercatat";
+    }
+
+    return (
+      String(name) +
+      " (" +
+      roleLabel(role) +
+      ")"
+    );
+  }
+
+  // ==========================================================
+  // FORMAT STATUS PERJALANAN
+  // ==========================================================
 
   function statusLabel(status) {
     if (status === "in_progress") {
@@ -144,12 +213,37 @@
     return "🔵 Belum Berangkat";
   }
 
+  // ==========================================================
+  // FORMAT ANGKA
+  // ==========================================================
+
   function number(value) {
     return Number(value) || 0;
   }
 
   // ==========================================================
-  // AUTH CHECK
+  // FORMAT AKSI AUDIT
+  // ==========================================================
+
+  function actionLabel(action, stopName) {
+    if (action === "depart") {
+      return "🚐 Berangkat dari " + (stopName || "-");
+    }
+
+    if (action === "undo") {
+      return "↩️ Batalkan keberangkatan dari " +
+        (stopName || "-");
+    }
+
+    if (action === "complete") {
+      return "🏁 Perjalanan diselesaikan";
+    }
+
+    return String(action || "Aktivitas");
+  }
+
+  // ==========================================================
+  // VALIDASI ADMIN
   // ==========================================================
 
   async function checkAdmin() {
@@ -170,7 +264,7 @@
 
     if (error || data !== true) {
       throw new Error(
-        "Akses monitoring hanya untuk admin HSM."
+        "Akses Monitoring hanya untuk admin HSM."
       );
     }
 
@@ -178,7 +272,24 @@
   }
 
   // ==========================================================
-  // CSS
+  // CEK MENU MONITORING AKTIF
+  // ==========================================================
+
+  function isMonitorActive() {
+    const panel = el("hsmTripMonitorSection");
+
+    const dashboard = el("dashboard");
+
+    return (
+      !!panel &&
+      panel.classList.contains("active") &&
+      !!dashboard &&
+      getComputedStyle(dashboard).display !== "none"
+    );
+  }
+
+  // ==========================================================
+  // CSS MONITORING
   // ==========================================================
 
   function installStyles() {
@@ -186,10 +297,13 @@
 
     style.textContent = `
 
-      /* NAVIGASI EMPAT MENU */
+      /* ======================================================
+         NAVIGASI ADMIN
+      ====================================================== */
 
       .hsm-extra-nav {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns:
+          repeat(4, minmax(0, 1fr));
       }
 
       .hsm-monitor-panel {
@@ -199,6 +313,10 @@
       .hsm-monitor-panel.active {
         display: block;
       }
+
+      /* ======================================================
+         TOOLBAR
+      ====================================================== */
 
       .hsm-monitor-toolbar {
         display: grid;
@@ -224,32 +342,43 @@
         border: 1px solid #cbd5e1;
         border-radius: 9px;
         background: #ffffff;
+        color: #111827;
       }
 
       .hsm-monitor-refresh {
-        height: 43px;
-        padding: 0 15px;
+        min-height: 43px;
+        padding: 10px 15px;
         border: none;
         border-radius: 9px;
         background: #0754a6;
-        color: #ffffff;
+        color: white;
         font-size: 12px;
         font-weight: 800;
-        cursor: pointer;
       }
 
       .hsm-monitor-refresh:disabled {
         opacity: .6;
+        cursor: wait;
       }
 
       .hsm-monitor-message {
         margin-bottom: 14px;
+        color: #dc2626;
         font-size: 12px;
         line-height: 1.6;
-        color: #dc2626;
+        overflow-wrap: anywhere;
       }
 
-      /* RINGKASAN */
+      .hsm-monitor-updated {
+        margin-bottom: 15px;
+        color: #64748b;
+        font-size: 11px;
+        text-align: right;
+      }
+
+      /* ======================================================
+         RINGKASAN
+      ====================================================== */
 
       .hsm-monitor-summary {
         display: grid;
@@ -280,10 +409,12 @@
         font-weight: 700;
       }
 
-      /* KARTU PERJALANAN */
+      /* ======================================================
+         KARTU PERJALANAN
+      ====================================================== */
 
       .hsm-monitor-trip {
-        margin-bottom: 15px;
+        margin-bottom: 16px;
         padding: 17px;
         border: 1px solid #dbe3ee;
         border-radius: 14px;
@@ -313,6 +444,7 @@
       }
 
       .hsm-monitor-status {
+        display: inline-block;
         padding: 8px 10px;
         border-radius: 20px;
         font-size: 10px;
@@ -342,7 +474,9 @@
         line-height: 1.9;
       }
 
-      /* STATUS PENUMPANG */
+      /* ======================================================
+         STATISTIK PENUMPANG
+      ====================================================== */
 
       .hsm-monitor-passengers {
         display: grid;
@@ -388,7 +522,23 @@
         color: #dc2626;
       }
 
-      /* RIWAYAT TITIK */
+      /* ======================================================
+         TITIK TERAKHIR
+      ====================================================== */
+
+      .hsm-monitor-last {
+        margin-bottom: 14px;
+        padding: 13px;
+        border-radius: 10px;
+        background: #eff6ff;
+        color: #1e40af;
+        font-size: 12px;
+        line-height: 1.8;
+      }
+
+      /* ======================================================
+         RIWAYAT TITIK
+      ====================================================== */
 
       .hsm-monitor-stops {
         overflow: hidden;
@@ -399,9 +549,9 @@
       .hsm-monitor-stop {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
         gap: 12px;
-        padding: 12px;
+        padding: 13px;
         border-bottom: 1px solid #e5e7eb;
         background: #ffffff;
       }
@@ -423,23 +573,122 @@
         color: #64748b;
         font-size: 11px;
         text-align: right;
-        line-height: 1.6;
+        line-height: 1.7;
       }
 
       .hsm-monitor-stop-time.done {
         color: #15803d;
-        font-weight: 800;
       }
 
-      .hsm-monitor-last {
-        margin-bottom: 14px;
-        padding: 12px;
+      .hsm-monitor-staff {
+        margin-top: 4px;
+        color: #475569;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1.6;
+      }
+
+      /* ======================================================
+         PERINGATAN PENUMPANG
+      ====================================================== */
+
+      .hsm-monitor-warning {
+        margin-bottom: 15px;
+        padding: 13px;
+        border: 1px solid #f4c78b;
         border-radius: 10px;
-        background: #eff6ff;
-        color: #1e40af;
+        background: #fffbeb;
+        color: #92400e;
         font-size: 12px;
         line-height: 1.8;
       }
+
+      /* ======================================================
+         IDENTITAS PENYELESAIAN
+      ====================================================== */
+
+      .hsm-monitor-completion {
+        margin-top: 14px;
+        padding: 13px;
+        border: 1px solid #bbf7d0;
+        border-radius: 10px;
+        background: #f0fdf4;
+        color: #166534;
+        font-size: 12px;
+        line-height: 1.9;
+      }
+
+      /* ======================================================
+         AUDIT AKTIVITAS
+      ====================================================== */
+
+      .hsm-monitor-audit {
+        margin-top: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 11px;
+        overflow: hidden;
+      }
+
+      .hsm-monitor-audit summary {
+        padding: 14px;
+        background: #f8fafc;
+        color: #0754a6;
+        font-size: 12px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .hsm-monitor-audit-list {
+        padding: 13px;
+      }
+
+      .hsm-monitor-audit-item {
+        position: relative;
+        padding: 0 0 15px 15px;
+        margin-bottom: 14px;
+        border-left: 2px solid #cbd5e1;
+      }
+
+      .hsm-monitor-audit-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .hsm-monitor-audit-item::before {
+        content: "";
+        position: absolute;
+        left: -5px;
+        top: 3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #0754a6;
+      }
+
+      .hsm-monitor-audit-item.undo::before {
+        background: #d97706;
+      }
+
+      .hsm-monitor-audit-item.complete::before {
+        background: #16a34a;
+      }
+
+      .hsm-monitor-audit-title {
+        margin-bottom: 5px;
+        color: #111827;
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .hsm-monitor-audit-info {
+        color: #64748b;
+        font-size: 11px;
+        line-height: 1.8;
+      }
+
+      /* ======================================================
+         EMPTY
+      ====================================================== */
 
       .hsm-monitor-empty {
         padding: 26px 15px;
@@ -451,6 +700,10 @@
         font-size: 12px;
         line-height: 1.8;
       }
+
+      /* ======================================================
+         MOBILE
+      ====================================================== */
 
       @media (max-width: 650px) {
 
@@ -483,14 +736,19 @@
           grid-template-columns: repeat(2, 1fr);
         }
 
+        .hsm-monitor-stop {
+          gap: 8px;
+        }
+
       }
+
     `;
 
     document.head.appendChild(style);
   }
 
   // ==========================================================
-  // MENU
+  // BUAT TOMBOL MONITORING
   // ==========================================================
 
   function createMenu() {
@@ -505,38 +763,33 @@
       return false;
     }
 
-    if (navigation.querySelector(
+    let button = navigation.querySelector(
       '[data-hsm-menu="monitor"]'
-    )) {
-      return true;
-    }
-
-    const button = document.createElement("button");
-
-    button.type = "button";
-
-    button.dataset.hsmMenu = "monitor";
-
-    button.textContent = "📍 Monitoring";
-
-    const crewButton = navigation.querySelector(
-      '[data-hsm-menu="crew"]'
     );
 
-    if (crewButton) {
-      navigation.insertBefore(button, crewButton);
-    } else {
-      navigation.appendChild(button);
+    if (!button) {
+      button = document.createElement("button");
+
+      button.type = "button";
+
+      button.dataset.hsmMenu = "monitor";
+
+      button.textContent = "📍 Monitoring";
+
+      const crewButton = navigation.querySelector(
+        '[data-hsm-menu="crew"]'
+      );
+
+      if (crewButton) {
+        navigation.insertBefore(button, crewButton);
+      } else {
+        navigation.appendChild(button);
+      }
     }
 
-    // ========================================================
-    // Integrasi dengan navigasi dari hsm-admin-extra.js
-    //
-    // File lama tetap menangani Booking, Manifest,
-    // dan Sopir & Kernet.
-    //
-    // File ini menangani Monitoring.
-    // ========================================================
+    // Listener capture dipakai supaya navigasi lama
+    // tetap bisa menangani Booking, Manifest,
+    // serta Sopir & Kernet tanpa modifikasi.
 
     navigation.addEventListener(
       "click",
@@ -551,6 +804,7 @@
 
         if (menu === "monitor") {
           showMonitor();
+
           await loadMonitor();
         } else {
           hideMonitor();
@@ -563,7 +817,7 @@
   }
 
   // ==========================================================
-  // PANEL
+  // BUAT PANEL MONITORING
   // ==========================================================
 
   function createPanel() {
@@ -573,11 +827,7 @@
 
     if (!navigation) return;
 
-    if (document.getElementById(
-      "hsmTripMonitorSection"
-    )) {
-      return;
-    }
+    if (el("hsmTripMonitorSection")) return;
 
     const panel = document.createElement("section");
 
@@ -594,14 +844,15 @@
         </h2>
 
         <p class="hsm-extra-desc">
-          Pantau perjalanan HSM-01 dan HSM-02,
-          waktu keberangkatan setiap titik,
-          serta status boarding penumpang.
+          Pantau aktivitas HSM-01 dan HSM-02,
+          waktu keberangkatan, identitas petugas,
+          serta status penumpang.
         </p>
 
         <div class="hsm-monitor-toolbar">
 
           <div class="hsm-monitor-field">
+
             <label for="hsmMonitorDate">
               Tanggal Perjalanan
             </label>
@@ -610,14 +861,17 @@
               id="hsmMonitorDate"
               type="date"
             >
+
           </div>
 
           <div class="hsm-monitor-field">
+
             <label for="hsmMonitorVehicle">
               Armada
             </label>
 
             <select id="hsmMonitorVehicle">
+
               <option value="">
                 Semua Armada
               </option>
@@ -629,7 +883,9 @@
               <option value="HSM-02">
                 HSM-02
               </option>
+
             </select>
+
           </div>
 
           <button
@@ -648,26 +904,38 @@
           role="status"
         ></div>
 
+        <div class="hsm-monitor-updated" id="hsmMonitorUpdated">
+          Belum diperbarui
+        </div>
+
         <div class="hsm-monitor-summary">
 
           <div class="hsm-monitor-summary-card">
+
             <strong id="hsmMonitorTotalTrips">0</strong>
             <span>PERJALANAN</span>
+
           </div>
 
           <div class="hsm-monitor-summary-card">
+
             <strong id="hsmMonitorNotDeparted">0</strong>
             <span>BELUM BERANGKAT</span>
+
           </div>
 
           <div class="hsm-monitor-summary-card">
+
             <strong id="hsmMonitorInProgress">0</strong>
             <span>DALAM PERJALANAN</span>
+
           </div>
 
           <div class="hsm-monitor-summary-card">
+
             <strong id="hsmMonitorCompleted">0</strong>
             <span>SELESAI</span>
+
           </div>
 
         </div>
@@ -688,27 +956,19 @@
       panel
     );
 
-    document.getElementById(
-      "hsmMonitorDate"
-    ).value = todayWIT();
+    el("hsmMonitorDate").value = todayWIT();
 
-    document.getElementById(
-      "hsmMonitorDate"
-    ).addEventListener(
+    el("hsmMonitorDate").addEventListener(
       "change",
       loadMonitor
     );
 
-    document.getElementById(
-      "hsmMonitorVehicle"
-    ).addEventListener(
+    el("hsmMonitorVehicle").addEventListener(
       "change",
       renderMonitor
     );
 
-    document.getElementById(
-      "hsmMonitorRefresh"
-    ).addEventListener(
+    el("hsmMonitorRefresh").addEventListener(
       "click",
       loadMonitor
     );
@@ -719,9 +979,7 @@
   // ==========================================================
 
   function showMonitor() {
-    const panel = document.getElementById(
-      "hsmTripMonitorSection"
-    );
+    const panel = el("hsmTripMonitorSection");
 
     const navigation = document.querySelector(
       ".hsm-extra-nav"
@@ -746,26 +1004,26 @@
       "#dashboard > .filters"
     );
 
-    const bookingList = document.getElementById(
-      "bookingList"
-    );
+    const bookingList = el("bookingList");
 
-    const manifest = document.getElementById(
-      "hsmManifestSection"
-    );
+    const manifest = el("hsmManifestSection");
 
-    const crew = document.getElementById(
-      "hsmCrewSection"
-    );
+    const crew = el("hsmCrewSection");
 
-    if (stats) stats.style.display = "none";
-    if (filters) filters.style.display = "none";
+    if (stats) {
+      stats.style.display = "none";
+    }
+
+    if (filters) {
+      filters.style.display = "none";
+    }
 
     if (bookingList) {
       bookingList.style.display = "none";
     }
 
     manifest?.classList.remove("active");
+
     crew?.classList.remove("active");
 
     panel.classList.add("active");
@@ -778,40 +1036,31 @@
   // ==========================================================
 
   function hideMonitor() {
-    const panel = document.getElementById(
-      "hsmTripMonitorSection"
-    );
+    const panel = el("hsmTripMonitorSection");
 
     if (panel) {
       panel.classList.remove("active");
     }
 
+    ++monitorRequestId;
+
     stopRefresh();
   }
 
   // ==========================================================
-  // AMBIL DATA MONITORING
+  // AMBIL DATA DARI SUPABASE
   // ==========================================================
 
   async function loadMonitor() {
-    const panel = document.getElementById(
-      "hsmTripMonitorSection"
-    );
-
-    if (!panel?.classList.contains("active")) {
-      return;
-    }
+    if (!isMonitorActive()) return;
 
     if (monitorBusy) return;
 
-    const date = document.getElementById(
-      "hsmMonitorDate"
-    )?.value;
+    const date = el("hsmMonitorDate")?.value;
 
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date || "")) {
-      document.getElementById(
-        "hsmMonitorMessage"
-      ).textContent = "Tanggal tidak valid.";
+      el("hsmMonitorMessage").textContent =
+        "Tanggal perjalanan tidak valid.";
 
       return;
     }
@@ -820,15 +1069,12 @@
 
     const requestId = ++monitorRequestId;
 
-    const button = document.getElementById(
-      "hsmMonitorRefresh"
-    );
+    const button = el("hsmMonitorRefresh");
 
-    const message = document.getElementById(
-      "hsmMonitorMessage"
-    );
+    const message = el("hsmMonitorMessage");
 
     button.disabled = true;
+
     button.textContent = "Memuat...";
 
     message.textContent = "";
@@ -843,20 +1089,32 @@
         }
       );
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       if (data?.success !== true) {
         throw new Error(
           data?.error ||
-          "Gagal memuat monitoring perjalanan."
+          "Gagal memuat data Monitoring."
         );
       }
 
       if (requestId !== monitorRequestId) return;
 
+      if (!isMonitorActive()) return;
+
+      if (el("hsmMonitorDate").value !== date) return;
+
       monitorTrips = Array.isArray(data.trips)
         ? data.trips
         : [];
+
+      monitorLoadedDate = date;
+
+      el("hsmMonitorUpdated").textContent =
+        "Terakhir diperbarui: " +
+        formatWIT(new Date().toISOString());
 
       renderMonitor();
 
@@ -870,29 +1128,29 @@
 
       message.textContent =
         error.message ||
-        "Gagal memuat perjalanan.";
+        "Gagal memuat data perjalanan.";
 
       monitorTrips = [];
+
+      monitorLoadedDate = "";
 
       renderMonitor();
 
     } finally {
-      if (requestId === monitorRequestId) {
-        monitorBusy = false;
-        button.disabled = false;
-        button.textContent = "🔄 Refresh";
-      }
+      monitorBusy = false;
+
+      button.disabled = false;
+
+      button.textContent = "🔄 Refresh";
     }
   }
 
   // ==========================================================
-  // DATA TERFILTER
+  // FILTER ARMADA
   // ==========================================================
 
   function filteredTrips() {
-    const vehicle = document.getElementById(
-      "hsmMonitorVehicle"
-    )?.value || "";
+    const vehicle = el("hsmMonitorVehicle")?.value || "";
 
     return monitorTrips.filter(trip => {
       if (!vehicle) return true;
@@ -902,51 +1160,569 @@
   }
 
   // ==========================================================
-  // RINGKASAN
+  // RENDER STATISTIK PERJALANAN
   // ==========================================================
 
   function renderSummary(trips) {
-    const total = trips.length;
+    el("hsmMonitorTotalTrips").textContent =
+      trips.length;
 
-    const notDeparted = trips.filter(
-      trip => trip.status === "not_departed"
-    ).length;
+    el("hsmMonitorNotDeparted").textContent =
+      trips.filter(
+        trip => trip.status === "not_departed"
+      ).length;
 
-    const inProgress = trips.filter(
-      trip => trip.status === "in_progress"
-    ).length;
+    el("hsmMonitorInProgress").textContent =
+      trips.filter(
+        trip => trip.status === "in_progress"
+      ).length;
 
-    const completed = trips.filter(
-      trip => trip.status === "completed"
-    ).length;
-
-    document.getElementById(
-      "hsmMonitorTotalTrips"
-    ).textContent = total;
-
-    document.getElementById(
-      "hsmMonitorNotDeparted"
-    ).textContent = notDeparted;
-
-    document.getElementById(
-      "hsmMonitorInProgress"
-    ).textContent = inProgress;
-
-    document.getElementById(
-      "hsmMonitorCompleted"
-    ).textContent = completed;
+    el("hsmMonitorCompleted").textContent =
+      trips.filter(
+        trip => trip.status === "completed"
+      ).length;
   }
 
   // ==========================================================
-  // RENDER MONITORING
+  // RENDER SATU TITIK
+  // ==========================================================
+
+  function renderStop(stop, trip) {
+    const departed = !!stop.departed_at;
+
+    const terminal = !!stop.is_terminal;
+
+    let statusText = "";
+
+    let staffText = "";
+
+    if (terminal) {
+      if (trip.status === "completed") {
+        statusText =
+          "✅ Tiba " +
+          formatWIT(
+            stop.arrived_at ||
+            trip.completed_at
+          );
+
+        staffText = trip.completed_by_name
+          ? "Diselesaikan oleh: " +
+            staffLabel(
+              trip.completed_by_name,
+              trip.completed_by_role
+            )
+          : "Petugas penyelesaian belum tercatat";
+      } else {
+        statusText = "🏁 Tujuan Akhir";
+      }
+
+    } else if (departed) {
+      statusText =
+        "✅ Berangkat " +
+        formatWIT(stop.departed_at);
+
+      staffText = stop.departed_by_name
+        ? "Dicatat oleh: " +
+          staffLabel(
+            stop.departed_by_name,
+            stop.departed_by_role
+          )
+        : "Petugas belum tercatat";
+
+    } else {
+      statusText = "⏳ Belum Berangkat";
+    }
+
+    return `
+
+      <div class="hsm-monitor-stop ${departed ? "done" : ""}">
+
+        <div class="hsm-monitor-stop-name">
+          ${number(stop.stop_order)}.
+          ${escapeText(stop.stop_name)}
+        </div>
+
+        <div class="hsm-monitor-stop-time ${departed ? "done" : ""}">
+
+          ${escapeText(statusText)}
+
+          ${
+            staffText
+              ? `
+                <div class="hsm-monitor-staff">
+                  ${escapeText(staffText)}
+                </div>
+              `
+              : ""
+          }
+
+        </div>
+
+      </div>
+    `;
+  }
+
+  // ==========================================================
+  // RENDER RIWAYAT AKTIVITAS
+  // ==========================================================
+
+  function renderActivityLogs(trip) {
+    const logs = Array.isArray(trip.activity_logs)
+      ? [...trip.activity_logs].sort((a, b) => {
+          const timeA = new Date(a.created_at).getTime();
+          const timeB = new Date(b.created_at).getTime();
+
+          if (timeA !== timeB) {
+            return timeA - timeB;
+          }
+
+          return number(a.id) - number(b.id);
+        })
+      : [];
+
+    if (!logs.length) {
+      return `
+
+        <details class="hsm-monitor-audit">
+
+          <summary>
+            📜 Riwayat Aktivitas
+          </summary>
+
+          <div class="hsm-monitor-audit-list">
+
+            <div class="hsm-monitor-empty">
+              Belum ada riwayat audit untuk perjalanan ini.
+
+              <br><br>
+
+              Perjalanan yang diuji sebelum fitur audit
+              dipasang tetap memiliki catatan keberangkatan,
+              tetapi tidak memiliki riwayat audit lama.
+            </div>
+
+          </div>
+
+        </details>
+      `;
+    }
+
+    const items = logs.map(log => {
+      const title = actionLabel(
+        log.action,
+        log.stop_name
+      );
+
+      const staff = staffLabel(
+        log.staff_name,
+        log.staff_role
+      );
+
+      let detailText = "";
+
+      if (
+        log.action === "complete" &&
+        number(log.details?.pending_passengers) > 0
+      ) {
+        detailText =
+          "⚠️ " +
+          number(log.details.pending_passengers) +
+          " penumpang Belum Naik saat diselesaikan.";
+      }
+
+      if (
+        log.action === "undo" &&
+        log.details?.cancelled_departure_at
+      ) {
+        detailText =
+          "Catatan keberangkatan yang dibatalkan: " +
+          formatWIT(
+            log.details.cancelled_departure_at
+          );
+      }
+
+      return `
+
+        <div class="hsm-monitor-audit-item ${escapeText(log.action)}">
+
+          <div class="hsm-monitor-audit-title">
+            ${escapeText(title)}
+          </div>
+
+          <div class="hsm-monitor-audit-info">
+
+            🕒 ${escapeText(formatWIT(log.created_at))}
+
+            <br>
+
+            👨‍✈️ ${escapeText(staff)}
+
+            ${
+              detailText
+                ? `
+                  <br>
+                  ${escapeText(detailText)}
+                `
+                : ""
+            }
+
+          </div>
+
+        </div>
+      `;
+    }).join("");
+
+    return `
+
+      <details class="hsm-monitor-audit">
+
+        <summary>
+          📜 Riwayat Aktivitas (${logs.length})
+        </summary>
+
+        <div class="hsm-monitor-audit-list">
+          ${items}
+        </div>
+
+      </details>
+    `;
+  }
+
+  // ==========================================================
+  // RENDER PERINGATAN PENUMPANG
+  // ==========================================================
+
+  function renderWarning(trip, pending) {
+    if (
+      trip.status !== "completed" ||
+      pending <= 0
+    ) {
+      return "";
+    }
+
+    return `
+
+      <div class="hsm-monitor-warning">
+
+        <strong>
+          ⚠️ Perhatian: Manifest Belum Lengkap
+        </strong>
+
+        <br>
+
+        Perjalanan sudah berstatus Selesai,
+        tetapi masih terdapat
+
+        <strong>
+          ${pending} penumpang
+        </strong>
+
+        yang belum dikonfirmasi naik
+        atau ditandai Tidak Hadir.
+
+        <br>
+
+        Silakan periksa manifest perjalanan
+        dan lakukan koreksi melalui admin
+        apabila diperlukan.
+
+      </div>
+    `;
+  }
+
+  // ==========================================================
+  // RENDER IDENTITAS PENYELESAIAN
+  // ==========================================================
+
+  function renderCompletion(trip) {
+    if (trip.status !== "completed") {
+      return "";
+    }
+
+    const staff = trip.completed_by_name
+      ? staffLabel(
+          trip.completed_by_name,
+          trip.completed_by_role
+        )
+      : "Belum tercatat (perjalanan sebelum pembaruan audit)";
+
+    return `
+
+      <div class="hsm-monitor-completion">
+
+        <strong>
+          🏁 Perjalanan Selesai
+        </strong>
+
+        <br>
+
+        🕒 Waktu:
+        ${escapeText(formatWIT(trip.completed_at))}
+
+        <br>
+
+        👨‍✈️ Diselesaikan oleh:
+        <strong>
+          ${escapeText(staff)}
+        </strong>
+
+      </div>
+    `;
+  }
+
+  // ==========================================================
+  // RENDER KARTU PERJALANAN
+  // ==========================================================
+
+  function renderTrip(trip) {
+    const stops = Array.isArray(trip.stops)
+      ? [...trip.stops].sort(
+          (a, b) =>
+            number(a.stop_order) -
+            number(b.stop_order)
+        )
+      : [];
+
+    const departedStops = stops.filter(
+      stop => !!stop.departed_at
+    );
+
+    const lastStop = departedStops.length
+      ? departedStops[departedStops.length - 1]
+      : null;
+
+    const stats = trip.passenger_stats || {};
+
+    const total = number(stats.total);
+
+    const boarded = number(stats.boarded);
+
+    const pending = number(stats.not_boarded);
+
+    const absent = number(stats.no_show);
+
+    let lastStopHTML = "";
+
+    if (lastStop) {
+      lastStopHTML = `
+
+        <strong>
+          📍 Keberangkatan Terakhir
+        </strong>
+
+        <br>
+
+        ${escapeText(lastStop.stop_name)}
+
+        —
+
+        ${escapeText(formatWIT(lastStop.departed_at))}
+
+        <br>
+
+        👨‍✈️ Dicatat oleh:
+
+        <strong>
+          ${escapeText(
+            staffLabel(
+              lastStop.departed_by_name,
+              lastStop.departed_by_role
+            )
+          )}
+        </strong>
+      `;
+
+    } else {
+      lastStopHTML = `
+
+        <strong>
+          📍 Belum Ada Keberangkatan
+        </strong>
+
+        <br>
+
+        Armada belum mencatat keberangkatan
+        dari titik awal.
+      `;
+    }
+
+    const stopHTML = stops.map(
+      stop => renderStop(stop, trip)
+    ).join("");
+
+    return `
+
+      <article class="hsm-monitor-trip">
+
+        <!-- HEADER -->
+
+        <div class="hsm-monitor-trip-head">
+
+          <div>
+
+            <div class="hsm-monitor-route">
+
+              🚐 ${escapeText(trip.vehicle)}
+
+              <br>
+
+              ${escapeText(trip.origin)}
+
+              →
+
+              ${escapeText(trip.destination)}
+
+            </div>
+
+            <div class="hsm-monitor-code">
+              ${escapeText(trip.trip_code)}
+            </div>
+
+          </div>
+
+          <span class="hsm-monitor-status ${escapeText(trip.status)}">
+            ${escapeText(statusLabel(trip.status))}
+          </span>
+
+        </div>
+
+        <!-- INFORMASI PERJALANAN -->
+
+        <div class="hsm-monitor-trip-info">
+
+          📅 Tanggal:
+
+          <strong>
+            ${escapeText(formatDate(trip.travel_date))}
+          </strong>
+
+          <br>
+
+          🕘 Jadwal:
+
+          <strong>
+            ${escapeText(formatTime(trip.departure_time))}
+          </strong>
+
+          ${
+            trip.started_at
+              ? `
+
+                <br>
+
+                ▶ Mulai:
+
+                <strong>
+                  ${escapeText(formatWIT(trip.started_at))}
+                </strong>
+              `
+              : ""
+          }
+
+          ${
+            trip.completed_at
+              ? `
+
+                <br>
+
+                🏁 Selesai:
+
+                <strong>
+                  ${escapeText(formatWIT(trip.completed_at))}
+                </strong>
+              `
+              : ""
+          }
+
+        </div>
+
+        <!-- STATISTIK PENUMPANG -->
+
+        <div class="hsm-monitor-passengers">
+
+          <div class="hsm-monitor-passenger-stat total">
+
+            <strong>${total}</strong>
+
+            <span>Total</span>
+
+          </div>
+
+          <div class="hsm-monitor-passenger-stat boarded">
+
+            <strong>${boarded}</strong>
+
+            <span>Sudah Naik</span>
+
+          </div>
+
+          <div class="hsm-monitor-passenger-stat pending">
+
+            <strong>${pending}</strong>
+
+            <span>Belum Naik</span>
+
+          </div>
+
+          <div class="hsm-monitor-passenger-stat absent">
+
+            <strong>${absent}</strong>
+
+            <span>Tidak Hadir</span>
+
+          </div>
+
+        </div>
+
+        <!-- PERINGATAN -->
+
+        ${renderWarning(trip, pending)}
+
+        <!-- KEBERANGKATAN TERAKHIR -->
+
+        <div class="hsm-monitor-last">
+          ${lastStopHTML}
+        </div>
+
+        <!-- RIWAYAT TITIK -->
+
+        <div class="hsm-monitor-stops">
+          ${stopHTML}
+        </div>
+
+        <!-- PENYELESAIAN PERJALANAN -->
+
+        ${renderCompletion(trip)}
+
+        <!-- AUDIT AKTIVITAS -->
+
+        ${renderActivityLogs(trip)}
+
+      </article>
+    `;
+  }
+
+  // ==========================================================
+  // RENDER SEMUA MONITORING
   // ==========================================================
 
   function renderMonitor() {
-    const list = document.getElementById(
-      "hsmMonitorList"
-    );
+    const list = el("hsmMonitorList");
 
     if (!list) return;
+
+    if (
+      monitorLoadedDate &&
+      monitorLoadedDate !== el("hsmMonitorDate").value
+    ) {
+      list.innerHTML = `
+        <div class="hsm-monitor-empty">
+          Memuat data tanggal yang dipilih...
+        </div>
+      `;
+
+      return;
+    }
 
     const trips = filteredTrips();
 
@@ -954,197 +1730,31 @@
 
     if (!trips.length) {
       list.innerHTML = `
+
         <div class="hsm-monitor-empty">
-          🚐<br>
-          <strong>Belum ada perjalanan</strong>
+
+          🚐
+
           <br>
-          Tidak ditemukan jadwal untuk tanggal dan
-          armada yang dipilih.
+
+          <strong>
+            Belum Ada Perjalanan
+          </strong>
+
+          <br>
+
+          Tidak ditemukan perjalanan untuk
+          tanggal atau armada yang dipilih.
+
         </div>
       `;
 
       return;
     }
 
-    list.innerHTML = trips.map(trip => {
-      const stops = Array.isArray(trip.stops)
-        ? [...trip.stops].sort(
-            (a, b) =>
-              number(a.stop_order) - number(b.stop_order)
-          )
-        : [];
-
-      const departedStops = stops.filter(
-        stop => !!stop.departed_at
-      );
-
-      const lastStop = departedStops.length
-        ? departedStops[departedStops.length - 1]
-        : null;
-
-      const stats = trip.passenger_stats || {};
-
-      const total = number(stats.total);
-
-      const boarded = number(stats.boarded);
-
-      const pending = number(stats.not_boarded);
-
-      const absent = number(stats.no_show);
-
-      const lastStopHTML = lastStop
-        ? `
-          <strong>📍 Keberangkatan Terakhir</strong>
-          <br>
-          ${escapeText(lastStop.stop_name)}
-          — ${escapeText(formatWIT(lastStop.departed_at))}
-        `
-        : `
-          <strong>📍 Belum Ada Keberangkatan</strong>
-          <br>
-          Armada belum mencatat keberangkatan dari
-          titik awal.
-        `;
-
-      const stopHTML = stops.map(stop => {
-        const departed = !!stop.departed_at;
-
-        let text = "";
-
-        if (stop.is_terminal) {
-          text = trip.status === "completed"
-            ? "✅ Tiba " +
-              formatWIT(
-                stop.arrived_at || trip.completed_at
-              )
-            : "🏁 Tujuan Akhir";
-
-        } else if (departed) {
-          text =
-            "✅ Berangkat " +
-            formatWIT(stop.departed_at);
-
-        } else {
-          text = "⏳ Belum Berangkat";
-        }
-
-        return `
-          <div class="hsm-monitor-stop ${departed ? "done" : ""}">
-
-            <div class="hsm-monitor-stop-name">
-              ${number(stop.stop_order)}.
-              ${escapeText(stop.stop_name)}
-            </div>
-
-            <div class="hsm-monitor-stop-time ${departed ? "done" : ""}">
-              ${escapeText(text)}
-            </div>
-
-          </div>
-        `;
-      }).join("");
-
-      return `
-
-        <article class="hsm-monitor-trip">
-
-          <div class="hsm-monitor-trip-head">
-
-            <div>
-              <div class="hsm-monitor-route">
-                🚐 ${escapeText(trip.vehicle)}
-                <br>
-                ${escapeText(trip.origin)}
-                →
-                ${escapeText(trip.destination)}
-              </div>
-
-              <div class="hsm-monitor-code">
-                ${escapeText(trip.trip_code)}
-              </div>
-            </div>
-
-            <span class="hsm-monitor-status ${escapeText(trip.status)}">
-              ${escapeText(statusLabel(trip.status))}
-            </span>
-
-          </div>
-
-          <div class="hsm-monitor-trip-info">
-
-            📅 Tanggal:
-            <strong>
-              ${escapeText(formatDate(trip.travel_date))}
-            </strong>
-
-            <br>
-
-            🕘 Jadwal:
-            <strong>
-              ${escapeText(formatTime(trip.departure_time))}
-            </strong>
-
-            ${
-              trip.started_at
-                ? `
-                  <br>
-                  ▶ Mulai:
-                  <strong>
-                    ${escapeText(formatWIT(trip.started_at))}
-                  </strong>
-                `
-                : ""
-            }
-
-            ${
-              trip.completed_at
-                ? `
-                  <br>
-                  🏁 Selesai:
-                  <strong>
-                    ${escapeText(formatWIT(trip.completed_at))}
-                  </strong>
-                `
-                : ""
-            }
-
-          </div>
-
-          <div class="hsm-monitor-passengers">
-
-            <div class="hsm-monitor-passenger-stat total">
-              <strong>${total}</strong>
-              <span>Total</span>
-            </div>
-
-            <div class="hsm-monitor-passenger-stat boarded">
-              <strong>${boarded}</strong>
-              <span>Sudah Naik</span>
-            </div>
-
-            <div class="hsm-monitor-passenger-stat pending">
-              <strong>${pending}</strong>
-              <span>Belum Naik</span>
-            </div>
-
-            <div class="hsm-monitor-passenger-stat absent">
-              <strong>${absent}</strong>
-              <span>Tidak Hadir</span>
-            </div>
-
-          </div>
-
-          <div class="hsm-monitor-last">
-            ${lastStopHTML}
-          </div>
-
-          <div class="hsm-monitor-stops">
-            ${stopHTML}
-          </div>
-
-        </article>
-      `;
-    }).join("");
+    list.innerHTML = trips.map(
+      renderTrip
+    ).join("");
   }
 
   // ==========================================================
@@ -1154,6 +1764,7 @@
   function stopRefresh() {
     if (refreshTimer !== null) {
       clearInterval(refreshTimer);
+
       refreshTimer = null;
     }
   }
@@ -1162,18 +1773,9 @@
     stopRefresh();
 
     refreshTimer = setInterval(() => {
-      const panel = document.getElementById(
-        "hsmTripMonitorSection"
-      );
-
-      const dashboard = document.getElementById(
-        "dashboard"
-      );
-
       if (
         document.hidden ||
-        !panel?.classList.contains("active") ||
-        dashboard?.style.display !== "block" ||
+        !isMonitorActive() ||
         monitorBusy
       ) {
         return;
@@ -1189,14 +1791,33 @@
   // ==========================================================
 
   function installLogoutListener() {
-    document.getElementById(
-      "logoutBtn"
-    )?.addEventListener(
+    el("logoutBtn")?.addEventListener(
       "click",
       () => {
         monitorTrips = [];
+
+        monitorLoadedDate = "";
+
         hideMonitor();
-        renderMonitor();
+      }
+    );
+  }
+
+  // ==========================================================
+  // TAMPILKAN DATA TERBARU KETIKA KEMBALI KE TAB
+  // ==========================================================
+
+  function installVisibilityListener() {
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (
+          !document.hidden &&
+          isMonitorActive() &&
+          !monitorBusy
+        ) {
+          loadMonitor();
+        }
       }
     );
   }
@@ -1208,14 +1829,18 @@
   function initialize() {
     installStyles();
 
-    if (!createMenu()) return;
+    if (!createMenu()) {
+      return;
+    }
 
     createPanel();
 
     installLogoutListener();
 
+    installVisibilityListener();
+
     console.log(
-      "HSM TRIP MONITOR: Siap."
+      "HSM TRIP MONITOR V3: Siap."
     );
   }
 
