@@ -2,6 +2,17 @@
    HSM TRANSPORT
    MANIFEST + BOARDING + NO SHOW
    PT HIDAYAH SARANA MULIA
+
+   FITUR:
+   - Manifest berdasarkan trip_code
+   - Gabungan penumpang seluruh pool
+   - Mendukung schedule_id lama dan baru
+   - Rute utama Sofifi - Lelilef (PP)
+   - Waktu aktual boarding WIT
+   - Cetak manifest A4 landscape
+   - Hanya penumpang Boarded yang dicetak
+   - Perpanjangan waktu tunggu
+   - Pemulihan No Show
    ============================================================ */
 
 (() => {
@@ -20,10 +31,14 @@
     window.location.href
   ).href;
 
+  const TIME_ZONE = "Asia/Jayapura";
+
   const $ = id => document.getElementById(id);
 
   const esc = value =>
-    escapeHtml(value == null ? "" : String(value));
+    escapeHtml(
+      value == null ? "" : String(value)
+    );
 
   const safeDate = value =>
     /^\d{4}-\d{2}-\d{2}$/.test(value || "");
@@ -33,52 +48,277 @@
       .toUpperCase()
       .replace(/[^A-Z0-9]/g, "");
 
-  const tripVehicle = row => {
-    const code = String(row.trip_code || "").toUpperCase();
+  const paidStatus = value => {
+    const status = normalizeStatus(value);
 
-    if (/HSM0?1/.test(code)) return "HSM-01";
-    if (/HSM0?2/.test(code)) return "HSM-02";
+    return (
+      status === "paid" ||
+      status === "completed"
+    );
+  };
+
+  // ==========================================================
+  // IDENTITAS ARMADA
+  // ==========================================================
+
+  function tripVehicle(row) {
+
+    const code = String(
+      row.trip_code || ""
+    ).toUpperCase();
+
+    if (/HSM0?1/.test(code)) {
+      return "HSM-01";
+    }
+
+    if (/HSM0?2/.test(code)) {
+      return "HSM-02";
+    }
 
     return getVehicle(row);
-  };
+  }
 
   // ==========================================================
-  // TANGGAL DAN WAKTU WIT
+  // TANGGAL WIT
   // ==========================================================
 
-  const todayWIT = () => {
-    const parts = new Intl.DateTimeFormat("en-US", {
-      timeZone: "Asia/Jayapura",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit"
-    }).formatToParts(new Date());
+  function todayWIT() {
+
+    const parts = new Intl.DateTimeFormat(
+      "en-US",
+      {
+        timeZone: TIME_ZONE,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }
+    ).formatToParts(new Date());
 
     const get = type =>
-      parts.find(part => part.type === type)?.value;
+      parts.find(
+        part => part.type === type
+      )?.value;
 
-    return `${get("year")}-${get("month")}-${get("day")}`;
-  };
+    return (
+      `${get("year")}-` +
+      `${get("month")}-` +
+      `${get("day")}`
+    );
+  }
 
-  const formatDeadlineWIT = value => {
-    if (!value) return "Belum tersedia";
+  // ==========================================================
+  // FORMAT WAKTU WIT
+  // ==========================================================
+
+  function formatTimeWIT(value) {
+
+    if (!value) {
+      return "-";
+    }
 
     const date = new Date(value);
 
-    if (Number.isNaN(date.getTime())) {
+    if (
+      Number.isNaN(date.getTime())
+    ) {
+      return "-";
+    }
+
+    const parts = new Intl.DateTimeFormat(
+      "en-GB",
+      {
+        timeZone: TIME_ZONE,
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      }
+    ).formatToParts(date);
+
+    const hour = parts.find(
+      part => part.type === "hour"
+    )?.value;
+
+    const minute = parts.find(
+      part => part.type === "minute"
+    )?.value;
+
+    return `${hour}.${minute}`;
+  }
+
+  function formatDeadlineWIT(value) {
+
+    if (!value) {
+      return "Belum tersedia";
+    }
+
+    const date = new Date(value);
+
+    if (
+      Number.isNaN(date.getTime())
+    ) {
       return "Waktu tidak valid";
     }
 
-    return new Intl.DateTimeFormat("id-ID", {
-      timeZone: "Asia/Jayapura",
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23"
-    }).format(date) + " WIT";
-  };
+    return new Intl.DateTimeFormat(
+      "id-ID",
+      {
+        timeZone: TIME_ZONE,
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      }
+    ).format(date) + " WIT";
+  }
+
+  // ==========================================================
+  // IDENTITAS PERJALANAN
+  // ==========================================================
+
+  function tripDepartureTime(code, group) {
+
+    const value = String(
+      code || ""
+    ).toUpperCase();
+
+    if (/-AM-/.test(value)) {
+      return "09.00 WIT";
+    }
+
+    if (/-PM-/.test(value)) {
+      return "13.00 WIT";
+    }
+
+    // Untuk kode perjalanan lama yang tidak mengikuti
+    // format AM/PM, jangan mengarang jam keberangkatan.
+
+    return "Tidak tersedia";
+  }
+
+  function tripDirection(code, group) {
+
+    const vehicle = tripVehicle(group[0]);
+
+    const value = String(
+      code || ""
+    ).toUpperCase();
+
+    const isMorning = /-AM-/.test(value);
+
+    const isAfternoon = /-PM-/.test(value);
+
+    // Pola armada berdasarkan jadwal HSM Transport:
+    //
+    // HSM-01 pagi  : Sofifi -> Lelilef
+    // HSM-02 pagi  : Lelilef -> Sofifi
+    // HSM-01 siang : Lelilef -> Sofifi
+    // HSM-02 siang : Sofifi -> Lelilef
+
+    if (
+      (vehicle === "HSM-01" && isMorning) ||
+      (vehicle === "HSM-02" && isAfternoon)
+    ) {
+      return {
+        start: "Sofifi",
+        end: "Lelilef",
+        label: "Sofifi → Loleo → Weda → Lelilef"
+      };
+    }
+
+    if (
+      (vehicle === "HSM-02" && isMorning) ||
+      (vehicle === "HSM-01" && isAfternoon)
+    ) {
+      return {
+        start: "Lelilef",
+        end: "Sofifi",
+        label: "Lelilef → Weda → Loleo → Sofifi"
+      };
+    }
+
+    // Fallback untuk data lama.
+
+    const first = group[0];
+
+    return {
+      start: first.origin || "-",
+      end: first.destination || "-",
+      label:
+        `${first.origin || "-"} → ` +
+        `${first.destination || "-"}`
+    };
+  }
+
+  // ==========================================================
+  // URUTAN TITIK PERJALANAN
+  // ==========================================================
+
+  function stopOrder(direction) {
+
+    if (direction.start === "Sofifi") {
+      return [
+        "Sofifi",
+        "Loleo",
+        "Weda",
+        "Lelilef"
+      ];
+    }
+
+    if (direction.start === "Lelilef") {
+      return [
+        "Lelilef",
+        "Weda",
+        "Loleo",
+        "Sofifi"
+      ];
+    }
+
+    return [];
+  }
+
+  function sortManifestRows(rows, direction) {
+
+    const stops = stopOrder(direction);
+
+    const stopIndex = name => {
+
+      const index = stops.findIndex(
+        stop =>
+          stop.toLowerCase() ===
+          String(name || "").toLowerCase()
+      );
+
+      return index === -1 ? 999 : index;
+    };
+
+    return [...rows].sort((a, b) => {
+
+      const originDiff =
+        stopIndex(a.origin) -
+        stopIndex(b.origin);
+
+      if (originDiff !== 0) {
+        return originDiff;
+      }
+
+      const seatDiff =
+        Number(a.seat_number || 0) -
+        Number(b.seat_number || 0);
+
+      if (seatDiff !== 0) {
+        return seatDiff;
+      }
+
+      return String(
+        a.passenger_name || ""
+      ).localeCompare(
+        String(b.passenger_name || ""),
+        "id"
+      );
+    });
+  }
 
   // ==========================================================
   // CSS DASHBOARD
@@ -87,6 +327,7 @@
   const style = document.createElement("style");
 
   style.textContent = `
+
     .hsm-board-btn {
       background: #0f766e !important;
       color: #ffffff !important;
@@ -162,6 +403,24 @@
       cursor: pointer;
     }
 
+    .hsm-manifest-meta {
+      color: #475569;
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 10px 0;
+    }
+
+    .hsm-manifest-count {
+      display: inline-block;
+      background: #dcfce7;
+      color: #166534;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      margin: 6px 0;
+    }
+
     .hsm-wait-controls {
       display: flex;
       flex-wrap: wrap;
@@ -198,6 +457,7 @@
       opacity: 0.5;
       cursor: wait;
     }
+
   `;
 
   document.head.appendChild(style);
@@ -209,13 +469,16 @@
   const manifestPanel = $("hsmManifestSection");
 
   if (!manifestPanel) {
+
     console.error(
       "HSM MANIFEST: Menu Manifest belum tersedia."
     );
+
     return;
   }
 
   manifestPanel.innerHTML = `
+
     <div class="hsm-extra-card">
 
       <h2 class="hsm-extra-title">
@@ -223,11 +486,14 @@
       </h2>
 
       <p class="hsm-extra-desc">
-        Manifest menampilkan penumpang yang sudah
-        dikonfirmasi naik.
+        Manifest menampilkan seluruh penumpang
+        yang sudah dikonfirmasi naik.
 
-        Data digabungkan dari seluruh pool berdasarkan
-        kode perjalanan.
+        Data digabungkan dari semua pool
+        berdasarkan kode perjalanan.
+
+        Manifest dapat dicetak ulang kapan saja
+        mengikuti data boarding terbaru.
       </p>
 
       <div class="hsm-manifest-toolbar">
@@ -246,7 +512,7 @@
           class="hsm-manifest-button"
           id="hsmManifestRefresh"
         >
-          Tampilkan Manifest
+          🔄 Perbarui Manifest
         </button>
 
       </div>
@@ -255,10 +521,11 @@
         id="hsmManifestResult"
         class="empty"
       >
-        Pilih tanggal lalu tekan Tampilkan Manifest.
+        Pilih tanggal lalu tekan Perbarui Manifest.
       </div>
 
     </div>
+
   `;
 
   $("hsmManifestDate").value = todayWIT();
@@ -273,6 +540,7 @@
   );
 
   if (menuButton) {
+
     menuButton.addEventListener(
       "click",
       () => loadManifest()
@@ -297,7 +565,9 @@
       .eq("id", bookingId)
       .single();
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
     return data;
   }
@@ -310,96 +580,90 @@
 
   function decorateBookings() {
 
-    if (!list || !Array.isArray(bookings)) {
+    if (
+      !list ||
+      !Array.isArray(bookings)
+    ) {
       return;
     }
 
-    list.querySelectorAll(".booking-card").forEach(
-      card => {
+    list.querySelectorAll(
+      ".booking-card"
+    ).forEach(card => {
 
-        const existing = card.querySelector(
-          "[data-action][data-id]"
+      const existing = card.querySelector(
+        "[data-action][data-id]"
+      );
+
+      const id = existing?.dataset.id;
+
+      if (
+        !id ||
+        card.dataset.hsmBoardingReady === "1"
+      ) {
+        return;
+      }
+
+      const row = bookings.find(
+        b => String(b.id) === String(id)
+      );
+
+      if (!row) {
+        return;
+      }
+
+      const actions = card.querySelector(
+        ".actions"
+      );
+
+      if (!actions) {
+        return;
+      }
+
+      card.dataset.hsmBoardingReady = "1";
+
+      const boarding = String(
+        row.boarding_status || "not_boarded"
+      );
+
+      const payment = normalizeStatus(
+        row.payment_status
+      );
+
+      // ======================================================
+      // KONTROL WAKTU TUNGGU
+      // ======================================================
+
+      if (
+        boarding === "not_boarded" ||
+        boarding === "no_show"
+      ) {
+
+        const controls =
+          document.createElement("div");
+
+        controls.className =
+          "hsm-wait-controls";
+
+        const deadlineLabel =
+          document.createElement("span");
+
+        deadlineLabel.className =
+          "hsm-wait-deadline";
+
+        deadlineLabel.textContent =
+          "Memuat batas waktu...";
+
+        controls.appendChild(
+          deadlineLabel
         );
-
-        const id = existing?.dataset.id;
 
         if (
-          !id ||
-          card.dataset.hsmBoardingReady === "1"
-        ) {
-          return;
-        }
-
-        const row = bookings.find(
-          b => String(b.id) === String(id)
-        );
-
-        if (!row) return;
-
-        const actions = card.querySelector(".actions");
-
-        if (!actions) return;
-
-        card.dataset.hsmBoardingReady = "1";
-
-        const boarding = String(
-          row.boarding_status || "not_boarded"
-        );
-
-        const payment = normalizeStatus(
-          row.payment_status
-        );
-
-        // ====================================================
-        // KONTROL WAKTU TUNGGU
-        // ====================================================
-
-        if (
-          boarding === "not_boarded" ||
-          boarding === "no_show"
+          boarding === "not_boarded" &&
+          paidStatus(payment)
         ) {
 
-          const controls = document.createElement("div");
-
-          controls.className = "hsm-wait-controls";
-
-          const deadlineLabel =
-            document.createElement("span");
-
-          deadlineLabel.className =
-            "hsm-wait-deadline";
-
-          deadlineLabel.textContent =
-            "Memuat batas waktu...";
-
-          controls.appendChild(deadlineLabel);
-
-          if (
-            boarding === "not_boarded" &&
-            payment === "paid"
-          ) {
-
-            [15, 30].forEach(minutes => {
-
-              const button =
-                document.createElement("button");
-
-              button.type = "button";
-
-              button.className = "hsm-wait-btn";
-
-              button.textContent =
-                `⏳ +${minutes} Menit`;
-
-              button.dataset.hsmExtendId = id;
-
-              button.dataset.hsmExtendMinutes =
-                minutes;
-
-              controls.appendChild(button);
-            });
-
-          } else if (boarding === "no_show") {
+          [15, 30].forEach(minutes => {
 
             const button =
               document.createElement("button");
@@ -407,70 +671,21 @@
             button.type = "button";
 
             button.className =
-              "hsm-wait-btn hsm-wait-restore";
+              "hsm-wait-btn";
 
             button.textContent =
-              "🔄 Batalkan No Show";
+              `⏳ +${minutes} Menit`;
 
-            button.dataset.hsmRestoreId = id;
+            button.dataset.hsmExtendId = id;
+
+            button.dataset.hsmExtendMinutes =
+              minutes;
 
             controls.appendChild(button);
-          }
-
-          actions.appendChild(controls);
-
-          getBoardingDetails(id)
-            .then(data => {
-
-              if (!controls.isConnected) return;
-
-              deadlineLabel.textContent =
-                "🕒 Batas waktu: " +
-                formatDeadlineWIT(
-                  data.boarding_deadline
-                );
-
-            })
-            .catch(error => {
-
-              if (!controls.isConnected) return;
-
-              deadlineLabel.textContent =
-                "Gagal memuat batas waktu: " +
-                error.message;
-
-            });
-        }
-
-        // ====================================================
-        // STATUS PENUMPANG
-        // ====================================================
-
-        if (boarding === "boarded") {
-
-          const badge = document.createElement("span");
-
-          badge.className = "hsm-board-badge";
-
-          badge.textContent = "✓ Sudah Naik";
-
-          actions.prepend(badge);
-
-        } else if (boarding === "no_show") {
-
-          const badge = document.createElement("span");
-
-          badge.className = "hsm-board-badge";
-
-          badge.style.color = "#b91c1c";
-
-          badge.textContent = "Tidak Hadir (No Show)";
-
-          actions.prepend(badge);
+          });
 
         } else if (
-          payment === "paid" ||
-          payment === "completed"
+          boarding === "no_show"
         ) {
 
           const button =
@@ -478,17 +693,102 @@
 
           button.type = "button";
 
-          button.className = "hsm-board-btn";
+          button.className =
+            "hsm-wait-btn hsm-wait-restore";
 
           button.textContent =
-            "✓ Konfirmasi Sudah Naik";
+            "🔄 Batalkan No Show";
 
-          button.dataset.hsmBoardId = id;
+          button.dataset.hsmRestoreId = id;
 
-          actions.prepend(button);
+          controls.appendChild(button);
         }
+
+        actions.appendChild(controls);
+
+        getBoardingDetails(id)
+          .then(data => {
+
+            if (!controls.isConnected) {
+              return;
+            }
+
+            deadlineLabel.textContent =
+              "🕒 Batas waktu: " +
+              formatDeadlineWIT(
+                data.boarding_deadline
+              );
+
+          })
+          .catch(error => {
+
+            if (!controls.isConnected) {
+              return;
+            }
+
+            deadlineLabel.textContent =
+              "Gagal memuat batas waktu: " +
+              error.message;
+          });
       }
-    );
+
+      // ======================================================
+      // STATUS PENUMPANG
+      // ======================================================
+
+      if (
+        boarding === "boarded"
+      ) {
+
+        const badge =
+          document.createElement("span");
+
+        badge.className =
+          "hsm-board-badge";
+
+        badge.textContent =
+          "✓ Sudah Naik";
+
+        actions.prepend(badge);
+
+      } else if (
+        boarding === "no_show"
+      ) {
+
+        const badge =
+          document.createElement("span");
+
+        badge.className =
+          "hsm-board-badge";
+
+        badge.style.color =
+          "#b91c1c";
+
+        badge.textContent =
+          "Tidak Hadir (No Show)";
+
+        actions.prepend(badge);
+
+      } else if (
+        paidStatus(payment)
+      ) {
+
+        const button =
+          document.createElement("button");
+
+        button.type = "button";
+
+        button.className =
+          "hsm-board-btn";
+
+        button.textContent =
+          "✓ Konfirmasi Sudah Naik";
+
+        button.dataset.hsmBoardId = id;
+
+        actions.prepend(button);
+      }
+    });
   }
 
   // ==========================================================
@@ -517,9 +817,12 @@
           "[data-hsm-board-id]"
         );
 
-        if (!button) return;
+        if (!button) {
+          return;
+        }
 
-        const id = button.dataset.hsmBoardId;
+        const id =
+          button.dataset.hsmBoardId;
 
         const row = bookings.find(
           b => String(b.id) === String(id)
@@ -529,58 +832,81 @@
           !row ||
           row.origin !== selectedPool
         ) {
+
           alert(
             "Booking bukan dari pool aktif."
           );
+
           return;
         }
 
         const confirmed = confirm(
           `Konfirmasi ${
-            row.passenger_name || row.booking_code
+            row.passenger_name ||
+            row.booking_code
           } sudah naik di ${row.origin}?`
         );
 
-        if (!confirmed) return;
+        if (!confirmed) {
+          return;
+        }
 
         button.disabled = true;
 
         try {
 
-          const { data: auth } =
-            await db.auth.getUser();
+          const {
+            data: auth,
+            error: authError
+          } = await db.auth.getUser();
+
+          if (authError) {
+            throw authError;
+          }
 
           if (
             !auth?.user ||
             !(await verifyAdmin())
           ) {
+
             throw new Error(
               "Sesi admin tidak valid."
             );
           }
 
-          const { data, error } = await db
+          const {
+            data,
+            error
+          } = await db
             .from("bookings")
             .update({
               boarding_status: "boarded",
-              boarded_at: new Date().toISOString(),
+              boarded_at:
+                new Date().toISOString(),
               boarded_by: auth.user.id
             })
             .eq("id", id)
             .eq("origin", selectedPool)
-            .eq("boarding_status", "not_boarded")
+            .eq(
+              "boarding_status",
+              "not_boarded"
+            )
             .in(
               "payment_status",
               ["paid", "completed"]
             )
             .select("id");
 
-          if (error) throw error;
+          if (error) {
+            throw error;
+          }
 
           if (!data?.length) {
+
             throw new Error(
-              "Booking sudah berubah, belum lunas, " +
-              "atau tidak bisa dikonfirmasi."
+              "Booking sudah berubah, " +
+              "belum lunas, atau tidak " +
+              "bisa dikonfirmasi."
             );
           }
 
@@ -614,21 +940,29 @@
       "click",
       async event => {
 
-        const extendButton = event.target.closest(
-          "[data-hsm-extend-id]"
-        );
+        const extendButton =
+          event.target.closest(
+            "[data-hsm-extend-id]"
+          );
 
-        const restoreButton = event.target.closest(
-          "[data-hsm-restore-id]"
-        );
+        const restoreButton =
+          event.target.closest(
+            "[data-hsm-restore-id]"
+          );
 
-        if (!extendButton && !restoreButton) {
+        if (
+          !extendButton &&
+          !restoreButton
+        ) {
           return;
         }
 
-        const button = extendButton || restoreButton;
+        const button =
+          extendButton || restoreButton;
 
-        if (button.disabled) return;
+        if (button.disabled) {
+          return;
+        }
 
         const bookingId =
           extendButton?.dataset.hsmExtendId ||
@@ -644,24 +978,34 @@
 
         try {
 
-          const { data: auth, error: authError } =
-            await db.auth.getUser();
+          const {
+            data: auth,
+            error: authError
+          } = await db.auth.getUser();
 
-          if (authError) throw authError;
+          if (authError) {
+            throw authError;
+          }
 
           if (
             !auth?.user ||
             !(await verifyAdmin())
           ) {
+
             throw new Error(
               "Sesi admin tidak valid."
             );
           }
 
           const current =
-            await getBoardingDetails(bookingId);
+            await getBoardingDetails(
+              bookingId
+            );
 
-          if (current.origin !== selectedPool) {
+          if (
+            current.origin !== selectedPool
+          ) {
+
             throw new Error(
               "Booking bukan dari pool aktif."
             );
@@ -670,18 +1014,21 @@
           if (extendButton) {
 
             if (
-              current.boarding_status !== "not_boarded"
+              current.boarding_status !==
+              "not_boarded"
             ) {
+
               throw new Error(
                 "Penumpang tidak berstatus Belum Naik."
               );
             }
 
             if (
-              normalizeStatus(
+              !paidStatus(
                 current.payment_status
-              ) !== "paid"
+              )
             ) {
+
               throw new Error(
                 "Booking harus lunas."
               );
@@ -695,9 +1042,14 @@
               )
             );
 
-            if (!confirmed) return;
+            if (!confirmed) {
+              return;
+            }
 
-            const { data, error } = await db.rpc(
+            const {
+              data,
+              error
+            } = await db.rpc(
               "hsm_extend_boarding",
               {
                 p_booking_id: bookingId,
@@ -705,7 +1057,9 @@
               }
             );
 
-            if (error) throw error;
+            if (error) {
+              throw error;
+            }
 
             alert(
               "✅ Waktu berhasil diperpanjang.\n\n" +
@@ -716,8 +1070,10 @@
           } else {
 
             if (
-              current.boarding_status !== "no_show"
+              current.boarding_status !==
+              "no_show"
             ) {
+
               throw new Error(
                 "Booking tidak berstatus No Show."
               );
@@ -729,7 +1085,9 @@
               "Batas waktu baru 30 menit dari sekarang."
             );
 
-            if (!confirmed) return;
+            if (!confirmed) {
+              return;
+            }
 
             const { error } = await db.rpc(
               "hsm_restore_no_show",
@@ -738,7 +1096,9 @@
               }
             );
 
-            if (error) throw error;
+            if (error) {
+              throw error;
+            }
 
             alert(
               "✅ No Show berhasil dibatalkan."
@@ -775,16 +1135,24 @@
 
   let manifestCrew = [];
 
+  // ==========================================================
+  // AMBIL DATA MANIFEST SEMUA POOL
+  // ==========================================================
+
   async function loadManifest() {
 
-    const result = $("hsmManifestResult");
+    const result =
+      $("hsmManifestResult");
 
-    const date = $("hsmManifestDate").value;
+    const date =
+      $("hsmManifestDate").value;
 
     if (!safeDate(date)) {
+
       alert(
         "Pilih tanggal perjalanan yang benar."
       );
+
       return;
     }
 
@@ -796,6 +1164,7 @@
     try {
 
       if (!(await verifyAdmin())) {
+
         throw new Error(
           "Akses admin tidak valid."
         );
@@ -809,7 +1178,10 @@
         from += 500
       ) {
 
-        const { data, error } = await db
+        const {
+          data,
+          error
+        } = await db
           .from("bookings")
           .select(`
             id,
@@ -821,22 +1193,50 @@
             seat_number,
             vehicle,
             trip_code,
+            schedule_id,
             travel_date,
             departure_time,
             boarding_status,
             boarded_at,
-            payment_status
+            payment_status,
+            created_at
           `)
-          .eq("travel_date", date)
-          .eq("boarding_status", "boarded")
-          .order("created_at", {
-            ascending: true
-          })
-          .range(from, from + 499);
+          .eq(
+            "travel_date",
+            date
+          )
+          .eq(
+            "boarding_status",
+            "boarded"
+          )
+          .in(
+            "payment_status",
+            ["paid", "completed"]
+          )
+          .order(
+            "created_at",
+            {
+              ascending: true
+            }
+          )
+          .order(
+            "id",
+            {
+              ascending: true
+            }
+          )
+          .range(
+            from,
+            from + 499
+          );
 
-        if (error) throw error;
+        if (error) {
+          throw error;
+        }
 
-        rows.push(...(data || []));
+        rows.push(
+          ...(data || [])
+        );
 
         if (
           !data ||
@@ -858,7 +1258,8 @@
 
       manifestRows = rows;
 
-      manifestCrew = crewResult.data || [];
+      manifestCrew =
+        crewResult.data || [];
 
       renderManifest(date);
 
@@ -873,7 +1274,7 @@
   }
 
   // ==========================================================
-  // KELOMPOKKAN MANIFEST BERDASARKAN TRIP
+  // KELOMPOKKAN BERDASARKAN TRIP CODE
   // ==========================================================
 
   function groupManifest() {
@@ -900,7 +1301,7 @@
   }
 
   // ==========================================================
-  // CARI SOPIR DAN KERNET
+  // DATA SOPIR DAN KERNET
   // ==========================================================
 
   function crewFor(vehicle) {
@@ -912,65 +1313,133 @@
     );
   }
 
+  function getCrewDetails(vehicle) {
+
+    const crew =
+      crewFor(vehicle);
+
+    const driver = crew.find(
+      person =>
+        String(person.role || "")
+          .toLowerCase() === "driver"
+    );
+
+    const assistant = crew.find(
+      person =>
+        String(person.role || "")
+          .toLowerCase() !== "driver"
+    );
+
+    return {
+      driver,
+      assistant
+    };
+  }
+
   // ==========================================================
-  // CETAK MANIFEST DENGAN LOGO BESAR DI ATAS
+  // CETAK MANIFEST
   // ==========================================================
 
   function printManifest(key, date) {
 
-    const group = groupManifest().get(key);
+    const group =
+      groupManifest().get(key);
 
-    if (!group?.length) return;
+    if (!group?.length) {
+      return;
+    }
 
-    const vehicle = tripVehicle(group[0]);
+    const vehicle =
+      tripVehicle(group[0]);
 
-    const crew = crewFor(vehicle);
+    const direction =
+      tripDirection(key, group);
 
-    const driver = crew.find(
-      c => c.role === "driver"
-    );
+    const departure =
+      tripDepartureTime(key, group);
 
-    const assistant = crew.find(
-      c => c.role !== "driver"
-    );
+    const sortedRows =
+      sortManifestRows(
+        group,
+        direction
+      );
+
+    const {
+      driver,
+      assistant
+    } = getCrewDetails(vehicle);
 
     const details = person =>
       person
         ? `${esc(person.name)} — ${esc(person.phone)}`
         : "-";
 
-    const tableRows = group.map(
-      (r, i) => `
-        <tr>
-          <td>${i + 1}</td>
-          <td>${esc(r.passenger_name)}</td>
-          <td>${esc(r.phone)}</td>
-          <td>
-            ${esc(r.origin)}
-            →
-            ${esc(r.destination)}
-          </td>
-          <td>${esc(r.seat_number)}</td>
-          <td>${esc(r.booking_code)}</td>
-        </tr>
-      `
-    ).join("");
+    const tableRows =
+      sortedRows.map(
+        (row, index) => `
+
+          <tr>
+
+            <td>
+              ${index + 1}
+            </td>
+
+            <td>
+              ${esc(row.passenger_name)}
+            </td>
+
+            <td>
+              ${esc(row.phone)}
+            </td>
+
+            <td>
+              ${esc(row.seat_number)}
+            </td>
+
+            <td>
+              ${esc(row.origin)}
+            </td>
+
+            <td>
+              ${esc(row.destination)}
+            </td>
+
+            <td>
+              ${esc(
+                formatTimeWIT(
+                  row.boarded_at
+                )
+              )}
+            </td>
+
+            <td>
+              ${esc(row.booking_code)}
+            </td>
+
+          </tr>
+
+        `
+      ).join("");
 
     const popup = window.open(
       "",
       "_blank",
-      "width=950,height=750"
+      "width=1100,height=800"
     );
 
     if (!popup) {
+
       alert(
         "Izinkan pop-up untuk mencetak manifest."
       );
+
       return;
     }
 
     popup.document.write(`
+
       <!doctype html>
+
       <html lang="id">
 
       <head>
@@ -983,15 +1452,15 @@
 
         <style>
 
+          * {
+            box-sizing: border-box;
+          }
+
           body {
             font-family: Arial, sans-serif;
             padding: 20px;
             color: #111111;
           }
-
-          /* ================================================
-             KOP SURAT - LOGO BESAR DI ATAS TULISAN
-             ================================================ */
 
           .manifest-header {
             display: flex;
@@ -1043,11 +1512,19 @@
             margin: 4px 0;
           }
 
+          .manifest-route {
+            background: #eaf2fc;
+            border-left: 4px solid #0754a6;
+            padding: 10px 12px;
+            margin: 12px 0;
+            font-weight: bold;
+          }
+
           table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
-            font-size: 12px;
+            font-size: 11px;
           }
 
           th,
@@ -1055,6 +1532,8 @@
             border: 1px solid #555555;
             padding: 7px;
             text-align: left;
+            vertical-align: top;
+            overflow-wrap: anywhere;
           }
 
           th {
@@ -1096,10 +1575,12 @@
             }
 
             .manifest-header,
-            th {
+            th,
+            .manifest-route {
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
             }
+
           }
 
         </style>
@@ -1152,6 +1633,18 @@
           </p>
 
           <p>
+            <b>Keberangkatan:</b>
+            ${esc(departure)}
+          </p>
+
+          <div class="manifest-route">
+
+            RUTE PERJALANAN:
+            ${esc(direction.label)}
+
+          </div>
+
+          <p>
             <b>Sopir:</b>
             ${details(driver)}
           </p>
@@ -1163,7 +1656,7 @@
 
           <p>
             <b>Jumlah Penumpang Sudah Naik:</b>
-            ${group.length} orang
+            ${sortedRows.length} orang
           </p>
 
         </div>
@@ -1176,8 +1669,10 @@
               <th>No</th>
               <th>Nama Penumpang</th>
               <th>WhatsApp</th>
-              <th>Rute</th>
               <th>Kursi</th>
+              <th>Naik Dari</th>
+              <th>Turun Di</th>
+              <th>Waktu Naik (WIT)</th>
               <th>Kode Booking</th>
             </tr>
 
@@ -1211,6 +1706,7 @@
       </body>
 
       </html>
+
     `);
 
     popup.document.close();
@@ -1222,9 +1718,11 @@
 
   function renderManifest(date) {
 
-    const result = $("hsmManifestResult");
+    const result =
+      $("hsmManifestResult");
 
-    const groups = groupManifest();
+    const groups =
+      groupManifest();
 
     if (!groups.size) {
 
@@ -1241,23 +1739,32 @@
 
     result.replaceChildren();
 
-    for (const [key, group] of groups) {
+    for (
+      const [key, group] of groups
+    ) {
 
-      const vehicle = tripVehicle(group[0]);
+      const vehicle =
+        tripVehicle(group[0]);
 
-      const crew = crewFor(vehicle);
+      const direction =
+        tripDirection(key, group);
 
-      const driver = crew.find(
-        c => c.role === "driver"
-      );
+      const departure =
+        tripDepartureTime(key, group);
 
-      const assistant = crew.find(
-        c => c.role !== "driver"
-      );
+      const sortedRows =
+        sortManifestRows(
+          group,
+          direction
+        );
 
-      const section = document.createElement(
-        "section"
-      );
+      const {
+        driver,
+        assistant
+      } = getCrewDetails(vehicle);
+
+      const section =
+        document.createElement("section");
 
       section.className =
         "hsm-manifest-group";
@@ -1275,32 +1782,50 @@
         : "";
 
       section.innerHTML = `
+
         <h3>
           ${esc(vehicle)}
           —
           ${esc(key)}
         </h3>
 
-        <p>
-          <b>${esc(formatDate(date))}</b>
+        <div class="hsm-manifest-meta">
 
-          ·
+          <div>
+            <b>Tanggal:</b>
+            ${esc(formatDate(date))}
+          </div>
 
-          ${group.length}
-          penumpang sudah naik
-        </p>
+          <div>
+            <b>Keberangkatan:</b>
+            ${esc(departure)}
+          </div>
 
-        <p>
-          Sopir:
-          ${esc(driver?.name || "-")}
-          (${esc(driver?.phone || "-")})
-        </p>
+          <div>
+            <b>Rute:</b>
+            ${esc(direction.label)}
+          </div>
 
-        <p>
-          Kernet:
-          ${esc(assistant?.name || "-")}
-          (${esc(assistant?.phone || "-")})
-        </p>
+          <div>
+            <b>Sopir:</b>
+            ${esc(driver?.name || "-")}
+            (${esc(driver?.phone || "-")})
+          </div>
+
+          <div>
+            <b>Kernet:</b>
+            ${esc(assistant?.name || "-")}
+            (${esc(assistant?.phone || "-")})
+          </div>
+
+        </div>
+
+        <div class="hsm-manifest-count">
+
+          ✓ ${sortedRows.length}
+          Penumpang Sudah Naik
+
+        </div>
 
         ${warning}
 
@@ -1309,32 +1834,65 @@
           <table class="hsm-manifest-table">
 
             <thead>
+
               <tr>
                 <th>No</th>
                 <th>Nama</th>
                 <th>WhatsApp</th>
-                <th>Naik → Turun</th>
                 <th>Kursi</th>
+                <th>Naik Dari</th>
+                <th>Turun Di</th>
+                <th>Waktu Naik (WIT)</th>
                 <th>Booking</th>
               </tr>
+
             </thead>
 
             <tbody>
 
-              ${group.map(
-                (r, i) => `
+              ${sortedRows.map(
+                (row, index) => `
+
                   <tr>
-                    <td>${i + 1}</td>
-                    <td>${esc(r.passenger_name)}</td>
-                    <td>${esc(r.phone)}</td>
+
                     <td>
-                      ${esc(r.origin)}
-                      →
-                      ${esc(r.destination)}
+                      ${index + 1}
                     </td>
-                    <td>${esc(r.seat_number)}</td>
-                    <td>${esc(r.booking_code)}</td>
+
+                    <td>
+                      ${esc(row.passenger_name)}
+                    </td>
+
+                    <td>
+                      ${esc(row.phone)}
+                    </td>
+
+                    <td>
+                      ${esc(row.seat_number)}
+                    </td>
+
+                    <td>
+                      ${esc(row.origin)}
+                    </td>
+
+                    <td>
+                      ${esc(row.destination)}
+                    </td>
+
+                    <td>
+                      ${esc(
+                        formatTimeWIT(
+                          row.boarded_at
+                        )
+                      )}
+                    </td>
+
+                    <td>
+                      ${esc(row.booking_code)}
+                    </td>
+
                   </tr>
+
                 `
               ).join("")}
 
@@ -1343,6 +1901,7 @@
           </table>
 
         </div>
+
       `;
 
       const printButton =
@@ -1361,15 +1920,19 @@
         () => printManifest(key, date)
       );
 
-      section.appendChild(printButton);
+      section.appendChild(
+        printButton
+      );
 
-      result.appendChild(section);
+      result.appendChild(
+        section
+      );
     }
   }
 
   console.log(
-    "HSM MANIFEST: Boarding, No Show, " +
-    "dan cetak manifest berlogo besar siap."
+    "HSM MANIFEST: Sistem manifest, boarding, " +
+    "No Show, dan waktu naik WIT siap."
   );
 
 })();
