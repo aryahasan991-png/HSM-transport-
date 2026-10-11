@@ -20,9 +20,7 @@
       --orange: #b76a0b;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -32,15 +30,8 @@
       font-family: Arial, Helvetica, sans-serif;
     }
 
-    button,
-    input,
-    select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
 
     .header {
       background: linear-gradient(135deg, var(--blue), var(--dark));
@@ -55,9 +46,7 @@
       letter-spacing: 2px;
     }
 
-    .logo .red {
-      color: #ff5252;
-    }
+    .logo .red { color: #ff5252; }
 
     .logo-sub {
       font-size: 12px;
@@ -86,7 +75,7 @@
       background: white;
       border-radius: 18px;
       padding: 22px;
-      box-shadow: 0 8px 30px rgba(15, 45, 85, .1);
+      box-shadow: 0 8px 30px rgba(15,45,85,.1);
     }
 
     .tabs {
@@ -112,16 +101,11 @@
     .tab.active {
       background: white;
       color: var(--blue);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, .07);
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
     }
 
-    .form {
-      display: none;
-    }
-
-    .form.active {
-      display: block;
-    }
+    .form { display: none; }
+    .form.active { display: block; }
 
     h2 {
       margin: 0 0 8px;
@@ -135,9 +119,7 @@
       line-height: 1.6;
     }
 
-    .field {
-      margin-bottom: 17px;
-    }
+    .field { margin-bottom: 17px; }
 
     label {
       display: block;
@@ -158,7 +140,7 @@
 
     input:focus {
       border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(7, 84, 166, .1);
+      box-shadow: 0 0 0 3px rgba(7,84,166,.1);
     }
 
     .hint {
@@ -179,8 +161,7 @@
       font-weight: bold;
     }
 
-    .btn:disabled,
-    .small-btn:disabled {
+    .btn:disabled, .small-btn:disabled {
       opacity: .6;
       cursor: not-allowed;
     }
@@ -213,15 +194,7 @@
       color: #177245;
     }
 
-    .message.info-message {
-      display: block;
-      background: #eef5ff;
-      color: var(--dark);
-    }
-
-    #dashboard {
-      display: none;
-    }
+    #dashboard { display: none; }
 
     .welcome {
       text-align: center;
@@ -239,9 +212,7 @@
       font-size: 34px;
     }
 
-    .welcome h2 {
-      margin-bottom: 10px;
-    }
+    .welcome h2 { margin-bottom: 10px; }
 
     .badge {
       display: inline-block;
@@ -270,13 +241,8 @@
       font-size: 13px;
     }
 
-    .info-row:last-child {
-      border-bottom: 0;
-    }
-
-    .info-row span {
-      color: var(--muted);
-    }
+    .info-row:last-child { border-bottom: 0; }
+    .info-row span { color: var(--muted); }
 
     .info-row strong {
       text-align: right;
@@ -337,9 +303,7 @@
       margin-bottom: 15px;
     }
 
-    .manifest-toolbar .field {
-      margin: 0;
-    }
+    .manifest-toolbar .field { margin: 0; }
 
     .refresh-btn {
       border: 1px solid var(--blue);
@@ -354,7 +318,7 @@
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4,1fr);
       gap: 8px;
       margin-bottom: 17px;
     }
@@ -381,30 +345,18 @@
       line-height: 1.4;
     }
 
-    .stat.green strong {
-      color: var(--green);
-    }
+    .stat.green strong { color: var(--green); }
+    .stat.orange strong { color: var(--orange); }
+    .stat.red strong { color: var(--red); }
 
-    .stat.orange strong {
-      color: var(--orange);
-    }
-
-    .stat.red strong {
-      color: var(--red);
-    }
-
-    .search-box {
-      margin-bottom: 14px;
-    }
+    .search-box { margin-bottom: 14px; }
 
     .search-box input {
       padding: 12px 14px;
       font-size: 13px;
     }
 
-    .trip-group {
-      margin-bottom: 18px;
-    }
+    .trip-group { margin-bottom: 18px; }
 
     .trip-heading {
       padding: 12px 14px;
@@ -475,7 +427,8 @@
       overflow-wrap: anywhere;
     }
 
-    .payment-badge {
+    .payment-badge,
+    .status-badge {
       display: inline-block;
       margin-top: 10px;
       margin-right: 5px;
@@ -487,22 +440,7 @@
       font-weight: bold;
     }
 
-    .payment-badge.paid {
-      background: #e7f7ed;
-      color: #147a43;
-    }
-
-    .status-badge {
-      display: inline-block;
-      margin-top: 10px;
-      border-radius: 20px;
-      padding: 6px 10px;
-      background: #fff4df;
-      color: #966000;
-      font-size: 11px;
-      font-weight: bold;
-    }
-
+    .payment-badge.paid,
     .status-badge.boarded {
       background: #e7f7ed;
       color: #147a43;
@@ -512,8 +450,6 @@
       background: #ffeaea;
       color: #b42318;
     }
-
-    /* TOMBOL KONTAK PENUMPANG */
 
     .contact-actions {
       display: grid;
@@ -614,34 +550,14 @@
       line-height: 1.8;
     }
 
-    @media (max-width: 390px) {
-      .card {
-        padding: 17px;
-      }
-
-      .stats {
-        gap: 5px;
-      }
-
-      .stat {
-        padding: 10px 4px;
-      }
-
-      .stat strong {
-        font-size: 19px;
-      }
-
-      .stat span {
-        font-size: 9px;
-      }
-
-      .manifest-toolbar {
-        grid-template-columns: 1fr;
-      }
-
-      .refresh-btn {
-        width: 100%;
-      }
+    @media (max-width:390px) {
+      .card { padding: 17px; }
+      .stats { gap: 5px; }
+      .stat { padding: 10px 4px; }
+      .stat strong { font-size: 19px; }
+      .stat span { font-size: 9px; }
+      .manifest-toolbar { grid-template-columns: 1fr; }
+      .refresh-btn { width: 100%; }
     }
   </style>
 </head>
@@ -657,57 +573,33 @@
 
 <main class="container">
 
-  <!-- LOGIN / AKTIVASI / LUPA PIN -->
-
   <section class="card" id="authCard">
 
     <div class="tabs">
-      <button type="button" class="tab active" data-tab="login">
-        Login
-      </button>
-      <button type="button" class="tab" data-tab="activate">
-        Aktivasi
-      </button>
-      <button type="button" class="tab" data-tab="recover">
-        Lupa PIN
-      </button>
+      <button type="button" class="tab active" data-tab="login">Login</button>
+      <button type="button" class="tab" data-tab="activate">Aktivasi</button>
+      <button type="button" class="tab" data-tab="recover">Lupa PIN</button>
     </div>
 
     <div id="authMessage" class="message" role="alert"></div>
 
     <form id="loginForm" class="form active">
       <h2>Login Petugas</h2>
-
       <p class="description">
-        Masukkan nomor HP terdaftar dan PIN untuk masuk
-        ke portal petugas.
+        Masukkan nomor HP terdaftar dan PIN untuk masuk ke portal petugas.
       </p>
 
       <div class="field">
         <label for="loginPhone">Nomor HP</label>
-        <input
-          id="loginPhone"
-          type="tel"
-          inputmode="tel"
-          autocomplete="tel"
-          placeholder="08xxxxxxxxxx"
-          required
-        >
+        <input id="loginPhone" type="tel" inputmode="tel"
+          autocomplete="tel" placeholder="08xxxxxxxxxx" required>
       </div>
 
       <div class="field">
         <label for="loginPin">PIN 6 Digit</label>
-        <input
-          id="loginPin"
-          type="password"
-          inputmode="numeric"
-          pattern="[0-9]{6}"
-          minlength="6"
-          maxlength="6"
-          autocomplete="off"
-          placeholder="Masukkan PIN"
-          required
-        >
+        <input id="loginPin" type="password" inputmode="numeric"
+          pattern="[0-9]{6}" minlength="6" maxlength="6"
+          autocomplete="off" placeholder="Masukkan PIN" required>
       </div>
 
       <button class="btn" type="submit">Masuk</button>
@@ -715,149 +607,77 @@
 
     <form id="activateForm" class="form">
       <h2>Aktivasi Akun</h2>
-
       <p class="description">
-        Gunakan kode aktivasi 8 digit yang diberikan
-        admin HSM Transport.
+        Gunakan kode aktivasi 8 digit yang diberikan admin HSM Transport.
       </p>
 
       <div class="field">
         <label for="activatePhone">Nomor HP Terdaftar</label>
-        <input
-          id="activatePhone"
-          type="tel"
-          inputmode="tel"
-          placeholder="08xxxxxxxxxx"
-          required
-        >
+        <input id="activatePhone" type="tel" inputmode="tel"
+          placeholder="08xxxxxxxxxx" required>
       </div>
 
       <div class="field">
         <label for="activateCode">Kode Aktivasi</label>
-        <input
-          id="activateCode"
-          type="text"
-          inputmode="numeric"
-          pattern="[0-9]{8}"
-          minlength="8"
-          maxlength="8"
-          autocomplete="off"
-          placeholder="8 digit kode"
-          required
-        >
+        <input id="activateCode" type="text" inputmode="numeric"
+          pattern="[0-9]{8}" minlength="8" maxlength="8"
+          autocomplete="off" placeholder="8 digit kode" required>
       </div>
 
       <div class="field">
         <label for="activatePin">Buat PIN 6 Digit</label>
-        <input
-          id="activatePin"
-          type="password"
-          inputmode="numeric"
-          pattern="[0-9]{6}"
-          minlength="6"
-          maxlength="6"
-          autocomplete="new-password"
-          placeholder="PIN baru"
-          required
-        >
-
-        <div class="hint">
-          Gunakan PIN yang tidak mudah ditebak.
-        </div>
+        <input id="activatePin" type="password" inputmode="numeric"
+          pattern="[0-9]{6}" minlength="6" maxlength="6"
+          autocomplete="new-password" placeholder="PIN baru" required>
       </div>
 
       <div class="field">
         <label for="activatePinConfirm">Ulangi PIN</label>
-        <input
-          id="activatePinConfirm"
-          type="password"
-          inputmode="numeric"
-          pattern="[0-9]{6}"
-          minlength="6"
-          maxlength="6"
-          autocomplete="new-password"
-          placeholder="Ulangi PIN"
-          required
-        >
+        <input id="activatePinConfirm" type="password" inputmode="numeric"
+          pattern="[0-9]{6}" minlength="6" maxlength="6"
+          autocomplete="new-password" placeholder="Ulangi PIN" required>
       </div>
 
-      <button class="btn" type="submit">
-        Aktifkan Akun
-      </button>
+      <button class="btn" type="submit">Aktifkan Akun</button>
     </form>
 
     <form id="recoverForm" class="form">
       <h2>Pemulihan PIN</h2>
-
       <p class="description">
-        Minta kode pemulihan kepada admin HSM Transport
-        untuk membuat PIN baru.
+        Minta kode pemulihan kepada admin HSM Transport untuk membuat PIN baru.
       </p>
 
       <div class="field">
         <label for="recoverPhone">Nomor HP Terdaftar</label>
-        <input
-          id="recoverPhone"
-          type="tel"
-          inputmode="tel"
-          placeholder="08xxxxxxxxxx"
-          required
-        >
+        <input id="recoverPhone" type="tel" inputmode="tel"
+          placeholder="08xxxxxxxxxx" required>
       </div>
 
       <div class="field">
         <label for="recoverCode">Kode Pemulihan</label>
-        <input
-          id="recoverCode"
-          type="text"
-          inputmode="numeric"
-          pattern="[0-9]{8}"
-          minlength="8"
-          maxlength="8"
-          autocomplete="off"
-          placeholder="8 digit kode"
-          required
-        >
+        <input id="recoverCode" type="text" inputmode="numeric"
+          pattern="[0-9]{8}" minlength="8" maxlength="8"
+          autocomplete="off" placeholder="8 digit kode" required>
       </div>
 
       <div class="field">
         <label for="recoverPin">PIN Baru</label>
-        <input
-          id="recoverPin"
-          type="password"
-          inputmode="numeric"
-          pattern="[0-9]{6}"
-          minlength="6"
-          maxlength="6"
-          autocomplete="new-password"
-          placeholder="PIN baru"
-          required
-        >
+        <input id="recoverPin" type="password" inputmode="numeric"
+          pattern="[0-9]{6}" minlength="6" maxlength="6"
+          autocomplete="new-password" placeholder="PIN baru" required>
       </div>
 
       <div class="field">
         <label for="recoverPinConfirm">Ulangi PIN Baru</label>
-        <input
-          id="recoverPinConfirm"
-          type="password"
-          inputmode="numeric"
-          pattern="[0-9]{6}"
-          minlength="6"
-          maxlength="6"
-          autocomplete="new-password"
-          placeholder="Ulangi PIN"
-          required
-        >
+        <input id="recoverPinConfirm" type="password" inputmode="numeric"
+          pattern="[0-9]{6}" minlength="6" maxlength="6"
+          autocomplete="new-password" placeholder="Ulangi PIN" required>
       </div>
 
-      <button class="btn" type="submit">
-        Ganti PIN
-      </button>
+      <button class="btn" type="submit">Ganti PIN</button>
     </form>
 
   </section>
-
-  <!-- DASHBOARD PETUGAS -->
 
   <section class="card" id="dashboard">
 
@@ -872,22 +692,18 @@
         <span>Nama</span>
         <strong id="infoName">-</strong>
       </div>
-
       <div class="info-row">
         <span>Jabatan</span>
         <strong id="infoRole">-</strong>
       </div>
-
       <div class="info-row">
         <span>Armada</span>
         <strong id="infoVehicle">-</strong>
       </div>
-
       <div class="info-row">
         <span>Nomor HP</span>
         <strong id="infoPhone">-</strong>
       </div>
-
       <div class="info-row">
         <span>Sesi Berakhir</span>
         <strong id="infoExpiry">-</strong>
@@ -897,11 +713,9 @@
     <div class="notice">
       <strong>Informasi Operasional</strong><br>
       Portal ini khusus petugas resmi HSM Transport.
-      Manifest penumpang ditampilkan sesuai armada yang
-      terdaftar pada akun petugas.
+      Manifest penumpang ditampilkan sesuai armada
+      yang terdaftar pada akun petugas.
     </div>
-
-    <!-- MANIFEST PENUMPANG -->
 
     <section class="manifest-section" aria-label="Manifest penumpang">
 
@@ -911,61 +725,46 @@
       </div>
 
       <p class="manifest-description">
-        Daftar penumpang sesuai tanggal keberangkatan
-        dan armada yang ditugaskan.
+        Daftar penumpang sesuai tanggal keberangkatan dan armada.
       </p>
 
       <div class="manifest-toolbar">
-
         <div class="field">
           <label for="manifestDate">Tanggal Keberangkatan</label>
           <input id="manifestDate" type="date">
         </div>
 
-        <button
-          id="refreshManifestBtn"
-          class="refresh-btn"
-          type="button"
-        >
+        <button id="refreshManifestBtn" class="refresh-btn" type="button">
           🔄 Refresh
         </button>
-
       </div>
 
       <div class="stats">
-
         <div class="stat">
           <strong id="statTotal">0</strong>
           <span>Total</span>
         </div>
-
         <div class="stat green">
           <strong id="statBoarded">0</strong>
           <span>Sudah Naik</span>
         </div>
-
         <div class="stat orange">
           <strong id="statPending">0</strong>
           <span>Belum Naik</span>
         </div>
-
         <div class="stat red">
           <strong id="statNoShow">0</strong>
           <span>Tidak Hadir</span>
         </div>
-
       </div>
 
       <div id="manifestMessage" class="message" role="status"></div>
 
       <div class="search-box">
         <label for="manifestSearch">Cari Penumpang</label>
-        <input
-          id="manifestSearch"
-          type="search"
+        <input id="manifestSearch" type="search"
           placeholder="Nama, kode booking, atau nomor kursi..."
-          autocomplete="off"
-        >
+          autocomplete="off">
       </div>
 
       <div id="manifestList">
@@ -976,21 +775,15 @@
 
       <div class="manifest-note">
         <strong>Catatan:</strong>
-        Tombol WhatsApp dan Telepon digunakan untuk
-        menghubungi penumpang terkait perjalanan.
+        Tombol WhatsApp akan mencoba membuka WhatsApp biasa
+        pada Android, bukan WhatsApp Business.
         Konfirmasi naik dilakukan setelah penumpang
         benar-benar berada di kendaraan.
-        Booking yang belum lunas tetap dapat dilihat,
-        tetapi konfirmasi boarding mengikuti aturan server.
       </div>
 
     </section>
 
-    <button
-      id="logoutBtn"
-      class="btn btn-outline"
-      type="button"
-    >
+    <button id="logoutBtn" class="btn btn-outline" type="button">
       Keluar dari Akun
     </button>
 
@@ -1007,58 +800,34 @@
 <script>
 "use strict";
 
-/* ======================================
-   KONFIGURASI
-====================================== */
-
 const AUTH_ENDPOINT =
   "https://lbykbgtxxlnbdixkkcsw.supabase.co/functions/v1/hsm-staff-auth";
 
 const TOKEN_KEY = "hsm_staff_session_token";
-
 const WIT_TIMEZONE = "Asia/Jayapura";
 
 let sessionTimer = null;
 let sessionRequestId = 0;
-
 let manifestRequestId = 0;
 let manifestData = [];
 let manifestLoading = false;
 let boardingBusy = false;
 let currentVehicle = "";
 
-/* ======================================
-   ELEMENT
-====================================== */
-
 const authCard = document.getElementById("authCard");
 const dashboard = document.getElementById("dashboard");
 const authMessage = document.getElementById("authMessage");
-
-const manifestDate =
-  document.getElementById("manifestDate");
-
-const manifestSearch =
-  document.getElementById("manifestSearch");
-
-const manifestList =
-  document.getElementById("manifestList");
-
-const manifestMessage =
-  document.getElementById("manifestMessage");
-
-const refreshManifestBtn =
-  document.getElementById("refreshManifestBtn");
+const manifestDate = document.getElementById("manifestDate");
+const manifestSearch = document.getElementById("manifestSearch");
+const manifestList = document.getElementById("manifestList");
+const manifestMessage = document.getElementById("manifestMessage");
+const refreshManifestBtn = document.getElementById("refreshManifestBtn");
 
 const forms = {
   login: document.getElementById("loginForm"),
   activate: document.getElementById("activateForm"),
   recover: document.getElementById("recoverForm")
 };
-
-/* ======================================
-   PESAN AUTENTIKASI
-====================================== */
 
 function showMessage(text, type = "error") {
   authMessage.textContent = text;
@@ -1070,10 +839,6 @@ function clearMessage() {
   authMessage.className = "message";
 }
 
-/* ======================================
-   PESAN MANIFEST
-====================================== */
-
 function showManifestMessage(text, type = "error") {
   manifestMessage.textContent = text;
   manifestMessage.className = "message " + type;
@@ -1083,10 +848,6 @@ function clearManifestMessage() {
   manifestMessage.textContent = "";
   manifestMessage.className = "message";
 }
-
-/* ======================================
-   TAB
-====================================== */
 
 function switchTab(name) {
   clearMessage();
@@ -1109,10 +870,6 @@ document.querySelectorAll(".tab").forEach(button => {
   });
 });
 
-/* ======================================
-   VALIDASI
-====================================== */
-
 function normalizePhone(value) {
   let phone = String(value || "").replace(/\D/g, "");
 
@@ -1130,10 +887,6 @@ function validPhone(phone) {
 function validPin(pin) {
   return /^\d{6}$/.test(pin);
 }
-
-/* ======================================
-   REQUEST API
-====================================== */
 
 async function api(action, data = {}) {
   const controller = new AbortController();
@@ -1216,15 +969,8 @@ async function api(action, data = {}) {
   }
 }
 
-/* ======================================
-   LOADING FORM
-====================================== */
-
 async function withLoading(form, callback) {
-  const button = form.querySelector(
-    'button[type="submit"]'
-  );
-
+  const button = form.querySelector('button[type="submit"]');
   const originalText = button.textContent;
 
   button.disabled = true;
@@ -1246,10 +992,6 @@ async function withLoading(form, callback) {
   }
 }
 
-/* ======================================
-   LOGIN
-====================================== */
-
 forms.login.addEventListener("submit", async event => {
   event.preventDefault();
 
@@ -1258,13 +1000,10 @@ forms.login.addEventListener("submit", async event => {
       document.getElementById("loginPhone").value
     );
 
-    const pin =
-      document.getElementById("loginPin").value;
+    const pin = document.getElementById("loginPin").value;
 
     if (!validPhone(phone) || !validPin(pin)) {
-      throw new Error(
-        "Periksa nomor HP dan PIN 6 digit."
-      );
+      throw new Error("Periksa nomor HP dan PIN 6 digit.");
     }
 
     const result = await api("login", {
@@ -1280,16 +1019,11 @@ forms.login.addEventListener("submit", async event => {
     }
 
     sessionStorage.setItem(TOKEN_KEY, result.token);
-
     document.getElementById("loginPin").value = "";
 
     await loadSession(true);
   });
 });
-
-/* ======================================
-   AKTIVASI
-====================================== */
 
 forms.activate.addEventListener("submit", async event => {
   event.preventDefault();
@@ -1324,11 +1058,7 @@ forms.activate.addEventListener("submit", async event => {
       throw new Error("Konfirmasi PIN tidak cocok.");
     }
 
-    await api("activate", {
-      phone,
-      code,
-      pin
-    });
+    await api("activate", { phone, code, pin });
 
     forms.activate.reset();
     switchTab("login");
@@ -1341,10 +1071,6 @@ forms.activate.addEventListener("submit", async event => {
     );
   });
 });
-
-/* ======================================
-   PEMULIHAN PIN
-====================================== */
 
 forms.recover.addEventListener("submit", async event => {
   event.preventDefault();
@@ -1379,11 +1105,7 @@ forms.recover.addEventListener("submit", async event => {
       throw new Error("Konfirmasi PIN tidak cocok.");
     }
 
-    await api("recover", {
-      phone,
-      code,
-      pin
-    });
+    await api("recover", { phone, code, pin });
 
     sessionStorage.removeItem(TOKEN_KEY);
 
@@ -1398,10 +1120,6 @@ forms.recover.addEventListener("submit", async event => {
     );
   });
 });
-
-/* ======================================
-   TANGGAL HARI INI WIT
-====================================== */
 
 function todayWIT() {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -1424,10 +1142,6 @@ function todayWIT() {
   );
 }
 
-/* ======================================
-   FORMAT TANGGAL
-====================================== */
-
 function formatDateID(dateString) {
   if (!dateString) return "-";
 
@@ -1446,29 +1160,14 @@ function formatDateID(dateString) {
   });
 }
 
-/* ======================================
-   FORMAT JAM
-====================================== */
-
 function formatTime(value) {
   if (!value) return "-";
-
   return String(value).slice(0, 5) + " WIT";
 }
 
-/* ======================================
-   FORMAT STATUS
-====================================== */
-
 function statusLabel(status) {
-  if (status === "boarded") {
-    return "✓ Sudah Naik";
-  }
-
-  if (status === "no_show") {
-    return "✕ Tidak Hadir";
-  }
-
+  if (status === "boarded") return "✓ Sudah Naik";
+  if (status === "no_show") return "✕ Tidak Hadir";
   return "● Belum Naik";
 }
 
@@ -1484,10 +1183,6 @@ function paymentLabel(status) {
   return "Status Pembayaran: " + (status || "-");
 }
 
-/* ======================================
-   AMANKAN TEKS HTML
-====================================== */
-
 function escapeHTML(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -1497,13 +1192,8 @@ function escapeHTML(value) {
     .replace(/'/g, "&#039;");
 }
 
-/* ======================================
-   NORMALISASI NOMOR KONTAK
-====================================== */
-
 function getPassengerContact(value) {
   const digits = String(value || "").replace(/\D/g, "");
-
   let local = digits;
 
   if (local.startsWith("62")) {
@@ -1524,9 +1214,87 @@ function getPassengerContact(value) {
   };
 }
 
-/* ======================================
-   DASHBOARD
-====================================== */
+/* ============================================
+   WHATSAPP BIASA KHUSUS ANDROID
+============================================ */
+
+function buildWhatsAppMessage(passenger) {
+  const name = passenger.passenger_name || "Kak";
+
+  const route =
+    (passenger.origin || "-") +
+    " ke " +
+    (passenger.destination || "-");
+
+  const date = passenger.travel_date
+    ? formatDateID(passenger.travel_date)
+    : "-";
+
+  const time = formatTime(passenger.departure_time);
+
+  return (
+    "Halo Kak " + name + ", saya petugas HSM Transport.\n\n" +
+    "Saya ingin mengonfirmasi perjalanan Kakak:\n" +
+    "Rute: " + route + "\n" +
+    "Tanggal: " + date + "\n" +
+    "Jam: " + time + "\n" +
+    "Armada: " + currentVehicle + "\n" +
+    "Kursi: " + (passenger.seat_number ?? "-") + "\n\n" +
+    "Mohon konfirmasi apakah Kakak siap untuk keberangkatan. Terima kasih."
+  );
+}
+
+function openRegularWhatsApp(passenger) {
+  const contact = getPassengerContact(passenger.phone);
+
+  if (!contact) {
+    showManifestMessage(
+      "Nomor WhatsApp penumpang tidak valid."
+    );
+    return;
+  }
+
+  const message = buildWhatsAppMessage(passenger);
+
+  const encodedMessage = encodeURIComponent(message);
+
+  const androidIntent =
+    "intent://send?phone=" +
+    contact.whatsapp +
+    "&text=" +
+    encodedMessage +
+    "#Intent;" +
+    "scheme=whatsapp;" +
+    "package=com.whatsapp;" +
+    "end";
+
+  const fallbackUrl =
+    "https://wa.me/" +
+    contact.whatsapp +
+    "?text=" +
+    encodedMessage;
+
+  const isAndroid = /Android/i.test(navigator.userAgent);
+
+  if (isAndroid) {
+    /*
+      Chrome Android akan mencoba membuka aplikasi
+      dengan package com.whatsapp (WhatsApp biasa).
+      Browser lain mungkin tidak mendukung intent.
+    */
+    window.location.href = androidIntent;
+  } else {
+    /*
+      Fallback untuk iPhone, desktop, dan browser lain.
+      Pemilihan aplikasi mengikuti sistem perangkat.
+    */
+    window.open(
+      fallbackUrl,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  }
+}
 
 function showDashboard(staff) {
   authCard.style.display = "none";
@@ -1571,16 +1339,11 @@ function showDashboard(staff) {
   startSessionTimer(expiry);
 }
 
-/* ======================================
-   TAMPILKAN LOGIN
-====================================== */
-
 function showLogin() {
   dashboard.style.display = "none";
   authCard.style.display = "block";
 
   ++manifestRequestId;
-
   manifestData = [];
   currentVehicle = "";
 
@@ -1590,13 +1353,8 @@ function showLogin() {
   }
 }
 
-/* ======================================
-   PERIKSA SESI
-====================================== */
-
 async function loadSession(reportError = false) {
   const token = sessionStorage.getItem(TOKEN_KEY);
-
   const requestId = ++sessionRequestId;
 
   if (!token) {
@@ -1605,19 +1363,10 @@ async function loadSession(reportError = false) {
   }
 
   try {
-    const result = await api("session", {
-      token
-    });
+    const result = await api("session", { token });
 
-    if (requestId !== sessionRequestId) {
-      return;
-    }
-
-    if (
-      sessionStorage.getItem(TOKEN_KEY) !== token
-    ) {
-      return;
-    }
+    if (requestId !== sessionRequestId) return;
+    if (sessionStorage.getItem(TOKEN_KEY) !== token) return;
 
     if (!result.expires_at) {
       throw new Error(
@@ -1648,9 +1397,7 @@ async function loadSession(reportError = false) {
     }
 
   } catch (error) {
-    if (requestId !== sessionRequestId) {
-      return;
-    }
+    if (requestId !== sessionRequestId) return;
 
     showLogin();
 
@@ -1663,10 +1410,6 @@ async function loadSession(reportError = false) {
     }
   }
 }
-
-/* ======================================
-   TIMER SESI
-====================================== */
 
 function startSessionTimer(expiry) {
   if (sessionTimer !== null) {
@@ -1684,16 +1427,11 @@ function startSessionTimer(expiry) {
   sessionTimer = setTimeout(() => {
     sessionStorage.removeItem(TOKEN_KEY);
     showLogin();
-
     showMessage(
       "Sesi berakhir. Silakan login kembali."
     );
   }, Math.min(remaining, 2147483647));
 }
-
-/* ======================================
-   STATISTIK MANIFEST
-====================================== */
 
 function updateManifestStats() {
   const total = manifestData.length;
@@ -1708,27 +1446,14 @@ function updateManifestStats() {
 
   const pending = total - boarded - noShow;
 
-  document.getElementById("statTotal").textContent =
-    total;
-
-  document.getElementById("statBoarded").textContent =
-    boarded;
-
-  document.getElementById("statPending").textContent =
-    pending;
-
-  document.getElementById("statNoShow").textContent =
-    noShow;
+  document.getElementById("statTotal").textContent = total;
+  document.getElementById("statBoarded").textContent = boarded;
+  document.getElementById("statPending").textContent = pending;
+  document.getElementById("statNoShow").textContent = noShow;
 }
 
-/* ======================================
-   AMBIL MANIFEST
-====================================== */
-
 async function loadManifest() {
-  if (boardingBusy) {
-    return;
-  }
+  if (boardingBusy) return;
 
   const token = sessionStorage.getItem(TOKEN_KEY);
 
@@ -1763,13 +1488,8 @@ async function loadManifest() {
       travel_date: date
     });
 
-    if (requestId !== manifestRequestId) {
-      return;
-    }
-
-    if (sessionStorage.getItem(TOKEN_KEY) !== token) {
-      return;
-    }
+    if (requestId !== manifestRequestId) return;
+    if (sessionStorage.getItem(TOKEN_KEY) !== token) return;
 
     manifestData = Array.isArray(result.manifest)
       ? result.manifest
@@ -1779,12 +1499,9 @@ async function loadManifest() {
     renderManifest();
 
   } catch (error) {
-    if (requestId !== manifestRequestId) {
-      return;
-    }
+    if (requestId !== manifestRequestId) return;
 
     manifestData = [];
-
     updateManifestStats();
 
     manifestList.innerHTML =
@@ -1807,18 +1524,12 @@ async function loadManifest() {
   }
 }
 
-/* ======================================
-   FILTER PENCARIAN
-====================================== */
-
 function filteredManifest() {
   const keyword = manifestSearch.value
     .trim()
     .toLowerCase();
 
-  if (!keyword) {
-    return manifestData;
-  }
+  if (!keyword) return manifestData;
 
   return manifestData.filter(item => {
     const searchable = [
@@ -1837,19 +1548,12 @@ function filteredManifest() {
   });
 }
 
-/* ======================================
-   KELOMPOKKAN PER PERJALANAN
-====================================== */
-
 function groupManifest(items) {
   const groups = new Map();
 
   items.forEach(item => {
     const tripCode = String(item.trip_code || "").trim();
-
-    const time = String(
-      item.departure_time || ""
-    ).slice(0, 5);
+    const time = String(item.departure_time || "").slice(0,5);
 
     const key = tripCode
       ? "trip:" + tripCode
@@ -1868,10 +1572,6 @@ function groupManifest(items) {
 
   return Array.from(groups.values());
 }
-
-/* ======================================
-   TAMPILKAN MANIFEST
-====================================== */
 
 function renderManifest() {
   const items = filteredManifest();
@@ -1893,8 +1593,7 @@ function renderManifest() {
   if (items.length === 0) {
     manifestList.innerHTML = `
       <div class="empty-state">
-        Tidak ada penumpang yang cocok
-        dengan pencarian.
+        Tidak ada penumpang yang cocok dengan pencarian.
       </div>
     `;
     return;
@@ -1905,9 +1604,7 @@ function renderManifest() {
   manifestList.innerHTML = groups.map(group => {
     const heading = group.tripCode
       ? "🚐 Perjalanan " + escapeHTML(group.tripCode)
-      : "🚐 Jadwal " + escapeHTML(
-          formatTime(group.time)
-        );
+      : "🚐 Jadwal " + escapeHTML(formatTime(group.time));
 
     const passengers = group.passengers.map(item => {
       const status = item.boarding_status || "not_boarded";
@@ -1934,15 +1631,14 @@ function renderManifest() {
         ? `
           <div class="contact-actions">
 
-            <a
+            <button
+              type="button"
               class="contact-btn whatsapp"
-              href="https://wa.me/${contact.whatsapp}"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Chat WhatsApp ${escapeHTML(item.passenger_name || "penumpang")}"
+              style="border:0;cursor:pointer;"
+              data-whatsapp-id="${escapeHTML(item.id)}"
             >
-              🟢 WhatsApp
-            </a>
+              🟢 WhatsApp Biasa
+            </button>
 
             <a
               class="contact-btn phone"
@@ -1961,9 +1657,7 @@ function renderManifest() {
           </div>
         `;
 
-      const paymentStatus = String(
-        item.payment_status || ""
-      );
+      const paymentStatus = String(item.payment_status || "");
 
       const isPaid =
         paymentStatus === "paid" ||
@@ -1975,7 +1669,6 @@ function renderManifest() {
         <article class="passenger-card ${cardClass}">
 
           <div class="passenger-top">
-
             <div>
               <div class="passenger-name">
                 ${escapeHTML(item.passenger_name || "-")}
@@ -1990,7 +1683,6 @@ function renderManifest() {
               Kursi<br>
               ${escapeHTML(item.seat_number ?? "-")}
             </div>
-
           </div>
 
           <div class="passenger-detail">
@@ -2024,7 +1716,6 @@ function renderManifest() {
             isPending
               ? `
                 <div class="passenger-actions">
-
                   <button
                     type="button"
                     class="small-btn board"
@@ -2042,7 +1733,6 @@ function renderManifest() {
                   >
                     ✕ Tidak Hadir
                   </button>
-
                 </div>
               `
               : ""
@@ -2054,30 +1744,18 @@ function renderManifest() {
 
     return `
       <div class="trip-group">
-
         <div class="trip-heading">
-          ${heading}
-          <br>
-          <small>
-            ${group.passengers.length} penumpang
-          </small>
+          ${heading}<br>
+          <small>${group.passengers.length} penumpang</small>
         </div>
-
         ${passengers}
-
       </div>
     `;
   }).join("");
 }
 
-/* ======================================
-   UPDATE BOARDING
-====================================== */
-
 async function updateBoarding(bookingId, status) {
-  if (boardingBusy || manifestLoading) {
-    return;
-  }
+  if (boardingBusy || manifestLoading) return;
 
   const token = sessionStorage.getItem(TOKEN_KEY);
 
@@ -2106,27 +1784,17 @@ async function updateBoarding(bookingId, status) {
 
   const name = booking.passenger_name || "Penumpang";
 
-  let confirmationText = "";
+  const confirmationText =
+    status === "boarded"
+      ? "Konfirmasi bahwa " + name +
+        " sudah naik ke armada " + currentVehicle + "?"
+      : "Tandai " + name +
+        " sebagai TIDAK HADIR?\n\n" +
+        "Pastikan penumpang benar-benar tidak hadir.";
 
-  if (status === "boarded") {
-    confirmationText =
-      "Konfirmasi bahwa " + name +
-      " sudah naik ke armada " +
-      currentVehicle + "?";
-  } else {
-    confirmationText =
-      "Tandai " + name +
-      " sebagai TIDAK HADIR?\n\n" +
-      "Pastikan penumpang benar-benar tidak hadir. " +
-      "Status ini hanya dapat dikoreksi oleh admin.";
-  }
-
-  if (!window.confirm(confirmationText)) {
-    return;
-  }
+  if (!window.confirm(confirmationText)) return;
 
   boardingBusy = true;
-
   clearManifestMessage();
 
   manifestList.querySelectorAll(
@@ -2142,9 +1810,7 @@ async function updateBoarding(bookingId, status) {
       status
     });
 
-    if (sessionStorage.getItem(TOKEN_KEY) !== token) {
-      return;
-    }
+    if (sessionStorage.getItem(TOKEN_KEY) !== token) return;
 
     showManifestMessage(
       result.message ||
@@ -2168,50 +1834,44 @@ async function updateBoarding(bookingId, status) {
   }
 }
 
-/* ======================================
-   EVENT MANIFEST
-====================================== */
+refreshManifestBtn.addEventListener("click", loadManifest);
+manifestDate.addEventListener("change", loadManifest);
 
-refreshManifestBtn.addEventListener(
-  "click",
-  loadManifest
-);
-
-manifestDate.addEventListener(
-  "change",
-  loadManifest
-);
-
-manifestSearch.addEventListener(
-  "input",
-  () => {
-    if (!manifestLoading) {
-      renderManifest();
-    }
+manifestSearch.addEventListener("input", () => {
+  if (!manifestLoading) {
+    renderManifest();
   }
-);
+});
 
-manifestList.addEventListener(
-  "click",
-  event => {
-    const button = event.target.closest(
-      "button[data-booking-id]"
+manifestList.addEventListener("click", event => {
+
+  const whatsappButton = event.target.closest(
+    "button[data-whatsapp-id]"
+  );
+
+  if (whatsappButton) {
+    const passenger = manifestData.find(
+      item => item.id === whatsappButton.dataset.whatsappId
     );
 
-    if (!button) {
-      return;
+    if (passenger) {
+      openRegularWhatsApp(passenger);
     }
 
-    updateBoarding(
-      button.dataset.bookingId,
-      button.dataset.status
-    );
+    return;
   }
-);
 
-/* ======================================
-   LOGOUT
-====================================== */
+  const boardingButton = event.target.closest(
+    "button[data-booking-id]"
+  );
+
+  if (!boardingButton) return;
+
+  updateBoarding(
+    boardingButton.dataset.bookingId,
+    boardingButton.dataset.status
+  );
+});
 
 document.getElementById("logoutBtn")
   .addEventListener("click", async () => {
@@ -2219,11 +1879,9 @@ document.getElementById("logoutBtn")
     ++sessionRequestId;
     ++manifestRequestId;
 
-    const token =
-      sessionStorage.getItem(TOKEN_KEY);
+    const token = sessionStorage.getItem(TOKEN_KEY);
 
     sessionStorage.removeItem(TOKEN_KEY);
-
     showLogin();
 
     if (token) {
@@ -2240,22 +1898,14 @@ document.getElementById("logoutBtn")
     );
   });
 
-/* ======================================
-   MULAI
-====================================== */
-
 manifestDate.value = todayWIT();
-
 loadSession();
 
-document.addEventListener(
-  "visibilitychange",
-  () => {
-    if (!document.hidden) {
-      loadSession();
-    }
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    loadSession();
   }
-);
+});
 
 </script>
 
