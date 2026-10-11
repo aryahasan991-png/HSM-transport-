@@ -33,7 +33,8 @@
     }
 
     button,
-    input {
+    input,
+    select {
       font: inherit;
     }
 
@@ -474,6 +475,23 @@
       overflow-wrap: anywhere;
     }
 
+    .payment-badge {
+      display: inline-block;
+      margin-top: 10px;
+      margin-right: 5px;
+      border-radius: 20px;
+      padding: 6px 10px;
+      background: #fff4df;
+      color: #966000;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .payment-badge.paid {
+      background: #e7f7ed;
+      color: #147a43;
+    }
+
     .status-badge {
       display: inline-block;
       margin-top: 10px;
@@ -493,6 +511,45 @@
     .status-badge.no-show {
       background: #ffeaea;
       color: #b42318;
+    }
+
+    /* TOMBOL KONTAK PENUMPANG */
+
+    .contact-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 13px;
+    }
+
+    .contact-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 12px 6px;
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .contact-btn.whatsapp {
+      background: #25d366;
+      color: white;
+    }
+
+    .contact-btn.phone {
+      background: #eaf2ff;
+      color: var(--blue);
+      border: 1px solid #c9dffc;
+    }
+
+    .contact-unavailable {
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--muted);
     }
 
     .passenger-actions {
@@ -600,9 +657,7 @@
 
 <main class="container">
 
-  <!-- ======================================
-       LOGIN / AKTIVASI / LUPA PIN
-  ======================================= -->
+  <!-- LOGIN / AKTIVASI / LUPA PIN -->
 
   <section class="card" id="authCard">
 
@@ -802,9 +857,7 @@
 
   </section>
 
-  <!-- ======================================
-       DASHBOARD PETUGAS
-  ======================================= -->
+  <!-- DASHBOARD PETUGAS -->
 
   <section class="card" id="dashboard">
 
@@ -848,9 +901,7 @@
       terdaftar pada akun petugas.
     </div>
 
-    <!-- ======================================
-         MANIFEST PENUMPANG
-    ======================================= -->
+    <!-- MANIFEST PENUMPANG -->
 
     <section class="manifest-section" aria-label="Manifest penumpang">
 
@@ -925,10 +976,12 @@
 
       <div class="manifest-note">
         <strong>Catatan:</strong>
-        Konfirmasi penumpang naik hanya dilakukan setelah
-        penumpang benar-benar berada di kendaraan.
-        Status yang sudah final tidak dapat dikoreksi
-        melalui portal petugas dan harus ditangani admin.
+        Tombol WhatsApp dan Telepon digunakan untuk
+        menghubungi penumpang terkait perjalanan.
+        Konfirmasi naik dilakukan setelah penumpang
+        benar-benar berada di kendaraan.
+        Booking yang belum lunas tetap dapat dilihat,
+        tetapi konfirmasi boarding mengikuti aturan server.
       </div>
 
     </section>
@@ -1419,6 +1472,18 @@ function statusLabel(status) {
   return "● Belum Naik";
 }
 
+function paymentLabel(status) {
+  if (status === "paid" || status === "completed") {
+    return "✓ Lunas";
+  }
+
+  if (status === "pending") {
+    return "⏳ Belum Lunas";
+  }
+
+  return "Status Pembayaran: " + (status || "-");
+}
+
 /* ======================================
    AMANKAN TEKS HTML
 ====================================== */
@@ -1430,6 +1495,33 @@ function escapeHTML(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+/* ======================================
+   NORMALISASI NOMOR KONTAK
+====================================== */
+
+function getPassengerContact(value) {
+  const digits = String(value || "").replace(/\D/g, "");
+
+  let local = digits;
+
+  if (local.startsWith("62")) {
+    local = "0" + local.slice(2);
+  }
+
+  if (local.startsWith("8")) {
+    local = "0" + local;
+  }
+
+  if (!/^08\d{8,11}$/.test(local)) {
+    return null;
+  }
+
+  return {
+    local,
+    whatsapp: "62" + local.slice(1)
+  };
 }
 
 /* ======================================
@@ -1734,7 +1826,8 @@ function filteredManifest() {
       item.booking_code,
       item.seat_number,
       item.origin,
-      item.destination
+      item.destination,
+      item.phone
     ]
       .map(value => String(value ?? ""))
       .join(" ")
@@ -1835,6 +1928,49 @@ function renderManifest() {
 
       const isPending = status === "not_boarded";
 
+      const contact = getPassengerContact(item.phone);
+
+      const contactButtons = contact
+        ? `
+          <div class="contact-actions">
+
+            <a
+              class="contact-btn whatsapp"
+              href="https://wa.me/${contact.whatsapp}"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chat WhatsApp ${escapeHTML(item.passenger_name || "penumpang")}"
+            >
+              🟢 WhatsApp
+            </a>
+
+            <a
+              class="contact-btn phone"
+              href="tel:${contact.local}"
+              aria-label="Telepon ${escapeHTML(item.passenger_name || "penumpang")}"
+            >
+              📞 Telepon
+            </a>
+
+          </div>
+        `
+        : `
+          <div class="contact-unavailable">
+            Nomor kontak penumpang tidak tersedia
+            atau tidak valid.
+          </div>
+        `;
+
+      const paymentStatus = String(
+        item.payment_status || ""
+      );
+
+      const isPaid =
+        paymentStatus === "paid" ||
+        paymentStatus === "completed";
+
+      const paymentClass = isPaid ? "paid" : "";
+
       return `
         <article class="passenger-card ${cardClass}">
 
@@ -1866,11 +2002,23 @@ function renderManifest() {
 
             <strong>Berangkat:</strong>
             ${escapeHTML(formatTime(item.departure_time))}
+            <br>
+
+            <strong>Nomor HP:</strong>
+            ${escapeHTML(item.phone || "-")}
           </div>
 
-          <span class="status-badge ${statusClass}">
-            ${statusLabel(status)}
-          </span>
+          <div>
+            <span class="payment-badge ${paymentClass}">
+              ${escapeHTML(paymentLabel(paymentStatus))}
+            </span>
+
+            <span class="status-badge ${statusClass}">
+              ${statusLabel(status)}
+            </span>
+          </div>
+
+          ${contactButtons}
 
           ${
             isPending
@@ -2013,11 +2161,6 @@ async function updateBoarding(bookingId, status) {
 
   } finally {
     boardingBusy = false;
-
-    /*
-      Ambil ulang data dari server agar status
-      selalu mengikuti database, bukan asumsi lokal.
-    */
 
     if (sessionStorage.getItem(TOKEN_KEY) === token) {
       await loadManifest();
