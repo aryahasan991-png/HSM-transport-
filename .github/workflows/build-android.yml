@@ -369,7 +369,177 @@ jobs:
       # ======================================================
       # 10. INSTALL CAPACITOR
       # ======================================================
+      # ======================================================
+      # SPLASH SCREEN HSM TRANSPORT
+      # KHUSUS APK - WEBSITE VERCEL TIDAK BERUBAH
+      # ======================================================
 
+      - name: Add HSM Splash Screen
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("android-app/www/index.html")
+          html = path.read_text(encoding="utf-8")
+
+          marker = "hsm-custom-splash"
+
+          if marker not in html:
+
+              splash = """
+          <!-- HSM CUSTOM SPLASH SCREEN -->
+          <style>
+            #hsm-custom-splash {
+              position: fixed;
+              inset: 0;
+              z-index: 2147483647;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              background: #ffffff;
+              padding: 24px;
+              text-align: center;
+              opacity: 1;
+              transition: opacity .4s ease;
+            }
+
+            #hsm-custom-splash.hsm-hide {
+              opacity: 0;
+              pointer-events: none;
+            }
+
+            #hsm-custom-splash .hsm-splash-logo {
+              width: min(55vw, 230px);
+              max-height: 230px;
+              object-fit: contain;
+              margin-bottom: 35px;
+              animation: hsmFadeIn .9s ease both;
+            }
+
+            #hsm-custom-splash .hsm-splash-welcome {
+              color: #0754a6;
+              font-family: Arial, sans-serif;
+              font-size: 22px;
+              font-weight: 800;
+              letter-spacing: 1px;
+              margin-bottom: 12px;
+              animation: hsmFadeIn 1.1s ease both;
+            }
+
+            #hsm-custom-splash .hsm-splash-tagline {
+              color: #64748b;
+              font-family: Arial, sans-serif;
+              font-size: 14px;
+              line-height: 1.6;
+              animation: hsmFadeIn 1.3s ease both;
+            }
+
+            #hsm-custom-splash .hsm-splash-company {
+              position: absolute;
+              bottom: 45px;
+              left: 15px;
+              right: 15px;
+              color: #0754a6;
+              font-family: Arial, sans-serif;
+              font-size: 11px;
+              font-weight: 700;
+              letter-spacing: 1px;
+              animation: hsmFadeIn 1.5s ease both;
+            }
+
+            @keyframes hsmFadeIn {
+              from {
+                opacity: 0;
+                transform: translateY(15px);
+              }
+
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+          </style>
+
+          <div id="hsm-custom-splash">
+            <img
+              class="hsm-splash-logo"
+              src="hsm-apk-icon.png"
+              alt="HSM Transport"
+            >
+
+            <div class="hsm-splash-welcome">
+              SELAMAT DATANG
+            </div>
+
+            <div class="hsm-splash-tagline">
+              Perjalanan Nyaman, Pilihan Tepat.
+            </div>
+
+            <div class="hsm-splash-company">
+              PT HIDAYAH SARANA MULIA
+            </div>
+          </div>
+
+          <script>
+            (function () {
+              var splashStarted = Date.now();
+
+              function closeSplash() {
+                var splash = document.getElementById(
+                  "hsm-custom-splash"
+                );
+
+                if (!splash) return;
+
+                var elapsed = Date.now() - splashStarted;
+                var remaining = Math.max(0, 2000 - elapsed);
+
+                setTimeout(function () {
+                  splash.classList.add("hsm-hide");
+
+                  setTimeout(function () {
+                    splash.remove();
+                  }, 450);
+                }, remaining);
+              }
+
+              if (document.readyState === "loading") {
+                document.addEventListener(
+                  "DOMContentLoaded",
+                  closeSplash,
+                  { once: true }
+                );
+              } else {
+                closeSplash();
+              }
+            })();
+          </script>
+          <!-- END HSM CUSTOM SPLASH SCREEN -->
+          """
+
+              if "</body>" not in html:
+                  raise RuntimeError(
+                      "Tag penutup body tidak ditemukan."
+                  )
+
+              position = html.rfind("</body>")
+
+              html = (
+                  html[:position]
+                  + splash
+                  + "\n"
+                  + html[position:]
+              )
+
+              path.write_text(
+                  html,
+                  encoding="utf-8"
+              )
+
+          print("Splash Screen HSM berhasil dipasang.")
+          PY
       - name: Install Capacitor
         working-directory: android-app
         shell: bash
