@@ -5,15 +5,24 @@
 # BUILD APK ANDROID - CAPACITOR
 #
 # FITUR:
-# - Setup Node.js 22
-# - Setup Java 21
-# - Setup Android SDK
-# - Perbaikan lisensi Android SDK
-# - Menyalin website HSM
-# - Portal internal khusus APK
-# - Generate proyek Android
-# - Build APK
-# - Upload APK ke GitHub Actions
+# 01. Setup Node.js 22
+# 02. Setup Java 21
+# 03. Setup Android SDK
+# 04. Terima lisensi Android SDK
+# 05. Install Android Platform
+# 06. Salin website HSM
+# 07. Buat portal internal APK
+# 08. Tambahkan akses internal APK
+# 09. Install Capacitor
+# 10. Generate Android Project
+# 11. Generate ikon resmi HSM Transport
+# 12. Sinkronisasi Android
+# 13. Build APK
+# 14. Ubah nama APK
+# 15. Upload APK ke GitHub Actions
+#
+# IKON:
+# hsm-apk-icon.png
 #
 # WEBSITE VERCEL TIDAK DIUBAH
 #
@@ -44,7 +53,7 @@ jobs:
     steps:
 
       # ======================================================
-      # 1. CHECKOUT
+      # 1. CHECKOUT REPOSITORY
       # ======================================================
 
       - name: Checkout Repository
@@ -52,7 +61,7 @@ jobs:
 
 
       # ======================================================
-      # 2. NODE.JS
+      # 2. SETUP NODE.JS
       # ======================================================
 
       - name: Setup Node.js
@@ -62,7 +71,7 @@ jobs:
 
 
       # ======================================================
-      # 3. JAVA
+      # 3. SETUP JAVA
       # ======================================================
 
       - name: Setup Java
@@ -73,9 +82,7 @@ jobs:
 
 
       # ======================================================
-      # 4. ANDROID SDK
-      #
-      # Lisensi ditangani pada langkah berikutnya.
+      # 4. SETUP ANDROID SDK
       # ======================================================
 
       - name: Setup Android SDK
@@ -88,8 +95,6 @@ jobs:
 
       # ======================================================
       # 5. TERIMA LISENSI ANDROID SDK
-      #
-      # Menjawab persetujuan lisensi secara otomatis.
       # ======================================================
 
       - name: Accept Android SDK Licenses
@@ -127,9 +132,7 @@ jobs:
       # ======================================================
       # 7. PERSIAPKAN WEBSITE HSM
       #
-      # Menyalin file website dari root repository
-      # ke folder aplikasi Android.
-      #
+      # Semua file website disalin ke folder www.
       # File website asli tidak dimodifikasi.
       # ======================================================
 
@@ -155,7 +158,7 @@ jobs:
             fi
           done
 
-          echo "Memeriksa file wajib..."
+          echo "Memeriksa file website HSM..."
 
           test -f android-app/www/index.html
           test -f android-app/www/admin.html
@@ -163,16 +166,14 @@ jobs:
           test -f android-app/www/config.js
           test -f android-app/www/app.js
 
-          echo "File website HSM siap."
+          echo "Website HSM siap."
 
 
       # ======================================================
       # 8. PORTAL INTERNAL KHUSUS APK
       #
-      # Jika portal.html belum ada, buat halaman
-      # untuk mengakses admin dan petugas.
-      #
-      # Hanya salinan APK yang diubah.
+      # Berisi akses admin dan petugas.
+      # Tidak mengubah website Vercel.
       # ======================================================
 
       - name: Prepare APK Internal Portal
@@ -185,6 +186,7 @@ jobs:
           <html lang="id">
 
           <head>
+
             <meta charset="UTF-8">
 
             <meta
@@ -197,9 +199,12 @@ jobs:
               content="#0754a6"
             >
 
-            <title>Portal Internal HSM Transport</title>
+            <title>
+              Portal Internal HSM Transport
+            </title>
 
             <style>
+
               * {
                 box-sizing: border-box;
               }
@@ -208,11 +213,8 @@ jobs:
                 margin: 0;
                 padding: 20px;
                 min-height: 100vh;
-
                 font-family: Arial, sans-serif;
-
                 background: #f4f7fb;
-
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -221,15 +223,10 @@ jobs:
               .card {
                 width: 100%;
                 max-width: 440px;
-
                 padding: 28px 22px;
-
                 background: white;
-
                 border-radius: 18px;
-
                 text-align: center;
-
                 box-shadow:
                   0 8px 28px rgba(0,0,0,.08);
               }
@@ -246,15 +243,11 @@ jobs:
 
               a {
                 display: block;
-
                 margin-top: 14px;
                 padding: 15px;
-
                 border-radius: 11px;
-
                 background: #0754a6;
                 color: white;
-
                 font-weight: bold;
                 text-decoration: none;
               }
@@ -263,17 +256,22 @@ jobs:
                 background: #e2e8f0;
                 color: #334155;
               }
+
             </style>
+
           </head>
 
           <body>
 
             <main class="card">
 
-              <h1>HSM Transport</h1>
+              <h1>
+                HSM Transport
+              </h1>
 
               <p>
-                Portal Internal<br>
+                Portal Internal
+                <br>
                 PT Hidayah Sarana Mulia
               </p>
 
@@ -295,6 +293,7 @@ jobs:
             </main>
 
           </body>
+
           </html>
           HTML
 
@@ -304,9 +303,9 @@ jobs:
 
 
       # ======================================================
-      # 9. TAMBAHKAN LINK PORTAL DI APK
+      # 9. TAMBAHKAN AKSES INTERNAL DI APK
       #
-      # Website yang ada di Vercel tidak berubah.
+      # Website Vercel tetap tidak berubah.
       # ======================================================
 
       - name: Add APK Internal Access
@@ -317,7 +316,9 @@ jobs:
 
           path = Path("android-app/www/index.html")
 
-          html = path.read_text(encoding="utf-8")
+          html = path.read_text(
+              encoding="utf-8"
+          )
 
           marker = "hsm-apk-internal-access"
 
@@ -388,7 +389,56 @@ jobs:
 
 
       # ======================================================
-      # 12. SINKRONISASI ANDROID
+      # 12. GENERATE IKON RESMI HSM TRANSPORT
+      #
+      # PERUBAHAN BARU:
+      #
+      # Sumber gambar:
+      # hsm-apk-icon.png
+      #
+      # Background putih.
+      # Mengganti ikon bawaan Capacitor.
+      # ======================================================
+
+      - name: Generate HSM Transport App Icon
+        working-directory: android-app
+        shell: bash
+        run: |
+
+          echo "Memeriksa gambar ikon HSM..."
+
+          if [ ! -f ../hsm-apk-icon.png ]; then
+            echo "ERROR: hsm-apk-icon.png tidak ditemukan!"
+            echo "Upload gambar ke root repository GitHub."
+            exit 1
+          fi
+
+          echo "Menyiapkan folder ikon..."
+
+          mkdir -p assets
+
+          cp ../hsm-apk-icon.png assets/icon.png
+
+          echo "Memasang generator ikon Capacitor..."
+
+          npm install \
+            --no-save \
+            --no-audit \
+            --no-fund \
+            @capacitor/assets
+
+          echo "Membuat ikon Android..."
+
+          npx capacitor-assets generate \
+            --android \
+            --iconBackgroundColor '#ffffff' \
+            --iconBackgroundColorDark '#ffffff'
+
+          echo "Ikon resmi HSM Transport berhasil dibuat."
+
+
+      # ======================================================
+      # 13. SINKRONISASI ANDROID
       # ======================================================
 
       - name: Sync Android
@@ -399,25 +449,27 @@ jobs:
 
 
       # ======================================================
-      # 13. BUILD APK
+      # 14. BUILD APK
       # ======================================================
 
       - name: Build APK
         working-directory: android-app/android
         shell: bash
         run: |
+
           chmod +x gradlew
 
           ./gradlew assembleDebug --no-daemon
 
 
       # ======================================================
-      # 14. UBAH NAMA APK
+      # 15. UBAH NAMA APK
       # ======================================================
 
       - name: Rename APK
         shell: bash
         run: |
+
           mkdir -p output
 
           cp \
@@ -430,7 +482,7 @@ jobs:
 
 
       # ======================================================
-      # 15. UPLOAD APK
+      # 16. UPLOAD APK KE GITHUB ACTIONS
       # ======================================================
 
       - name: Upload HSM Transport APK
