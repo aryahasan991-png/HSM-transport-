@@ -5,23 +5,30 @@
 # BUILD APK ANDROID - CAPACITOR
 #
 # FITUR:
-# 01. Setup Node.js 22
-# 02. Setup Java 21
-# 03. Setup Android SDK
-# 04. Terima lisensi Android SDK
-# 05. Install Android Platform
-# 06. Salin website HSM
-# 07. Buat portal internal APK
-# 08. Tambahkan akses internal APK
-# 09. Install Capacitor
-# 10. Generate Android Project
-# 11. Generate ikon resmi HSM Transport
-# 12. Sinkronisasi Android
-# 13. Build APK
-# 14. Ubah nama APK
-# 15. Upload APK ke GitHub Actions
+# 01. Checkout Repository
+# 02. Setup Node.js 22
+# 03. Setup Java 21
+# 04. Setup Android SDK
+# 05. Terima Lisensi Android SDK
+# 06. Install Android Platform
+# 07. Salin Website HSM
+# 08. Buat Portal Internal APK
+# 09. Tambahkan Akses Internal APK
+# 10. Salin Logo Splash Screen
+# 11. Tambahkan Splash Screen 3 Detik
+# 12. Install Capacitor
+# 13. Generate Android Project
+# 14. Konfigurasi Tombol Back Android
+# 15. Generate Ikon Resmi HSM
+# 16. Sinkronisasi Android
+# 17. Build APK
+# 18. Ubah Nama APK
+# 19. Upload APK
 #
-# IKON:
+# LOGO SPLASH:
+# hsm-logo.png
+#
+# IKON APK:
 # hsm-apk-icon.png
 #
 # WEBSITE VERCEL TIDAK DIUBAH
@@ -367,17 +374,42 @@ jobs:
 
 
       # ======================================================
-      # 10. INSTALL CAPACITOR
+      # 10. SALIN LOGO SPLASH SCREEN
+      #
+      # Menggunakan hsm-logo.png asli dari GitHub.
       # ======================================================
-      # ======================================================
-      # SPLASH SCREEN HSM TRANSPORT
-      # KHUSUS APK - WEBSITE VERCEL TIDAK BERUBAH
-      # ======================================================
+
       - name: Copy HSM Splash Logo
         shell: bash
         run: |
+          echo "Memeriksa logo splash screen..."
+
+          if [ ! -f hsm-logo.png ]; then
+            echo "ERROR: hsm-logo.png tidak ditemukan!"
+            echo "Pastikan file ada di folder utama GitHub."
+            exit 1
+          fi
+
           mkdir -p android-app/www
-          cp hsm-logo.png android-app/www/hsm-logo.png
+
+          cp \
+            hsm-logo.png \
+            android-app/www/hsm-logo.png
+
+          echo "Logo splash screen HSM siap."
+
+
+      # ======================================================
+      # 11. SPLASH SCREEN HSM TRANSPORT
+      #
+      # LOGO: hsm-logo.png
+      # DURASI: 3 DETIK
+      # BACKGROUND: PUTIH
+      #
+      # Hanya ditambahkan pada APK.
+      # Website Vercel tetap tidak berubah.
+      # ======================================================
+
       - name: Add HSM Splash Screen
         shell: bash
         run: |
@@ -385,7 +417,10 @@ jobs:
           from pathlib import Path
 
           path = Path("android-app/www/index.html")
-          html = path.read_text(encoding="utf-8")
+
+          html = path.read_text(
+              encoding="utf-8"
+          )
 
           marker = "hsm-custom-splash"
 
@@ -393,7 +428,9 @@ jobs:
 
               splash = """
           <!-- HSM CUSTOM SPLASH SCREEN -->
+
           <style>
+
             #hsm-custom-splash {
               position: fixed;
               inset: 0;
@@ -464,9 +501,11 @@ jobs:
                 transform: translateY(0);
               }
             }
+
           </style>
 
           <div id="hsm-custom-splash">
+
             <img
               class="hsm-splash-logo"
               src="hsm-logo.png"
@@ -484,40 +523,48 @@ jobs:
             <div class="hsm-splash-company">
               PT HIDAYAH SARANA MULIA
             </div>
+
           </div>
 
           <script>
             (function () {
-              var splashStarted = Date.now();
 
-                          function closeSplash() {
-              var splash = document.getElementById(
-                "hsm-custom-splash"
-              );
+              function closeSplash() {
 
-              if (!splash) return;
+                var splash = document.getElementById(
+                  "hsm-custom-splash"
+                );
 
-              setTimeout(function () {
-                splash.classList.add("hsm-hide");
+                if (!splash) return;
 
                 setTimeout(function () {
-                  splash.remove();
-                }, 450);
 
-              }, 3000);
-            }
+                  splash.classList.add("hsm-hide");
 
-            if (document.readyState === "loading") {
-              document.addEventListener(
-                "DOMContentLoaded",
-                closeSplash,
-                { once: true }
-              );
-            } else {
-              closeSplash();
-            }
-          })();
+                  setTimeout(function () {
+                    splash.remove();
+                  }, 450);
+
+                }, 3000);
+              }
+
+              if (document.readyState === "loading") {
+
+                document.addEventListener(
+                  "DOMContentLoaded",
+                  closeSplash,
+                  { once: true }
+                );
+
+              } else {
+
+                closeSplash();
+
+              }
+
+            })();
           </script>
+
           <!-- END HSM CUSTOM SPLASH SCREEN -->
           """
 
@@ -542,6 +589,12 @@ jobs:
 
           print("Splash Screen HSM berhasil dipasang.")
           PY
+
+
+      # ======================================================
+      # 12. INSTALL CAPACITOR
+      # ======================================================
+
       - name: Install Capacitor
         working-directory: android-app
         shell: bash
@@ -550,7 +603,9 @@ jobs:
 
 
       # ======================================================
-      # 11. GENERATE ANDROID PROJECT
+      # 13. GENERATE ANDROID PROJECT
+      #
+      # LANGKAH INI HARUS SEBELUM KONFIGURASI TOMBOL BACK.
       # ======================================================
 
       - name: Generate Android Project
@@ -561,15 +616,205 @@ jobs:
 
 
       # ======================================================
-      # 12. GENERATE IKON RESMI HSM TRANSPORT
+      # 14. TOMBOL BACK ANDROID HSM TRANSPORT
       #
-      # PERUBAHAN BARU:
+      # HALAMAN UTAMA:
+      # Back pertama menampilkan pesan.
+      # Back kedua dalam 2 detik keluar aplikasi.
       #
-      # Sumber gambar:
+      # HALAMAN PORTAL INTERNAL:
+      # Back kembali ke halaman utama.
+      #
+      # HALAMAN ADMIN / PETUGAS:
+      # Back kembali ke portal internal.
+      #
+      # SESI LOGIN PETUGAS TIDAK DIHAPUS.
+      # ======================================================
+
+      - name: Configure HSM Android Back Button
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          java_root = Path(
+              "android-app/android/app/src/main/java"
+          )
+
+          files = list(
+              java_root.rglob("MainActivity.java")
+          )
+
+          if len(files) != 1:
+              raise RuntimeError(
+                  "MainActivity.java tidak ditemukan atau ganda. "
+                  "Pastikan Generate Android Project sudah berhasil."
+              )
+
+          path = files[0]
+
+          original = path.read_text(
+              encoding="utf-8"
+          )
+
+          match = re.search(
+              r"^\s*package\s+([\w.]+)\s*;",
+              original,
+              re.M
+          )
+
+          if not match:
+              raise RuntimeError(
+                  "Package Android tidak ditemukan."
+              )
+
+          package = match.group(1)
+
+          code = """
+          package PACKAGE_NAME;
+
+          import android.net.Uri;
+          import android.os.Bundle;
+          import android.webkit.WebView;
+          import android.widget.Toast;
+
+          import androidx.activity.OnBackPressedCallback;
+
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {
+
+              private long lastBackPressed = 0;
+
+              @Override
+              public void onCreate(Bundle savedInstanceState) {
+
+                  super.onCreate(savedInstanceState);
+
+                  getOnBackPressedDispatcher().addCallback(
+                      this,
+                      new OnBackPressedCallback(true) {
+
+                          @Override
+                          public void handleOnBackPressed() {
+
+                              WebView webView =
+                                  getBridge().getWebView();
+
+                              if (webView == null) {
+                                  finish();
+                                  return;
+                              }
+
+                              String url = webView.getUrl();
+
+                              String path = "";
+
+                              if (url != null) {
+
+                                  String parsedPath =
+                                      Uri.parse(url).getPath();
+
+                                  if (parsedPath != null) {
+                                      path = parsedPath;
+                                  }
+                              }
+
+                              path = path.toLowerCase(
+                                  java.util.Locale.ROOT
+                              );
+
+                              boolean isHome =
+                                  path.isEmpty() ||
+                                  path.equals("/") ||
+                                  path.endsWith("/index.html");
+
+                              boolean isPortal =
+                                  path.endsWith("/portal.html");
+
+                              boolean isStaff =
+                                  path.endsWith("/petugas.html");
+
+                              boolean isAdmin =
+                                  path.endsWith("/admin.html");
+
+                              if (isStaff || isAdmin) {
+
+                                  webView.loadUrl(
+                                      "https://localhost/portal.html"
+                                  );
+
+                                  return;
+                              }
+
+                              if (isPortal) {
+
+                                  webView.loadUrl(
+                                      "https://localhost/index.html"
+                                  );
+
+                                  return;
+                              }
+
+                              if (!isHome) {
+
+                                  webView.loadUrl(
+                                      "https://localhost/index.html"
+                                  );
+
+                                  return;
+                              }
+
+                              long now =
+                                  System.currentTimeMillis();
+
+                              if (
+                                  now - lastBackPressed < 2000
+                              ) {
+
+                                  finish();
+
+                              } else {
+
+                                  lastBackPressed = now;
+
+                                  Toast.makeText(
+                                      MainActivity.this,
+                                      "Tekan sekali lagi untuk keluar dari HSM Transport",
+                                      Toast.LENGTH_SHORT
+                                  ).show();
+                              }
+                          }
+                      }
+                  );
+              }
+          }
+          """
+
+          code = code.replace(
+              "PACKAGE_NAME",
+              package
+          )
+
+          path.write_text(
+              code.strip() + "\n",
+              encoding="utf-8"
+          )
+
+          print(
+              "Tombol Back Android HSM berhasil dikonfigurasi."
+          )
+          PY
+
+
+      # ======================================================
+      # 15. GENERATE IKON RESMI HSM TRANSPORT
+      #
+      # SUMBER:
       # hsm-apk-icon.png
       #
-      # Background putih.
-      # Mengganti ikon bawaan Capacitor.
+      # BACKGROUND PUTIH
       # ======================================================
 
       - name: Generate HSM Transport App Icon
@@ -610,7 +855,7 @@ jobs:
 
 
       # ======================================================
-      # 13. SINKRONISASI ANDROID
+      # 16. SINKRONISASI ANDROID
       # ======================================================
 
       - name: Sync Android
@@ -621,7 +866,7 @@ jobs:
 
 
       # ======================================================
-      # 14. BUILD APK
+      # 17. BUILD APK
       # ======================================================
 
       - name: Build APK
@@ -635,7 +880,7 @@ jobs:
 
 
       # ======================================================
-      # 15. UBAH NAMA APK
+      # 18. UBAH NAMA APK
       # ======================================================
 
       - name: Rename APK
@@ -654,7 +899,7 @@ jobs:
 
 
       # ======================================================
-      # 16. UPLOAD APK KE GITHUB ACTIONS
+      # 19. UPLOAD APK KE GITHUB ACTIONS
       # ======================================================
 
       - name: Upload HSM Transport APK
