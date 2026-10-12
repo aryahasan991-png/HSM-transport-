@@ -3,6 +3,6 @@
   "appName": "HSM Transport",
   "webDir": "www",
   "android": {
-    "backgroundColor": "#0754a6"
+    "backgroundColor": "#ffffff"
   }
 }
