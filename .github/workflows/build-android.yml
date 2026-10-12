@@ -1,0 +1,110 @@
+name: Build APK HSM Transport
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    timeout-minutes: 45
+
+    steps:
+      # 1. Ambil file GitHub
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Siapkan Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # 3. Siapkan Java
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      # 4. Siapkan Android SDK
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      # 5. Salin file website HSM ke aplikasi
+      - name: Prepare Website
+        run: |
+          mkdir -p android-app/www
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+
+          source = Path(".")
+          target = Path("android-app/www")
+
+          extensions = {
+              ".html", ".js", ".css", ".png",
+              ".jpg", ".jpeg", ".webp",
+              ".svg", ".ico", ".json"
+          }
+
+          for file in source.iterdir():
+              if file.is_file() and file.suffix.lower() in extensions:
+                  shutil.copy2(file, target / file.name)
+
+          required = [
+              "index.html",
+              "admin.html",
+              "petugas.html",
+              "app.js",
+              "config.js"
+          ]
+
+          for name in required:
+              if not (target / name).exists():
+                  raise RuntimeError(f"File tidak ditemukan: {name}")
+
+          print("Website HSM berhasil disiapkan.")
+          PY
+
+      # 6. Install Capacitor
+      - name: Install Capacitor
+        working-directory: android-app
+        run: npm install --no-audit --no-fund
+
+      # 7. Buat proyek Android
+      - name: Generate Android Project
+        working-directory: android-app
+        run: npx cap add android
+
+      # 8. Sinkronisasi aplikasi
+      - name: Sync Android
+        working-directory: android-app
+        run: npx cap sync android
+
+      # 9. Build APK
+      - name: Build APK
+        working-directory: android-app/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      # 10. Siapkan file APK
+      - name: Rename APK
+        run: |
+          mkdir -p output
+          cp android-app/android/app/build/outputs/apk/debug/app-debug.apk output/HSM-Transport.apk
+
+      # 11. Upload hasil APK
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: HSM-Transport-APK
+          path: output/HSM-Transport.apk
+          retention-days: 30
+          if-no-files-found: error
