@@ -373,7 +373,11 @@ jobs:
       # SPLASH SCREEN HSM TRANSPORT
       # KHUSUS APK - WEBSITE VERCEL TIDAK BERUBAH
       # ======================================================
-
+      - name: Copy HSM Splash Logo
+        shell: bash
+        run: |
+          mkdir -p android-app/www
+          cp hsm-logo.png android-app/www/hsm-logo.png
       - name: Add HSM Splash Screen
         shell: bash
         run: |
@@ -465,7 +469,7 @@ jobs:
           <div id="hsm-custom-splash">
             <img
               class="hsm-splash-logo"
-              src="hsm-apk-icon.png"
+              src="hsm-logo.png"
               alt="HSM Transport"
             >
 
@@ -486,35 +490,33 @@ jobs:
             (function () {
               var splashStarted = Date.now();
 
-              function closeSplash() {
-                var splash = document.getElementById(
-                  "hsm-custom-splash"
-                );
+                          function closeSplash() {
+              var splash = document.getElementById(
+                "hsm-custom-splash"
+              );
 
-                if (!splash) return;
+              if (!splash) return;
 
-                var elapsed = Date.now() - splashStarted;
-                var remaining = Math.max(0, 2000 - elapsed);
+              setTimeout(function () {
+                splash.classList.add("hsm-hide");
 
                 setTimeout(function () {
-                  splash.classList.add("hsm-hide");
+                  splash.remove();
+                }, 450);
 
-                  setTimeout(function () {
-                    splash.remove();
-                  }, 450);
-                }, remaining);
-              }
+              }, 3000);
+            }
 
-              if (document.readyState === "loading") {
-                document.addEventListener(
-                  "DOMContentLoaded",
-                  closeSplash,
-                  { once: true }
-                );
-              } else {
-                closeSplash();
-              }
-            })();
+            if (document.readyState === "loading") {
+              document.addEventListener(
+                "DOMContentLoaded",
+                closeSplash,
+                { once: true }
+              );
+            } else {
+              closeSplash();
+            }
+          })();
           </script>
           <!-- END HSM CUSTOM SPLASH SCREEN -->
           """
