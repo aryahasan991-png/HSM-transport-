@@ -1,107 +1,439 @@
+# ============================================================
+# HSM TRANSPORT
+# PT HIDAYAH SARANA MULIA
+#
+# BUILD APK ANDROID - CAPACITOR
+#
+# FITUR:
+# - Setup Node.js 22
+# - Setup Java 21
+# - Setup Android SDK
+# - Perbaikan lisensi Android SDK
+# - Menyalin website HSM
+# - Portal internal khusus APK
+# - Generate proyek Android
+# - Build APK
+# - Upload APK ke GitHub Actions
+#
+# WEBSITE VERCEL TIDAK DIUBAH
+#
+# OUTPUT:
+# HSM-Transport.apk
+#
+# VERSI DEBUG UNTUK PENGUJIAN
+# ============================================================
+
 name: Build APK HSM Transport
 
 on:
   workflow_dispatch:
 
 jobs:
+
   build:
+
     name: Build Android APK
+
     runs-on: ubuntu-latest
+
+    timeout-minutes: 60
 
     permissions:
       contents: read
 
-    timeout-minutes: 45
-
     steps:
-      # 1. Ambil file GitHub
+
+      # ======================================================
+      # 1. CHECKOUT
+      # ======================================================
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Siapkan Node.js
+
+      # ======================================================
+      # 2. NODE.JS
+      # ======================================================
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
-      # 3. Siapkan Java
+
+      # ======================================================
+      # 3. JAVA
+      # ======================================================
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "21"
 
-      # 4. Siapkan Android SDK
+
+      # ======================================================
+      # 4. ANDROID SDK
+      #
+      # Lisensi ditangani pada langkah berikutnya.
+      # ======================================================
+
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          cmdline-tools-version: "12266719"
+          accept-android-sdk-licenses: "false"
+          packages: ""
 
-      # 5. Salin file website HSM ke aplikasi
-      - name: Prepare Website
+
+      # ======================================================
+      # 5. TERIMA LISENSI ANDROID SDK
+      #
+      # Menjawab persetujuan lisensi secara otomatis.
+      # ======================================================
+
+      - name: Accept Android SDK Licenses
+        shell: bash
+        run: |
+          set +o pipefail
+
+          yes | sdkmanager --licenses > /dev/null
+
+          result=${PIPESTATUS[1]}
+
+          set -o pipefail
+
+          if [ "$result" -ne 0 ]; then
+            echo "Gagal menerima lisensi Android SDK."
+            exit "$result"
+          fi
+
+          echo "Lisensi Android SDK berhasil diproses."
+
+
+      # ======================================================
+      # 6. INSTALL ANDROID PLATFORM
+      # ======================================================
+
+      - name: Install Android Platform
+        shell: bash
+        run: |
+          sdkmanager \
+            "platforms;android-36" \
+            "build-tools;36.0.0" \
+            "platform-tools"
+
+
+      # ======================================================
+      # 7. PERSIAPKAN WEBSITE HSM
+      #
+      # Menyalin file website dari root repository
+      # ke folder aplikasi Android.
+      #
+      # File website asli tidak dimodifikasi.
+      # ======================================================
+
+      - name: Prepare HSM Website
+        shell: bash
         run: |
           mkdir -p android-app/www
 
+          for file in \
+            ./*.html \
+            ./*.js \
+            ./*.css \
+            ./*.png \
+            ./*.jpg \
+            ./*.jpeg \
+            ./*.webp \
+            ./*.svg \
+            ./*.ico \
+            ./*.json
+          do
+            if [ -f "$file" ]; then
+              cp "$file" android-app/www/
+            fi
+          done
+
+          echo "Memeriksa file wajib..."
+
+          test -f android-app/www/index.html
+          test -f android-app/www/admin.html
+          test -f android-app/www/petugas.html
+          test -f android-app/www/config.js
+          test -f android-app/www/app.js
+
+          echo "File website HSM siap."
+
+
+      # ======================================================
+      # 8. PORTAL INTERNAL KHUSUS APK
+      #
+      # Jika portal.html belum ada, buat halaman
+      # untuk mengakses admin dan petugas.
+      #
+      # Hanya salinan APK yang diubah.
+      # ======================================================
+
+      - name: Prepare APK Internal Portal
+        shell: bash
+        run: |
+          if [ ! -f android-app/www/portal.html ]; then
+
+            cat > android-app/www/portal.html <<'HTML'
+          <!DOCTYPE html>
+          <html lang="id">
+
+          <head>
+            <meta charset="UTF-8">
+
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1"
+            >
+
+            <meta
+              name="theme-color"
+              content="#0754a6"
+            >
+
+            <title>Portal Internal HSM Transport</title>
+
+            <style>
+              * {
+                box-sizing: border-box;
+              }
+
+              body {
+                margin: 0;
+                padding: 20px;
+                min-height: 100vh;
+
+                font-family: Arial, sans-serif;
+
+                background: #f4f7fb;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+
+              .card {
+                width: 100%;
+                max-width: 440px;
+
+                padding: 28px 22px;
+
+                background: white;
+
+                border-radius: 18px;
+
+                text-align: center;
+
+                box-shadow:
+                  0 8px 28px rgba(0,0,0,.08);
+              }
+
+              h1 {
+                color: #0754a6;
+                font-size: 24px;
+              }
+
+              p {
+                color: #64748b;
+                line-height: 1.7;
+              }
+
+              a {
+                display: block;
+
+                margin-top: 14px;
+                padding: 15px;
+
+                border-radius: 11px;
+
+                background: #0754a6;
+                color: white;
+
+                font-weight: bold;
+                text-decoration: none;
+              }
+
+              a.secondary {
+                background: #e2e8f0;
+                color: #334155;
+              }
+            </style>
+          </head>
+
+          <body>
+
+            <main class="card">
+
+              <h1>HSM Transport</h1>
+
+              <p>
+                Portal Internal<br>
+                PT Hidayah Sarana Mulia
+              </p>
+
+              <a href="admin.html">
+                🔐 Dashboard Admin
+              </a>
+
+              <a href="petugas.html">
+                🚐 Portal Sopir & Kernet
+              </a>
+
+              <a
+                href="index.html"
+                class="secondary"
+              >
+                Kembali ke Penumpang
+              </a>
+
+            </main>
+
+          </body>
+          </html>
+          HTML
+
+          fi
+
+          echo "Portal internal APK siap."
+
+
+      # ======================================================
+      # 9. TAMBAHKAN LINK PORTAL DI APK
+      #
+      # Website yang ada di Vercel tidak berubah.
+      # ======================================================
+
+      - name: Add APK Internal Access
+        shell: bash
+        run: |
           python3 - <<'PY'
           from pathlib import Path
-          import shutil
 
-          source = Path(".")
-          target = Path("android-app/www")
+          path = Path("android-app/www/index.html")
 
-          extensions = {
-              ".html", ".js", ".css", ".png",
-              ".jpg", ".jpeg", ".webp",
-              ".svg", ".ico", ".json"
-          }
+          html = path.read_text(encoding="utf-8")
 
-          for file in source.iterdir():
-              if file.is_file() and file.suffix.lower() in extensions:
-                  shutil.copy2(file, target / file.name)
+          marker = "hsm-apk-internal-access"
 
-          required = [
-              "index.html",
-              "admin.html",
-              "petugas.html",
-              "app.js",
-              "config.js"
-          ]
+          if marker not in html:
 
-          for name in required:
-              if not (target / name).exists():
-                  raise RuntimeError(f"File tidak ditemukan: {name}")
+              link = '''
+          <div
+            id="hsm-apk-internal-access"
+            style="
+              text-align:center;
+              padding:16px;
+              background:#f5f7fa;
+            "
+          >
+            <a
+              href="portal.html"
+              style="
+                color:#64748b;
+                font-size:12px;
+                text-decoration:none;
+              "
+            >
+              🔐 Akses Internal HSM
+            </a>
+          </div>
+          '''
 
-          print("Website HSM berhasil disiapkan.")
+              if "</body>" not in html:
+                  raise RuntimeError(
+                      "Tag penutup body tidak ditemukan."
+                  )
+
+              html = html.replace(
+                  "</body>",
+                  link + "\n</body>",
+                  1
+              )
+
+              path.write_text(
+                  html,
+                  encoding="utf-8"
+              )
+
+          print("Akses internal APK siap.")
           PY
 
-      # 6. Install Capacitor
+
+      # ======================================================
+      # 10. INSTALL CAPACITOR
+      # ======================================================
+
       - name: Install Capacitor
         working-directory: android-app
-        run: npm install --no-audit --no-fund
+        shell: bash
+        run: |
+          npm install --no-audit --no-fund
 
-      # 7. Buat proyek Android
+
+      # ======================================================
+      # 11. GENERATE ANDROID PROJECT
+      # ======================================================
+
       - name: Generate Android Project
         working-directory: android-app
-        run: npx cap add android
+        shell: bash
+        run: |
+          npx cap add android
 
-      # 8. Sinkronisasi aplikasi
+
+      # ======================================================
+      # 12. SINKRONISASI ANDROID
+      # ======================================================
+
       - name: Sync Android
         working-directory: android-app
-        run: npx cap sync android
+        shell: bash
+        run: |
+          npx cap sync android
 
-      # 9. Build APK
+
+      # ======================================================
+      # 13. BUILD APK
+      # ======================================================
+
       - name: Build APK
         working-directory: android-app/android
+        shell: bash
         run: |
           chmod +x gradlew
+
           ./gradlew assembleDebug --no-daemon
 
-      # 10. Siapkan file APK
+
+      # ======================================================
+      # 14. UBAH NAMA APK
+      # ======================================================
+
       - name: Rename APK
+        shell: bash
         run: |
           mkdir -p output
-          cp android-app/android/app/build/outputs/apk/debug/app-debug.apk output/HSM-Transport.apk
 
-      # 11. Upload hasil APK
-      - name: Upload APK
+          cp \
+            android-app/android/app/build/outputs/apk/debug/app-debug.apk \
+            output/HSM-Transport.apk
+
+          echo "APK HSM Transport berhasil dibuat."
+
+          ls -lh output/
+
+
+      # ======================================================
+      # 15. UPLOAD APK
+      # ======================================================
+
+      - name: Upload HSM Transport APK
         uses: actions/upload-artifact@v4
         with:
           name: HSM-Transport-APK
