@@ -1,0 +1,8 @@
+{
+  "appId": "com.hsmtransport.app",
+  "appName": "HSM Transport",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#0754a6"
+  }
+}
