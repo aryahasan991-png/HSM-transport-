@@ -1,133 +1,76 @@
-// ============================================================
-// HSM TRANSPORT - ADMIN.JS
-// ============================================================
-// FITUR:
-// - Login admin Supabase
-// - Password diverifikasi Supabase
-// - Verifikasi hsm_admins
-// - Pilih Pool: Sofifi / Loleo / Weda / Lelilef
-// - Booking otomatis difilter berdasarkan origin pool
-// - Filter tanggal / status / pencarian
-// - Statistik
-// - Konfirmasi CASH / LUNAS
-// - Setelah LUNAS tiket langsung dibuka untuk dicetak
-// - Tandai perjalanan selesai
-// - Batalkan pending / paid / completed
-// - Data pembatalan TIDAK dihapus
-// - Tiket thermal 58mm
-// - Barcode booking_code
-// - QR verifikasi tiket
-// - Armada HSM-01 / HSM-02
-// - Mendukung booking multi-kursi dengan kode booking terpisah
-// ============================================================
+/*
+============================================================
+HSM TRANSPORT - ADMIN.JS
+PT HIDAYAH SARANA MULIA
 
+FITUR:
+- Login admin Supabase
+- Verifikasi hsm_admins / RPC
+- Login harian sampai 00.00 WIT
+- Pool Sofifi / Loleo / Weda / Lelilef
+- Filter dan statistik booking
+- Konfirmasi CASH / LUNAS
+- Tiket thermal 58mm
+- Tiket gambar PNG
+- QR Code dan barcode
+- Bagikan tiket ke WhatsApp Business
+- Kirim ulang tiket
+- Perjalanan selesai dan pembatalan
+- Kompatibel dengan modul admin lain
+============================================================
+*/
 
-// ============================================================
-// CONFIG
-// ============================================================
+"use strict";
+
+/* ============================================================
+   KONFIGURASI
+============================================================ */
 
 const HSM_CONFIG = window.HSM_CONFIG;
 
-if (!HSM_CONFIG) {
-  throw new Error("config.js tidak ditemukan.");
-}
-
-if (!window.supabase) {
-  throw new Error("Supabase tidak ditemukan.");
-}
-
-
-// ============================================================
-// SUPABASE
-// ============================================================
-
-const adminDb =
-  window.supabase.createClient(
-    HSM_CONFIG.SUPABASE_URL,
-    HSM_CONFIG.SUPABASE_PUBLISHABLE_KEY
+if (!HSM_CONFIG || !window.supabase) {
+  throw new Error(
+    "config.js atau Supabase tidak ditemukan."
   );
+}
 
+const adminDb = window.supabase.createClient(
+  HSM_CONFIG.SUPABASE_URL,
+  HSM_CONFIG.SUPABASE_PUBLISHABLE_KEY
+);
 
-// ============================================================
-// ELEMENT
-// ============================================================
+/* ============================================================
+   ELEMENT
+============================================================ */
 
-const loginSection =
-  document.getElementById("loginSection");
+const $admin = id => document.getElementById(id);
 
-const dashboard =
-  document.getElementById("dashboard");
+const loginSection = $admin("loginSection");
+const dashboard = $admin("dashboard");
+const adminEmail = $admin("adminEmail");
+const adminPassword = $admin("adminPassword");
+const poolSelect = $admin("poolSelect");
+const loginBtn = $admin("loginBtn");
+const loginMessage = $admin("loginMessage");
+const logoutBtn = $admin("logoutBtn");
+const refreshBtn = $admin("refreshBtn");
+const bookingList = $admin("bookingList");
+const searchInput = $admin("searchInput");
+const dateFilter = $admin("dateFilter");
+const statusFilter = $admin("statusFilter");
+const statPending = $admin("statPending");
+const statPaid = $admin("statPaid");
+const statCompleted = $admin("statCompleted");
+const statCancelled = $admin("statCancelled");
+const dashboardTitle = $admin("dashboardTitle");
+const activePoolBadge = $admin("activePoolBadge");
 
-const adminEmail =
-  document.getElementById("adminEmail");
+/* ============================================================
+   STATE
+============================================================ */
 
-const adminPassword =
-  document.getElementById("adminPassword");
-
-const poolSelect =
-  document.getElementById("poolSelect");
-
-const loginBtn =
-  document.getElementById("loginBtn");
-
-const loginMessage =
-  document.getElementById("loginMessage");
-
-const logoutBtn =
-  document.getElementById("logoutBtn");
-
-const refreshBtn =
-  document.getElementById("refreshBtn");
-
-const bookingList =
-  document.getElementById("bookingList");
-
-const searchInput =
-  document.getElementById("searchInput");
-
-const dateFilter =
-  document.getElementById("dateFilter");
-
-const statusFilter =
-  document.getElementById("statusFilter");
-
-const statPending =
-  document.getElementById("statPending");
-
-const statPaid =
-  document.getElementById("statPaid");
-
-const statCompleted =
-  document.getElementById("statCompleted");
-
-const statCancelled =
-  document.getElementById("statCancelled");
-
-const dashboardTitle =
-  document.getElementById("dashboardTitle");
-
-const activePoolBadge =
-  document.getElementById("activePoolBadge");
-
-
-// ============================================================
-// STATE
-// ============================================================
-
-let bookings = [];
-
-let selectedPool =
-  sessionStorage.getItem(
-    "hsm_admin_pool"
-  ) || "";
-
-let currentAdminUser =
-  null;
-
-
-// ============================================================
-// VALID POOLS
-// ============================================================
+const ADMIN_DAY_KEY = "hsm_admin_login_date_wit";
+const ADMIN_POOL_KEY = "hsm_admin_pool_daily";
 
 const VALID_POOLS = [
   "Sofifi",
@@ -136,98 +79,110 @@ const VALID_POOLS = [
   "Lelilef"
 ];
 
+const WIT_ZONE = "Asia/Jayapura";
 
-// ============================================================
-// HELPERS
-// ============================================================
+let bookings = [];
+
+let selectedPool =
+  localStorage.getItem(ADMIN_POOL_KEY) || "";
+
+let currentAdminUser = null;
+let adminUpdating = false;
+let adminDaySigningOut = false;
+let adminLoading = false;
+
+/* ============================================================
+   WAKTU INDONESIA TIMUR
+============================================================ */
+
+function todayAdminWIT() {
+  const parts = new Intl.DateTimeFormat(
+    "en-CA",
+    {
+      timeZone: WIT_ZONE,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }
+  ).formatToParts(new Date());
+
+  const values = {};
+
+  parts.forEach(part => {
+    values[part.type] = part.value;
+  });
+
+  return (
+    values.year + "-" +
+    values.month + "-" +
+    values.day
+  );
+}
+
+/* ============================================================
+   HELPERS
+============================================================ */
 
 function normalizeStatus(value) {
-
-  const status =
-    String(value || "")
-      .trim()
-      .toLowerCase();
-
+  const status = String(value || "")
+    .trim()
+    .toLowerCase();
 
   if (
-    status === "paid" ||
-    status === "success" ||
-    status === "settled" ||
-    status === "lunas"
+    ["paid", "success", "settled", "lunas"]
+      .includes(status)
   ) {
     return "paid";
   }
 
-
   if (
-    status === "completed" ||
-    status === "selesai"
+    ["completed", "selesai"]
+      .includes(status)
   ) {
     return "completed";
   }
 
-
   if (
-    status === "cancelled" ||
-    status === "canceled" ||
-    status === "dibatalkan" ||
-    status === "failed" ||
-    status === "gagal"
+    [
+      "cancelled",
+      "canceled",
+      "dibatalkan",
+      "failed",
+      "gagal"
+    ].includes(status)
   ) {
     return "cancelled";
   }
 
-
   return "pending";
 }
 
+function statusLabel(value) {
+  const labels = {
+    pending: "MENUNGGU",
+    paid: "LUNAS",
+    completed: "SELESAI",
+    cancelled: "DIBATALKAN"
+  };
 
-function statusLabel(status) {
-
-  const normalized =
-    normalizeStatus(status);
-
-
-  if (normalized === "paid") {
-    return "LUNAS";
-  }
-
-  if (normalized === "completed") {
-    return "SELESAI";
-  }
-
-  if (normalized === "cancelled") {
-    return "DIBATALKAN";
-  }
-
-  return "MENUNGGU";
+  return labels[normalizeStatus(value)];
 }
-
 
 function rupiah(value) {
-
   return "Rp" +
-    Number(value || 0)
-      .toLocaleString("id-ID");
+    Number(value || 0).toLocaleString("id-ID");
 }
 
-
 function formatDate(value) {
+  if (!value) return "-";
 
-  if (!value) {
-    return "-";
-  }
-
-
-  const parts =
-    String(value)
-      .split("-");
-
+  const parts = String(value)
+    .slice(0, 10)
+    .split("-");
 
   if (parts.length !== 3) {
-    return value;
+    return String(value);
   }
-
 
   const months = [
     "Januari",
@@ -244,2873 +199,2272 @@ function formatDate(value) {
     "Desember"
   ];
 
-
-  const year =
-    parts[0];
-
-  const month =
-    Number(parts[1]);
-
-  const day =
-    Number(parts[2]);
-
-
-  if (
-    !month ||
-    month < 1 ||
-    month > 12
-  ) {
-    return value;
-  }
-
+  const month = months[Number(parts[1]) - 1] || "-";
 
   return (
-    day +
-    " " +
-    months[month - 1] +
-    " " +
-    year
+    Number(parts[2]) + " " +
+    month + " " +
+    parts[0]
   );
 }
-
 
 function formatTime(value) {
+  if (!value) return "-";
 
-  if (!value) {
-    return "-";
-  }
-
-
-  return (
-    String(value)
-      .substring(0, 5) +
-    " WIT"
-  );
+  return String(value).slice(0, 5) + " WIT";
 }
 
-
 function formatCreated(value) {
-
-  if (!value) {
-    return "-";
-  }
-
+  if (!value) return "-";
 
   try {
-
     return new Intl.DateTimeFormat(
       "id-ID",
       {
-        timeZone:
-          "Asia/Jayapura",
-
-        day:
-          "2-digit",
-
-        month:
-          "2-digit",
-
-        year:
-          "numeric",
-
-        hour:
-          "2-digit",
-
-        minute:
-          "2-digit"
+        timeZone: WIT_ZONE,
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
       }
-    ).format(
-      new Date(value)
-    ) + " WIT";
-
-  }
-
-  catch {
-
-    return value;
+    ).format(new Date(value)) + " WIT";
+  } catch {
+    return String(value);
   }
 }
-
 
 function escapeHtml(value) {
-
   return String(value ?? "")
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
-
 
 function normalizePhone(value) {
+  let phone = String(value || "")
+    .replace(/\D/g, "");
 
-  let phone =
-    String(value || "")
-      .replace(/\D/g, "");
-
-
-  if (
-    phone.startsWith("0")
-  ) {
-
-    phone =
-      "62" +
-      phone.substring(1);
-
+  if (phone.startsWith("0")) {
+    phone = "62" + phone.slice(1);
+  } else if (phone.startsWith("8")) {
+    phone = "62" + phone;
   }
 
-
-  else if (
-    phone.startsWith("8")
-  ) {
-
-    phone =
-      "62" + phone;
-
-  }
-
-
-  return phone;
+  return /^628\d{8,11}$/.test(phone)
+    ? phone
+    : "";
 }
 
-
-// ============================================================
-// VEHICLE
-// ============================================================
+/* ============================================================
+   ARMADA
+============================================================ */
 
 function getVehicle(booking) {
-
-  // ==========================================================
-  // UTAMAKAN ARMADA YANG SUDAH TERSIMPAN DI BOOKING
-  // ==========================================================
-
-  if (
-    booking.vehicle &&
-    String(
-      booking.vehicle
-    ).trim()
-  ) {
-
-    return String(
-      booking.vehicle
-    ).trim();
+  if (String(booking.vehicle || "").trim()) {
+    return String(booking.vehicle).trim();
   }
 
+  const origin = String(booking.origin || "")
+    .trim()
+    .toLowerCase();
 
-  const origin =
-    String(
-      booking.origin || ""
-    )
-      .trim()
-      .toLowerCase();
+  const time = String(
+    booking.departure_time || ""
+  ).slice(0, 5);
 
-
-  const time =
-    String(
-      booking.departure_time || ""
-    )
-      .substring(0, 5);
-
-
-  // ==========================================================
-  // SOFIFI -> WEDA / LELILEF
-  // ==========================================================
-
-  if (
-    origin === "sofifi" &&
-    time === "09:00"
-  ) {
-    return "HSM-01";
+  if (origin === "sofifi") {
+    return {
+      "09:00": "HSM-01",
+      "13:00": "HSM-02"
+    }[time] || "-";
   }
 
-
-  if (
-    origin === "sofifi" &&
-    time === "13:00"
-  ) {
-    return "HSM-02";
+  if (origin === "loleo") {
+    return {
+      "09:30": "HSM-01",
+      "13:30": "HSM-02"
+    }[time] || "-";
   }
 
-
-  // ==========================================================
-  // LOLEO -> WEDA / LELILEF
-  //
-  // ARAH SOFIFI -> LELILEF:
-  // 09:30 = HSM-01
-  // 13:30 = HSM-02
-  // ==========================================================
-
-  if (
-    origin === "loleo" &&
-    time === "09:30"
-  ) {
-    return "HSM-01";
+  if (origin === "lelilef") {
+    return {
+      "09:00": "HSM-02",
+      "13:00": "HSM-01"
+    }[time] || "-";
   }
 
-
-  if (
-    origin === "loleo" &&
-    time === "13:30"
-  ) {
-    return "HSM-02";
+  if (origin === "weda") {
+    return {
+      "09:45": "HSM-02",
+      "09:00": "HSM-02",
+      "13:45": "HSM-01",
+      "13:00": "HSM-01",
+      "11:30": "HSM-01",
+      "15:30": "HSM-02"
+    }[time] || "-";
   }
-
-
-  // ==========================================================
-  // LELILEF -> WEDA / LOLEO / SOFIFI
-  //
-  // 09:00 = HSM-02
-  // 13:00 = HSM-01
-  // ==========================================================
-
-  if (
-    origin === "lelilef" &&
-    time === "09:00"
-  ) {
-    return "HSM-02";
-  }
-
-
-  if (
-    origin === "lelilef" &&
-    time === "13:00"
-  ) {
-    return "HSM-01";
-  }
-
-
-  // ==========================================================
-  // WEDA -> LOLEO / SOFIFI
-  //
-  // JADWAL BARU:
-  // 09:45 = HSM-02
-  // 13:45 = HSM-01
-  //
-  // JAM LAMA 09:00 / 13:00 TETAP DIDUKUNG
-  // AGAR BOOKING LAMA TIDAK BERMASALAH.
-  // ==========================================================
-
-  if (
-    origin === "weda" &&
-    (
-      time === "09:45" ||
-      time === "09:00"
-    )
-  ) {
-    return "HSM-02";
-  }
-
-
-  if (
-    origin === "weda" &&
-    (
-      time === "13:45" ||
-      time === "13:00"
-    )
-  ) {
-    return "HSM-01";
-  }
-
-
-  // ==========================================================
-  // WEDA -> LELILEF
-  //
-  // ARAH SOFIFI -> LELILEF:
-  // 11:30 = HSM-01
-  // 15:30 = HSM-02
-  // ==========================================================
-
-  if (
-    origin === "weda" &&
-    time === "11:30"
-  ) {
-    return "HSM-01";
-  }
-
-
-  if (
-    origin === "weda" &&
-    time === "15:30"
-  ) {
-    return "HSM-02";
-  }
-
 
   return "-";
 }
 
+/* ============================================================
+   LOGIN UI
+============================================================ */
 
-// ============================================================
-// LOGIN MESSAGE
-// ============================================================
+function setLoginMessage(message, type = "") {
+  loginMessage.textContent = message;
 
-function setLoginMessage(
-  message,
-  type = ""
-) {
-
-  if (!loginMessage) {
-    return;
-  }
-
-
-  loginMessage.textContent =
-    message;
-
-
-  if (type === "error") {
-
-    loginMessage.style.color =
-      "#dc2626";
-
-  }
-
-  else if (type === "success") {
-
-    loginMessage.style.color =
-      "#16a34a";
-
-  }
-
-  else {
-
-    loginMessage.style.color =
-      "#374151";
-
-  }
+  loginMessage.style.color =
+    type === "error"
+      ? "#dc2626"
+      : type === "success"
+        ? "#16a34a"
+        : "#374151";
 }
-
-
-// ============================================================
-// POOL
-// ============================================================
 
 function isValidPool(pool) {
-
-  return VALID_POOLS.includes(
-    pool
-  );
+  return VALID_POOLS.includes(pool);
 }
 
-
 function setSelectedPool(pool) {
+  if (!isValidPool(pool)) return false;
 
-  if (!isValidPool(pool)) {
-    return false;
-  }
+  selectedPool = pool;
 
+  localStorage.setItem(ADMIN_POOL_KEY, pool);
 
-  selectedPool =
-    pool;
-
-
-  sessionStorage.setItem(
-    "hsm_admin_pool",
-    pool
-  );
-
-
-  if (poolSelect) {
-
-    poolSelect.value =
-      pool;
-  }
-
+  poolSelect.value = pool;
 
   updatePoolUI();
-
 
   return true;
 }
 
-
 function updatePoolUI() {
+  if (!isValidPool(selectedPool)) return;
 
-  if (
-    !selectedPool ||
-    !isValidPool(
-      selectedPool
-    )
-  ) {
-    return;
-  }
+  dashboardTitle.textContent =
+    "Admin Pool " + selectedPool;
 
-
-  if (dashboardTitle) {
-
-    dashboardTitle.textContent =
-      "Admin Pool " +
-      selectedPool;
-  }
-
-
-  if (activePoolBadge) {
-
-    activePoolBadge.textContent =
-      "POOL " +
-      selectedPool.toUpperCase();
-  }
+  activePoolBadge.textContent =
+    "POOL " + selectedPool.toUpperCase();
 }
-
-
-// ============================================================
-// SHOW LOGIN
-// ============================================================
 
 function showLogin() {
-
-  if (loginSection) {
-    loginSection.style.display =
-      "flex";
-  }
-
-
-  if (dashboard) {
-    dashboard.style.display =
-      "none";
-  }
-
-
-  if (logoutBtn) {
-    logoutBtn.style.display =
-      "none";
-  }
+  loginSection.style.display = "flex";
+  dashboard.style.display = "none";
+  logoutBtn.style.display = "none";
 }
 
-
-// ============================================================
-// SHOW DASHBOARD
-// ============================================================
-
 function showDashboard() {
-
-  if (loginSection) {
-    loginSection.style.display =
-      "none";
-  }
-
-
-  if (dashboard) {
-    dashboard.style.display =
-      "block";
-  }
-
-
-  if (logoutBtn) {
-    logoutBtn.style.display =
-      "inline-flex";
-  }
-
+  loginSection.style.display = "none";
+  dashboard.style.display = "block";
+  logoutBtn.style.display = "inline-flex";
 
   updatePoolUI();
 }
 
-
-// ============================================================
-// VERIFY ADMIN
-// ============================================================
+/* ============================================================
+   VERIFIKASI ADMIN
+============================================================ */
 
 async function verifyAdmin() {
-
   const {
     data: userData,
     error: userError
-  } =
-    await adminDb.auth.getUser();
+  } = await adminDb.auth.getUser();
 
-
-  if (
-    userError ||
-    !userData?.user
-  ) {
-
+  if (userError || !userData?.user) {
     return false;
   }
 
+  const user = userData.user;
 
-  const user =
-    userData.user;
-
-
-  currentAdminUser =
-    user;
-
-
-  // ==========================================================
-  // CHECK hsm_admins
-  // ==========================================================
+  currentAdminUser = user;
 
   const {
     data,
     error
-  } =
-    await adminDb
-      .from("hsm_admins")
-      .select("*")
-      .eq(
-        "user_id",
-        user.id
-      )
-      .maybeSingle();
+  } = await adminDb
+    .from("hsm_admins")
+    .select("*")
+    .eq("user_id", user.id)
+    .maybeSingle();
 
-
-  if (
-    !error &&
-    data
-  ) {
-
+  if (!error && data) {
     return true;
   }
 
+  try {
+    const result = await adminDb.rpc("is_hsm_admin");
 
-  // ==========================================================
-  // FALLBACK RPC
-  // ==========================================================
+    return (
+      !result.error &&
+      result.data === true
+    );
+  } catch {
+    return false;
+  }
+}
+
+/* ============================================================
+   LOGIN HARIAN SAMPAI 00.00 WIT
+============================================================ */
+
+function clearDailyLogin() {
+  localStorage.removeItem(ADMIN_DAY_KEY);
+  localStorage.removeItem(ADMIN_POOL_KEY);
+
+  sessionStorage.removeItem("hsm_admin_pool");
+
+  selectedPool = "";
+}
+
+async function expireDailyAdmin() {
+  if (adminDaySigningOut) return;
+
+  adminDaySigningOut = true;
 
   try {
+    await adminDb.auth.signOut();
+  } catch (error) {
+    console.warn("ADMIN EXPIRE:", error);
+  } finally {
+    clearDailyLogin();
 
-    const {
-      data: rpcData,
-      error: rpcError
-    } =
-      await adminDb.rpc(
-        "is_hsm_admin"
-      );
+    bookings = [];
+    currentAdminUser = null;
 
+    closeTicketModal();
+    showLogin();
 
-    if (
-      !rpcError &&
-      rpcData === true
-    ) {
-
-      return true;
-    }
-
-  }
-
-  catch (rpcError) {
-
-    console.warn(
-      "RPC ADMIN CHECK:",
-      rpcError
+    setLoginMessage(
+      "Hari WIT telah berganti. Silakan login kembali.",
+      "error"
     );
+
+    adminDaySigningOut = false;
+  }
+}
+
+async function ensureAdminDay() {
+  const loginDay = localStorage.getItem(
+    ADMIN_DAY_KEY
+  );
+
+  if (loginDay === todayAdminWIT()) {
+    return true;
   }
 
+  await expireDailyAdmin();
 
   return false;
 }
 
-
-// ============================================================
-// LOGIN
-// ============================================================
+/* ============================================================
+   LOGIN
+============================================================ */
 
 async function loginAdmin() {
+  if (adminUpdating) return;
 
-  const email =
-    adminEmail
-      ? adminEmail.value.trim()
-      : "";
-
-
-  const password =
-    adminPassword
-      ? adminPassword.value
-      : "";
-
-
-  const pool =
-    poolSelect
-      ? poolSelect.value
-      : "";
-
-
-  // ==========================================================
-  // VALIDATION
-  // ==========================================================
-
-  if (!email) {
-
-    setLoginMessage(
-      "Masukkan email admin.",
-      "error"
-    );
-
-    adminEmail?.focus();
-
-    return;
-  }
-
-
-  if (!password) {
-
-    setLoginMessage(
-      "Masukkan password.",
-      "error"
-    );
-
-    adminPassword?.focus();
-
-    return;
-  }
-
+  const email = adminEmail.value.trim();
+  const password = adminPassword.value;
+  const pool = poolSelect.value;
 
   if (
-    !pool ||
+    !email ||
+    !password ||
     !isValidPool(pool)
   ) {
-
     setLoginMessage(
-      "Pilih pool terlebih dahulu.",
+      "Masukkan email, password, dan pilih pool yang benar.",
       "error"
     );
-
-    poolSelect?.focus();
-
     return;
   }
 
-
-  if (loginBtn) {
-
-    loginBtn.disabled =
-      true;
-
-    loginBtn.textContent =
-      "Memeriksa...";
-  }
-
-
-  setLoginMessage(
-    "Memeriksa akun..."
-  );
-
+  loginBtn.disabled = true;
+  loginBtn.textContent = "Memeriksa...";
 
   try {
-
     const {
       data,
       error
-    } =
-      await adminDb.auth
-        .signInWithPassword({
-          email:
-            email,
+    } = await adminDb.auth.signInWithPassword({
+      email,
+      password
+    });
 
-          password:
-            password
-        });
+    if (error) throw error;
 
-
-    if (error) {
-
-      throw error;
-    }
-
-
-    if (
-      !data?.user
-    ) {
-
+    if (!data?.user) {
       throw new Error(
         "Akun admin tidak ditemukan."
       );
     }
 
-
-    // ========================================================
-    // VERIFY ADMIN ROLE
-    // ========================================================
-
-    const allowed =
-      await verifyAdmin();
-
+    const allowed = await verifyAdmin();
 
     if (!allowed) {
-
-      await adminDb.auth
-        .signOut();
-
+      await adminDb.auth.signOut();
 
       throw new Error(
         "Akun ini tidak memiliki akses admin HSM."
       );
     }
 
+    setSelectedPool(pool);
 
-    // ========================================================
-    // SAVE POOL
-    // ========================================================
-
-    setSelectedPool(
-      pool
+    localStorage.setItem(
+      ADMIN_DAY_KEY,
+      todayAdminWIT()
     );
 
+    adminPassword.value = "";
+
+    showDashboard();
 
     setLoginMessage(
       "Login berhasil.",
       "success"
     );
 
-
-    showDashboard();
-
-
     await loadBookings();
 
-  }
-
-  catch (error) {
-
-    console.error(
-      "LOGIN ERROR:",
-      error
-    );
-
-
-    let message =
-      String(
-        error?.message ||
-        ""
-      );
-
-
-    const lower =
-      message.toLowerCase();
-
-
-    if (
-      lower.includes(
-        "invalid login credentials"
-      ) ||
-      lower.includes(
-        "invalid credentials"
-      )
-    ) {
-
-      message =
-        "Email atau password salah.";
-    }
-
-
-    else if (
-      lower.includes(
-        "email not confirmed"
-      )
-    ) {
-
-      message =
-        "Email admin belum dikonfirmasi.";
-    }
-
-
-    else if (!message) {
-
-      message =
-        "Login gagal.";
-    }
-
+  } catch (error) {
+    showLogin();
 
     setLoginMessage(
-      message,
+      /invalid login credentials/i.test(error.message)
+        ? "Email atau password salah."
+        : error.message || "Login gagal.",
       "error"
     );
 
-
-    showLogin();
-
-  }
-
-  finally {
-
-    if (loginBtn) {
-
-      loginBtn.disabled =
-        false;
-
-      loginBtn.textContent =
-        "Masuk";
-    }
-
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.textContent = "Masuk";
   }
 }
 
-
-// ============================================================
-// LOGOUT
-// ============================================================
+/* ============================================================
+   LOGOUT MANUAL
+============================================================ */
 
 async function logoutAdmin() {
+  clearDailyLogin();
 
-  try {
+  bookings = [];
+  currentAdminUser = null;
 
-    await adminDb.auth
-      .signOut();
+  closeTicketModal();
 
-  }
-
-  catch (error) {
-
-    console.warn(
-      "LOGOUT:",
-      error
-    );
-  }
-
-
-  currentAdminUser =
-    null;
-
-
-  selectedPool =
-    "";
-
-
-  sessionStorage.removeItem(
-    "hsm_admin_pool"
-  );
-
-
-  bookings =
-    [];
-
-
-  if (adminPassword) {
-    adminPassword.value =
-      "";
-  }
-
-
-  if (poolSelect) {
-    poolSelect.value =
-      "";
-  }
-
-
-  setLoginMessage(
-    ""
-  );
-
+  adminPassword.value = "";
+  poolSelect.value = "";
 
   showLogin();
+
+  setLoginMessage(
+    "Berhasil keluar dari akun.",
+    "success"
+  );
+
+  try {
+    await adminDb.auth.signOut();
+  } catch (error) {
+    console.warn("LOGOUT:", error);
+  }
 }
 
-
-// ============================================================
-// LOAD BOOKINGS
-// ============================================================
+/* ============================================================
+   LOAD BOOKINGS
+============================================================ */
 
 async function loadBookings() {
-
   if (
-    !selectedPool ||
-    !isValidPool(
-      selectedPool
-    )
+    adminLoading ||
+    !isValidPool(selectedPool)
   ) {
-
-    showLogin();
-
-
-    setLoginMessage(
-      "Pilih pool terlebih dahulu.",
-      "error"
-    );
-
-
     return;
   }
 
+  if (!await ensureAdminDay()) return;
 
-  if (bookingList) {
+  adminLoading = true;
 
-    bookingList.innerHTML = `
-      <div class="empty">
-        Memuat booking Pool
-        ${escapeHtml(selectedPool)}...
-      </div>
-    `;
-  }
-
+  bookingList.innerHTML = `
+    <div class="empty">
+      Memuat booking Pool
+      ${escapeHtml(selectedPool)}...
+    </div>
+  `;
 
   try {
+    let query = adminDb
+      .from("bookings")
+      .select("*")
+      .eq("origin", selectedPool);
 
-    let query =
-      adminDb
-        .from("bookings")
-        .select("*");
-
-
-    // ========================================================
-    // FILTER BERDASARKAN POOL / ORIGIN
-    // ========================================================
-
-    query =
-      query.eq(
-        "origin",
-        selectedPool
+    if (dateFilter.value) {
+      query = query.eq(
+        "travel_date",
+        dateFilter.value
       );
-
-
-    // ========================================================
-    // FILTER TANGGAL
-    // ========================================================
-
-    const selectedDate =
-      dateFilter
-        ? dateFilter.value
-        : "";
-
-
-    if (selectedDate) {
-
-      query =
-        query.eq(
-          "travel_date",
-          selectedDate
-        );
     }
-
-
-    // ========================================================
-    // ORDER
-    // ========================================================
-
-    query =
-      query.order(
-        "created_at",
-        {
-          ascending: false
-        }
-      );
-
 
     const {
       data,
       error
-    } =
-      await query;
+    } = await query.order(
+      "created_at",
+      { ascending: false }
+    );
 
+    if (error) throw error;
 
-    if (error) {
-      throw error;
-    }
-
-
-    bookings =
-      data || [];
-
+    bookings = data || [];
 
     renderBookings();
 
-  }
-
-  catch (error) {
-
-    console.error(
-      "LOAD BOOKINGS ERROR:",
-      error
-    );
-
-
-    if (bookingList) {
-
-      bookingList.innerHTML = `
-        <div class="empty">
-          <strong>
-            Gagal memuat booking.
-          </strong>
-
-          <br><br>
-
-          ${escapeHtml(
-            error.message ||
-            "Terjadi kesalahan."
-          )}
-        </div>
-      `;
-    }
-
-  }
-}
-
-
-// ============================================================
-// FILTER BOOKINGS
-// ============================================================
-
-function getFilteredBookings() {
-
-  const search =
-    String(
-      searchInput?.value ||
-      ""
-    )
-      .trim()
-      .toLowerCase();
-
-
-  const status =
-    String(
-      statusFilter?.value ||
-      ""
-    )
-      .trim()
-      .toLowerCase();
-
-
-  return bookings.filter(
-    booking => {
-
-      const bookingStatus =
-        normalizeStatus(
-          booking.payment_status
-        );
-
-
-      if (
-        status &&
-        bookingStatus !==
-          status
-      ) {
-
-        return false;
-      }
-
-
-      if (!search) {
-        return true;
-      }
-
-
-      const haystack = [
-        booking.booking_code,
-        booking.passenger_name,
-        booking.phone,
-        booking.origin,
-        booking.destination,
-        booking.travel_date,
-        booking.departure_time,
-        booking.vehicle,
-        booking.seat_number
-      ]
-        .join(" ")
-        .toLowerCase();
-
-
-      return haystack.includes(
-        search
-      );
-
-    }
-  );
-}
-
-
-// ============================================================
-// STATS
-// ============================================================
-
-function updateStats() {
-
-  let pending =
-    0;
-
-  let paid =
-    0;
-
-  let completed =
-    0;
-
-  let cancelled =
-    0;
-
-
-  bookings.forEach(
-    booking => {
-
-      const status =
-        normalizeStatus(
-          booking.payment_status
-        );
-
-
-      if (
-        status === "paid"
-      ) {
-        paid++;
-      }
-
-
-      else if (
-        status === "completed"
-      ) {
-        completed++;
-      }
-
-
-      else if (
-        status === "cancelled"
-      ) {
-        cancelled++;
-      }
-
-
-      else {
-        pending++;
-      }
-
-    }
-  );
-
-
-  if (statPending) {
-    statPending.textContent =
-      pending;
-  }
-
-
-  if (statPaid) {
-    statPaid.textContent =
-      paid;
-  }
-
-
-  if (statCompleted) {
-    statCompleted.textContent =
-      completed;
-  }
-
-
-  if (statCancelled) {
-    statCancelled.textContent =
-      cancelled;
-  }
-}
-
-
-// ============================================================
-// RENDER BOOKINGS
-// ============================================================
-
-function renderBookings() {
-
-  updateStats();
-
-
-  if (!bookingList) {
-    return;
-  }
-
-
-  const rows =
-    getFilteredBookings();
-
-
-  if (!rows.length) {
+  } catch (error) {
+    console.error("LOAD BOOKINGS:", error);
 
     bookingList.innerHTML = `
       <div class="empty">
-        Tidak ada booking untuk
-        <strong>
-          Pool ${escapeHtml(
-            selectedPool
-          )}
-        </strong>
-        dengan filter yang dipilih.
+        Gagal memuat booking.<br>
+        ${escapeHtml(error.message)}
       </div>
     `;
 
+  } finally {
+    adminLoading = false;
+  }
+}
+
+/* ============================================================
+   FILTER
+============================================================ */
+
+function getFilteredBookings() {
+  const search = searchInput.value
+    .trim()
+    .toLowerCase();
+
+  const status = statusFilter.value;
+
+  return bookings.filter(booking => {
+    if (
+      status &&
+      normalizeStatus(booking.payment_status) !== status
+    ) {
+      return false;
+    }
+
+    if (!search) return true;
+
+    const haystack = [
+      booking.booking_code,
+      booking.passenger_name,
+      booking.phone,
+      booking.origin,
+      booking.destination,
+      booking.travel_date,
+      booking.departure_time,
+      booking.vehicle,
+      booking.seat_number
+    ].join(" ").toLowerCase();
+
+    return haystack.includes(search);
+  });
+}
+
+/* ============================================================
+   STATS
+============================================================ */
+
+function updateStats() {
+  const count = {
+    pending: 0,
+    paid: 0,
+    completed: 0,
+    cancelled: 0
+  };
+
+  bookings.forEach(booking => {
+    const status = normalizeStatus(
+      booking.payment_status
+    );
+
+    count[status]++;
+  });
+
+  statPending.textContent = count.pending;
+  statPaid.textContent = count.paid;
+  statCompleted.textContent = count.completed;
+  statCancelled.textContent = count.cancelled;
+}
+
+/* ============================================================
+   RENDER BOOKINGS
+============================================================ */
+
+function renderBookings() {
+  updateStats();
+
+  const rows = getFilteredBookings();
+
+  if (!rows.length) {
+    bookingList.innerHTML = `
+      <div class="empty">
+        Tidak ada booking untuk
+        Pool ${escapeHtml(selectedPool)}
+        dengan filter yang dipilih.
+      </div>
+    `;
     return;
   }
 
-
-  bookingList.innerHTML =
-    "";
-
-
-  rows.forEach(
-    booking => {
-
-      const status =
-        normalizeStatus(
-          booking.payment_status
-        );
-
-
-      const vehicle =
-        getVehicle(
-          booking
-        );
-
-
-      const phone =
-        normalizePhone(
-          booking.phone
-        );
-
-
-      const waText =
-        encodeURIComponent(
-          `Halo ${booking.passenger_name || ""}, ` +
-          `terkait booking HSM Transport ` +
-          `${booking.booking_code || ""}.`
-        );
-
-
-      const waURL =
-        phone
-          ? `https://wa.me/${phone}?text=${waText}`
-          : "#";
-
-
-      const card =
-        document.createElement(
-          "article"
-        );
-
-
-      card.className =
-        "booking-card";
-
-
-      // ======================================================
-      // ACTION BUTTONS
-      // ======================================================
-
-      let actions =
-        "";
-
-
-      if (
-        status === "pending"
-      ) {
-
-        actions += `
-          <button
-            type="button"
-            class="btn-paid"
-            data-action="paid"
-            data-id="${escapeHtml(
-              booking.id
-            )}"
-          >
-            Konfirmasi Cash / Lunas
-          </button>
-        `;
-
-
-        actions += `
-          <button
-            type="button"
-            class="btn-cancel"
-            data-action="cancel"
-            data-id="${escapeHtml(
-              booking.id
-            )}"
-          >
-            Batalkan Tiket
-          </button>
-        `;
-      }
-
-
-      else if (
-        status === "paid"
-      ) {
-
-        actions += `
-          <button
-            type="button"
-            class="btn-print"
-            data-action="print"
-            data-id="${escapeHtml(
-              booking.id
-            )}"
-          >
-            Cetak Tiket
-          </button>
-        `;
-
-
-        actions += `
-          <button
-            type="button"
-            class="btn-completed"
-            data-action="completed"
-            data-id="${escapeHtml(
-              booking.id
-            )}"
-          >
-            Perjalanan Selesai
-          </button>
-        `;
-
-
-        actions += `
-          <button
-            type="button"
-            class="btn-cancel"
-            data-action="cancel"
-            data-id="${escapeHtml(
-              booking.id
-            )}"
-          >
-            Batalkan Tiket
-          </button>
-        `;
-      }
-
-
-      else if (
-        status === "completed"
-      ) {
-
-        actions += `
-          <button
-            type="button"
-            class="btn-print"
-            data-action="print"
-            data-id="${escapeHtml(
-              booking.id
-            )}"
-          >
-            Cetak Ulang Tiket
-          </button>
-        `;
-
-
-        actions += `
-          <button
-            type="button"
-            class="btn-cancel"
-            data-action="cancel"
-            data-id="${escapeHtml(
-              booking.id
-            )}"
-          >
-            Batalkan Tiket
-          </button>
-        `;
-      }
-
-
-      else if (
-        status === "cancelled"
-      ) {
-
-        actions += `
-          <button
-            type="button"
-            class="btn-cancel"
-            disabled
-            style="opacity:.6;cursor:not-allowed;"
-          >
-            Tiket Dibatalkan
-          </button>
-        `;
-      }
-
-
-      if (phone) {
-
-        actions += `
-          <a
-            class="btn-wa"
-            href="${waURL}"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            WhatsApp
-          </a>
-        `;
-      }
-
-
-      // ======================================================
-      // CARD
-      // ======================================================
-
-      card.innerHTML = `
-
-        <div class="booking-head">
-
-          <div>
-
-            <div class="booking-code">
-              ${escapeHtml(
-                booking.booking_code ||
-                "-"
-              )}
-            </div>
-
-            <div class="created">
-              Dibuat:
-              ${escapeHtml(
-                formatCreated(
-                  booking.created_at
-                )
-              )}
-            </div>
-
-          </div>
-
-
-          <span
-            class="status ${status}"
-          >
-            ${statusLabel(
-              booking.payment_status
-            )}
-          </span>
-
-        </div>
-
-
-        <div class="booking-grid">
-
-          <div class="info">
-            <span>Penumpang</span>
-            <strong>
-              ${escapeHtml(
-                booking.passenger_name ||
-                "-"
-              )}
-            </strong>
-          </div>
-
-
-          <div class="info">
-            <span>WhatsApp</span>
-            <strong>
-              ${escapeHtml(
-                booking.phone ||
-                "-"
-              )}
-            </strong>
-          </div>
-
-
-          <div class="info">
-            <span>Rute</span>
-            <strong>
-              ${escapeHtml(
-                booking.origin ||
-                "-"
-              )}
-              →
-              ${escapeHtml(
-                booking.destination ||
-                "-"
-              )}
-            </strong>
-          </div>
-
-
-          <div class="info">
-            <span>Tanggal</span>
-            <strong>
-              ${escapeHtml(
-                formatDate(
-                  booking.travel_date
-                )
-              )}
-            </strong>
-          </div>
-
-
-          <div class="info">
-            <span>Jam</span>
-            <strong>
-              ${escapeHtml(
-                formatTime(
-                  booking.departure_time
-                )
-              )}
-            </strong>
-          </div>
-
-
-          <div class="info">
-            <span>Armada</span>
-            <strong>
-              ${escapeHtml(
-                vehicle
-              )}
-            </strong>
-          </div>
-
-
-          <div class="info">
-            <span>Kursi</span>
-            <strong>
-              ${escapeHtml(
-                booking.seat_number ||
-                "-"
-              )}
-            </strong>
-          </div>
-
-
-          <div class="info">
-            <span>Total</span>
-            <strong>
-              ${escapeHtml(
-                rupiah(
-                  booking.total
-                )
-              )}
-            </strong>
-          </div>
-
-
-          <div class="info">
-            <span>Pool</span>
-            <strong>
-              ${escapeHtml(
-                booking.origin ||
-                "-"
-              )}
-            </strong>
-          </div>
-
-
-          <div class="info">
-            <span>Status</span>
-            <strong>
-              ${escapeHtml(
-                statusLabel(
-                  booking.payment_status
-                )
-              )}
-            </strong>
-          </div>
-
-        </div>
-
-
-        <div class="actions">
-          ${actions}
-        </div>
-      `;
-
-
-      bookingList.appendChild(
-        card
+  bookingList.innerHTML = "";
+
+  for (const booking of rows) {
+    const status = normalizeStatus(
+      booking.payment_status
+    );
+
+    const phone = normalizePhone(booking.phone);
+    const vehicle = getVehicle(booking);
+
+    let actions = "";
+
+    const button = (action, cls, label) => `
+      <button
+        type="button"
+        class="${cls}"
+        data-action="${action}"
+        data-id="${escapeHtml(booking.id)}"
+      >
+        ${label}
+      </button>
+    `;
+
+    if (status === "pending") {
+      actions += button(
+        "paid",
+        "btn-paid",
+        "Konfirmasi Cash / Lunas"
       );
 
+      actions += button(
+        "cancel",
+        "btn-cancel",
+        "Batalkan Tiket"
+      );
     }
-  );
+
+    if (
+      status === "paid" ||
+      status === "completed"
+    ) {
+      actions += button(
+        "print",
+        "btn-print",
+        status === "paid"
+          ? "Cetak Tiket"
+          : "Cetak Ulang Tiket"
+      );
+
+      actions += button(
+        "ticket-wa",
+        "btn-wa",
+        "🎫 Kirim Tiket WA"
+      );
+
+      if (status === "paid") {
+        actions += button(
+          "completed",
+          "btn-completed",
+          "Perjalanan Selesai"
+        );
+      }
+
+      actions += button(
+        "cancel",
+        "btn-cancel",
+        "Batalkan Tiket"
+      );
+    }
+
+    if (status === "cancelled") {
+      actions += `
+        <button
+          type="button"
+          class="btn-cancel"
+          disabled
+        >
+          Tiket Dibatalkan
+        </button>
+      `;
+    }
+
+    if (phone) {
+      const message = encodeURIComponent(
+        "Halo " +
+        (booking.passenger_name || "") +
+        ", terkait booking HSM Transport " +
+        (booking.booking_code || "") + "."
+      );
+
+      actions += `
+        <a
+          class="btn-wa"
+          href="https://wa.me/${phone}?text=${message}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          WhatsApp
+        </a>
+      `;
+    }
+
+    const fields = [
+      ["Penumpang", booking.passenger_name],
+      ["WhatsApp", booking.phone],
+      [
+        "Rute",
+        (booking.origin || "-") +
+        " → " +
+        (booking.destination || "-")
+      ],
+      ["Tanggal", formatDate(booking.travel_date)],
+      ["Jam", formatTime(booking.departure_time)],
+      ["Armada", vehicle],
+      ["Kursi", booking.seat_number],
+      ["Total", rupiah(booking.total)],
+      ["Pool", booking.origin],
+      ["Status", statusLabel(status)]
+    ];
+
+    const card = document.createElement("article");
+    card.className = "booking-card";
+
+    card.innerHTML = `
+      <div class="booking-head">
+
+        <div>
+          <div class="booking-code">
+            ${escapeHtml(booking.booking_code || "-")}
+          </div>
+
+          <div class="created">
+            Dibuat:
+            ${escapeHtml(formatCreated(booking.created_at))}
+          </div>
+        </div>
+
+        <span class="status ${status}">
+          ${statusLabel(status)}
+        </span>
+
+      </div>
+
+      <div class="booking-grid">
+        ${fields.map(([name, value]) => `
+          <div class="info">
+            <span>${name}</span>
+            <strong>
+              ${escapeHtml(value ?? "-")}
+            </strong>
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="actions">
+        ${actions}
+      </div>
+    `;
+
+    bookingList.appendChild(card);
+  }
 }
 
-
-// ============================================================
-// GET BOOKING BY ID
-// ============================================================
+/* ============================================================
+   GET BOOKING BY ID
+============================================================ */
 
 function getBookingById(id) {
-
   return bookings.find(
     booking =>
-      String(booking.id) ===
-      String(id)
+      String(booking.id) === String(id)
   );
 }
 
-
-// ============================================================
-// CHANGE STATUS
-// ============================================================
+/* ============================================================
+   UPDATE STATUS
+============================================================ */
 
 async function changeStatus(
   id,
-  newStatus
+  newStatus,
+  expectedStatus
 ) {
+  let query = adminDb
+    .from("bookings")
+    .update({
+      payment_status: newStatus
+    })
+    .eq("id", id);
+
+  if (expectedStatus) {
+    query = query.eq(
+      "payment_status",
+      expectedStatus
+    );
+  }
 
   const {
+    data,
     error
-  } =
-    await adminDb
-      .from("bookings")
-      .update({
-        payment_status:
-          newStatus
-      })
-      .eq(
-        "id",
-        id
-      );
+  } = await query.select(
+    "id,payment_status"
+  );
 
+  if (error) throw error;
 
-  if (error) {
-    throw error;
+  if (!data?.length) {
+    throw new Error(
+      "Status tiket sudah berubah atau akses update ditolak. Refresh data."
+    );
   }
 }
 
-
-// ============================================================
-// CONFIRM PAID + AUTO PRINT
-// ============================================================
+/* ============================================================
+   KONFIRMASI LUNAS
+============================================================ */
 
 async function confirmPaid(id) {
+  if (adminUpdating) return;
 
-  const booking =
-    getBookingById(
-      id
-    );
+  if (!await ensureAdminDay()) return;
 
+  const booking = getBookingById(id);
 
   if (!booking) {
-
-    alert(
-      "Booking tidak ditemukan."
-    );
-
+    alert("Booking tidak ditemukan.");
     return;
   }
 
-
-  const confirmed =
-    confirm(
-      "Konfirmasi pembayaran CASH / LUNAS?\n\n" +
-      "Kode: " +
-      (
-        booking.booking_code ||
-        "-"
-      ) +
-      "\n" +
-      "Penumpang: " +
-      (
-        booking.passenger_name ||
-        "-"
-      ) +
-      "\n" +
-      "Total: " +
-      rupiah(
-        booking.total
-      )
-    );
-
-
-  if (!confirmed) {
+  if (
+    normalizeStatus(booking.payment_status) !== "pending"
+  ) {
+    alert("Status booking sudah berubah.");
     return;
   }
 
+  const confirmed = confirm(
+    "Konfirmasi pembayaran CASH / LUNAS?\n\n" +
+    "Kode: " + (booking.booking_code || "-") + "\n" +
+    "Penumpang: " +
+    (booking.passenger_name || "-") + "\n" +
+    "Total: " + rupiah(booking.total)
+  );
+
+  if (!confirmed) return;
+
+  adminUpdating = true;
 
   try {
-
     await changeStatus(
       id,
-      "paid"
+      "paid",
+      booking.payment_status
     );
 
-
-    booking.payment_status =
-      "paid";
-
+    booking.payment_status = "paid";
 
     renderBookings();
 
-
-    printTicket(
-      id
-    );
-
-
     await loadBookings();
 
-  }
+    const freshBooking =
+      getBookingById(id) || booking;
 
-  catch (error) {
+    try {
+      await openTicketModal(freshBooking);
+    } catch (error) {
+      alert(
+        "Pembayaran SUDAH LUNAS, tetapi gambar tiket " +
+        "gagal disiapkan:\n" +
+        error.message +
+        "\n\nGunakan tombol Kirim Tiket WA " +
+        "untuk mencoba lagi."
+      );
+    }
 
-    console.error(
-      "PAID ERROR:",
-      error
-    );
-
+  } catch (error) {
+    console.error("PAID:", error);
 
     alert(
       "Gagal mengonfirmasi pembayaran:\n" +
-      (
-        error.message ||
-        "Terjadi kesalahan."
-      )
+      error.message
     );
+
+  } finally {
+    adminUpdating = false;
   }
 }
 
-
-// ============================================================
-// COMPLETED
-// ============================================================
+/* ============================================================
+   PERJALANAN SELESAI
+============================================================ */
 
 async function markCompleted(id) {
+  if (adminUpdating) return;
+  if (!await ensureAdminDay()) return;
 
-  const booking =
-    getBookingById(
-      id
-    );
-
-
-  if (!booking) {
-
-    alert(
-      "Booking tidak ditemukan."
-    );
-
-    return;
-  }
-
-
-  const confirmed =
-    confirm(
-      "Tandai perjalanan ini sebagai SELESAI?\n\n" +
-      "Kode: " +
-      (
-        booking.booking_code ||
-        "-"
-      )
-    );
-
-
-  if (!confirmed) {
-    return;
-  }
-
-
-  try {
-
-    await changeStatus(
-      id,
-      "completed"
-    );
-
-
-    await loadBookings();
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "COMPLETED ERROR:",
-      error
-    );
-
-
-    alert(
-      "Gagal mengubah status perjalanan:\n" +
-      (
-        error.message ||
-        "Terjadi kesalahan."
-      )
-    );
-  }
-}
-
-
-// ============================================================
-// CANCEL
-// ============================================================
-
-async function cancelBooking(id) {
-
-  const booking =
-    getBookingById(
-      id
-    );
-
-
-  if (!booking) {
-
-    alert(
-      "Booking tidak ditemukan."
-    );
-
-    return;
-  }
-
-
-  const status =
-    normalizeStatus(
-      booking.payment_status
-    );
-
+  const booking = getBookingById(id);
 
   if (
-    status === "cancelled"
+    !booking ||
+    normalizeStatus(booking.payment_status) !== "paid"
   ) {
-
-    alert(
-      "Tiket ini sudah dibatalkan."
-    );
-
+    alert("Booking tidak dapat diselesaikan.");
     return;
   }
 
-
-  const confirmed =
-    confirm(
-      "Yakin ingin MEMBATALKAN tiket ini?\n\n" +
-      "Kode: " +
-      (
-        booking.booking_code ||
-        "-"
-      ) +
-      "\n" +
-      "Penumpang: " +
-      (
-        booking.passenger_name ||
-        "-"
-      ) +
-      "\n" +
-      "Kursi: " +
-      (
-        booking.seat_number ||
-        "-"
-      ) +
-      "\n\n" +
-      "Setelah dibatalkan:\n" +
-      "- QR tiket tidak berlaku\n" +
-      "- Kursi akan tersedia kembali\n" +
-      "- Data booking tetap tersimpan"
-    );
-
-
-  if (!confirmed) {
+  if (
+    !confirm(
+      "Tandai perjalanan " +
+      (booking.booking_code || "-") +
+      " sebagai SELESAI?"
+    )
+  ) {
     return;
   }
 
+  adminUpdating = true;
 
   try {
-
     await changeStatus(
       id,
-      "cancelled"
-    );
-
-
-    await loadBookings();
-
-
-    alert(
-      "Tiket berhasil dibatalkan.\n\n" +
-      "Kursi dapat digunakan kembali."
-    );
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "CANCEL ERROR:",
-      error
-    );
-
-
-    alert(
-      "Gagal membatalkan tiket:\n" +
-      (
-        error.message ||
-        "Terjadi kesalahan."
-      )
-    );
-  }
-}
-
-
-// ============================================================
-// PRINT TICKET
-// ============================================================
-
-function printTicket(id) {
-
-  const booking =
-    getBookingById(
-      id
-    );
-
-
-  if (!booking) {
-
-    alert(
-      "Booking tidak ditemukan."
-    );
-
-    return;
-  }
-
-
-  const status =
-    normalizeStatus(
+      "completed",
       booking.payment_status
     );
 
+    await loadBookings();
+
+  } catch (error) {
+    alert(
+      "Gagal mengubah status: " + error.message
+    );
+
+  } finally {
+    adminUpdating = false;
+  }
+}
+
+/* ============================================================
+   BATALKAN TIKET
+============================================================ */
+
+async function cancelBooking(id) {
+  if (adminUpdating) return;
+  if (!await ensureAdminDay()) return;
+
+  const booking = getBookingById(id);
+
+  if (
+    !booking ||
+    normalizeStatus(booking.payment_status) === "cancelled"
+  ) {
+    alert(
+      "Tiket sudah dibatalkan atau tidak ditemukan."
+    );
+    return;
+  }
+
+  const confirmed = confirm(
+    "Yakin MEMBATALKAN tiket " +
+    (booking.booking_code || "-") + "?\n\n" +
+    "QR tidak berlaku, kursi kembali tersedia, " +
+    "dan data tidak dihapus."
+  );
+
+  if (!confirmed) return;
+
+  adminUpdating = true;
+
+  try {
+    await changeStatus(
+      id,
+      "cancelled",
+      booking.payment_status
+    );
+
+    await loadBookings();
+
+    alert("Tiket berhasil dibatalkan.");
+
+  } catch (error) {
+    alert(
+      "Gagal membatalkan tiket: " +
+      error.message
+    );
+
+  } finally {
+    adminUpdating = false;
+  }
+}
+
+/* ============================================================
+   LINK QR TIKET
+============================================================ */
+
+function ticketUrl(booking) {
+  return (
+    "https://hsm-transport.vercel.app/tiket.html?kode=" +
+    encodeURIComponent(
+      booking.booking_code || ""
+    )
+  );
+}
+
+/* ============================================================
+   CETAK TIKET THERMAL 58MM
+============================================================ */
+
+function printTicket(id) {
+  const booking = getBookingById(id);
+
+  if (!booking) {
+    alert("Booking tidak ditemukan.");
+    return;
+  }
+
+  if (
+    !["paid", "completed"].includes(
+      normalizeStatus(booking.payment_status)
+    )
+  ) {
+    alert(
+      "Tiket hanya bisa dicetak jika lunas."
+    );
+    return;
+  }
+
+  const printWindow = window.open(
+    "",
+    "_blank",
+    "width=420,height=720"
+  );
+
+  if (!printWindow) {
+    alert(
+      "Izinkan pop-up untuk mencetak tiket."
+    );
+    return;
+  }
+
+  const fields = [
+    ["Penumpang", booking.passenger_name],
+    [
+      "Rute",
+      (booking.origin || "-") +
+      " → " +
+      (booking.destination || "-")
+    ],
+    ["Tanggal", formatDate(booking.travel_date)],
+    ["Jam", formatTime(booking.departure_time)],
+    ["Armada", getVehicle(booking)],
+    ["Kursi", booking.seat_number],
+    ["Tarif", rupiah(booking.total)],
+    ["Pembayaran", "CASH"],
+    ["Status", "LUNAS"]
+  ];
+
+  const code = String(
+    booking.booking_code || "-"
+  );
+
+  printWindow.document.open();
+
+  printWindow.document.write(`
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<title>Tiket ${escapeHtml(code)}</title>
+
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
+
+<style>
+@page{
+  size:58mm auto;
+  margin:2mm;
+}
+*{box-sizing:border-box}
+body{
+  width:54mm;
+  margin:0 auto;
+  color:#000;
+  background:#fff;
+  font-family:Arial,sans-serif;
+  font-size:10px;
+  line-height:1.35;
+}
+.center,.code,.status,.qr-title,.note,.footer{
+  text-align:center;
+}
+.brand{
+  font-size:20px;
+  font-weight:900;
+  letter-spacing:-1px;
+  margin-top:2mm;
+}
+.transport{
+  font-size:9px;
+  letter-spacing:3px;
+  font-weight:900;
+}
+.company,.slogan{
+  font-size:7px;
+  margin-top:3px;
+}
+.line{
+  border-top:1px dashed #000;
+  margin:7px 0;
+}
+.code{
+  font-size:14px;
+  font-weight:900;
+  margin:6px 0 3px;
+}
+.status{
+  font-size:11px;
+  font-weight:900;
+}
+.row{
+  display:flex;
+  gap:6px;
+  justify-content:space-between;
+  margin:4px 0;
+}
+.label{
+  flex:0 0 37%;
+  font-size:8px;
+}
+.value{
+  flex:1;
+  text-align:right;
+  font-size:8px;
+  font-weight:800;
+  overflow-wrap:anywhere;
+}
+.qr-title{
+  font-size:7px;
+  font-weight:800;
+  margin-top:7px;
+}
+#qrcode{
+  display:flex;
+  justify-content:center;
+  margin:5px auto;
+}
+#qrcode img,
+#qrcode canvas{
+  width:25mm!important;
+  height:25mm!important;
+}
+#barcode{
+  display:block;
+  width:46mm;
+  max-height:13mm;
+  margin:3px auto;
+}
+.note,.footer{
+  font-size:7px;
+  line-height:1.45;
+  margin-top:6px;
+}
+</style>
+</head>
+
+<body>
+<div class="center">
+  <div class="brand">HSM</div>
+  <div class="transport">TRANSPORT</div>
+  <div class="company">
+    PT HIDAYAH SARANA MULIA
+  </div>
+  <div class="slogan">
+    Satu Perjalanan, Banyak Cerita
+  </div>
+</div>
+
+<div class="line"></div>
+
+<div class="code">
+  ${escapeHtml(code)}
+</div>
+
+<div class="status">
+  TIKET LUNAS
+</div>
+
+<div class="line"></div>
+
+${fields.map(([label, value]) => `
+  <div class="row">
+    <span class="label">
+      ${label}
+    </span>
+    <span class="value">
+      ${escapeHtml(value ?? "-")}
+    </span>
+  </div>
+`).join("")}
+
+<div class="line"></div>
+
+<div class="qr-title">
+  SCAN UNTUK VERIFIKASI TIKET
+</div>
+
+<div id="qrcode"></div>
+<svg id="barcode"></svg>
+
+<div class="note">
+  <b>PENTING:</b>
+  Simpan tiket ini.
+  QR Code wajib ditunjukkan kepada petugas
+  HSM Transport saat akan naik ke mobil
+  untuk proses scan dan verifikasi tiket.
+  <br><br>
+  Tiket berlaku sesuai tanggal perjalanan.
+  Tiket dibatalkan tidak berlaku.
+</div>
+
+<div class="line"></div>
+
+<div class="footer">
+  HSM Transport<br>
+  081356902006<br>
+  hsm-transport.vercel.app
+</div>
+
+<script>
+window.addEventListener("load",function(){
+  try {
+    new QRCode(
+      document.getElementById("qrcode"),
+      {
+        text:${JSON.stringify(ticketUrl(booking))},
+        width:180,
+        height:180,
+        correctLevel:QRCode.CorrectLevel.H
+      }
+    );
+
+    JsBarcode(
+      "#barcode",
+      ${JSON.stringify(code)},
+      {
+        format:"CODE128",
+        displayValue:true,
+        fontSize:11,
+        height:35,
+        margin:0
+      }
+    );
+
+    setTimeout(function(){
+      window.print();
+    },750);
+
+  } catch(error) {
+    alert(
+      "Gagal menyiapkan QR/barcode: " +
+      error.message
+    );
+  }
+});
+<\/script>
+</body>
+</html>
+  `);
+
+  printWindow.document.close();
+}
+
+/* ============================================================
+   GAMBAR TIKET PNG - HELPER
+============================================================ */
+
+function rounded(
+  context,
+  x,
+  y,
+  width,
+  height,
+  radius,
+  color
+) {
+  context.fillStyle = color;
+  context.beginPath();
+
+  context.roundRect(
+    x,
+    y,
+    width,
+    height,
+    radius
+  );
+
+  context.fill();
+}
+
+function wrapTicketText(
+  context,
+  value,
+  maxWidth
+) {
+  const words = String(value ?? "-")
+    .split(/\s+/);
+
+  const lines = [];
+  let line = "";
+
+  for (const word of words) {
+    const next = line
+      ? line + " " + word
+      : word;
+
+    if (
+      context.measureText(next).width > maxWidth &&
+      line
+    ) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = next;
+    }
+  }
+
+  if (line) lines.push(line);
+
+  return lines.length ? lines : ["-"];
+}
+
+function loadCanvasImage(source) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+
+    image.onload = () => resolve(image);
+
+    image.onerror = () => reject(
+      new Error(
+        "Gambar QR gagal dimuat."
+      )
+    );
+
+    image.src = source;
+  });
+}
+
+/* ============================================================
+   GENERATE QR GAMBAR
+============================================================ */
+
+async function makeQRImage(text) {
+  if (typeof QRCode !== "function") {
+    throw new Error(
+      "Library QR Code belum termuat. Refresh halaman."
+    );
+  }
+
+  const host = document.createElement("div");
+
+  host.style.cssText =
+    "position:fixed;left:-9999px;top:-9999px;" +
+    "background:white";
+
+  document.body.appendChild(host);
+
+  try {
+    new QRCode(
+      host,
+      {
+        text,
+        width:280,
+        height:280,
+        colorDark:"#000000",
+        colorLight:"#ffffff",
+        correctLevel:QRCode.CorrectLevel.H
+      }
+    );
+
+    const canvas = host.querySelector("canvas");
+
+    if (
+      canvas &&
+      canvas.width &&
+      canvas.height
+    ) {
+      return await loadCanvasImage(
+        canvas.toDataURL("image/png")
+      );
+    }
+
+    const image = host.querySelector("img");
+
+    if (image) {
+      if (!image.complete) {
+        await new Promise((resolve, reject) => {
+          image.onload = resolve;
+          image.onerror = reject;
+        });
+      }
+
+      return await loadCanvasImage(image.src);
+    }
+
+    throw new Error(
+      "QR tidak terbentuk."
+    );
+
+  } finally {
+    host.remove();
+  }
+}
+
+/* ============================================================
+   GENERATE TIKET PNG
+============================================================ */
+
+async function createTicketPNG(booking) {
+  const status = normalizeStatus(
+    booking.payment_status
+  );
 
   if (
     status !== "paid" &&
     status !== "completed"
   ) {
-
-    alert(
-      status === "cancelled"
-        ? "Tiket yang dibatalkan tidak dapat dicetak."
-        : "Tiket hanya dapat dicetak setelah pembayaran LUNAS."
+    throw new Error(
+      "Hanya tiket lunas yang dapat dibagikan."
     );
-
-    return;
   }
 
-
-  const vehicle =
-    getVehicle(
-      booking
+  if (typeof JsBarcode !== "function") {
+    throw new Error(
+      "Library barcode belum termuat."
     );
-
-
-  const bookingCodeValue =
-    booking.booking_code ||
-    "-";
-
-
-  const qrURL =
-    "https://hsm-transport.vercel.app/tiket.html?kode=" +
-    encodeURIComponent(
-      bookingCodeValue
-    );
-
-
-  const safeBookingCode =
-    escapeHtml(
-      bookingCodeValue
-    );
-
-
-  const safePassenger =
-    escapeHtml(
-      booking.passenger_name ||
-      "-"
-    );
-
-
-  const safeOrigin =
-    escapeHtml(
-      booking.origin ||
-      "-"
-    );
-
-
-  const safeDestination =
-    escapeHtml(
-      booking.destination ||
-      "-"
-    );
-
-
-  const safeDate =
-    escapeHtml(
-      formatDate(
-        booking.travel_date
-      )
-    );
-
-
-  const safeTime =
-    escapeHtml(
-      formatTime(
-        booking.departure_time
-      )
-    );
-
-
-  const safeVehicle =
-    escapeHtml(
-      vehicle
-    );
-
-
-  const safeSeat =
-    escapeHtml(
-      booking.seat_number ||
-      "-"
-    );
-
-
-  const safeTotal =
-    escapeHtml(
-      rupiah(
-        booking.total
-      )
-    );
-
-
-  const printWindow =
-    window.open(
-      "",
-      "_blank",
-      "width=420,height=720"
-    );
-
-
-  if (!printWindow) {
-
-    alert(
-      "Browser memblokir halaman cetak.\n" +
-      "Izinkan pop-up untuk website admin HSM."
-    );
-
-    return;
   }
 
-
-  printWindow.document.open();
-
-
-  printWindow.document.write(`
-<!DOCTYPE html>
-
-<html lang="id">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
-
-<title>
-Tiket ${safeBookingCode}
-</title>
-
-
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"><\/script>
-
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
-
-
-<style>
-
-@page {
-  size: 58mm auto;
-  margin: 2mm;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  width: 54mm;
-
-  margin: 0 auto;
-
-  background: #ffffff;
-
-  color: #000000;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  font-size: 10px;
-
-  line-height: 1.35;
-}
-
-.ticket {
-  width: 100%;
-}
-
-.center {
-  text-align: center;
-}
-
-.brand {
-  margin-top: 2mm;
-
-  font-size: 20px;
-
-  font-weight: 900;
-
-  letter-spacing: -1px;
-}
-
-.transport {
-  margin-top: -2px;
-
-  font-size: 9px;
-
-  font-weight: 900;
-
-  letter-spacing: 3px;
-}
-
-.company {
-  margin-top: 3px;
-
-  font-size: 7px;
-
-  font-weight: 700;
-}
-
-.slogan {
-  margin-top: 2px;
-
-  font-size: 7px;
-}
-
-.line {
-  margin: 7px 0;
-
-  border-top: 1px dashed #000000;
-}
-
-.code {
-  margin: 6px 0 3px;
-
-  text-align: center;
-
-  font-size: 14px;
-
-  font-weight: 900;
-}
-
-.row {
-  display: flex;
-
-  align-items: flex-start;
-
-  justify-content: space-between;
-
-  gap: 6px;
-
-  margin: 4px 0;
-}
-
-.label {
-  flex: 0 0 37%;
-
-  font-size: 8px;
-}
-
-.value {
-  flex: 1;
-
-  text-align: right;
-
-  font-size: 8px;
-
-  font-weight: 800;
-
-  overflow-wrap: anywhere;
-}
-
-.status {
-  margin-top: 5px;
-
-  text-align: center;
-
-  font-size: 11px;
-
-  font-weight: 900;
-}
-
-.qr-title {
-  margin-top: 7px;
-
-  text-align: center;
-
-  font-size: 7px;
-
-  font-weight: 800;
-}
-
-#qrcode {
-  display: flex;
-
-  justify-content: center;
-
-  margin: 5px auto;
-}
-
-#qrcode img,
-#qrcode canvas {
-  width: 25mm !important;
-
-  height: 25mm !important;
-}
-
-#barcode {
-  display: block;
-
-  width: 46mm;
-
-  max-height: 13mm;
-
-  margin: 3px auto 0;
-}
-
-.note {
-  margin-top: 5px;
-
-  text-align: center;
-
-  font-size: 7px;
-
-  line-height: 1.4;
-}
-
-.footer {
-  margin-top: 6px;
-
-  text-align: center;
-
-  font-size: 7px;
-
-  line-height: 1.5;
-}
-
-@media print {
-
-  body {
-    width: 54mm;
+  const code = String(
+    booking.booking_code || ""
+  );
+
+  if (!code) {
+    throw new Error(
+      "Kode booking kosong."
+    );
   }
 
-}
-
-</style>
-
-</head>
-
-
-<body>
-
-<div class="ticket">
-
-
-  <div class="center">
-
-    <div class="brand">
-      HSM
-    </div>
-
-    <div class="transport">
-      TRANSPORT
-    </div>
-
-    <div class="company">
-      PT HIDAYAH SARANA MULIA
-    </div>
-
-    <div class="slogan">
-      Satu Perjalanan, Banyak Cerita
-    </div>
-
-  </div>
-
-
-  <div class="line"></div>
-
-
-  <div class="code">
-    ${safeBookingCode}
-  </div>
-
-
-  <div class="status">
-    TIKET LUNAS
-  </div>
-
-
-  <div class="line"></div>
-
-
-  <div class="row">
-    <span class="label">
-      Penumpang
-    </span>
-
-    <span class="value">
-      ${safePassenger}
-    </span>
-  </div>
-
-
-  <div class="row">
-    <span class="label">
-      Rute
-    </span>
-
-    <span class="value">
-      ${safeOrigin}
-      →
-      ${safeDestination}
-    </span>
-  </div>
-
-
-  <div class="row">
-    <span class="label">
-      Tanggal
-    </span>
-
-    <span class="value">
-      ${safeDate}
-    </span>
-  </div>
-
-
-  <div class="row">
-    <span class="label">
-      Jam
-    </span>
-
-    <span class="value">
-      ${safeTime}
-    </span>
-  </div>
-
-
-  <div class="row">
-    <span class="label">
-      Armada
-    </span>
-
-    <span class="value">
-      ${safeVehicle}
-    </span>
-  </div>
-
-
-  <div class="row">
-    <span class="label">
-      Kursi
-    </span>
-
-    <span class="value">
-      ${safeSeat}
-    </span>
-  </div>
-
-
-  <div class="row">
-    <span class="label">
-      Tarif
-    </span>
-
-    <span class="value">
-      ${safeTotal}
-    </span>
-  </div>
-
-
-  <div class="row">
-    <span class="label">
-      Pembayaran
-    </span>
-
-    <span class="value">
-      CASH
-    </span>
-  </div>
-
-
-  <div class="row">
-    <span class="label">
-      Status
-    </span>
-
-    <span class="value">
-      LUNAS
-    </span>
-  </div>
-
-
-  <div class="line"></div>
-
-
-  <div class="qr-title">
-    SCAN UNTUK VERIFIKASI TIKET
-  </div>
-
-
-  <div id="qrcode"></div>
-
-
-  <svg id="barcode"></svg>
-
-
-  <div class="note">
-    Tiket hanya berlaku sesuai tanggal perjalanan.
-    Tiket yang telah dibatalkan tidak berlaku
-    meskipun struk masih dimiliki penumpang.
-  </div>
-
-
-  <div class="line"></div>
-
-
-  <div class="footer">
-
-    HSM Transport
-
-    <br>
-
-    081356902006
-
-    <br>
-
-    hsm-transport.vercel.app
-
-  </div>
-
-</div>
-
-
-<script>
-
-window.addEventListener(
-  "load",
-  function () {
-
-    try {
-
-      new QRCode(
-        document.getElementById(
-          "qrcode"
-        ),
-        {
-          text:
-            ${JSON.stringify(qrURL)},
-
-          width:
-            180,
-
-          height:
-            180,
-
-          correctLevel:
-            QRCode.CorrectLevel.H
+  const qrImage = await makeQRImage(
+    ticketUrl(booking)
+  );
+
+  const barcode = document.createElement(
+    "canvas"
+  );
+
+  JsBarcode(
+    barcode,
+    code,
+    {
+      format:"CODE128",
+      displayValue:true,
+      background:"#ffffff",
+      lineColor:"#000000",
+      fontSize:25,
+      height:83,
+      margin:10
+    }
+  );
+
+  const canvas = document.createElement(
+    "canvas"
+  );
+
+  canvas.width = 660;
+  canvas.height = 1600;
+
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) {
+    throw new Error(
+      "Canvas tidak tersedia."
+    );
+  }
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  ctx.fillStyle = "#0754a6";
+  ctx.fillRect(0, 0, 660, 18);
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#111827";
+
+  ctx.font = "900 50px Arial";
+  ctx.fillText("HSM", 330, 91);
+
+  ctx.font = "bold 21px Arial";
+  ctx.fillText(
+    "T R A N S P O R T",
+    330,
+    123
+  );
+
+  ctx.font = "bold 17px Arial";
+  ctx.fillText(
+    "PT HIDAYAH SARANA MULIA",
+    330,
+    156
+  );
+
+  ctx.font = "15px Arial";
+  ctx.fillText(
+    "Satu Perjalanan, Banyak Cerita",
+    330,
+    182
+  );
+
+  ctx.strokeStyle = "#64748b";
+  ctx.setLineDash([8, 7]);
+  ctx.beginPath();
+  ctx.moveTo(43, 207);
+  ctx.lineTo(617, 207);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.font = "bold 32px Arial";
+  ctx.fillText(code, 330, 250);
+
+  rounded(
+    ctx,
+    224,
+    265,
+    212,
+    46,
+    10,
+    "#e5f7eb"
+  );
+
+  ctx.fillStyle = "#167a43";
+  ctx.font = "bold 24px Arial";
+  ctx.fillText(
+    "TIKET LUNAS",
+    330,
+    296
+  );
+
+  const rows = [
+    [
+      "Penumpang",
+      booking.passenger_name || "-"
+    ],
+    [
+      "Rute",
+      (booking.origin || "-") +
+      " → " +
+      (booking.destination || "-")
+    ],
+    [
+      "Tanggal",
+      formatDate(booking.travel_date)
+    ],
+    [
+      "Jam",
+      formatTime(booking.departure_time)
+    ],
+    [
+      "Armada",
+      getVehicle(booking)
+    ],
+    [
+      "Kursi",
+      String(booking.seat_number ?? "-")
+    ],
+    [
+      "Tarif",
+      rupiah(booking.total)
+    ],
+    [
+      "Pembayaran",
+      "CASH"
+    ],
+    [
+      "Status",
+      "LUNAS"
+    ]
+  ];
+
+  let y = 341;
+
+  for (const [label, value] of rows) {
+    ctx.textAlign = "left";
+    ctx.font = "18px Arial";
+    ctx.fillStyle = "#64748b";
+    ctx.fillText(label, 45, y);
+
+    ctx.font = "bold 19px Arial";
+    ctx.fillStyle = "#111827";
+
+    const lines = wrapTicketText(
+      ctx,
+      value,
+      360
+    );
+
+    lines.forEach((line, index) => {
+      ctx.textAlign = "right";
+      ctx.fillText(
+        line,
+        615,
+        y + index * 23
+      );
+    });
+
+    y += Math.max(
+      39,
+      lines.length * 24 + 11
+    );
+  }
+
+  ctx.strokeStyle = "#b9c4d2";
+  ctx.setLineDash([8, 7]);
+  ctx.beginPath();
+  ctx.moveTo(43, y);
+  ctx.lineTo(617, y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  y += 30;
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#111827";
+  ctx.font = "bold 19px Arial";
+
+  ctx.fillText(
+    "SCAN UNTUK VERIFIKASI TIKET",
+    330,
+    y
+  );
+
+  y += 15;
+
+  const qrSize = 245;
+
+  ctx.drawImage(
+    qrImage,
+    330 - qrSize / 2,
+    y,
+    qrSize,
+    qrSize
+  );
+
+  y += qrSize + 15;
+
+  const barcodeHeight = Math.round(
+    barcode.height * 534 / barcode.width
+  );
+
+  ctx.drawImage(
+    barcode,
+    63,
+    y,
+    534,
+    barcodeHeight
+  );
+
+  y += barcodeHeight + 26;
+
+  rounded(
+    ctx,
+    38,
+    y,
+    584,
+    92,
+    10,
+    "#edf5ff"
+  );
+
+  ctx.fillStyle = "#0754a6";
+  ctx.textAlign = "center";
+
+  ctx.font = "bold 17px Arial";
+  ctx.fillText(
+    "PENTING — SIMPAN TIKET INI",
+    330,
+    y + 28
+  );
+
+  ctx.font = "15px Arial";
+
+  ctx.fillText(
+    "Tunjukkan QR Code kepada petugas saat naik mobil",
+    330,
+    y + 53
+  );
+
+  ctx.fillText(
+    "untuk scan dan verifikasi tiket.",
+    330,
+    y + 76
+  );
+
+  y += 113;
+
+  ctx.fillStyle = "#475569";
+  ctx.font = "14px Arial";
+
+  ctx.fillText(
+    "Tiket batal tidak berlaku meskipun gambar masih disimpan.",
+    330,
+    y
+  );
+
+  y += 29;
+
+  ctx.fillStyle = "#0754a6";
+  ctx.font = "bold 16px Arial";
+
+  ctx.fillText(
+    "HSM Transport • 081356902006",
+    330,
+    y
+  );
+
+  ctx.font = "14px Arial";
+
+  ctx.fillText(
+    "hsm-transport.vercel.app",
+    330,
+    y + 24
+  );
+
+  const usedHeight = Math.max(
+    1160,
+    y + 55
+  );
+
+  const output = document.createElement(
+    "canvas"
+  );
+
+  output.width = canvas.width;
+  output.height = usedHeight;
+
+  const outputCtx = output.getContext("2d");
+
+  outputCtx.fillStyle = "#ffffff";
+
+  outputCtx.fillRect(
+    0,
+    0,
+    output.width,
+    output.height
+  );
+
+  outputCtx.drawImage(
+    canvas,
+    0,
+    0
+  );
+
+  return new Promise((resolve, reject) => {
+    output.toBlob(
+      blob => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(
+            new Error("PNG gagal dibuat.")
+          );
         }
-      );
-
-    }
-
-    catch (error) {
-
-      console.error(
-        "QR ERROR:",
-        error
-      );
-    }
-
-
-    try {
-
-      JsBarcode(
-        "#barcode",
-        ${JSON.stringify(bookingCodeValue)},
-        {
-          format:
-            "CODE128",
-
-          displayValue:
-            true,
-
-          fontSize:
-            11,
-
-          height:
-            35,
-
-          margin:
-            0
-        }
-      );
-
-    }
-
-    catch (error) {
-
-      console.error(
-        "BARCODE ERROR:",
-        error
-      );
-    }
-
-
-    setTimeout(
-      function () {
-
-        window.print();
-
       },
-      650
+      "image/png"
+    );
+  });
+}
+
+/* ============================================================
+   MODAL TIKET GAMBAR
+============================================================ */
+
+let activeTicketUrl = null;
+let activeTicketBlob = null;
+let activeTicketBooking = null;
+
+function closeTicketModal() {
+  const modal = $admin("hsmTicketModal");
+
+  if (modal) {
+    modal.remove();
+  }
+
+  if (activeTicketUrl) {
+    URL.revokeObjectURL(activeTicketUrl);
+  }
+
+  activeTicketUrl = null;
+  activeTicketBlob = null;
+  activeTicketBooking = null;
+}
+
+/* ============================================================
+   PESAN WHATSAPP PENUMPANG
+============================================================ */
+
+function ticketWAMessage(booking) {
+  return (
+    "🎫 *E-TIKET HSM TRANSPORT*\n\n" +
+
+    "Halo Kak " +
+    (booking.passenger_name || "Penumpang") +
+    " 👋\n\n" +
+
+    "Pembayaran tiket " +
+    (booking.booking_code || "-") +
+    " telah dikonfirmasi *LUNAS*. ✅\n\n" +
+
+    "Rute: " +
+    (booking.origin || "-") +
+    " → " +
+    (booking.destination || "-") + "\n" +
+
+    "Tanggal: " +
+    formatDate(booking.travel_date) + "\n" +
+
+    "Jam: " +
+    formatTime(booking.departure_time) + "\n" +
+
+    "Armada: " +
+    getVehicle(booking) + "\n" +
+
+    "Kursi: " +
+    (booking.seat_number ?? "-") + "\n\n" +
+
+    "⚠️ *PENTING:* Simpan gambar tiket ini. " +
+    "QR Code wajib ditunjukkan kepada petugas " +
+    "saat akan naik ke mobil untuk proses " +
+    "scan dan verifikasi.\n\n" +
+
+    "Terima kasih telah memilih HSM Transport. 🚐"
+  );
+}
+
+/* ============================================================
+   SIMPAN PNG
+============================================================ */
+
+function downloadTicket() {
+  if (
+    !activeTicketBlob ||
+    !activeTicketBooking
+  ) {
+    return;
+  }
+
+  const link = document.createElement("a");
+
+  link.href = activeTicketUrl;
+
+  link.download =
+    "HSM-Tiket-" +
+    String(
+      activeTicketBooking.booking_code ||
+      "booking"
+    ).replace(/[^a-zA-Z0-9-]/g, "") +
+    ".png";
+
+  document.body.appendChild(link);
+
+  link.click();
+  link.remove();
+}
+
+/* ============================================================
+   BUKA CHAT PENUMPANG
+============================================================ */
+
+function openTicketChat() {
+  const booking = activeTicketBooking;
+
+  if (!booking) return;
+
+  const phone = normalizePhone(
+    booking.phone
+  );
+
+  if (!phone) {
+    alert(
+      "Nomor WhatsApp penumpang tidak valid. " +
+      "Simpan gambar lalu hubungi penumpang secara manual."
+    );
+    return;
+  }
+
+  const message = encodeURIComponent(
+    ticketWAMessage(booking)
+  );
+
+  window.open(
+    "https://wa.me/" +
+    phone +
+    "?text=" +
+    message,
+    "_blank",
+    "noopener,noreferrer"
+  );
+}
+
+/* ============================================================
+   SHARE TIKET GAMBAR
+============================================================ */
+
+async function shareTicketFile() {
+  if (
+    !activeTicketBlob ||
+    !activeTicketBooking
+  ) {
+    return;
+  }
+
+  const booking = activeTicketBooking;
+
+  const filename =
+    "HSM-Tiket-" +
+    String(
+      booking.booking_code || "booking"
+    ).replace(/[^a-zA-Z0-9-]/g, "") +
+    ".png";
+
+  const file = new File(
+    [activeTicketBlob],
+    filename,
+    {
+      type:"image/png"
+    }
+  );
+
+  if (
+    navigator.canShare?.({
+      files:[file]
+    }) &&
+    navigator.share
+  ) {
+    try {
+      await navigator.share({
+        files:[file],
+        title:"Tiket HSM Transport",
+        text:ticketWAMessage(booking)
+      });
+
+      return;
+
+    } catch (error) {
+      if (error.name === "AbortError") {
+        return;
+      }
+
+      console.warn("SHARE:", error);
+    }
+  }
+
+  alert(
+    "Berbagi gambar tidak didukung atau gagal " +
+    "pada browser ini.\n\n" +
+    "Simpan gambar PNG, lalu gunakan " +
+    "Buka Chat WA dan lampirkan gambarnya."
+  );
+
+  downloadTicket();
+}
+
+/* ============================================================
+   BUKA MODAL KIRIM TIKET
+============================================================ */
+
+async function openTicketModal(booking) {
+  if (!await ensureAdminDay()) return;
+
+  closeTicketModal();
+
+  const ticket = {
+    ...booking
+  };
+
+  const blob = await createTicketPNG(ticket);
+
+  activeTicketBooking = ticket;
+  activeTicketBlob = blob;
+
+  activeTicketUrl = URL.createObjectURL(blob);
+
+  const modal = document.createElement("div");
+
+  modal.id = "hsmTicketModal";
+
+  modal.style.cssText = `
+    position:fixed;
+    inset:0;
+    z-index:100000;
+    background:rgba(15,23,42,.72);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:14px;
+  `;
+
+  modal.innerHTML = `
+    <section
+      role="dialog"
+      aria-modal="true"
+      aria-label="Kirim tiket gambar"
+      style="
+        background:#fff;
+        border-radius:15px;
+        width:min(510px,100%);
+        max-height:94vh;
+        overflow:auto;
+        padding:17px;
+      "
+    >
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:8px;
+        "
+      >
+
+        <strong style="font-size:18px">
+          🎫 Tiket PNG Siap Dikirim
+        </strong>
+
+        <button
+          type="button"
+          id="hsmTicketClose"
+          style="
+            padding:9px;
+            border:0;
+            border-radius:8px;
+          "
+        >
+          ✕
+        </button>
+
+      </div>
+
+      <p
+        style="
+          font-size:12px;
+          line-height:1.6;
+          color:#475569;
+        "
+      >
+        Pembayaran sudah LUNAS.
+        Tiket untuk
+        <b>${escapeHtml(ticket.passenger_name || "-")}</b>
+        (${escapeHtml(ticket.booking_code || "-")})
+        siap dibagikan.
+        Pengiriman tetap dilakukan admin.
+      </p>
+
+      <img
+        src="${activeTicketUrl}"
+        alt="Gambar tiket PNG dengan QR dan barcode"
+        style="
+          display:block;
+          width:min(300px,100%);
+          max-height:48vh;
+          object-fit:contain;
+          margin:10px auto;
+          border:1px solid #ddd;
+        "
+      >
+
+      <div style="display:grid;gap:9px">
+
+        <button
+          id="hsmTicketShare"
+          type="button"
+          style="
+            padding:13px;
+            border:0;
+            border-radius:9px;
+            background:#25d366;
+            color:#fff;
+            font-weight:bold;
+          "
+        >
+          📲 Bagikan Gambar ke WA Business
+        </button>
+
+        <button
+          id="hsmTicketDownload"
+          type="button"
+          style="
+            padding:13px;
+            border:0;
+            border-radius:9px;
+            background:#0754a6;
+            color:#fff;
+            font-weight:bold;
+          "
+        >
+          ⬇ Simpan Tiket PNG
+        </button>
+
+        <button
+          id="hsmTicketChat"
+          type="button"
+          style="
+            padding:13px;
+            border:1px solid #16a34a;
+            border-radius:9px;
+            background:#fff;
+            color:#166534;
+            font-weight:bold;
+          "
+        >
+          💬 Buka Chat Nomor Penumpang
+        </button>
+
+      </div>
+
+      <p
+        style="
+          font-size:11px;
+          line-height:1.6;
+          color:#64748b;
+        "
+      >
+        Jika menu Bagikan tersedia,
+        pilih WhatsApp Business dan penerima,
+        lalu tekan Kirim.
+
+        Jika tidak didukung,
+        simpan PNG dan lampirkan di chat penumpang.
+
+        Link WhatsApp tidak bisa
+        menyematkan gambar otomatis.
+      </p>
+
+    </section>
+  `;
+
+  document.body.appendChild(modal);
+
+  $admin("hsmTicketClose").onclick =
+    closeTicketModal;
+
+  $admin("hsmTicketShare").onclick =
+    shareTicketFile;
+
+  $admin("hsmTicketDownload").onclick =
+    downloadTicket;
+
+  $admin("hsmTicketChat").onclick =
+    openTicketChat;
+
+  modal.addEventListener(
+    "click",
+    event => {
+      if (event.target === modal) {
+        closeTicketModal();
+      }
+    }
+  );
+}
+
+/* ============================================================
+   BOOKING ACTION EVENTS
+============================================================ */
+
+bookingList.addEventListener(
+  "click",
+  async event => {
+    const button = event.target.closest(
+      "[data-action]"
     );
 
+    if (
+      !button ||
+      button.disabled
+    ) {
+      return;
+    }
+
+    const action = button.dataset.action;
+    const id = button.dataset.id;
+
+    button.disabled = true;
+
+    try {
+      if (action === "paid") {
+        await confirmPaid(id);
+
+      } else if (action === "print") {
+        printTicket(id);
+
+      } else if (action === "ticket-wa") {
+        const booking = getBookingById(id);
+
+        if (booking) {
+          await openTicketModal(booking);
+        }
+
+      } else if (action === "completed") {
+        await markCompleted(id);
+
+      } else if (action === "cancel") {
+        await cancelBooking(id);
+      }
+
+    } catch (error) {
+      console.error("BOOKING ACTION:", error);
+
+      alert(
+        "Gagal memproses: " + error.message
+      );
+
+    } finally {
+      button.disabled = false;
+    }
   }
 );
 
-<\/script>
+/* ============================================================
+   LOGIN / LOGOUT / FILTER EVENTS
+============================================================ */
 
-</body>
+loginBtn.addEventListener(
+  "click",
+  loginAdmin
+);
 
-</html>
-  `);
-
-
-  printWindow.document.close();
-}
-
-
-// ============================================================
-// BOOKING ACTION CLICK
-// ============================================================
-
-if (bookingList) {
-
-  bookingList.addEventListener(
-    "click",
-    async function (event) {
-
-      const button =
-        event.target.closest(
-          "[data-action]"
-        );
-
-
-      if (!button) {
-        return;
-      }
-
-
-      const action =
-        button.dataset.action;
-
-
-      const id =
-        button.dataset.id;
-
-
-      if (
-        !action ||
-        !id
-      ) {
-        return;
-      }
-
-
-      button.disabled =
-        true;
-
-
-      try {
-
-        if (
-          action === "paid"
-        ) {
-
-          await confirmPaid(
-            id
-          );
-
-        }
-
-
-        else if (
-          action === "print"
-        ) {
-
-          printTicket(
-            id
-          );
-
-        }
-
-
-        else if (
-          action === "completed"
-        ) {
-
-          await markCompleted(
-            id
-          );
-
-        }
-
-
-        else if (
-          action === "cancel"
-        ) {
-
-          await cancelBooking(
-            id
-          );
-
-        }
-
-      }
-
-      finally {
-
-        button.disabled =
-          false;
-      }
-
+adminPassword.addEventListener(
+  "keydown",
+  event => {
+    if (event.key === "Enter") {
+      loginAdmin();
     }
-  );
-}
+  }
+);
 
+logoutBtn.addEventListener(
+  "click",
+  logoutAdmin
+);
 
-// ============================================================
-// LOGIN EVENTS
-// ============================================================
+refreshBtn.addEventListener(
+  "click",
+  loadBookings
+);
 
-if (loginBtn) {
+searchInput.addEventListener(
+  "input",
+  renderBookings
+);
 
-  loginBtn.addEventListener(
-    "click",
-    loginAdmin
-  );
-}
+statusFilter.addEventListener(
+  "change",
+  renderBookings
+);
 
+dateFilter.addEventListener(
+  "change",
+  loadBookings
+);
 
-if (adminPassword) {
-
-  adminPassword.addEventListener(
-    "keydown",
-    function (event) {
-
-      if (
-        event.key === "Enter"
-      ) {
-
-        loginAdmin();
-
-      }
-    }
-  );
-}
-
-
-// ============================================================
-// LOGOUT EVENT
-// ============================================================
-
-if (logoutBtn) {
-
-  logoutBtn.addEventListener(
-    "click",
-    logoutAdmin
-  );
-}
-
-
-// ============================================================
-// REFRESH
-// ============================================================
-
-if (refreshBtn) {
-
-  refreshBtn.addEventListener(
-    "click",
-    loadBookings
-  );
-}
-
-
-// ============================================================
-// SEARCH
-// ============================================================
-
-if (searchInput) {
-
-  searchInput.addEventListener(
-    "input",
-    renderBookings
-  );
-}
-
-
-// ============================================================
-// STATUS FILTER
-// ============================================================
-
-if (statusFilter) {
-
-  statusFilter.addEventListener(
-    "change",
-    renderBookings
-  );
-}
-
-
-// ============================================================
-// DATE FILTER
-// ============================================================
-
-if (dateFilter) {
-
-  dateFilter.addEventListener(
-    "change",
-    loadBookings
-  );
-}
-
-
-// ============================================================
-// INITIAL SESSION
-// ============================================================
+/* ============================================================
+   INITIAL SESSION
+============================================================ */
 
 async function initializeAdmin() {
-
   try {
-
     const {
       data,
       error
-    } =
-      await adminDb.auth
-        .getSession();
+    } = await adminDb.auth.getSession();
 
+    if (error) throw error;
 
-    if (error) {
-      throw error;
-    }
-
-
-    const session =
-      data?.session;
-
-
-    if (!session) {
-
+    if (!data?.session) {
+      clearDailyLogin();
       showLogin();
-
       return;
     }
-
-
-    const allowed =
-      await verifyAdmin();
-
-
-    if (!allowed) {
-
-      await adminDb.auth
-        .signOut();
-
-
-      sessionStorage.removeItem(
-        "hsm_admin_pool"
-      );
-
-
-      selectedPool =
-        "";
-
-
-      showLogin();
-
-
-      setLoginMessage(
-        "Akun tidak memiliki akses admin HSM.",
-        "error"
-      );
-
-
-      return;
-    }
-
-
-    // ========================================================
-    // HAPUS SESSION POOL TIDAK VALID
-    // ========================================================
 
     if (
-      !selectedPool ||
-      !isValidPool(
-        selectedPool
-      )
+      localStorage.getItem(ADMIN_DAY_KEY) !==
+      todayAdminWIT()
     ) {
+      await expireDailyAdmin();
+      return;
+    }
 
-      sessionStorage.removeItem(
-        "hsm_admin_pool"
-      );
-
-
-      selectedPool =
-        "";
-
-
-      if (poolSelect) {
-        poolSelect.value =
-          "";
-      }
-
-
+    if (!isValidPool(selectedPool)) {
       showLogin();
 
-
       setLoginMessage(
-        "Pilih Pool Sofifi, Loleo, Weda, atau Lelilef lalu masuk kembali.",
+        "Pilih pool dan login kembali.",
         "error"
       );
-
 
       return;
     }
 
+    const allowed = await verifyAdmin();
 
-    if (poolSelect) {
-
-      poolSelect.value =
-        selectedPool;
+    if (!allowed) {
+      await expireDailyAdmin();
+      return;
     }
 
+    poolSelect.value = selectedPool;
 
     showDashboard();
 
-
     await loadBookings();
 
-  }
-
-  catch (error) {
-
+  } catch (error) {
     console.error(
-      "INITIAL ADMIN ERROR:",
+      "INITIAL ADMIN:",
       error
     );
 
-
     showLogin();
-
 
     setLoginMessage(
       "Gagal memeriksa sesi admin.",
@@ -3119,9 +2473,56 @@ async function initializeAdmin() {
   }
 }
 
+/* ============================================================
+   OTOMATIS LOGOUT SAAT PERGANTIAN HARI WIT
+============================================================ */
 
-// ============================================================
-// START
-// ============================================================
+setInterval(
+  () => {
+    if (
+      dashboard.style.display === "block" &&
+      localStorage.getItem(ADMIN_DAY_KEY) !==
+      todayAdminWIT()
+    ) {
+      expireDailyAdmin();
+    }
+  },
+  10000
+);
+
+/* ============================================================
+   SAAT TAB ADMIN DIBUKA KEMBALI
+============================================================ */
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+    if (
+      document.hidden ||
+      dashboard.style.display !== "block"
+    ) {
+      return;
+    }
+
+    ensureAdminDay().then(valid => {
+      if (!valid) return;
+
+      adminDb.auth.getUser().then(
+        ({ data, error }) => {
+          if (
+            error ||
+            !data?.user
+          ) {
+            expireDailyAdmin();
+          }
+        }
+      );
+    });
+  }
+);
+
+/* ============================================================
+   START
+============================================================ */
 
 initializeAdmin();
