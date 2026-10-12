@@ -1,0 +1,17 @@
+{
+  "name": "hsm-transport-android",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Aplikasi Android HSM Transport",
+  "scripts": {
+    "sync": "cap sync android",
+    "android": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/android": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0"
+  }
+}
