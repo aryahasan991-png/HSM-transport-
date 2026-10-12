@@ -2,45 +2,31 @@
 # HSM TRANSPORT
 # PT HIDAYAH SARANA MULIA
 #
-# BUILD APK ANDROID - CAPACITOR
+# ANDROID APK - CAPACITOR
 #
 # FITUR:
-# 01. Checkout Repository
-# 02. Setup Node.js 22
-# 03. Setup Java 21
-# 04. Setup Android SDK
-# 05. Terima Lisensi Android SDK
-# 06. Install Android Platform
-# 07. Salin Website HSM
-# 08. Buat Portal Internal APK
-# 09. Tambahkan Akses Internal APK
-# 10. Salin Logo Splash Screen
-# 11. Tambahkan Splash Screen 3 Detik
-# 12. Install Capacitor
-# 13. Generate Android Project
-# 14. Konfigurasi Tombol Back Android
-# 15. Tambahkan Izin Kamera QR Scanner
-# 16. Generate Ikon Resmi HSM
-# 17. Sinkronisasi Android
-# 18. Build APK
-# 19. Ubah Nama APK
-# 20. Upload APK
+# - Website internal HSM Transport
+# - Dashboard Admin
+# - Portal Sopir & Kernet
+# - Splash Screen 3 Detik
+# - Ikon Resmi HSM
+# - Navigasi Back Android
+# - Izin Kamera QR Scanner
+# - Izin Getaran Android
+# - Suara Scanner Native Android
+# - Getaran Scanner Native Android
+# - Tombol Tes Suara & Getaran
 #
-# LOGO SPLASH:
-# hsm-logo.png
+# SUARA:
+# BERHASIL = 1 BUNYI
+# GAGAL    = 3 BUNYI
 #
-# IKON APK:
-# hsm-apk-icon.png
-#
-# IZIN:
-# android.permission.CAMERA
-#
-# WEBSITE VERCEL TIDAK DIUBAH
+# WEBSITE VERCEL TIDAK DIMODIFIKASI
 #
 # OUTPUT:
 # HSM-Transport.apk
 #
-# VERSI DEBUG UNTUK PENGUJIAN
+# BUILD DEBUG UNTUK PENGUJIAN
 # ============================================================
 
 name: Build APK HSM Transport
@@ -105,7 +91,7 @@ jobs:
 
 
       # ======================================================
-      # 5. TERIMA LISENSI ANDROID SDK
+      # 5. TERIMA LISENSI ANDROID
       # ======================================================
 
       - name: Accept Android SDK Licenses
@@ -124,7 +110,7 @@ jobs:
             exit "$result"
           fi
 
-          echo "Lisensi Android SDK berhasil diproses."
+          echo "Lisensi Android SDK berhasil."
 
 
       # ======================================================
@@ -141,10 +127,7 @@ jobs:
 
 
       # ======================================================
-      # 7. PERSIAPKAN WEBSITE HSM
-      #
-      # Semua file website disalin ke folder www.
-      # File website asli tidak dimodifikasi.
+      # 7. SALIN WEBSITE HSM KE APK
       # ======================================================
 
       - name: Prepare HSM Website
@@ -169,7 +152,7 @@ jobs:
             fi
           done
 
-          echo "Memeriksa file website HSM..."
+          echo "Memeriksa file website..."
 
           test -f android-app/www/index.html
           test -f android-app/www/admin.html
@@ -181,10 +164,7 @@ jobs:
 
 
       # ======================================================
-      # 8. PORTAL INTERNAL KHUSUS APK
-      #
-      # Berisi akses admin dan petugas.
-      # Tidak mengubah website Vercel.
+      # 8. BUAT PORTAL INTERNAL
       # ======================================================
 
       - name: Prepare APK Internal Portal
@@ -202,7 +182,7 @@ jobs:
 
             <meta
               name="viewport"
-              content="width=device-width, initial-scale=1"
+              content="width=device-width,initial-scale=1"
             >
 
             <meta
@@ -224,7 +204,7 @@ jobs:
                 margin: 0;
                 padding: 20px;
                 min-height: 100vh;
-                font-family: Arial, sans-serif;
+                font-family: Arial,sans-serif;
                 background: #f4f7fb;
                 display: flex;
                 align-items: center;
@@ -314,9 +294,7 @@ jobs:
 
 
       # ======================================================
-      # 9. TAMBAHKAN AKSES INTERNAL DI APK
-      #
-      # Website Vercel tetap tidak berubah.
+      # 9. TAMBAH AKSES INTERNAL
       # ======================================================
 
       - name: Add APK Internal Access
@@ -325,7 +303,9 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          path = Path("android-app/www/index.html")
+          path = Path(
+              "android-app/www/index.html"
+          )
 
           html = path.read_text(
               encoding="utf-8"
@@ -359,13 +339,18 @@ jobs:
 
               if "</body>" not in html:
                   raise RuntimeError(
-                      "Tag penutup body tidak ditemukan."
+                      "Tag body tidak ditemukan."
                   )
 
-              html = html.replace(
-                  "</body>",
-                  link + "\n</body>",
-                  1
+              position = html.rfind(
+                  "</body>"
+              )
+
+              html = (
+                  html[:position]
+                  + link
+                  + "\n"
+                  + html[position:]
               )
 
               path.write_text(
@@ -378,19 +363,14 @@ jobs:
 
 
       # ======================================================
-      # 10. SALIN LOGO SPLASH SCREEN
-      #
-      # Menggunakan hsm-logo.png asli dari GitHub.
+      # 10. SALIN LOGO SPLASH
       # ======================================================
 
       - name: Copy HSM Splash Logo
         shell: bash
         run: |
-          echo "Memeriksa logo splash screen..."
-
           if [ ! -f hsm-logo.png ]; then
-            echo "ERROR: hsm-logo.png tidak ditemukan!"
-            echo "Pastikan file ada di folder utama GitHub."
+            echo "ERROR: hsm-logo.png tidak ditemukan."
             exit 1
           fi
 
@@ -400,18 +380,11 @@ jobs:
             hsm-logo.png \
             android-app/www/hsm-logo.png
 
-          echo "Logo splash screen HSM siap."
+          echo "Logo splash siap."
 
 
       # ======================================================
-      # 11. SPLASH SCREEN HSM TRANSPORT
-      #
-      # LOGO: hsm-logo.png
-      # DURASI: 3 DETIK
-      # BACKGROUND: PUTIH
-      #
-      # Hanya ditambahkan pada APK.
-      # Website Vercel tetap tidak berubah.
+      # 11. SPLASH SCREEN 3 DETIK
       # ======================================================
 
       - name: Add HSM Splash Screen
@@ -420,7 +393,9 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          path = Path("android-app/www/index.html")
+          path = Path(
+              "android-app/www/index.html"
+          )
 
           html = path.read_text(
               encoding="utf-8"
@@ -456,7 +431,7 @@ jobs:
             }
 
             #hsm-custom-splash .hsm-splash-logo {
-              width: min(55vw, 230px);
+              width: min(55vw,230px);
               max-height: 230px;
               object-fit: contain;
               margin-bottom: 35px;
@@ -465,7 +440,7 @@ jobs:
 
             #hsm-custom-splash .hsm-splash-welcome {
               color: #0754a6;
-              font-family: Arial, sans-serif;
+              font-family: Arial,sans-serif;
               font-size: 22px;
               font-weight: 800;
               letter-spacing: 1px;
@@ -475,7 +450,7 @@ jobs:
 
             #hsm-custom-splash .hsm-splash-tagline {
               color: #64748b;
-              font-family: Arial, sans-serif;
+              font-family: Arial,sans-serif;
               font-size: 14px;
               line-height: 1.6;
               animation: hsmFadeIn 1.3s ease both;
@@ -487,7 +462,7 @@ jobs:
               left: 15px;
               right: 15px;
               color: #0754a6;
-              font-family: Arial, sans-serif;
+              font-family: Arial,sans-serif;
               font-size: 11px;
               font-weight: 700;
               letter-spacing: 1px;
@@ -495,6 +470,7 @@ jobs:
             }
 
             @keyframes hsmFadeIn {
+
               from {
                 opacity: 0;
                 transform: translateY(15px);
@@ -531,33 +507,42 @@ jobs:
           </div>
 
           <script>
+
             (function () {
 
               function closeSplash() {
 
-                var splash = document.getElementById(
-                  "hsm-custom-splash"
-                );
+                var splash =
+                  document.getElementById(
+                    "hsm-custom-splash"
+                  );
 
                 if (!splash) return;
 
                 setTimeout(function () {
 
-                  splash.classList.add("hsm-hide");
+                  splash.classList.add(
+                    "hsm-hide"
+                  );
 
                   setTimeout(function () {
+
                     splash.remove();
+
                   }, 450);
 
                 }, 3000);
               }
 
-              if (document.readyState === "loading") {
+              if (
+                document.readyState ===
+                "loading"
+              ) {
 
                 document.addEventListener(
                   "DOMContentLoaded",
                   closeSplash,
-                  { once: true }
+                  { once:true }
                 );
 
               } else {
@@ -567,6 +552,7 @@ jobs:
               }
 
             })();
+
           </script>
 
           <!-- END HSM CUSTOM SPLASH SCREEN -->
@@ -574,10 +560,12 @@ jobs:
 
               if "</body>" not in html:
                   raise RuntimeError(
-                      "Tag penutup body tidak ditemukan."
+                      "Tag body tidak ditemukan."
                   )
 
-              position = html.rfind("</body>")
+              position = html.rfind(
+                  "</body>"
+              )
 
               html = (
                   html[:position]
@@ -591,12 +579,145 @@ jobs:
                   encoding="utf-8"
               )
 
-          print("Splash Screen HSM berhasil dipasang.")
+          print("Splash Screen HSM siap.")
           PY
 
 
       # ======================================================
-      # 12. INSTALL CAPACITOR
+      # 12. SIAPKAN BRIDGE AUDIO DI PETUGAS.HTML
+      #
+      # PERUBAHAN HANYA PADA SALINAN APK.
+      # FILE ASLI WEBSITE TIDAK DIUBAH.
+      #
+      # Fungsi playQRBeep() dari petugas.html
+      # akan menggunakan Android Native jika tersedia.
+      #
+      # Jika tidak tersedia, tetap gunakan audio HTML.
+      # ======================================================
+
+      - name: Enable Native QR Feedback in APK
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path(
+              "android-app/www/petugas.html"
+          )
+
+          html = path.read_text(
+              encoding="utf-8"
+          )
+
+          marker = "hsm-native-qr-feedback"
+
+          if marker not in html:
+
+              if "</body>" not in html:
+                  raise RuntimeError(
+                      "Tag body petugas.html tidak ditemukan."
+                  )
+
+              script = """
+          <!-- hsm-native-qr-feedback -->
+
+          <script>
+
+          (function () {
+
+            "use strict";
+
+            /*
+              Bridge Android Native HSM.
+
+              Check-in berhasil:
+              1 bunyi + 1 getaran.
+
+              Check-in gagal:
+              3 bunyi + 3 getaran.
+
+              Kode petugas.html asli tetap digunakan
+              untuk semua fitur lainnya.
+            */
+
+            var originalFeedback =
+              window.playQRBeep;
+
+            window.playQRBeep =
+              function (success) {
+
+                var accepted =
+                  success !== false;
+
+                try {
+
+                  if (
+                    window.HSMNative &&
+                    typeof window.HSMNative.feedback ===
+                      "function"
+                  ) {
+
+                    window.HSMNative.feedback(
+                      accepted
+                    );
+
+                    return Promise.resolve(true);
+                  }
+
+                } catch (error) {
+
+                  console.warn(
+                    "HSM native feedback:",
+                    error
+                  );
+                }
+
+                if (
+                  typeof originalFeedback ===
+                  "function"
+                ) {
+
+                  return originalFeedback(
+                    accepted
+                  );
+                }
+
+                return Promise.resolve(false);
+              };
+
+            console.log(
+              "HSM Native QR Feedback siap."
+            );
+
+          })();
+
+          </script>
+          """
+
+              position = html.rfind(
+                  "</body>"
+              )
+
+              html = (
+                  html[:position]
+                  + script
+                  + "\n"
+                  + html[position:]
+              )
+
+              path.write_text(
+                  html,
+                  encoding="utf-8"
+              )
+
+          print(
+              "Bridge QR Native siap di petugas.html."
+          )
+          PY
+
+
+      # ======================================================
+      # 13. INSTALL CAPACITOR
       # ======================================================
 
       - name: Install Capacitor
@@ -607,10 +728,7 @@ jobs:
 
 
       # ======================================================
-      # 13. GENERATE ANDROID PROJECT
-      #
-      # LANGKAH INI HARUS SEBELUM KONFIGURASI
-      # TOMBOL BACK DAN IZIN KAMERA.
+      # 14. GENERATE ANDROID PROJECT
       # ======================================================
 
       - name: Generate Android Project
@@ -621,22 +739,20 @@ jobs:
 
 
       # ======================================================
-      # 14. TOMBOL BACK ANDROID HSM TRANSPORT
+      # 15. KONFIGURASI ANDROID MAINACTIVITY
       #
-      # HALAMAN UTAMA:
-      # Back pertama menampilkan pesan.
-      # Back kedua dalam 2 detik keluar aplikasi.
+      # FITUR:
+      # - Tombol Back Android
+      # - Audio Scanner Native
+      # - Getaran Scanner Native
       #
-      # HALAMAN PORTAL INTERNAL:
-      # Back kembali ke halaman utama.
+      # Audio menggunakan ToneGenerator Android.
+      # Volume mengikuti volume MEDIA perangkat.
       #
-      # HALAMAN ADMIN / PETUGAS:
-      # Back kembali ke portal internal.
-      #
-      # SESI LOGIN PETUGAS TIDAK DIHAPUS.
+      # Tidak membutuhkan file audio eksternal.
       # ======================================================
 
-      - name: Configure HSM Android Back Button
+      - name: Configure Android Native Features
         shell: bash
         run: |
           python3 - <<'PY'
@@ -648,13 +764,15 @@ jobs:
           )
 
           files = list(
-              java_root.rglob("MainActivity.java")
+              java_root.rglob(
+                  "MainActivity.java"
+              )
           )
 
           if len(files) != 1:
               raise RuntimeError(
-                  "MainActivity.java tidak ditemukan atau ganda. "
-                  "Pastikan Generate Android Project sudah berhasil."
+                  "MainActivity.java tidak ditemukan "
+                  "atau ditemukan lebih dari satu."
               )
 
           path = files[0]
@@ -679,8 +797,17 @@ jobs:
           code = """
           package PACKAGE_NAME;
 
+          import android.content.Context;
+          import android.media.AudioManager;
+          import android.media.ToneGenerator;
           import android.net.Uri;
+          import android.os.Build;
           import android.os.Bundle;
+          import android.os.Handler;
+          import android.os.Looper;
+          import android.os.VibrationEffect;
+          import android.os.Vibrator;
+          import android.webkit.JavascriptInterface;
           import android.webkit.WebView;
           import android.widget.Toast;
 
@@ -692,10 +819,66 @@ jobs:
 
               private long lastBackPressed = 0;
 
+              private final Handler feedbackHandler =
+                  new Handler(Looper.getMainLooper());
+
+              private final class HSMNativeBridge {
+
+                  @JavascriptInterface
+                  public void feedback(boolean success) {
+
+                      runOnUiThread(() -> {
+
+                          WebView webView =
+                              getBridge() == null
+                                  ? null
+                                  : getBridge().getWebView();
+
+                          if (webView == null) {
+                              return;
+                          }
+
+                          String url = webView.getUrl();
+
+                          if (url == null) {
+                              return;
+                          }
+
+                          // Batasi bridge untuk halaman
+                          // petugas lokal milik APK.
+                          Uri uri = Uri.parse(url);
+
+                          if (
+                              !"https".equals(uri.getScheme()) ||
+                              !"localhost".equals(uri.getHost()) ||
+                              !"/petugas.html".equals(uri.getPath())
+                          ) {
+                              return;
+                          }
+
+                          playNativeFeedback(success);
+
+                      });
+                  }
+              }
+
               @Override
               public void onCreate(Bundle savedInstanceState) {
 
                   super.onCreate(savedInstanceState);
+
+                  WebView webView =
+                      getBridge() == null
+                          ? null
+                          : getBridge().getWebView();
+
+                  if (webView != null) {
+
+                      webView.addJavascriptInterface(
+                          new HSMNativeBridge(),
+                          "HSMNative"
+                      );
+                  }
 
                   getOnBackPressedDispatcher().addCallback(
                       this,
@@ -712,7 +895,8 @@ jobs:
                                   return;
                               }
 
-                              String url = webView.getUrl();
+                              String url =
+                                  webView.getUrl();
 
                               String path = "";
 
@@ -794,6 +978,134 @@ jobs:
                       }
                   );
               }
+
+              // =================================================
+              // SUARA DAN GETARAN NATIVE
+              // =================================================
+
+              private void playNativeFeedback(
+                  boolean success
+              ) {
+
+                  playNativeVibration(success);
+
+                  playNativeSound(success);
+              }
+
+              // =================================================
+              // GETARAN
+              // =================================================
+
+              private void playNativeVibration(
+                  boolean success
+              ) {
+
+                  try {
+
+                      Vibrator vibrator =
+                          (Vibrator) getSystemService(
+                              Context.VIBRATOR_SERVICE
+                          );
+
+                      if (
+                          vibrator == null ||
+                          !vibrator.hasVibrator()
+                      ) {
+                          return;
+                      }
+
+                      long[] pattern = success
+                          ? new long[]{0, 200}
+                          : new long[]{0, 95, 85, 95, 85, 95};
+
+                      if (
+                          Build.VERSION.SDK_INT >=
+                          Build.VERSION_CODES.O
+                      ) {
+
+                          vibrator.vibrate(
+                              VibrationEffect.createWaveform(
+                                  pattern,
+                                  -1
+                              )
+                          );
+
+                      } else {
+
+                          vibrator.vibrate(
+                              pattern,
+                              -1
+                          );
+                      }
+
+                  } catch (Exception error) {
+
+                      android.util.Log.w(
+                          "HSM",
+                          "Getaran gagal",
+                          error
+                      );
+                  }
+              }
+
+              // =================================================
+              // AUDIO NATIVE
+              // =================================================
+
+              private void playNativeSound(
+                  boolean success
+              ) {
+
+                  try {
+
+                      final ToneGenerator tone =
+                          new ToneGenerator(
+                              AudioManager.STREAM_MUSIC,
+                              100
+                          );
+
+                      if (success) {
+
+                          tone.startTone(
+                              ToneGenerator.TONE_PROP_BEEP,
+                              260
+                          );
+
+                          feedbackHandler.postDelayed(
+                              tone::release,
+                              450
+                          );
+
+                      } else {
+
+                          for (int i = 0; i < 3; i++) {
+
+                              long delay = i * 175L;
+
+                              feedbackHandler.postDelayed(
+                                  () -> tone.startTone(
+                                      ToneGenerator.TONE_PROP_NACK,
+                                      100
+                                  ),
+                                  delay
+                              );
+                          }
+
+                          feedbackHandler.postDelayed(
+                              tone::release,
+                              750
+                          );
+                      }
+
+                  } catch (Exception error) {
+
+                      android.util.Log.w(
+                          "HSM",
+                          "Suara scanner gagal",
+                          error
+                      );
+                  }
+              }
           }
           """
 
@@ -808,33 +1120,31 @@ jobs:
           )
 
           print(
-              "Tombol Back Android HSM berhasil dikonfigurasi."
+              "MainActivity dengan Audio Native, "
+              "Getaran Native dan tombol Back siap."
           )
           PY
 
 
       # ======================================================
-      # 15. IZIN KAMERA QR SCANNER HSM TRANSPORT
+      # 16. IZIN KAMERA DAN GETARAN ANDROID
       #
-      # FITUR BARU:
-      # - Menambahkan android.permission.CAMERA
-      # - Kamera tidak diwajibkan untuk instalasi
-      # - Mempertahankan WebChromeClient bawaan Capacitor
-      # - Tidak membutuhkan izin mikrofon
+      # CAMERA:
+      # Untuk membaca QR Code.
       #
-      # PETUGAS:
-      # Saat menekan tombol Scan QR,
-      # Android dapat menampilkan permintaan izin kamera.
+      # VIBRATE:
+      # Untuk getaran berhasil dan gagal.
       #
-      # FILE:
-      # android/app/src/main/AndroidManifest.xml
+      # Kamera tidak wajib agar APK
+      # tetap bisa dipasang pada perangkat lain.
       # ======================================================
 
-      - name: Enable HSM QR Camera Permission
+      - name: Enable HSM Android Permissions
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import xml.etree.ElementTree as ET
 
           manifest = Path(
               "android-app/android/app/src/main/AndroidManifest.xml"
@@ -842,19 +1152,41 @@ jobs:
 
           if not manifest.exists():
               raise RuntimeError(
-                  "AndroidManifest.xml tidak ditemukan. "
-                  "Pastikan langkah Generate Android Project "
-                  "berhasil dijalankan."
+                  "AndroidManifest.xml tidak ditemukan."
               )
 
           content = manifest.read_text(
               encoding="utf-8"
           )
 
-          camera_permission = (
-              '<uses-permission '
-              'android:name="android.permission.CAMERA" />'
-          )
+          permissions = [
+              (
+                  "android.permission.CAMERA",
+                  '<uses-permission '
+                  'android:name="android.permission.CAMERA" />'
+              ),
+              (
+                  "android.permission.VIBRATE",
+                  '<uses-permission '
+                  'android:name="android.permission.VIBRATE" />'
+              )
+          ]
+
+          for permission_name, xml in permissions:
+
+              if permission_name not in content:
+
+                  if "<application" not in content:
+                      raise RuntimeError(
+                          "Tag application tidak ditemukan."
+                      )
+
+                  content = content.replace(
+                      "<application",
+                      "    " + xml +
+                      "\n\n    <application",
+                      1
+                  )
 
           camera_feature = (
               '<uses-feature '
@@ -863,38 +1195,14 @@ jobs:
           )
 
           if (
-              'android.permission.CAMERA'
+              "android.hardware.camera"
               not in content
           ):
 
-              if "<application" not in content:
-                  raise RuntimeError(
-                      "Tag application tidak ditemukan."
-                  )
-
               content = content.replace(
                   "<application",
-                  "    "
-                  + camera_permission
-                  + "\n\n    <application",
-                  1
-              )
-
-          if (
-              'android.hardware.camera'
-              not in content
-          ):
-
-              if "<application" not in content:
-                  raise RuntimeError(
-                      "Tag application tidak ditemukan."
-                  )
-
-              content = content.replace(
-                  "<application",
-                  "    "
-                  + camera_feature
-                  + "\n\n    <application",
+                  "    " + camera_feature +
+                  "\n\n    <application",
                   1
               )
 
@@ -903,59 +1211,45 @@ jobs:
               encoding="utf-8"
           )
 
-          # Periksa apakah Manifest XML tetap valid.
-          import xml.etree.ElementTree as ET
-
           ET.parse(manifest)
 
-          if (
-              'android.permission.CAMERA'
-              not in content
-          ):
-              raise RuntimeError(
-                  "Izin kamera gagal dipasang."
-              )
+          for name in [
+              "android.permission.CAMERA",
+              "android.permission.VIBRATE"
+          ]:
+              if name not in content:
+                  raise RuntimeError(
+                      "Izin gagal dipasang: " + name
+                  )
 
           print(
-              "Izin CAMERA HSM Transport berhasil dipasang."
-          )
-
-          print(
-              "WebChromeClient bawaan Capacitor "
-              "tetap digunakan."
+              "Izin CAMERA dan VIBRATE berhasil dipasang."
           )
           PY
 
 
       # ======================================================
-      # 16. GENERATE IKON RESMI HSM TRANSPORT
-      #
-      # SUMBER:
-      # hsm-apk-icon.png
-      #
-      # BACKGROUND PUTIH
+      # 17. GENERATE IKON RESMI HSM
       # ======================================================
 
       - name: Generate HSM Transport App Icon
         working-directory: android-app
         shell: bash
         run: |
-
-          echo "Memeriksa gambar ikon HSM..."
+          echo "Memeriksa ikon HSM..."
 
           if [ ! -f ../hsm-apk-icon.png ]; then
             echo "ERROR: hsm-apk-icon.png tidak ditemukan!"
-            echo "Upload gambar ke root repository GitHub."
             exit 1
           fi
 
-          echo "Menyiapkan folder ikon..."
-
           mkdir -p assets
 
-          cp ../hsm-apk-icon.png assets/icon.png
+          cp \
+            ../hsm-apk-icon.png \
+            assets/icon.png
 
-          echo "Memasang generator ikon Capacitor..."
+          echo "Memasang generator ikon..."
 
           npm install \
             --no-save \
@@ -963,18 +1257,18 @@ jobs:
             --no-fund \
             @capacitor/assets
 
-          echo "Membuat ikon Android..."
+          echo "Generate ikon Android..."
 
           npx capacitor-assets generate \
             --android \
             --iconBackgroundColor '#ffffff' \
             --iconBackgroundColorDark '#ffffff'
 
-          echo "Ikon resmi HSM Transport berhasil dibuat."
+          echo "Ikon HSM berhasil dibuat."
 
 
       # ======================================================
-      # 17. SINKRONISASI ANDROID
+      # 18. SINKRONISASI ANDROID
       # ======================================================
 
       - name: Sync Android
@@ -985,27 +1279,25 @@ jobs:
 
 
       # ======================================================
-      # 18. BUILD APK
+      # 19. BUILD APK
       # ======================================================
 
       - name: Build APK
         working-directory: android-app/android
         shell: bash
         run: |
-
           chmod +x gradlew
 
           ./gradlew assembleDebug --no-daemon
 
 
       # ======================================================
-      # 19. UBAH NAMA APK
+      # 20. UBAH NAMA APK
       # ======================================================
 
       - name: Rename APK
         shell: bash
         run: |
-
           mkdir -p output
 
           cp \
@@ -1018,7 +1310,7 @@ jobs:
 
 
       # ======================================================
-      # 20. UPLOAD APK KE GITHUB ACTIONS
+      # 21. UPLOAD APK KE GITHUB ACTIONS
       # ======================================================
 
       - name: Upload HSM Transport APK
