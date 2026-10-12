@@ -20,135 +20,702 @@
   --orange:#b76a0b;
 }
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text)
+}
 button,input{font:inherit}
 button{cursor:pointer}
 button:disabled{opacity:.55;cursor:not-allowed}
-.header{background:linear-gradient(135deg,var(--blue),var(--dark));color:white;text-align:center;padding:30px 18px 55px}
+.header{
+  background:linear-gradient(135deg,var(--blue),var(--dark));
+  color:white;
+  text-align:center;
+  padding:30px 18px 55px
+}
 .logo{font-size:38px;font-weight:900;letter-spacing:2px}
 .logo .red{color:#ff5252}
 .logo-sub{font-size:12px;font-weight:bold;letter-spacing:3px}
 .header h1{margin:25px 0 7px;font-size:22px}
 .header p{margin:0;font-size:13px;opacity:.9}
-.container{width:min(700px,calc(100% - 28px));margin:-28px auto 32px;position:relative}
-.card{background:white;border-radius:18px;padding:22px;box-shadow:0 8px 30px rgba(15,45,85,.1)}
-.tabs{display:flex;gap:5px;padding:5px;background:#edf3fa;border-radius:12px;margin-bottom:22px}
-.tab{flex:1;border:0;border-radius:9px;background:transparent;color:#63758d;padding:12px 4px;font-size:12px;font-weight:bold}
-.tab.active{background:white;color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.container{
+  width:min(700px,calc(100% - 28px));
+  margin:-28px auto 32px;
+  position:relative
+}
+.card{
+  background:white;
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 8px 30px rgba(15,45,85,.1)
+}
+.tabs{
+  display:flex;
+  gap:5px;
+  padding:5px;
+  background:#edf3fa;
+  border-radius:12px;
+  margin-bottom:22px
+}
+.tab{
+  flex:1;
+  border:0;
+  border-radius:9px;
+  background:transparent;
+  color:#63758d;
+  padding:12px 4px;
+  font-size:12px;
+  font-weight:bold
+}
+.tab.active{
+  background:white;
+  color:var(--blue);
+  box-shadow:0 2px 8px rgba(0,0,0,.07)
+}
 .form{display:none}
 .form.active{display:block}
 h2{margin:0 0 8px;font-size:20px}
-.description{margin:0 0 22px;color:var(--muted);font-size:13px;line-height:1.6}
+.description{
+  margin:0 0 22px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6
+}
 .field{margin-bottom:17px}
-label{display:block;margin-bottom:8px;font-size:13px;font-weight:bold}
-input{width:100%;padding:14px;border:1px solid var(--border);border-radius:11px;background:white;font-size:15px;outline:0}
-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,84,166,.1)}
-.hint{margin-top:6px;color:var(--muted);font-size:11px;line-height:1.6}
-.btn{width:100%;padding:15px;border:0;border-radius:11px;background:var(--blue);color:white;font-size:15px;font-weight:bold}
-.btn-outline{background:white;color:var(--blue);border:1px solid var(--blue)}
-.message{display:none;padding:13px;margin:12px 0 17px;border-radius:10px;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
-.message.error{display:block;background:#fff0f0;color:#b42318}
-.message.success{display:block;background:#eaf8ee;color:#177245}
+label{
+  display:block;
+  margin-bottom:8px;
+  font-size:13px;
+  font-weight:bold
+}
+input{
+  width:100%;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:white;
+  font-size:15px;
+  outline:0
+}
+input:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(7,84,166,.1)
+}
+.hint{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.6
+}
+.btn{
+  width:100%;
+  padding:15px;
+  border:0;
+  border-radius:11px;
+  background:var(--blue);
+  color:white;
+  font-size:15px;
+  font-weight:bold
+}
+.btn-outline{
+  background:white;
+  color:var(--blue);
+  border:1px solid var(--blue)
+}
+.message{
+  display:none;
+  padding:13px;
+  margin:12px 0 17px;
+  border-radius:10px;
+  font-size:13px;
+  line-height:1.6;
+  overflow-wrap:anywhere
+}
+.message.error{
+  display:block;
+  background:#fff0f0;
+  color:#b42318
+}
+.message.success{
+  display:block;
+  background:#eaf8ee;
+  color:#177245
+}
 #dashboard{display:none}
 .welcome{text-align:center;padding:10px 0 24px}
-.avatar{width:76px;height:76px;margin:0 auto 14px;display:grid;place-items:center;border-radius:50%;background:#e9f2fd;font-size:34px}
+.avatar{
+  width:76px;
+  height:76px;
+  margin:0 auto 14px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#e9f2fd;
+  font-size:34px
+}
 .welcome h2{margin-bottom:10px}
-.badge{display:inline-block;padding:7px 13px;border-radius:20px;background:#e9f7ed;color:#208046;font-size:12px;font-weight:bold}
-.info{overflow:hidden;margin-bottom:20px;border:1px solid var(--border);border-radius:12px;background:#f6f9fd}
-.info-row{display:flex;justify-content:space-between;gap:12px;padding:14px;border-bottom:1px solid var(--border);font-size:13px}
+.badge{
+  display:inline-block;
+  padding:7px 13px;
+  border-radius:20px;
+  background:#e9f7ed;
+  color:#208046;
+  font-size:12px;
+  font-weight:bold
+}
+.info{
+  overflow:hidden;
+  margin-bottom:20px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#f6f9fd
+}
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px;
+  border-bottom:1px solid var(--border);
+  font-size:13px
+}
 .info-row:last-child{border-bottom:0}
 .info-row span{color:var(--muted)}
 .info-row strong{text-align:right;overflow-wrap:anywhere}
-.notice{padding:14px;margin-bottom:20px;border-left:4px solid var(--blue);border-radius:9px;background:#eef5ff;font-size:12px;line-height:1.7}
-.section{margin-bottom:23px;padding-top:23px;border-top:1px solid var(--border)}
-.section-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.notice{
+  padding:14px;
+  margin-bottom:20px;
+  border-left:4px solid var(--blue);
+  border-radius:9px;
+  background:#eef5ff;
+  font-size:12px;
+  line-height:1.7
+}
+.section{
+  margin-bottom:23px;
+  padding-top:23px;
+  border-top:1px solid var(--border)
+}
+.section-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px
+}
 .section-heading h2{margin:0;font-size:19px}
-.vehicle-chip{padding:7px 10px;border-radius:20px;background:#eaf2ff;color:var(--blue);font-size:12px;font-weight:bold;white-space:nowrap}
-.section-description{margin:0 0 17px;font-size:12px;color:var(--muted);line-height:1.7}
-.toolbar{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-bottom:15px}
+.vehicle-chip{
+  padding:7px 10px;
+  border-radius:20px;
+  background:#eaf2ff;
+  color:var(--blue);
+  font-size:12px;
+  font-weight:bold;
+  white-space:nowrap
+}
+.section-description{
+  margin:0 0 17px;
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.7
+}
+.toolbar{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  align-items:end;
+  margin-bottom:15px
+}
 .toolbar .field{margin:0}
-.refresh-btn{border:1px solid var(--blue);background:white;color:var(--blue);border-radius:11px;padding:14px;font-size:13px;font-weight:bold}
-.trip-card{border:1px solid var(--border);border-radius:15px;padding:16px;margin-bottom:16px;background:white}
-.trip-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:13px}
-.trip-route{font-size:16px;font-weight:bold;line-height:1.5;color:var(--dark)}
-.trip-code{margin-top:5px;font-size:11px;color:var(--muted);overflow-wrap:anywhere}
-.trip-status{display:inline-block;padding:8px 10px;border-radius:20px;font-size:11px;font-weight:bold;white-space:nowrap}
-.trip-status.not_departed{color:var(--blue);background:#eaf2ff}
-.trip-status.in_progress{color:#9c5a00;background:#fff0d3}
-.trip-status.completed{color:var(--green);background:#e5f7eb}
-.trip-meta{font-size:12px;color:#52627a;line-height:1.9;margin-bottom:14px}
-.stop-list{border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.stop-item{padding:13px;border-bottom:1px solid var(--border);background:#fbfcff}
+.refresh-btn{
+  border:1px solid var(--blue);
+  background:white;
+  color:var(--blue);
+  border-radius:11px;
+  padding:14px;
+  font-size:13px;
+  font-weight:bold
+}
+.trip-card{
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:16px;
+  margin-bottom:16px;
+  background:white
+}
+.trip-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+  margin-bottom:13px
+}
+.trip-route{
+  font-size:16px;
+  font-weight:bold;
+  line-height:1.5;
+  color:var(--dark)
+}
+.trip-code{
+  margin-top:5px;
+  font-size:11px;
+  color:var(--muted);
+  overflow-wrap:anywhere
+}
+.trip-status{
+  display:inline-block;
+  padding:8px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:bold;
+  white-space:nowrap
+}
+.trip-status.not_departed{
+  color:var(--blue);
+  background:#eaf2ff
+}
+.trip-status.in_progress{
+  color:#9c5a00;
+  background:#fff0d3
+}
+.trip-status.completed{
+  color:var(--green);
+  background:#e5f7eb
+}
+.trip-meta{
+  font-size:12px;
+  color:#52627a;
+  line-height:1.9;
+  margin-bottom:14px
+}
+.stop-list{
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden
+}
+.stop-item{
+  padding:13px;
+  border-bottom:1px solid var(--border);
+  background:#fbfcff
+}
 .stop-item:last-child{border-bottom:0}
 .stop-item.done{background:#f1fbf5}
 .stop-item.current{background:#eff6ff}
-.stop-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.stop-head{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start
+}
 .stop-name{font-size:13px;font-weight:bold}
-.stop-state{font-size:11px;color:var(--muted);text-align:right;line-height:1.5}
+.stop-state{
+  font-size:11px;
+  color:var(--muted);
+  text-align:right;
+  line-height:1.5
+}
 .stop-state.done{color:var(--green);font-weight:bold}
 .stop-action{margin-top:11px}
-.action-btn{width:100%;border:0;border-radius:10px;padding:12px;font-size:12px;font-weight:bold}
+.action-btn{
+  width:100%;
+  border:0;
+  border-radius:10px;
+  padding:12px;
+  font-size:12px;
+  font-weight:bold
+}
 .action-btn.depart{background:var(--blue);color:white}
-.action-btn.undo{background:white;color:#a65c08;border:1px solid #e7c38d}
-.action-btn.complete{margin-top:13px;background:var(--green);color:white}
-.trip-note{padding:12px;border-radius:10px;background:#f5f8fc;font-size:11px;color:#65758c;line-height:1.7;margin-top:14px}
-.scan-btn{display:flex;justify-content:center;align-items:center;gap:10px;width:100%;padding:17px 14px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--dark));color:white;font-size:15px;font-weight:bold}
-.qr-manual{display:grid;grid-template-columns:1fr auto;gap:9px;margin-top:12px}
-.qr-manual input{min-width:0;padding:12px;font-size:13px}
-.qr-manual button{border:1px solid var(--blue);background:white;color:var(--blue);border-radius:10px;padding:10px 15px;font-size:12px;font-weight:bold}
-.scanner-panel{display:none;margin-top:15px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#07192e}
+.action-btn.undo{
+  background:white;
+  color:#a65c08;
+  border:1px solid #e7c38d
+}
+.action-btn.complete{
+  margin-top:13px;
+  background:var(--green);
+  color:white
+}
+.trip-note{
+  padding:12px;
+  border-radius:10px;
+  background:#f5f8fc;
+  font-size:11px;
+  color:#65758c;
+  line-height:1.7;
+  margin-top:14px
+}
+.scan-btn{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  padding:17px 14px;
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--blue),var(--dark));
+  color:white;
+  font-size:15px;
+  font-weight:bold
+}
+.feedback-btn{
+  display:block;
+  width:100%;
+  margin-top:10px;
+  padding:13px;
+  border:1px solid var(--blue);
+  border-radius:11px;
+  background:white;
+  color:var(--blue);
+  font-size:13px;
+  font-weight:bold
+}
+.feedback-status{
+  min-height:17px;
+  margin:8px 0 5px;
+  text-align:center;
+  font-size:11px;
+  color:#64748b;
+  line-height:1.5
+}
+.qr-manual{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:9px;
+  margin-top:12px
+}
+.qr-manual input{
+  min-width:0;
+  padding:12px;
+  font-size:13px
+}
+.qr-manual button{
+  border:1px solid var(--blue);
+  background:white;
+  color:var(--blue);
+  border-radius:10px;
+  padding:10px 15px;
+  font-size:12px;
+  font-weight:bold
+}
+.scanner-panel{
+  display:none;
+  margin-top:15px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  background:#07192e
+}
 .scanner-panel.active{display:block}
-.scanner-top{display:flex;align-items:center;justify-content:space-between;padding:12px;color:white;font-size:12px;font-weight:bold}
-.scanner-top button{background:white;border:0;border-radius:8px;padding:8px 12px;color:#b42318;font-weight:bold}
-.scanner-video-wrap{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:black}
-#qrVideo{display:block;width:100%;height:100%;object-fit:cover}
-.scanner-frame{position:absolute;left:15%;top:15%;width:70%;height:70%;border:3px solid #63e6a4;border-radius:18px;pointer-events:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.18)}
-.scanner-instruction{color:white;text-align:center;padding:13px;font-size:12px;line-height:1.6}
-.qr-result{display:none;margin-top:15px;padding:16px;border:1px solid #b9e6c8;border-radius:13px;background:#fbfffc}
+.scanner-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px;
+  color:white;
+  font-size:12px;
+  font-weight:bold
+}
+.scanner-top button{
+  background:white;
+  border:0;
+  border-radius:8px;
+  padding:8px 12px;
+  color:#b42318;
+  font-weight:bold
+}
+.scanner-video-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:1/1;
+  overflow:hidden;
+  background:black
+}
+#qrVideo{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover
+}
+.scanner-frame{
+  position:absolute;
+  left:15%;
+  top:15%;
+  width:70%;
+  height:70%;
+  border:3px solid #63e6a4;
+  border-radius:18px;
+  pointer-events:none;
+  box-shadow:0 0 0 100vmax rgba(0,0,0,.18)
+}
+.scanner-instruction{
+  color:white;
+  text-align:center;
+  padding:13px;
+  font-size:12px;
+  line-height:1.6
+}
+.qr-result{
+  display:none;
+  margin-top:15px;
+  padding:16px;
+  border:1px solid #b9e6c8;
+  border-radius:13px;
+  background:#fbfffc
+}
 .qr-result.active{display:block}
-.qr-result h3{margin:0 0 13px;color:var(--green);font-size:16px}
-.qr-result-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #e0eee5;font-size:12px}
+.qr-result h3{
+  margin:0 0 13px;
+  color:var(--green);
+  font-size:16px
+}
+.qr-result-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid #e0eee5;
+  font-size:12px
+}
 .qr-result-row span{color:var(--muted)}
-.qr-result-row strong{text-align:right;overflow-wrap:anywhere}
-.qr-confirm{width:100%;margin-top:17px;padding:15px;border:0;border-radius:11px;background:var(--green);color:white;font-size:14px;font-weight:bold}
-.qr-cancel{width:100%;margin-top:9px;padding:12px;border:1px solid var(--border);border-radius:10px;background:white;color:var(--text);font-size:12px;font-weight:bold}
-.qr-success{display:none;margin-top:15px;padding:22px 14px;border:1px solid #b9e6c8;border-radius:13px;background:#eaf8ee;color:var(--green);text-align:center;line-height:1.7}
+.qr-result-row strong{
+  text-align:right;
+  overflow-wrap:anywhere
+}
+.qr-confirm{
+  width:100%;
+  margin-top:17px;
+  padding:15px;
+  border:0;
+  border-radius:11px;
+  background:var(--green);
+  color:white;
+  font-size:14px;
+  font-weight:bold
+}
+.qr-cancel{
+  width:100%;
+  margin-top:9px;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:white;
+  color:var(--text);
+  font-size:12px;
+  font-weight:bold
+}
+.qr-success{
+  display:none;
+  margin-top:15px;
+  padding:22px 14px;
+  border:1px solid #b9e6c8;
+  border-radius:13px;
+  background:#eaf8ee;
+  color:var(--green);
+  text-align:center;
+  line-height:1.7
+}
 .qr-success.active{display:block}
-.qr-success strong{display:block;font-size:17px}
-.qr-success button{margin-top:14px;border:0;border-radius:10px;padding:12px 20px;background:var(--blue);color:white;font-weight:bold}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:17px}
-.stat{background:#f5f8fc;border:1px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center}
-.stat strong{display:block;font-size:21px;color:var(--blue);margin-bottom:5px}
-.stat span{display:block;color:var(--muted);font-size:10px;line-height:1.4}
+.qr-success strong{
+  display:block;
+  font-size:17px
+}
+.qr-success button{
+  margin-top:14px;
+  border:0;
+  border-radius:10px;
+  padding:12px 20px;
+  background:var(--blue);
+  color:white;
+  font-weight:bold
+}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-bottom:17px
+}
+.stat{
+  background:#f5f8fc;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px 6px;
+  text-align:center
+}
+.stat strong{
+  display:block;
+  font-size:21px;
+  color:var(--blue);
+  margin-bottom:5px
+}
+.stat span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.4
+}
 .stat.green strong{color:var(--green)}
 .stat.orange strong{color:var(--orange)}
 .stat.red strong{color:var(--red)}
 .search-box{margin-bottom:14px}
 .search-box input{padding:12px 14px;font-size:13px}
 .manifest-trip{margin-bottom:22px}
-.manifest-trip-title{background:#eaf2ff;color:var(--dark);padding:13px;border-radius:11px;font-size:13px;font-weight:bold;line-height:1.6;margin-bottom:12px;overflow-wrap:anywhere}
-.pickup-heading{padding:10px 12px;background:#f2f5fa;border-left:3px solid var(--blue);border-radius:8px;margin:13px 0 10px;font-size:12px;font-weight:bold}
-.passenger-card{border:1px solid var(--border);border-radius:13px;padding:15px;margin-bottom:10px;background:white}
-.passenger-card.is-boarded{border-color:#b9e6c8;background:#fbfffc}
-.passenger-card.is-no-show{border-color:#f0cccc;background:#fffafa}
-.passenger-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
-.passenger-name{font-size:15px;font-weight:bold;overflow-wrap:anywhere}
-.booking-code{font-size:11px;color:var(--muted);margin-top:5px;overflow-wrap:anywhere}
-.seat-badge{min-width:54px;text-align:center;background:#e9f2ff;color:var(--blue);border-radius:10px;padding:9px;font-size:12px;font-weight:bold}
-.passenger-detail{font-size:12px;line-height:1.8;color:#46556a;overflow-wrap:anywhere}
-.payment-badge,.status-badge{display:inline-block;margin-top:10px;margin-right:5px;border-radius:20px;padding:6px 10px;background:#fff4df;color:#966000;font-size:11px;font-weight:bold}
-.payment-badge.paid,.status-badge.boarded{background:#e7f7ed;color:#147a43}
-.status-badge.no-show{background:#ffeaea;color:#b42318}
-.contact-actions,.passenger-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}
-.contact-btn{display:flex;align-items:center;justify-content:center;padding:12px 6px;border-radius:9px;text-decoration:none;font-size:12px;font-weight:bold;text-align:center;border:0}
-.contact-btn.whatsapp{background:#25d366;color:white}
-.contact-btn.phone{background:#eaf2ff;color:var(--blue);border:1px solid #c9dffc}
-.small-btn{padding:11px 8px;border:0;border-radius:9px;font-size:12px;font-weight:bold}
+.manifest-trip-title{
+  background:#eaf2ff;
+  color:var(--dark);
+  padding:13px;
+  border-radius:11px;
+  font-size:13px;
+  font-weight:bold;
+  line-height:1.6;
+  margin-bottom:12px;
+  overflow-wrap:anywhere
+}
+.pickup-heading{
+  padding:10px 12px;
+  background:#f2f5fa;
+  border-left:3px solid var(--blue);
+  border-radius:8px;
+  margin:13px 0 10px;
+  font-size:12px;
+  font-weight:bold
+}
+.passenger-card{
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:15px;
+  margin-bottom:10px;
+  background:white
+}
+.passenger-card.is-boarded{
+  border-color:#b9e6c8;
+  background:#fbfffc
+}
+.passenger-card.is-no-show{
+  border-color:#f0cccc;
+  background:#fffafa
+}
+.passenger-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:12px
+}
+.passenger-name{
+  font-size:15px;
+  font-weight:bold;
+  overflow-wrap:anywhere
+}
+.booking-code{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:5px;
+  overflow-wrap:anywhere
+}
+.seat-badge{
+  min-width:54px;
+  text-align:center;
+  background:#e9f2ff;
+  color:var(--blue);
+  border-radius:10px;
+  padding:9px;
+  font-size:12px;
+  font-weight:bold
+}
+.passenger-detail{
+  font-size:12px;
+  line-height:1.8;
+  color:#46556a;
+  overflow-wrap:anywhere
+}
+.payment-badge,.status-badge{
+  display:inline-block;
+  margin-top:10px;
+  margin-right:5px;
+  border-radius:20px;
+  padding:6px 10px;
+  background:#fff4df;
+  color:#966000;
+  font-size:11px;
+  font-weight:bold
+}
+.payment-badge.paid,.status-badge.boarded{
+  background:#e7f7ed;
+  color:#147a43
+}
+.status-badge.no-show{
+  background:#ffeaea;
+  color:#b42318
+}
+.contact-actions,.passenger-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:13px
+}
+.contact-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px 6px;
+  border-radius:9px;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:bold;
+  text-align:center;
+  border:0
+}
+.contact-btn.whatsapp{
+  background:#25d366;
+  color:white
+}
+.contact-btn.phone{
+  background:#eaf2ff;
+  color:var(--blue);
+  border:1px solid #c9dffc
+}
+.small-btn{
+  padding:11px 8px;
+  border:0;
+  border-radius:9px;
+  font-size:12px;
+  font-weight:bold
+}
 .small-btn.board{background:var(--green);color:white}
-.small-btn.no-show{background:white;color:#b42318;border:1px solid #e7b9b9}
-.empty-state{text-align:center;padding:28px 12px;color:var(--muted);font-size:13px;line-height:1.7;border:1px dashed var(--border);border-radius:12px;background:#fbfcfe}
-.manifest-note{margin-top:15px;padding:12px;border-radius:10px;background:#f5f8fc;color:#61718a;font-size:11px;line-height:1.7}
-.footer{margin-top:22px;text-align:center;color:var(--muted);font-size:11px;line-height:1.8}
+.small-btn.no-show{
+  background:white;
+  color:#b42318;
+  border:1px solid #e7b9b9
+}
+.empty-state{
+  text-align:center;
+  padding:28px 12px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.7;
+  border:1px dashed var(--border);
+  border-radius:12px;
+  background:#fbfcfe
+}
+.manifest-note{
+  margin-top:15px;
+  padding:12px;
+  border-radius:10px;
+  background:#f5f8fc;
+  color:#61718a;
+  font-size:11px;
+  line-height:1.7
+}
+.footer{
+  margin-top:22px;
+  text-align:center;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.8
+}
 @media(max-width:390px){
   .card{padding:17px}
   .toolbar{grid-template-columns:1fr}
@@ -174,10 +741,17 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,84,166,.1)}
 <main class="container">
 
 <section class="card" id="authCard">
+
   <div class="tabs">
-    <button type="button" class="tab active" data-tab="login">Login</button>
-    <button type="button" class="tab" data-tab="activate">Aktivasi</button>
-    <button type="button" class="tab" data-tab="recover">Lupa PIN</button>
+    <button type="button" class="tab active" data-tab="login">
+      Login
+    </button>
+    <button type="button" class="tab" data-tab="activate">
+      Aktivasi
+    </button>
+    <button type="button" class="tab" data-tab="recover">
+      Lupa PIN
+    </button>
   </div>
 
   <div id="authMessage" class="message" role="alert"></div>
@@ -187,82 +761,174 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,84,166,.1)}
     <p class="description">
       Masukkan nomor HP terdaftar dan PIN untuk masuk ke portal.
     </p>
+
     <div class="field">
       <label for="loginPhone">Nomor HP</label>
-      <input id="loginPhone" type="tel" inputmode="tel"
-        autocomplete="tel" placeholder="08xxxxxxxxxx" required>
+      <input
+        id="loginPhone"
+        type="tel"
+        inputmode="tel"
+        autocomplete="tel"
+        placeholder="08xxxxxxxxxx"
+        required
+      >
     </div>
+
     <div class="field">
       <label for="loginPin">PIN 6 Digit</label>
-      <input id="loginPin" type="password" inputmode="numeric"
-        pattern="[0-9]{6}" minlength="6" maxlength="6"
-        autocomplete="off" placeholder="Masukkan PIN" required>
+      <input
+        id="loginPin"
+        type="password"
+        inputmode="numeric"
+        pattern="[0-9]{6}"
+        minlength="6"
+        maxlength="6"
+        autocomplete="off"
+        placeholder="Masukkan PIN"
+        required
+      >
     </div>
-    <button class="btn" type="submit">Masuk</button>
+
+    <button class="btn" type="submit">
+      Masuk
+    </button>
   </form>
 
   <form id="activateForm" class="form">
     <h2>Aktivasi Akun</h2>
+
     <p class="description">
       Gunakan kode aktivasi 8 digit dari admin HSM Transport.
     </p>
+
     <div class="field">
       <label for="activatePhone">Nomor HP Terdaftar</label>
-      <input id="activatePhone" type="tel" placeholder="08xxxxxxxxxx" required>
+      <input
+        id="activatePhone"
+        type="tel"
+        placeholder="08xxxxxxxxxx"
+        required
+      >
     </div>
+
     <div class="field">
       <label for="activateCode">Kode Aktivasi</label>
-      <input id="activateCode" type="text" inputmode="numeric"
-        pattern="[0-9]{8}" minlength="8" maxlength="8"
-        autocomplete="off" placeholder="8 digit kode" required>
+      <input
+        id="activateCode"
+        type="text"
+        inputmode="numeric"
+        pattern="[0-9]{8}"
+        minlength="8"
+        maxlength="8"
+        autocomplete="off"
+        placeholder="8 digit kode"
+        required
+      >
     </div>
+
     <div class="field">
       <label for="activatePin">Buat PIN 6 Digit</label>
-      <input id="activatePin" type="password" inputmode="numeric"
-        pattern="[0-9]{6}" minlength="6" maxlength="6"
-        autocomplete="new-password" placeholder="PIN baru" required>
+      <input
+        id="activatePin"
+        type="password"
+        inputmode="numeric"
+        pattern="[0-9]{6}"
+        minlength="6"
+        maxlength="6"
+        autocomplete="new-password"
+        placeholder="PIN baru"
+        required
+      >
     </div>
+
     <div class="field">
       <label for="activatePinConfirm">Ulangi PIN</label>
-      <input id="activatePinConfirm" type="password" inputmode="numeric"
-        pattern="[0-9]{6}" minlength="6" maxlength="6"
-        autocomplete="new-password" placeholder="Ulangi PIN" required>
+      <input
+        id="activatePinConfirm"
+        type="password"
+        inputmode="numeric"
+        pattern="[0-9]{6}"
+        minlength="6"
+        maxlength="6"
+        autocomplete="new-password"
+        placeholder="Ulangi PIN"
+        required
+      >
     </div>
-    <button class="btn" type="submit">Aktifkan Akun</button>
+
+    <button class="btn" type="submit">
+      Aktifkan Akun
+    </button>
   </form>
 
   <form id="recoverForm" class="form">
     <h2>Pemulihan PIN</h2>
+
     <p class="description">
       Minta kode pemulihan kepada admin untuk membuat PIN baru.
     </p>
+
     <div class="field">
       <label for="recoverPhone">Nomor HP Terdaftar</label>
-      <input id="recoverPhone" type="tel" placeholder="08xxxxxxxxxx" required>
+      <input
+        id="recoverPhone"
+        type="tel"
+        placeholder="08xxxxxxxxxx"
+        required
+      >
     </div>
+
     <div class="field">
       <label for="recoverCode">Kode Pemulihan</label>
-      <input id="recoverCode" type="text" inputmode="numeric"
-        pattern="[0-9]{8}" minlength="8" maxlength="8"
-        autocomplete="off" placeholder="8 digit kode" required>
+      <input
+        id="recoverCode"
+        type="text"
+        inputmode="numeric"
+        pattern="[0-9]{8}"
+        minlength="8"
+        maxlength="8"
+        autocomplete="off"
+        placeholder="8 digit kode"
+        required
+      >
     </div>
+
     <div class="field">
       <label for="recoverPin">PIN Baru</label>
-      <input id="recoverPin" type="password" inputmode="numeric"
-        pattern="[0-9]{6}" minlength="6" maxlength="6"
-        autocomplete="new-password" required>
+      <input
+        id="recoverPin"
+        type="password"
+        inputmode="numeric"
+        pattern="[0-9]{6}"
+        minlength="6"
+        maxlength="6"
+        autocomplete="new-password"
+        required
+      >
     </div>
+
     <div class="field">
       <label for="recoverPinConfirm">Ulangi PIN Baru</label>
-      <input id="recoverPinConfirm" type="password" inputmode="numeric"
-        pattern="[0-9]{6}" minlength="6" maxlength="6"
-        autocomplete="new-password" required>
+      <input
+        id="recoverPinConfirm"
+        type="password"
+        inputmode="numeric"
+        pattern="[0-9]{6}"
+        minlength="6"
+        maxlength="6"
+        autocomplete="new-password"
+        required
+      >
     </div>
-    <button class="btn" type="submit">Ganti PIN</button>
+
+    <button class="btn" type="submit">
+      Ganti PIN
+    </button>
   </form>
 </section>
 
 <section class="card" id="dashboard">
+
   <div class="welcome">
     <div class="avatar">👤</div>
     <h2 id="staffName">Petugas HSM</h2>
@@ -271,27 +937,32 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,84,166,.1)}
 
   <div class="info">
     <div class="info-row">
-      <span>Nama</span><strong id="infoName">-</strong>
+      <span>Nama</span>
+      <strong id="infoName">-</strong>
     </div>
     <div class="info-row">
-      <span>Jabatan</span><strong id="infoRole">-</strong>
+      <span>Jabatan</span>
+      <strong id="infoRole">-</strong>
     </div>
     <div class="info-row">
-      <span>Armada</span><strong id="infoVehicle">-</strong>
+      <span>Armada</span>
+      <strong id="infoVehicle">-</strong>
     </div>
     <div class="info-row">
-      <span>Nomor HP</span><strong id="infoPhone">-</strong>
+      <span>Nomor HP</span>
+      <strong id="infoPhone">-</strong>
     </div>
     <div class="info-row">
-      <span>Sesi Berakhir</span><strong id="infoExpiry">-</strong>
+      <span>Sesi Berakhir</span>
+      <strong id="infoExpiry">-</strong>
     </div>
   </div>
 
   <div class="notice">
     <strong>Informasi Operasional</strong><br>
-    Dashboard ini hanya menampilkan data armada yang terdaftar
-    pada akun petugas. Konfirmasi keberangkatan dan boarding
-    harus sesuai kondisi sebenarnya di lapangan.
+    Dashboard ini hanya menampilkan data armada yang
+    terdaftar pada akun petugas. Konfirmasi keberangkatan
+    dan boarding harus sesuai kondisi sebenarnya di lapangan.
   </div>
 
   <div class="toolbar">
@@ -299,35 +970,47 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,84,166,.1)}
       <label for="manifestDate">Tanggal Perjalanan</label>
       <input id="manifestDate" type="date">
     </div>
-    <button id="refreshAllBtn" class="refresh-btn" type="button">
+
+    <button
+      id="refreshAllBtn"
+      class="refresh-btn"
+      type="button"
+    >
       🔄 Refresh Semua
     </button>
   </div>
 
   <section class="section" aria-label="Status perjalanan">
+
     <div class="section-heading">
       <h2>🚐 Status Perjalanan</h2>
       <span class="vehicle-chip" id="tripVehicle">-</span>
     </div>
+
     <p class="section-description">
       Catat keberangkatan setiap titik sesuai urutan perjalanan.
       Waktu dicatat otomatis oleh server.
     </p>
+
     <div id="tripMessage" class="message" role="status"></div>
+
     <div id="tripList">
       <div class="empty-state">
         Daftar perjalanan akan muncul setelah login.
       </div>
     </div>
+
     <div class="trip-note">
       <strong>Perhatian:</strong>
-      Tombol keberangkatan hanya tersedia untuk perjalanan hari ini.
-      Setelah perjalanan Selesai, petugas tidak bisa mengubah
-      statusnya lagi. Hubungi admin jika ada kesalahan.
+      Tombol keberangkatan hanya tersedia untuk perjalanan
+      hari ini. Setelah perjalanan Selesai, petugas tidak
+      bisa mengubah statusnya lagi. Hubungi admin jika ada kesalahan.
     </div>
+
   </section>
 
   <section class="section" aria-label="QR Check-in">
+
     <div class="section-heading">
       <h2>📷 QR Check-in</h2>
       <span class="vehicle-chip">Tiket Digital</span>
@@ -340,16 +1023,44 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,84,166,.1)}
 
     <div id="qrMessage" class="message" role="status"></div>
 
-    <button id="startScanBtn" class="scan-btn" type="button">
+    <button
+      id="startScanBtn"
+      class="scan-btn"
+      type="button"
+    >
       📷 Buka Kamera & Scan QR
     </button>
 
+    <!-- TOMBOL TES AUDIO DAN GETARAN -->
+
+    <button
+      id="testFeedbackBtn"
+      class="feedback-btn"
+      type="button"
+    >
+      🔊 Tes Suara & Getaran
+    </button>
+
+    <div
+      id="feedbackStatus"
+      class="feedback-status"
+      role="status"
+    >
+      Tes suara sebelum melakukan check-in.
+    </div>
+
     <div class="qr-manual">
-      <input id="qrManualInput" type="text"
+      <input
+        id="qrManualInput"
+        type="text"
         placeholder="Kode booking HSM-XXXXXX"
         autocomplete="off"
-        aria-label="Kode booking atau URL tiket">
-      <button id="qrManualBtn" type="button">Periksa</button>
+        aria-label="Kode booking atau URL tiket"
+      >
+
+      <button id="qrManualBtn" type="button">
+        Periksa
+      </button>
     </div>
 
     <p class="hint">
@@ -357,107 +1068,172 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,84,166,.1)}
     </p>
 
     <div id="scannerPanel" class="scanner-panel">
+
       <div class="scanner-top">
         <span>📷 Arahkan ke QR Tiket</span>
-        <button id="stopScanBtn" type="button">✕ Tutup</button>
+
+        <button id="stopScanBtn" type="button">
+          ✕ Tutup
+        </button>
       </div>
+
       <div class="scanner-video-wrap">
-        <video id="qrVideo" autoplay playsinline muted></video>
+        <video
+          id="qrVideo"
+          autoplay
+          playsinline
+          muted
+        ></video>
+
         <div class="scanner-frame"></div>
       </div>
+
       <div class="scanner-instruction">
         Posisikan QR Code di dalam kotak hijau.
       </div>
+
     </div>
 
     <div id="qrResult" class="qr-result">
+
       <h3>✓ Tiket Ditemukan</h3>
+
       <div class="qr-result-row">
-        <span>Nama</span><strong id="qrName">-</strong>
-      </div>
-      <div class="qr-result-row">
-        <span>Kode Booking</span><strong id="qrCode">-</strong>
-      </div>
-      <div class="qr-result-row">
-        <span>Rute</span><strong id="qrRoute">-</strong>
-      </div>
-      <div class="qr-result-row">
-        <span>Tanggal</span><strong id="qrDate">-</strong>
-      </div>
-      <div class="qr-result-row">
-        <span>Jam</span><strong id="qrTime">-</strong>
-      </div>
-      <div class="qr-result-row">
-        <span>Armada</span><strong id="qrVehicle">-</strong>
-      </div>
-      <div class="qr-result-row">
-        <span>Kursi</span><strong id="qrSeat">-</strong>
-      </div>
-      <div class="qr-result-row">
-        <span>Pembayaran</span><strong id="qrPayment">-</strong>
+        <span>Nama</span>
+        <strong id="qrName">-</strong>
       </div>
 
-      <button id="confirmQRBtn" class="qr-confirm" type="button">
+      <div class="qr-result-row">
+        <span>Kode Booking</span>
+        <strong id="qrCode">-</strong>
+      </div>
+
+      <div class="qr-result-row">
+        <span>Rute</span>
+        <strong id="qrRoute">-</strong>
+      </div>
+
+      <div class="qr-result-row">
+        <span>Tanggal</span>
+        <strong id="qrDate">-</strong>
+      </div>
+
+      <div class="qr-result-row">
+        <span>Jam</span>
+        <strong id="qrTime">-</strong>
+      </div>
+
+      <div class="qr-result-row">
+        <span>Armada</span>
+        <strong id="qrVehicle">-</strong>
+      </div>
+
+      <div class="qr-result-row">
+        <span>Kursi</span>
+        <strong id="qrSeat">-</strong>
+      </div>
+
+      <div class="qr-result-row">
+        <span>Pembayaran</span>
+        <strong id="qrPayment">-</strong>
+      </div>
+
+      <button
+        id="confirmQRBtn"
+        class="qr-confirm"
+        type="button"
+      >
         ✓ Konfirmasi Sudah Naik
       </button>
-      <button id="cancelQRBtn" class="qr-cancel" type="button">
+
+      <button
+        id="cancelQRBtn"
+        class="qr-cancel"
+        type="button"
+      >
         Batal / Scan Tiket Lain
       </button>
+
     </div>
 
     <div id="qrSuccess" class="qr-success">
+
       <div style="font-size:42px">✅</div>
+
       <strong>Check-in Berhasil!</strong>
+
       <div id="qrSuccessText"></div>
-      <button id="scanAgainBtn" type="button">
+
+      <button
+        id="scanAgainBtn"
+        type="button"
+      >
         📷 Scan Penumpang Berikutnya
       </button>
+
     </div>
+
   </section>
 
   <section class="section" aria-label="Manifest penumpang">
+
     <div class="section-heading">
       <h2>📋 Manifest Penumpang</h2>
       <span class="vehicle-chip" id="manifestVehicle">-</span>
     </div>
 
     <p class="section-description">
-      Daftar penumpang dikelompokkan berdasarkan perjalanan
-      dan titik naik.
+      Daftar penumpang dikelompokkan berdasarkan
+      perjalanan dan titik naik.
     </p>
 
     <div class="stats">
+
       <div class="stat">
         <strong id="statTotal">0</strong>
         <span>Total</span>
       </div>
+
       <div class="stat green">
         <strong id="statBoarded">0</strong>
         <span>Sudah Naik</span>
       </div>
+
       <div class="stat orange">
         <strong id="statPending">0</strong>
         <span>Belum Naik</span>
       </div>
+
       <div class="stat red">
         <strong id="statNoShow">0</strong>
         <span>Tidak Hadir</span>
       </div>
+
     </div>
 
-    <div id="manifestMessage" class="message" role="status"></div>
+    <div
+      id="manifestMessage"
+      class="message"
+      role="status"
+    ></div>
 
     <div class="search-box">
       <label for="manifestSearch">Cari Penumpang</label>
-      <input id="manifestSearch" type="search"
+
+      <input
+        id="manifestSearch"
+        type="search"
         placeholder="Nama, kode booking, nomor kursi..."
-        autocomplete="off">
+        autocomplete="off"
+      >
     </div>
 
     <div id="manifestList">
+
       <div class="empty-state">
         Manifest akan dimuat setelah login.
       </div>
+
     </div>
 
     <div class="manifest-note">
@@ -467,11 +1243,17 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,84,166,.1)}
       belum selesai. Penumpang yang sudah Tidak Hadir
       harus dikoreksi oleh admin.
     </div>
+
   </section>
 
-  <button id="logoutBtn" class="btn btn-outline" type="button">
+  <button
+    id="logoutBtn"
+    class="btn btn-outline"
+    type="button"
+  >
     Keluar dari Akun
   </button>
+
 </section>
 
 <div class="footer">
@@ -488,7 +1270,7 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,84,166,.1)}
 "use strict";
 
 /* ============================================================
-   KONFIGURASI HSM TRANSPORT
+   KONFIGURASI
 ============================================================ */
 
 const AUTH_ENDPOINT =
@@ -496,6 +1278,7 @@ const AUTH_ENDPOINT =
 
 const TOKEN_KEY = "hsm_staff_session_token";
 const LOGIN_DATE_KEY = "hsm_staff_login_date";
+
 const WIT_TIMEZONE = "Asia/Jayapura";
 
 let sessionTimer = null;
@@ -505,6 +1288,7 @@ let qrRequestId = 0;
 
 let manifestData = [];
 let tripsData = [];
+
 let currentVehicle = "";
 
 let boardingBusy = false;
@@ -518,8 +1302,10 @@ let qrRawValue = "";
 let scannerStream = null;
 let scannerFrameId = null;
 let scannerGeneration = 0;
+
 let scannerActive = false;
 let scannerStarting = false;
+
 let scannerCanvas = null;
 let scannerContext = null;
 
@@ -528,61 +1314,333 @@ let autoRefreshTimer = null;
 const $ = id => document.getElementById(id);
 
 const forms = {
-  login: $("loginForm"),
-  activate: $("activateForm"),
-  recover: $("recoverForm")
+  login:$("loginForm"),
+  activate:$("activateForm"),
+  recover:$("recoverForm")
 };
 
 /* ============================================================
-   SUARA SCANNER QR HSM TRANSPORT
+   AUDIO DAN GETARAN HSM TRANSPORT
 
    BERHASIL:
-   Satu bunyi panjang, sekitar 0,15 detik.
+   1 bunyi panjang + 1 getaran.
 
    GAGAL:
-   Tiga bunyi cepat, masing-masing 0,07 detik
-   dengan jarak awal bunyi 0,11 detik.
+   3 bunyi cepat + 3 getaran.
 
-   Suara sukses hanya diputar setelah server
-   mengonfirmasi check-in.
+   Audio dibangkitkan secara lokal.
+   Tidak memerlukan file MP3 atau internet.
 ============================================================ */
 
 let hsmAudioContext = null;
 
-function unlockQRBeep() {
+let hsmSuccessAudio = null;
+let hsmErrorAudio = null;
+
+let hsmSuccessAudioURL = null;
+let hsmErrorAudioURL = null;
+
+let hsmFeedbackTesting = false;
+
+let hsmAudioUnlocked = false;
+
+/* ============================================================
+   MEMBUAT AUDIO WAV
+============================================================ */
+
+function createHSMWave(
+  frequency,
+  duration,
+  repeat = 1,
+  pause = 0
+) {
+  const sampleRate = 22050;
+
+  const soundSamples = Math.floor(
+    sampleRate * duration
+  );
+
+  const pauseSamples = Math.floor(
+    sampleRate * pause
+  );
+
+  const totalSamples =
+    soundSamples * repeat +
+    pauseSamples * Math.max(0, repeat - 1);
+
+  const buffer = new ArrayBuffer(
+    44 + totalSamples * 2
+  );
+
+  const view = new DataView(buffer);
+
+  function writeString(offset, value) {
+    for (let i = 0; i < value.length; i++) {
+      view.setUint8(
+        offset + i,
+        value.charCodeAt(i)
+      );
+    }
+  }
+
+  writeString(0, "RIFF");
+
+  view.setUint32(
+    4,
+    36 + totalSamples * 2,
+    true
+  );
+
+  writeString(8, "WAVE");
+  writeString(12, "fmt ");
+
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+
+  view.setUint32(
+    24,
+    sampleRate,
+    true
+  );
+
+  view.setUint32(
+    28,
+    sampleRate * 2,
+    true
+  );
+
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
+
+  writeString(36, "data");
+
+  view.setUint32(
+    40,
+    totalSamples * 2,
+    true
+  );
+
+  let offset = 44;
+
+  for (let r = 0; r < repeat; r++) {
+    for (let i = 0; i < soundSamples; i++) {
+      const time = i / sampleRate;
+
+      const fadeIn = Math.min(
+        1,
+        i / (sampleRate * 0.007)
+      );
+
+      const fadeOut = Math.min(
+        1,
+        (soundSamples - i) /
+          (sampleRate * 0.014)
+      );
+
+      const envelope = Math.max(
+        0,
+        Math.min(fadeIn, fadeOut)
+      );
+
+      const fundamental = Math.sin(
+        2 * Math.PI * frequency * time
+      );
+
+      const harmonic = Math.sin(
+        2 * Math.PI * frequency * 2 * time
+      );
+
+      const signal =
+        (
+          fundamental * 0.78 +
+          harmonic * 0.22
+        ) *
+        envelope *
+        0.9;
+
+      view.setInt16(
+        offset,
+        Math.round(
+          Math.max(
+            -1,
+            Math.min(1, signal)
+          ) * 32767
+        ),
+        true
+      );
+
+      offset += 2;
+    }
+
+    if (r < repeat - 1) {
+      for (let i = 0; i < pauseSamples; i++) {
+        view.setInt16(offset, 0, true);
+        offset += 2;
+      }
+    }
+  }
+
+  return new Blob(
+    [buffer],
+    { type:"audio/wav" }
+  );
+}
+
+/* ============================================================
+   SIAPKAN AUDIO HTML
+============================================================ */
+
+function initializeHSMAudio() {
   try {
+    if (!hsmSuccessAudio) {
+      const successBlob = createHSMWave(
+        1150,
+        0.24,
+        1,
+        0
+      );
+
+      hsmSuccessAudioURL =
+        URL.createObjectURL(successBlob);
+
+      hsmSuccessAudio = new Audio(
+        hsmSuccessAudioURL
+      );
+
+      hsmSuccessAudio.preload = "auto";
+      hsmSuccessAudio.volume = 1;
+    }
+
+    if (!hsmErrorAudio) {
+      const errorBlob = createHSMWave(
+        750,
+        0.105,
+        3,
+        0.075
+      );
+
+      hsmErrorAudioURL =
+        URL.createObjectURL(errorBlob);
+
+      hsmErrorAudio = new Audio(
+        hsmErrorAudioURL
+      );
+
+      hsmErrorAudio.preload = "auto";
+      hsmErrorAudio.volume = 1;
+    }
+
     const AudioContextClass =
-      window.AudioContext || window.webkitAudioContext;
+      window.AudioContext ||
+      window.webkitAudioContext;
 
-    if (!AudioContextClass) return;
-
-    if (!hsmAudioContext) {
-      hsmAudioContext = new AudioContextClass();
+    if (
+      AudioContextClass &&
+      !hsmAudioContext
+    ) {
+      hsmAudioContext =
+        new AudioContextClass();
     }
 
-    if (hsmAudioContext.state === "suspended") {
-      hsmAudioContext.resume().catch(() => {});
-    }
   } catch (error) {
-    console.warn("Audio QR tidak tersedia:", error);
+    console.warn(
+      "HSM AUDIO INIT:",
+      error
+    );
   }
 }
 
-function playQRBeep(success = true) {
-  try {
-    unlockQRBeep();
+/* ============================================================
+   AKTIFKAN AUDIO DARI SENTUHAN PENGGUNA
+============================================================ */
 
+function unlockQRBeep() {
+  initializeHSMAudio();
+
+  try {
     if (!hsmAudioContext) return;
 
-    const count = success ? 1 : 3;
-    const duration = success ? 0.15 : 0.07;
-    const interval = success ? 0 : 0.11;
-    const frequency = success ? 1200 : 750;
+    if (
+      hsmAudioContext.state === "suspended"
+    ) {
+      hsmAudioContext.resume()
+        .then(() => {
+          hsmAudioUnlocked = true;
+        })
+        .catch(error => {
+          console.warn(
+            "HSM AUDIO RESUME:",
+            error
+          );
+        });
+    } else if (
+      hsmAudioContext.state === "running"
+    ) {
+      hsmAudioUnlocked = true;
+    }
 
-    const baseTime = hsmAudioContext.currentTime + 0.01;
+    const oscillator =
+      hsmAudioContext.createOscillator();
+
+    const gain =
+      hsmAudioContext.createGain();
+
+    gain.gain.value = 0;
+
+    oscillator.connect(gain);
+    gain.connect(
+      hsmAudioContext.destination
+    );
+
+    oscillator.start();
+
+    oscillator.stop(
+      hsmAudioContext.currentTime + 0.01
+    );
+
+  } catch (error) {
+    console.warn(
+      "HSM AUDIO UNLOCK:",
+      error
+    );
+  }
+}
+
+/* ============================================================
+   AUDIO WEB AUDIO
+============================================================ */
+
+async function playWebAudioBeep(success = true) {
+  initializeHSMAudio();
+
+  if (!hsmAudioContext) {
+    return false;
+  }
+
+  try {
+    if (
+      hsmAudioContext.state !== "running"
+    ) {
+      await hsmAudioContext.resume();
+    }
+
+    if (
+      hsmAudioContext.state !== "running"
+    ) {
+      return false;
+    }
+
+    const count = success ? 1 : 3;
+    const duration = success ? 0.24 : 0.105;
+    const interval = success ? 0 : 0.18;
+    const frequency = success ? 1150 : 750;
+
+    const base =
+      hsmAudioContext.currentTime + 0.015;
 
     for (let i = 0; i < count; i++) {
-      const start = baseTime + (i * interval);
+      const start = base + i * interval;
 
       const oscillator =
         hsmAudioContext.createOscillator();
@@ -591,16 +1649,25 @@ function playQRBeep(success = true) {
         hsmAudioContext.createGain();
 
       oscillator.type = "square";
+
       oscillator.frequency.setValueAtTime(
         frequency,
         start
       );
 
-      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.setValueAtTime(
+        0.0001,
+        start
+      );
 
-      gain.gain.exponentialRampToValueAtTime(
-        0.12,
-        start + 0.005
+      gain.gain.linearRampToValueAtTime(
+        0.18,
+        start + 0.008
+      );
+
+      gain.gain.setValueAtTime(
+        0.18,
+        start + duration - 0.016
       );
 
       gain.gain.exponentialRampToValueAtTime(
@@ -609,15 +1676,262 @@ function playQRBeep(success = true) {
       );
 
       oscillator.connect(gain);
-      gain.connect(hsmAudioContext.destination);
+
+      gain.connect(
+        hsmAudioContext.destination
+      );
 
       oscillator.start(start);
-      oscillator.stop(start + duration + 0.005);
+
+      oscillator.stop(
+        start + duration + 0.01
+      );
     }
+
+    return true;
+
   } catch (error) {
-    console.warn("Suara QR gagal diputar:", error);
+    console.warn(
+      "HSM WEB AUDIO:",
+      error
+    );
+
+    return false;
   }
 }
+
+/* ============================================================
+   GETARAN WEB / CAPACITOR
+============================================================ */
+
+async function vibrateQR(success = true) {
+  const pattern = success
+    ? [200]
+    : [95, 85, 95, 85, 95];
+
+  try {
+    if (
+      typeof navigator.vibrate === "function"
+    ) {
+      const started =
+        navigator.vibrate(pattern);
+
+      if (started) {
+        return true;
+      }
+    }
+  } catch (error) {
+    console.warn(
+      "HSM WEB VIBRATE:",
+      error
+    );
+  }
+
+  try {
+    const haptics =
+      window.Capacitor?.Plugins?.Haptics;
+
+    if (!haptics) {
+      return false;
+    }
+
+    if (success) {
+      if (
+        typeof haptics.vibrate === "function"
+      ) {
+        await haptics.vibrate({
+          duration:200
+        });
+
+        return true;
+      }
+
+      if (
+        typeof haptics.impact === "function"
+      ) {
+        await haptics.impact({
+          style:"HEAVY"
+        });
+
+        return true;
+      }
+
+    } else {
+      if (
+        typeof haptics.notification === "function"
+      ) {
+        await haptics.notification({
+          type:"ERROR"
+        });
+
+        return true;
+      }
+
+      if (
+        typeof haptics.vibrate === "function"
+      ) {
+        for (let i = 0; i < 3; i++) {
+          await haptics.vibrate({
+            duration:95
+          });
+
+          if (i < 2) {
+            await new Promise(resolve => {
+              setTimeout(resolve, 85);
+            });
+          }
+        }
+
+        return true;
+      }
+    }
+
+  } catch (error) {
+    console.warn(
+      "HSM CAPACITOR HAPTICS:",
+      error
+    );
+  }
+
+  return false;
+}
+
+/* ============================================================
+   MAIN FEEDBACK
+============================================================ */
+
+async function playQRBeep(success = true) {
+  initializeHSMAudio();
+
+  // Jalankan getaran tanpa menunggu suara.
+  vibrateQR(success).catch(() => {});
+
+  /*
+    Web Audio diprioritaskan jika sudah aktif.
+    Audio WAV dipakai jika Web Audio tidak
+    dapat berjalan.
+
+    Ini menghindari dua bunyi bertumpuk.
+  */
+
+  if (
+    hsmAudioContext &&
+    hsmAudioContext.state === "running"
+  ) {
+    const played =
+      await playWebAudioBeep(success);
+
+    if (played) {
+      return true;
+    }
+  }
+
+  const audio = success
+    ? hsmSuccessAudio
+    : hsmErrorAudio;
+
+  if (audio) {
+    try {
+      audio.pause();
+      audio.currentTime = 0;
+
+      await audio.play();
+
+      return true;
+
+    } catch (error) {
+      console.warn(
+        "HSM HTML AUDIO:",
+        error
+      );
+    }
+  }
+
+  return await playWebAudioBeep(success);
+}
+
+/* ============================================================
+   TOMBOL TES SUARA DAN GETARAN
+============================================================ */
+
+$("testFeedbackBtn").addEventListener(
+  "click",
+  async function() {
+    if (hsmFeedbackTesting) return;
+
+    hsmFeedbackTesting = true;
+
+    this.disabled = true;
+    this.textContent = "🔊 Menguji...";
+
+    $("feedbackStatus").textContent =
+      "Memutar bunyi berhasil...";
+
+    try {
+      unlockQRBeep();
+
+      await playQRBeep(true);
+
+      await new Promise(resolve => {
+        setTimeout(resolve, 650);
+      });
+
+      $("feedbackStatus").textContent =
+        "Memutar bunyi peringatan...";
+
+      await playQRBeep(false);
+
+      await new Promise(resolve => {
+        setTimeout(resolve, 650);
+      });
+
+      $("feedbackStatus").textContent =
+        "Tes selesai. Jika tidak terdengar, " +
+        "periksa volume Media HP.";
+
+    } catch (error) {
+      $("feedbackStatus").textContent =
+        "Gagal tes audio: " +
+        error.message;
+
+    } finally {
+      this.disabled = false;
+
+      this.textContent =
+        "🔊 Tes Suara & Getaran";
+
+      hsmFeedbackTesting = false;
+    }
+  }
+);
+
+/* ============================================================
+   UNLOCK SAAT TOMBOL SCANNER DITEKAN
+============================================================ */
+
+[
+  "startScanBtn",
+  "qrManualBtn",
+  "confirmQRBtn",
+  "scanAgainBtn",
+  "testFeedbackBtn"
+].forEach(id => {
+  const button = $(id);
+
+  if (!button) return;
+
+  button.addEventListener(
+    "pointerdown",
+    unlockQRBeep,
+    { passive:true }
+  );
+
+  button.addEventListener(
+    "touchstart",
+    unlockQRBeep,
+    { passive:true }
+  );
+});
 
 /* ============================================================
    UTILITAS
@@ -632,10 +1946,20 @@ function escapeHTML(value) {
     .replace(/'/g, "&#039;");
 }
 
-function setMessage(id, text, type = "error") {
+function setMessage(
+  id,
+  text,
+  type = "error"
+) {
   const element = $(id);
+
+  if (!element) return;
+
   element.textContent = text;
-  element.className = text ? "message " + type : "message";
+
+  element.className = text
+    ? "message " + type
+    : "message";
 }
 
 function clearMessage(id) {
@@ -643,7 +1967,8 @@ function clearMessage(id) {
 }
 
 function normalizePhone(value) {
-  let phone = String(value || "").replace(/\D/g, "");
+  let phone = String(value || "")
+    .replace(/\D/g, "");
 
   if (phone.startsWith("62")) {
     phone = "0" + phone.slice(2);
@@ -660,13 +1985,20 @@ function validPin(pin) {
   return /^\d{6}$/.test(pin);
 }
 
+/* ============================================================
+   WAKTU WIT
+============================================================ */
+
 function todayWIT() {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: WIT_TIMEZONE,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit"
-  }).formatToParts(new Date());
+  const parts = new Intl.DateTimeFormat(
+    "en-CA",
+    {
+      timeZone:WIT_TIMEZONE,
+      year:"numeric",
+      month:"2-digit",
+      day:"2-digit"
+    }
+  ).formatToParts(new Date());
 
   const values = {};
 
@@ -674,38 +2006,62 @@ function todayWIT() {
     values[part.type] = part.value;
   }
 
-  return values.year + "-" + values.month + "-" + values.day;
+  return (
+    values.year + "-" +
+    values.month + "-" +
+    values.day
+  );
 }
 
 function nextMidnightWIT() {
   const today = todayWIT();
-  const nextDay = new Date(today + "T00:00:00Z");
 
-  nextDay.setUTCDate(nextDay.getUTCDate() + 1);
+  const nextDay = new Date(
+    today + "T00:00:00Z"
+  );
 
-  return nextDay.getTime() - (9 * 60 * 60 * 1000);
+  nextDay.setUTCDate(
+    nextDay.getUTCDate() + 1
+  );
+
+  return (
+    nextDay.getTime() -
+    9 * 60 * 60 * 1000
+  );
 }
 
 function formatDateID(value) {
   if (!value) return "-";
 
   const date = new Date(
-    String(value).slice(0, 10) + "T12:00:00Z"
+    String(value).slice(0, 10) +
+    "T12:00:00Z"
   );
 
-  if (Number.isNaN(date.getTime())) return String(value);
+  if (
+    Number.isNaN(date.getTime())
+  ) {
+    return String(value);
+  }
 
-  return date.toLocaleDateString("id-ID", {
-    timeZone: "UTC",
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-  });
+  return date.toLocaleDateString(
+    "id-ID",
+    {
+      timeZone:"UTC",
+      day:"numeric",
+      month:"long",
+      year:"numeric"
+    }
+  );
 }
 
 function formatTime(value) {
   if (!value) return "-";
-  return String(value).slice(0, 5) + " WIT";
+
+  return (
+    String(value).slice(0, 5) +
+    " WIT"
+  );
 }
 
 function formatTimestampWIT(value) {
@@ -713,56 +2069,100 @@ function formatTimestampWIT(value) {
 
   const date = new Date(value);
 
-  if (Number.isNaN(date.getTime())) return "-";
+  if (
+    Number.isNaN(date.getTime())
+  ) {
+    return "-";
+  }
 
-  return new Intl.DateTimeFormat("id-ID", {
-    timeZone: WIT_TIMEZONE,
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false
-  }).format(date).replace(".", ":") + " WIT";
+  return new Intl.DateTimeFormat(
+    "id-ID",
+    {
+      timeZone:WIT_TIMEZONE,
+      hour:"2-digit",
+      minute:"2-digit",
+      hour12:false
+    }
+  )
+    .format(date)
+    .replace(".", ":") +
+    " WIT";
 }
 
 function paymentLabel(value) {
-  if (value === "paid" || value === "completed") return "✓ Lunas";
-  if (value === "pending") return "⏳ Belum Lunas";
+  if (
+    value === "paid" ||
+    value === "completed"
+  ) {
+    return "✓ Lunas";
+  }
+
+  if (value === "pending") {
+    return "⏳ Belum Lunas";
+  }
+
   return "Status: " + (value || "-");
 }
 
 function boardingLabel(value) {
-  if (value === "boarded") return "✓ Sudah Naik";
-  if (value === "no_show") return "✕ Tidak Hadir";
+  if (value === "boarded") {
+    return "✓ Sudah Naik";
+  }
+
+  if (value === "no_show") {
+    return "✕ Tidak Hadir";
+  }
+
   return "● Belum Check-in";
 }
 
 function tripStatusLabel(value) {
-  if (value === "in_progress") return "🟠 Dalam Perjalanan";
-  if (value === "completed") return "🟢 Selesai";
+  if (value === "in_progress") {
+    return "🟠 Dalam Perjalanan";
+  }
+
+  if (value === "completed") {
+    return "🟢 Selesai";
+  }
+
   return "🔵 Belum Berangkat";
 }
 
 /* ============================================================
-   SESI LOGIN HARIAN PETUGAS
-   TERSIMPAN SAMPAI PERGANTIAN TANGGAL WIT
+   SESI LOGIN HARIAN
 ============================================================ */
 
 function clearStaffSession() {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(LOGIN_DATE_KEY);
+
   sessionStorage.removeItem(TOKEN_KEY);
 }
 
 function saveStaffSession(token) {
-  localStorage.setItem(TOKEN_KEY, token);
-  localStorage.setItem(LOGIN_DATE_KEY, todayWIT());
+  localStorage.setItem(
+    TOKEN_KEY,
+    token
+  );
+
+  localStorage.setItem(
+    LOGIN_DATE_KEY,
+    todayWIT()
+  );
+
   sessionStorage.removeItem(TOKEN_KEY);
 }
 
 function getToken() {
-  const token = localStorage.getItem(TOKEN_KEY);
-  const loginDate = localStorage.getItem(LOGIN_DATE_KEY);
+  const token =
+    localStorage.getItem(TOKEN_KEY);
 
-  if (!token) return null;
+  const loginDate =
+    localStorage.getItem(LOGIN_DATE_KEY);
+
+  if (!token) {
+    return null;
+  }
 
   if (loginDate !== todayWIT()) {
     clearStaffSession();
@@ -773,15 +2173,19 @@ function getToken() {
 }
 
 function isDashboardOpen() {
-  return $("dashboard").style.display === "block";
+  return (
+    $("dashboard").style.display ===
+    "block"
+  );
 }
 
 /* ============================================================
-   SUPABASE API
+   API SUPABASE
 ============================================================ */
 
 async function api(action, data = {}) {
-  const controller = new AbortController();
+  const controller =
+    new AbortController();
 
   const timeout = setTimeout(() => {
     controller.abort();
@@ -791,24 +2195,30 @@ async function api(action, data = {}) {
     let response;
 
     try {
-      response = await fetch(AUTH_ENDPOINT, {
-        method: "POST",
-        mode: "cors",
-        credentials: "omit",
-        cache: "no-store",
-        redirect: "error",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
-          action,
-          ...data
-        }),
-        signal: controller.signal
-      });
+      response = await fetch(
+        AUTH_ENDPOINT,
+        {
+          method:"POST",
+          mode:"cors",
+          credentials:"omit",
+          cache:"no-store",
+          redirect:"error",
+          headers:{
+            "Content-Type":"application/json",
+            "Accept":"application/json"
+          },
+          body:JSON.stringify({
+            action,
+            ...data
+          }),
+          signal:controller.signal
+        }
+      );
+
     } catch (error) {
-      if (error.name === "AbortError") throw error;
+      if (error.name === "AbortError") {
+        throw error;
+      }
 
       throw new Error(
         "Tidak dapat terhubung ke server HSM Transport."
@@ -821,17 +2231,23 @@ async function api(action, data = {}) {
 
     try {
       result = JSON.parse(raw);
+
     } catch {
       throw new Error(
-        "Respons server tidak valid. HTTP " + response.status
+        "Respons server tidak valid. HTTP " +
+        response.status
       );
     }
 
-    if (!response.ok || result.success !== true) {
+    if (
+      !response.ok ||
+      result.success !== true
+    ) {
       throw new Error(
         result.error ||
         result.message ||
-        "Permintaan gagal. HTTP " + response.status
+        "Permintaan gagal. HTTP " +
+        response.status
       );
     }
 
@@ -843,33 +2259,54 @@ async function api(action, data = {}) {
 }
 
 /* ============================================================
-   TAB LOGIN
+   TAB
 ============================================================ */
 
 function switchTab(name) {
   clearMessage("authMessage");
 
-  document.querySelectorAll(".tab").forEach(button => {
+  document.querySelectorAll(
+    ".tab"
+  ).forEach(button => {
     button.classList.toggle(
       "active",
       button.dataset.tab === name
     );
   });
 
-  Object.entries(forms).forEach(([key, form]) => {
-    form.classList.toggle("active", key === name);
-  });
+  Object.entries(forms).forEach(
+    ([key, form]) => {
+      form.classList.toggle(
+        "active",
+        key === name
+      );
+    }
+  );
 }
 
-document.querySelectorAll(".tab").forEach(button => {
-  button.addEventListener("click", () => {
-    switchTab(button.dataset.tab);
-  });
+document.querySelectorAll(
+  ".tab"
+).forEach(button => {
+  button.addEventListener(
+    "click",
+    () => {
+      switchTab(
+        button.dataset.tab
+      );
+    }
+  );
 });
 
-async function withLoading(form, callback) {
-  const button = form.querySelector('button[type="submit"]');
-  const original = button.textContent;
+async function withLoading(
+  form,
+  callback
+) {
+  const button = form.querySelector(
+    'button[type="submit"]'
+  );
+
+  const original =
+    button.textContent;
 
   button.disabled = true;
   button.textContent = "Memproses...";
@@ -878,6 +2315,7 @@ async function withLoading(form, callback) {
 
   try {
     await callback();
+
   } catch (error) {
     setMessage(
       "authMessage",
@@ -885,6 +2323,7 @@ async function withLoading(form, callback) {
         ? "Koneksi terlalu lama. Silakan coba lagi."
         : error.message
     );
+
   } finally {
     button.disabled = false;
     button.textContent = original;
@@ -892,135 +2331,213 @@ async function withLoading(form, callback) {
 }
 
 /* ============================================================
-   LOGIN PETUGAS
+   LOGIN
 ============================================================ */
 
-forms.login.addEventListener("submit", async event => {
-  event.preventDefault();
+forms.login.addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
 
-  await withLoading(forms.login, async () => {
-    const phone = normalizePhone($("loginPhone").value);
-    const pin = $("loginPin").value;
+    await withLoading(
+      forms.login,
+      async () => {
+        const phone = normalizePhone(
+          $("loginPhone").value
+        );
 
-    if (!validPhone(phone) || !validPin(pin)) {
-      throw new Error("Periksa nomor HP dan PIN 6 digit.");
-    }
+        const pin =
+          $("loginPin").value;
 
-    const result = await api("login", {
-      phone,
-      pin,
-      device_name: navigator.userAgent.slice(0, 120)
-    });
+        if (
+          !validPhone(phone) ||
+          !validPin(pin)
+        ) {
+          throw new Error(
+            "Periksa nomor HP dan PIN 6 digit."
+          );
+        }
 
-    if (!result.token) {
-      throw new Error("Token sesi tidak tersedia.");
-    }
+        const result = await api(
+          "login",
+          {
+            phone,
+            pin,
+            device_name:
+              navigator.userAgent.slice(
+                0,
+                120
+              )
+          }
+        );
 
-    saveStaffSession(result.token);
+        if (!result.token) {
+          throw new Error(
+            "Token sesi tidak tersedia."
+          );
+        }
 
-    $("loginPin").value = "";
+        saveStaffSession(
+          result.token
+        );
 
-    await loadSession(true);
-  });
-});
+        $("loginPin").value = "";
+
+        await loadSession(true);
+      }
+    );
+  }
+);
 
 /* ============================================================
-   AKTIVASI AKUN
+   AKTIVASI
 ============================================================ */
 
-forms.activate.addEventListener("submit", async event => {
-  event.preventDefault();
+forms.activate.addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
 
-  await withLoading(forms.activate, async () => {
-    const phone = normalizePhone($("activatePhone").value);
-    const code = $("activateCode").value.trim();
-    const pin = $("activatePin").value;
-    const confirm = $("activatePinConfirm").value;
+    await withLoading(
+      forms.activate,
+      async () => {
+        const phone = normalizePhone(
+          $("activatePhone").value
+        );
 
-    if (!validPhone(phone)) {
-      throw new Error("Nomor HP tidak valid.");
-    }
+        const code =
+          $("activateCode").value.trim();
 
-    if (!/^\d{8}$/.test(code)) {
-      throw new Error("Kode aktivasi harus 8 digit.");
-    }
+        const pin =
+          $("activatePin").value;
 
-    if (!validPin(pin)) {
-      throw new Error("PIN harus 6 digit.");
-    }
+        const confirmation =
+          $("activatePinConfirm").value;
 
-    if (pin !== confirm) {
-      throw new Error("Konfirmasi PIN tidak cocok.");
-    }
+        if (!validPhone(phone)) {
+          throw new Error(
+            "Nomor HP tidak valid."
+          );
+        }
 
-    await api("activate", {
-      phone,
-      code,
-      pin
-    });
+        if (!/^\d{8}$/.test(code)) {
+          throw new Error(
+            "Kode aktivasi harus 8 digit."
+          );
+        }
 
-    forms.activate.reset();
-    switchTab("login");
+        if (!validPin(pin)) {
+          throw new Error(
+            "PIN harus 6 digit."
+          );
+        }
 
-    $("loginPhone").value = phone;
+        if (pin !== confirmation) {
+          throw new Error(
+            "Konfirmasi PIN tidak cocok."
+          );
+        }
 
-    setMessage(
-      "authMessage",
-      "Akun berhasil diaktifkan. Silakan login.",
-      "success"
+        await api(
+          "activate",
+          {
+            phone,
+            code,
+            pin
+          }
+        );
+
+        forms.activate.reset();
+
+        switchTab("login");
+
+        $("loginPhone").value = phone;
+
+        setMessage(
+          "authMessage",
+          "Akun berhasil diaktifkan. Silakan login.",
+          "success"
+        );
+      }
     );
-  });
-});
+  }
+);
 
 /* ============================================================
-   LUPA PIN
+   PEMULIHAN PIN
 ============================================================ */
 
-forms.recover.addEventListener("submit", async event => {
-  event.preventDefault();
+forms.recover.addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
 
-  await withLoading(forms.recover, async () => {
-    const phone = normalizePhone($("recoverPhone").value);
-    const code = $("recoverCode").value.trim();
-    const pin = $("recoverPin").value;
-    const confirm = $("recoverPinConfirm").value;
+    await withLoading(
+      forms.recover,
+      async () => {
+        const phone = normalizePhone(
+          $("recoverPhone").value
+        );
 
-    if (!validPhone(phone)) {
-      throw new Error("Nomor HP tidak valid.");
-    }
+        const code =
+          $("recoverCode").value.trim();
 
-    if (!/^\d{8}$/.test(code)) {
-      throw new Error("Kode pemulihan harus 8 digit.");
-    }
+        const pin =
+          $("recoverPin").value;
 
-    if (!validPin(pin)) {
-      throw new Error("PIN harus 6 digit.");
-    }
+        const confirmation =
+          $("recoverPinConfirm").value;
 
-    if (pin !== confirm) {
-      throw new Error("Konfirmasi PIN tidak cocok.");
-    }
+        if (!validPhone(phone)) {
+          throw new Error(
+            "Nomor HP tidak valid."
+          );
+        }
 
-    await api("recover", {
-      phone,
-      code,
-      pin
-    });
+        if (!/^\d{8}$/.test(code)) {
+          throw new Error(
+            "Kode pemulihan harus 8 digit."
+          );
+        }
 
-    clearStaffSession();
+        if (!validPin(pin)) {
+          throw new Error(
+            "PIN harus 6 digit."
+          );
+        }
 
-    forms.recover.reset();
-    switchTab("login");
+        if (pin !== confirmation) {
+          throw new Error(
+            "Konfirmasi PIN tidak cocok."
+          );
+        }
 
-    $("loginPhone").value = phone;
+        await api(
+          "recover",
+          {
+            phone,
+            code,
+            pin
+          }
+        );
 
-    setMessage(
-      "authMessage",
-      "PIN berhasil diganti. Silakan login.",
-      "success"
+        clearStaffSession();
+
+        forms.recover.reset();
+
+        switchTab("login");
+
+        $("loginPhone").value = phone;
+
+        setMessage(
+          "authMessage",
+          "PIN berhasil diganti. Silakan login.",
+          "success"
+        );
+      }
     );
-  });
-});
+  }
+);
 
 /* ============================================================
    DASHBOARD
@@ -1028,10 +2545,14 @@ forms.recover.addEventListener("submit", async event => {
 
 function showDashboard(staff) {
   $("authCard").style.display = "none";
+
   $("dashboard").style.display = "block";
 
-  $("staffName").textContent = staff.name || "Petugas HSM";
-  $("infoName").textContent = staff.name || "-";
+  $("staffName").textContent =
+    staff.name || "Petugas HSM";
+
+  $("infoName").textContent =
+    staff.name || "-";
 
   $("infoRole").textContent =
     staff.role === "driver"
@@ -1040,15 +2561,23 @@ function showDashboard(staff) {
         ? "Kernet"
         : "-";
 
-  currentVehicle = staff.vehicle || "";
+  currentVehicle =
+    staff.vehicle || "";
 
-  $("infoVehicle").textContent = currentVehicle || "-";
-  $("infoPhone").textContent = staff.phone || "-";
+  $("infoVehicle").textContent =
+    currentVehicle || "-";
 
-  $("tripVehicle").textContent = currentVehicle || "-";
-  $("manifestVehicle").textContent = currentVehicle || "-";
+  $("infoPhone").textContent =
+    staff.phone || "-";
 
-  const serverExpiry = new Date(staff.expires_at);
+  $("tripVehicle").textContent =
+    currentVehicle || "-";
+
+  $("manifestVehicle").textContent =
+    currentVehicle || "-";
+
+  const serverExpiry =
+    new Date(staff.expires_at);
 
   const actualExpiry = new Date(
     Math.min(
@@ -1058,22 +2587,27 @@ function showDashboard(staff) {
   );
 
   $("infoExpiry").textContent =
-    actualExpiry.toLocaleString("id-ID", {
-      timeZone: WIT_TIMEZONE,
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false
-    }) + " WIT";
+    actualExpiry.toLocaleString(
+      "id-ID",
+      {
+        timeZone:WIT_TIMEZONE,
+        day:"2-digit",
+        month:"short",
+        year:"numeric",
+        hour:"2-digit",
+        minute:"2-digit",
+        hour12:false
+      }
+    ) + " WIT";
 
   startSessionTimer(serverExpiry);
+
   startAutoRefresh();
 }
 
 function showLogin() {
   $("dashboard").style.display = "none";
+
   $("authCard").style.display = "block";
 
   ++dataRequestId;
@@ -1081,10 +2615,12 @@ function showLogin() {
 
   manifestData = [];
   tripsData = [];
+
   currentVehicle = "";
 
   stopScanner();
   clearQRPreview();
+
   stopAutoRefresh();
 
   if (sessionTimer !== null) {
@@ -1094,12 +2630,16 @@ function showLogin() {
 }
 
 /* ============================================================
-   VERIFIKASI SESI
+   CEK SESI
 ============================================================ */
 
-async function loadSession(reportError = false) {
+async function loadSession(
+  reportError = false
+) {
   const token = getToken();
-  const requestId = ++sessionRequestId;
+
+  const requestId =
+    ++sessionRequestId;
 
   if (!token) {
     showLogin();
@@ -1107,27 +2647,42 @@ async function loadSession(reportError = false) {
   }
 
   try {
-    const result = await api("session", { token });
-
-    if (requestId !== sessionRequestId) return;
-    if (getToken() !== token) return;
-
-    const expiry = new Date(result.expires_at);
+    const result = await api(
+      "session",
+      { token }
+    );
 
     if (
-      !Number.isFinite(expiry.getTime()) ||
+      requestId !== sessionRequestId ||
+      getToken() !== token
+    ) {
+      return;
+    }
+
+    const expiry =
+      new Date(result.expires_at);
+
+    if (
+      !Number.isFinite(
+        expiry.getTime()
+      ) ||
       expiry.getTime() <= Date.now()
     ) {
       clearStaffSession();
-      throw new Error("Sesi sudah berakhir.");
+
+      throw new Error(
+        "Sesi sudah berakhir."
+      );
     }
 
-    const firstOpen = !isDashboardOpen();
+    const firstOpen =
+      !isDashboardOpen();
 
     showDashboard(result);
 
     if (!$("manifestDate").value) {
-      $("manifestDate").value = todayWIT();
+      $("manifestDate").value =
+        todayWIT();
     }
 
     if (firstOpen) {
@@ -1135,10 +2690,16 @@ async function loadSession(reportError = false) {
     }
 
   } catch (error) {
-    if (requestId !== sessionRequestId) return;
+    if (
+      requestId !== sessionRequestId
+    ) {
+      return;
+    }
 
     if (
-      /sesi|token|401|403/i.test(error.message)
+      /sesi|token|401|403/i.test(
+        error.message
+      )
     ) {
       clearStaffSession();
     }
@@ -1146,7 +2707,10 @@ async function loadSession(reportError = false) {
     showLogin();
 
     if (reportError) {
-      setMessage("authMessage", error.message);
+      setMessage(
+        "authMessage",
+        error.message
+      );
     }
   }
 }
@@ -1172,56 +2736,90 @@ function startSessionTimer(expiry) {
     return;
   }
 
-  sessionTimer = setTimeout(() => {
-    clearStaffSession();
-    showLogin();
+  sessionTimer = setTimeout(
+    () => {
+      clearStaffSession();
+      showLogin();
 
-    setMessage(
-      "authMessage",
-      "Sesi berakhir. Silakan login kembali."
-    );
-  }, Math.min(remaining, 2147483647));
+      setMessage(
+        "authMessage",
+        "Sesi berakhir. Silakan login kembali."
+      );
+    },
+    Math.min(
+      remaining,
+      2147483647
+    )
+  );
 }
 
 /* ============================================================
-   REFRESH MANIFEST DAN PERJALANAN
+   REFRESH SEMUA
 ============================================================ */
 
 async function refreshAll() {
-  if (!getToken() || !isDashboardOpen()) return;
-  if (boardingBusy || tripBusy || qrBusy || dataLoading) return;
+  if (
+    !getToken() ||
+    !isDashboardOpen()
+  ) {
+    return;
+  }
+
+  if (
+    boardingBusy ||
+    tripBusy ||
+    qrBusy ||
+    dataLoading
+  ) {
+    return;
+  }
 
   const token = getToken();
-  const date = $("manifestDate").value;
 
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+  const date =
+    $("manifestDate").value;
+
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(date)
+  ) {
     setMessage(
       "tripMessage",
       "Pilih tanggal perjalanan yang valid."
     );
+
     return;
   }
 
-  const requestId = ++dataRequestId;
+  const requestId =
+    ++dataRequestId;
 
   dataLoading = true;
 
   $("refreshAllBtn").disabled = true;
-  $("refreshAllBtn").textContent = "Memuat...";
+
+  $("refreshAllBtn").textContent =
+    "Memuat...";
 
   clearMessage("tripMessage");
   clearMessage("manifestMessage");
 
-  const results = await Promise.allSettled([
-    api("trips", {
-      token,
-      travel_date: date
-    }),
-    api("manifest", {
-      token,
-      travel_date: date
-    })
-  ]);
+  const results =
+    await Promise.allSettled([
+      api(
+        "trips",
+        {
+          token,
+          travel_date:date
+        }
+      ),
+      api(
+        "manifest",
+        {
+          token,
+          travel_date:date
+        }
+      )
+    ]);
 
   try {
     if (
@@ -1232,10 +2830,15 @@ async function refreshAll() {
     }
 
     const tripResult = results[0];
+
     const manifestResult = results[1];
 
-    if (tripResult.status === "fulfilled") {
-      tripsData = Array.isArray(tripResult.value.trips)
+    if (
+      tripResult.status === "fulfilled"
+    ) {
+      tripsData = Array.isArray(
+        tripResult.value.trips
+      )
         ? tripResult.value.trips
         : [];
 
@@ -1252,7 +2855,10 @@ async function refreshAll() {
       );
     }
 
-    if (manifestResult.status === "fulfilled") {
+    if (
+      manifestResult.status ===
+      "fulfilled"
+    ) {
       manifestData = Array.isArray(
         manifestResult.value.manifest
       )
@@ -1264,6 +2870,7 @@ async function refreshAll() {
 
     } else {
       manifestData = [];
+
       updateManifestStats();
       renderManifest();
 
@@ -1275,24 +2882,30 @@ async function refreshAll() {
     }
 
   } finally {
-    if (requestId === dataRequestId) {
+    if (
+      requestId === dataRequestId
+    ) {
       dataLoading = false;
 
-      $("refreshAllBtn").disabled = false;
-      $("refreshAllBtn").textContent = "🔄 Refresh Semua";
+      $("refreshAllBtn").disabled =
+        false;
+
+      $("refreshAllBtn").textContent =
+        "🔄 Refresh Semua";
     }
   }
 }
 
 /* ============================================================
-   TAMPILKAN STATUS PERJALANAN
+   TAMPILKAN TRIP
 ============================================================ */
 
 function renderTrips() {
   const container = $("tripList");
 
   const editableDate =
-    $("manifestDate").value === todayWIT();
+    $("manifestDate").value ===
+    todayWIT();
 
   if (!tripsData.length) {
     container.innerHTML = `
@@ -1300,233 +2913,358 @@ function renderTrips() {
         🚐<br>
         <strong>Belum ada data perjalanan</strong><br>
         Tidak ditemukan perjalanan untuk
-        ${escapeHTML(formatDateID($("manifestDate").value))}
-        pada armada ${escapeHTML(currentVehicle)}.
+        ${escapeHTML(
+          formatDateID(
+            $("manifestDate").value
+          )
+        )}
+        pada armada
+        ${escapeHTML(currentVehicle)}.
       </div>
     `;
+
     return;
   }
 
-  container.innerHTML = tripsData.map(trip => {
-    const stops = Array.isArray(trip.stops)
-      ? [...trip.stops].sort(
-          (a, b) =>
-            Number(a.stop_order) - Number(b.stop_order)
-        )
-      : [];
-
-    const completed = trip.status === "completed";
-    const editable = editableDate && !completed;
-
-    const departedStops = stops.filter(
-      stop => !!stop.departed_at
-    );
-
-    const lastDepartedOrder = departedStops.length
-      ? Math.max(
-          ...departedStops.map(
-            stop => Number(stop.stop_order)
-          )
-        )
-      : 0;
-
-    const nextStop = stops.find(
-      stop =>
-        !stop.is_terminal &&
-        Number(stop.stop_order) === lastDepartedOrder + 1 &&
-        !stop.departed_at
-    );
-
-    const stopsHTML = stops.map(stop => {
-      const departed = !!stop.departed_at;
-
-      const isNext =
-        !!nextStop &&
-        Number(stop.stop_order) ===
-          Number(nextStop.stop_order);
-
-      const isLastDeparted =
-        departed &&
-        Number(stop.stop_order) === lastDepartedOrder;
-
-      let stateText = "⏳ Menunggu";
-
-      if (stop.is_terminal) {
-        stateText = completed
-          ? "✅ Tiba " +
-            formatTimestampWIT(
-              stop.arrived_at || trip.completed_at
+  container.innerHTML =
+    tripsData.map(trip => {
+      const stops =
+        Array.isArray(trip.stops)
+          ? [...trip.stops].sort(
+              (a, b) =>
+                Number(a.stop_order) -
+                Number(b.stop_order)
             )
-          : "🏁 Tujuan Akhir";
+          : [];
 
-      } else if (departed) {
-        stateText =
-          "✅ Berangkat " +
-          formatTimestampWIT(stop.departed_at);
+      const completed =
+        trip.status === "completed";
 
-      } else if (isNext) {
-        stateText = "📍 Titik Berikutnya";
-      }
+      const editable =
+        editableDate && !completed;
 
-      let actionHTML = "";
+      const departedStops =
+        stops.filter(
+          stop => !!stop.departed_at
+        );
 
-      if (editable && isNext && !stop.is_terminal) {
-        actionHTML = `
-          <button
-            class="action-btn depart"
-            data-trip-code="${escapeHTML(trip.trip_code)}"
-            data-trip-action="depart"
-            data-stop-name="${escapeHTML(stop.stop_name)}"
-          >
-            🚐 Berangkat dari ${escapeHTML(stop.stop_name)}
-          </button>
-        `;
-      }
+      const lastDepartedOrder =
+        departedStops.length
+          ? Math.max(
+              ...departedStops.map(
+                stop =>
+                  Number(
+                    stop.stop_order
+                  )
+              )
+            )
+          : 0;
 
-      if (
+      const nextStop =
+        stops.find(
+          stop =>
+            !stop.is_terminal &&
+            Number(stop.stop_order) ===
+              lastDepartedOrder + 1 &&
+            !stop.departed_at
+        );
+
+      const stopsHTML =
+        stops.map(stop => {
+          const departed =
+            !!stop.departed_at;
+
+          const isNext =
+            !!nextStop &&
+            Number(stop.stop_order) ===
+              Number(
+                nextStop.stop_order
+              );
+
+          const isLastDeparted =
+            departed &&
+            Number(stop.stop_order) ===
+              lastDepartedOrder;
+
+          let stateText =
+            "⏳ Menunggu";
+
+          if (stop.is_terminal) {
+            stateText = completed
+              ? "✅ Tiba " +
+                formatTimestampWIT(
+                  stop.arrived_at ||
+                  trip.completed_at
+                )
+              : "🏁 Tujuan Akhir";
+
+          } else if (departed) {
+            stateText =
+              "✅ Berangkat " +
+              formatTimestampWIT(
+                stop.departed_at
+              );
+
+          } else if (isNext) {
+            stateText =
+              "📍 Titik Berikutnya";
+          }
+
+          let actionHTML = "";
+
+          if (
+            editable &&
+            isNext &&
+            !stop.is_terminal
+          ) {
+            actionHTML = `
+              <button
+                class="action-btn depart"
+                data-trip-code="${
+                  escapeHTML(
+                    trip.trip_code
+                  )
+                }"
+                data-trip-action="depart"
+                data-stop-name="${
+                  escapeHTML(
+                    stop.stop_name
+                  )
+                }"
+              >
+                🚐 Berangkat dari
+                ${escapeHTML(
+                  stop.stop_name
+                )}
+              </button>
+            `;
+          }
+
+          if (
+            editable &&
+            isLastDeparted &&
+            !stop.is_terminal
+          ) {
+            actionHTML = `
+              <button
+                class="action-btn undo"
+                data-trip-code="${
+                  escapeHTML(
+                    trip.trip_code
+                  )
+                }"
+                data-trip-action="undo"
+                data-stop-name="${
+                  escapeHTML(
+                    stop.stop_name
+                  )
+                }"
+              >
+                ↩ Batalkan Keberangkatan
+              </button>
+            `;
+          }
+
+          return `
+            <div class="stop-item ${
+              departed
+                ? "done"
+                : isNext
+                  ? "current"
+                  : ""
+            }">
+
+              <div class="stop-head">
+                <div class="stop-name">
+                  ${
+                    Number(
+                      stop.stop_order
+                    )
+                  }.
+                  ${escapeHTML(
+                    stop.stop_name
+                  )}
+                </div>
+
+                <div class="stop-state ${
+                  departed ? "done" : ""
+                }">
+                  ${escapeHTML(
+                    stateText
+                  )}
+                </div>
+              </div>
+
+              ${
+                actionHTML
+                  ? `<div class="stop-action">
+                       ${actionHTML}
+                     </div>`
+                  : ""
+              }
+
+            </div>
+          `;
+        }).join("");
+
+      const allDeparted =
+        stops
+          .filter(
+            stop =>
+              !stop.is_terminal
+          )
+          .every(
+            stop =>
+              !!stop.departed_at
+          );
+
+      const canComplete =
         editable &&
-        isLastDeparted &&
-        !stop.is_terminal
-      ) {
-        actionHTML = `
-          <button
-            class="action-btn undo"
-            data-trip-code="${escapeHTML(trip.trip_code)}"
-            data-trip-action="undo"
-            data-stop-name="${escapeHTML(stop.stop_name)}"
-          >
-            ↩ Batalkan Keberangkatan
-          </button>
-        `;
-      }
+        trip.status ===
+          "in_progress" &&
+        allDeparted;
 
       return `
-        <div class="stop-item ${
-          departed ? "done" : isNext ? "current" : ""
-        }">
-          <div class="stop-head">
-            <div class="stop-name">
-              ${Number(stop.stop_order)}.
-              ${escapeHTML(stop.stop_name)}
+        <article class="trip-card">
+
+          <div class="trip-top">
+
+            <div>
+              <div class="trip-route">
+                ${escapeHTML(
+                  trip.origin
+                )}
+                →
+                ${escapeHTML(
+                  trip.destination
+                )}
+              </div>
+
+              <div class="trip-code">
+                ${escapeHTML(
+                  trip.trip_code
+                )}
+              </div>
             </div>
-            <div class="stop-state ${
-              departed ? "done" : ""
+
+            <span class="trip-status ${
+              escapeHTML(
+                trip.status
+              )
             }">
-              ${escapeHTML(stateText)}
-            </div>
+              ${
+                tripStatusLabel(
+                  trip.status
+                )
+              }
+            </span>
+
           </div>
+
+          <div class="trip-meta">
+
+            🚐 Armada:
+            <strong>
+              ${escapeHTML(
+                trip.vehicle
+              )}
+            </strong>
+            <br>
+
+            📅 Tanggal:
+            ${escapeHTML(
+              formatDateID(
+                trip.travel_date
+              )
+            )}
+            <br>
+
+            🕘 Jadwal awal:
+            ${escapeHTML(
+              formatTime(
+                trip.departure_time
+              )
+            )}
+
+            ${
+              trip.started_at
+                ? `<br>▶ Mulai:
+                   ${escapeHTML(
+                     formatTimestampWIT(
+                       trip.started_at
+                     )
+                   )}`
+                : ""
+            }
+
+            ${
+              trip.completed_at
+                ? `<br>🏁 Selesai:
+                   ${escapeHTML(
+                     formatTimestampWIT(
+                       trip.completed_at
+                     )
+                   )}`
+                : ""
+            }
+
+          </div>
+
+          <div class="stop-list">
+            ${stopsHTML}
+          </div>
+
           ${
-            actionHTML
-              ? `<div class="stop-action">${actionHTML}</div>`
+            canComplete
+              ? `
+                <button
+                  class="action-btn complete"
+                  data-trip-code="${
+                    escapeHTML(
+                      trip.trip_code
+                    )
+                  }"
+                  data-trip-action="complete"
+                >
+                  ✅ Selesaikan Perjalanan
+                </button>
+              `
               : ""
           }
-        </div>
+
+          ${
+            completed
+              ? `
+                <div class="trip-note">
+                  ✅ Perjalanan sudah selesai.
+                  Perubahan selanjutnya harus melalui admin.
+                </div>
+              `
+              : ""
+          }
+
+        </article>
       `;
     }).join("");
-
-    const allDeparted = stops
-      .filter(stop => !stop.is_terminal)
-      .every(stop => !!stop.departed_at);
-
-    const canComplete =
-      editable &&
-      trip.status === "in_progress" &&
-      allDeparted;
-
-    return `
-      <article class="trip-card">
-
-        <div class="trip-top">
-          <div>
-            <div class="trip-route">
-              ${escapeHTML(trip.origin)}
-              →
-              ${escapeHTML(trip.destination)}
-            </div>
-
-            <div class="trip-code">
-              ${escapeHTML(trip.trip_code)}
-            </div>
-          </div>
-
-          <span class="trip-status ${
-            escapeHTML(trip.status)
-          }">
-            ${tripStatusLabel(trip.status)}
-          </span>
-        </div>
-
-        <div class="trip-meta">
-          🚐 Armada:
-          <strong>${escapeHTML(trip.vehicle)}</strong><br>
-
-          📅 Tanggal:
-          ${escapeHTML(formatDateID(trip.travel_date))}<br>
-
-          🕘 Jadwal awal:
-          ${escapeHTML(formatTime(trip.departure_time))}
-
-          ${
-            trip.started_at
-              ? `<br>▶ Mulai:
-                 ${escapeHTML(
-                   formatTimestampWIT(trip.started_at)
-                 )}`
-              : ""
-          }
-
-          ${
-            trip.completed_at
-              ? `<br>🏁 Selesai:
-                 ${escapeHTML(
-                   formatTimestampWIT(trip.completed_at)
-                 )}`
-              : ""
-          }
-        </div>
-
-        <div class="stop-list">
-          ${stopsHTML}
-        </div>
-
-        ${
-          canComplete
-            ? `
-              <button
-                class="action-btn complete"
-                data-trip-code="${
-                  escapeHTML(trip.trip_code)
-                }"
-                data-trip-action="complete"
-              >
-                ✅ Selesaikan Perjalanan
-              </button>
-            `
-            : ""
-        }
-
-        ${
-          completed
-            ? `
-              <div class="trip-note">
-                ✅ Perjalanan sudah selesai.
-                Perubahan selanjutnya harus melalui admin.
-              </div>
-            `
-            : ""
-        }
-
-      </article>
-    `;
-  }).join("");
 }
 
 /* ============================================================
    AKSI PERJALANAN
 ============================================================ */
 
-async function runTripAction(tripCode, action, stopName) {
-  if (tripBusy || boardingBusy || qrBusy || dataLoading) return;
+async function runTripAction(
+  tripCode,
+  action,
+  stopName
+) {
+  if (
+    tripBusy ||
+    boardingBusy ||
+    qrBusy ||
+    dataLoading
+  ) {
+    return;
+  }
 
   const token = getToken();
 
@@ -1536,7 +3274,9 @@ async function runTripAction(tripCode, action, stopName) {
   }
 
   const trip = tripsData.find(
-    item => item.trip_code === tripCode
+    item =>
+      item.trip_code ===
+      tripCode
   );
 
   if (!trip) {
@@ -1552,18 +3292,19 @@ async function runTripAction(tripCode, action, stopName) {
   if (action === "depart") {
     confirmation =
       "Konfirmasi armada sudah benar-benar BERANGKAT dari " +
-      stopName + "?\n\n" +
-      "Waktu keberangkatan akan dicatat oleh server.";
+      stopName +
+      "?\n\nWaktu keberangkatan akan dicatat oleh server.";
 
   } else if (action === "undo") {
     confirmation =
       "Batalkan catatan keberangkatan dari " +
-      stopName + "?\n\n" +
-      "Gunakan hanya jika keberangkatan tadi salah dicatat.";
+      stopName +
+      "?\n\nGunakan hanya jika keberangkatan tadi salah dicatat.";
 
   } else if (action === "complete") {
     confirmation =
-      "Konfirmasi perjalanan " + tripCode +
+      "Konfirmasi perjalanan " +
+      tripCode +
       " sudah benar-benar SELESAI?\n\n" +
       "Setelah selesai, petugas tidak dapat mengubah boarding lagi.";
 
@@ -1571,31 +3312,46 @@ async function runTripAction(tripCode, action, stopName) {
     return;
   }
 
-  if (!window.confirm(confirmation)) return;
+  if (
+    !window.confirm(confirmation)
+  ) {
+    return;
+  }
 
   tripBusy = true;
+
   clearMessage("tripMessage");
 
-  $("tripList").querySelectorAll(
-    "button[data-trip-action]"
-  ).forEach(button => {
-    button.disabled = true;
-  });
-
-  try {
-    const result = await api("trip_action", {
-      token,
-      trip_code: tripCode,
-      trip_action: action,
-      stop_name: stopName || null
+  $("tripList")
+    .querySelectorAll(
+      "button[data-trip-action]"
+    )
+    .forEach(button => {
+      button.disabled = true;
     });
 
-    if (getToken() !== token) return;
+  try {
+    const result = await api(
+      "trip_action",
+      {
+        token,
+        trip_code:tripCode,
+        trip_action:action,
+        stop_name:
+          stopName || null
+      }
+    );
+
+    if (
+      getToken() !== token
+    ) {
+      return;
+    }
 
     setMessage(
       "tripMessage",
       result.message ||
-        "Status perjalanan berhasil diperbarui.",
+      "Status perjalanan berhasil diperbarui.",
       "success"
     );
 
@@ -1610,25 +3366,32 @@ async function runTripAction(tripCode, action, stopName) {
   } finally {
     tripBusy = false;
 
-    if (getToken() === token) {
+    if (
+      getToken() === token
+    ) {
       await refreshAll();
     }
   }
 }
 
-$("tripList").addEventListener("click", event => {
-  const button = event.target.closest(
-    "button[data-trip-action]"
-  );
+$("tripList").addEventListener(
+  "click",
+  event => {
+    const button =
+      event.target.closest(
+        "button[data-trip-action]"
+      );
 
-  if (!button) return;
+    if (!button) return;
 
-  runTripAction(
-    button.dataset.tripCode,
-    button.dataset.tripAction,
-    button.dataset.stopName || null
-  );
-});
+    runTripAction(
+      button.dataset.tripCode,
+      button.dataset.tripAction,
+      button.dataset.stopName ||
+        null
+    );
+  }
+);
 
 /* ============================================================
    QR STATE
@@ -1638,23 +3401,40 @@ function clearQRPreview() {
   qrPreview = null;
   qrRawValue = "";
 
-  $("qrResult").classList.remove("active");
-  $("qrSuccess").classList.remove("active");
+  $("qrResult").classList.remove(
+    "active"
+  );
 
-  $("confirmQRBtn").disabled = false;
-  $("confirmQRBtn").textContent = "✓ Konfirmasi Sudah Naik";
+  $("qrSuccess").classList.remove(
+    "active"
+  );
+
+  $("confirmQRBtn").disabled =
+    false;
+
+  $("confirmQRBtn").textContent =
+    "✓ Konfirmasi Sudah Naik";
 }
 
 function setQRBusy(value) {
   qrBusy = value;
 
-  $("startScanBtn").disabled = value;
-  $("qrManualBtn").disabled = value;
-  $("qrManualInput").disabled = value;
-  $("confirmQRBtn").disabled = value;
+  $("startScanBtn").disabled =
+    value;
+
+  $("qrManualBtn").disabled =
+    value;
+
+  $("qrManualInput").disabled =
+    value;
+
+  $("confirmQRBtn").disabled =
+    value;
 
   $("qrManualBtn").textContent =
-    value ? "Memeriksa..." : "Periksa";
+    value
+      ? "Memeriksa..."
+      : "Periksa";
 }
 
 /* ============================================================
@@ -1662,7 +3442,13 @@ function setQRBusy(value) {
 ============================================================ */
 
 async function previewTicket(value) {
-  if (qrBusy || boardingBusy || tripBusy) return;
+  if (
+    qrBusy ||
+    boardingBusy ||
+    tripBusy
+  ) {
+    return;
+  }
 
   const token = getToken();
 
@@ -1671,17 +3457,20 @@ async function previewTicket(value) {
     return;
   }
 
-  const raw = String(value || "").trim();
+  const raw =
+    String(value || "").trim();
 
   if (!raw) {
     setMessage(
       "qrMessage",
       "Masukkan kode booking atau scan QR tiket."
     );
+
     return;
   }
 
-  const requestId = ++qrRequestId;
+  const requestId =
+    ++qrRequestId;
 
   stopScanner();
   clearQRPreview();
@@ -1690,10 +3479,13 @@ async function previewTicket(value) {
   setQRBusy(true);
 
   try {
-    const result = await api("qr_preview", {
-      token,
-      qr_value: raw
-    });
+    const result = await api(
+      "qr_preview",
+      {
+        token,
+        qr_value:raw
+      }
+    );
 
     if (
       requestId !== qrRequestId ||
@@ -1714,10 +3506,12 @@ async function previewTicket(value) {
     qrRawValue = raw;
 
     $("qrName").textContent =
-      booking.passenger_name || "-";
+      booking.passenger_name ||
+      "-";
 
     $("qrCode").textContent =
-      booking.booking_code || "-";
+      booking.booking_code ||
+      "-";
 
     $("qrRoute").textContent =
       (booking.origin || "-") +
@@ -1725,21 +3519,31 @@ async function previewTicket(value) {
       (booking.destination || "-");
 
     $("qrDate").textContent =
-      formatDateID(booking.travel_date);
+      formatDateID(
+        booking.travel_date
+      );
 
     $("qrTime").textContent =
-      formatTime(booking.departure_time);
+      formatTime(
+        booking.departure_time
+      );
 
     $("qrVehicle").textContent =
-      booking.vehicle || "-";
+      booking.vehicle ||
+      "-";
 
     $("qrSeat").textContent =
-      booking.seat_number ?? "-";
+      booking.seat_number ??
+      "-";
 
     $("qrPayment").textContent =
-      paymentLabel(booking.payment_status);
+      paymentLabel(
+        booking.payment_status
+      );
 
-    $("qrResult").classList.add("active");
+    $("qrResult").classList.add(
+      "active"
+    );
 
     setMessage(
       "qrMessage",
@@ -1748,12 +3552,15 @@ async function previewTicket(value) {
     );
 
     $("qrResult").scrollIntoView({
-      behavior: "smooth",
-      block: "nearest"
+      behavior:"smooth",
+      block:"nearest"
     });
 
   } catch (error) {
-    if (requestId === qrRequestId) {
+    if (
+      requestId === qrRequestId
+    ) {
+      // QR GAGAL: TIGA BUNYI DAN GETARAN
       playQRBeep(false);
 
       setMessage(
@@ -1765,7 +3572,9 @@ async function previewTicket(value) {
     }
 
   } finally {
-    if (requestId === qrRequestId) {
+    if (
+      requestId === qrRequestId
+    ) {
       setQRBusy(false);
     }
   }
@@ -1788,7 +3597,9 @@ async function confirmQRCheckin() {
   }
 
   const token = getToken();
+
   const booking = qrPreview;
+
   const rawValue = qrRawValue;
 
   if (!token) {
@@ -1798,38 +3609,63 @@ async function confirmQRCheckin() {
 
   const confirmed = window.confirm(
     "Konfirmasi penumpang berikut sudah naik?\n\n" +
-    "Nama: " + booking.passenger_name + "\n" +
-    "Kode: " + booking.booking_code + "\n" +
-    "Armada: " + booking.vehicle + "\n" +
-    "Kursi: " + booking.seat_number + "\n\n" +
+    "Nama: " +
+    booking.passenger_name +
+    "\n" +
+    "Kode: " +
+    booking.booking_code +
+    "\n" +
+    "Armada: " +
+    booking.vehicle +
+    "\n" +
+    "Kursi: " +
+    booking.seat_number +
+    "\n\n" +
     "Pastikan penumpang benar-benar berada di kendaraan."
   );
 
-  if (!confirmed) return;
+  if (!confirmed) {
+    return;
+  }
 
   setQRBusy(true);
+
   clearMessage("qrMessage");
 
-  $("confirmQRBtn").textContent = "Memproses...";
+  $("confirmQRBtn").textContent =
+    "Memproses...";
 
   try {
-    const result = await api("qr_checkin", {
-      token,
-      qr_value: rawValue,
-      booking_id: booking.id
-    });
+    const result = await api(
+      "qr_checkin",
+      {
+        token,
+        qr_value:rawValue,
+        booking_id:booking.id
+      }
+    );
 
-    if (getToken() !== token) return;
+    if (
+      getToken() !== token
+    ) {
+      return;
+    }
 
-    $("qrResult").classList.remove("active");
-    $("qrSuccess").classList.add("active");
+    $("qrResult").classList.remove(
+      "active"
+    );
+
+    $("qrSuccess").classList.add(
+      "active"
+    );
 
     $("qrSuccessText").textContent =
       booking.passenger_name +
       " berhasil dikonfirmasi naik ke " +
       booking.vehicle +
       ", kursi " +
-      booking.seat_number + ".";
+      booking.seat_number +
+      ".";
 
     qrPreview = null;
     qrRawValue = "";
@@ -1838,15 +3674,23 @@ async function confirmQRCheckin() {
 
     setMessage(
       "qrMessage",
-      result.message || "Check-in berhasil.",
+      result.message ||
+      "Check-in berhasil.",
       "success"
     );
 
-    // SATU BUNYI PANJANG SETELAH SERVER MENYETUJUI.
+    /*
+      SUARA DAN GETARAN BERHASIL
+      HANYA SETELAH SERVER MENGONFIRMASI.
+    */
+
     playQRBeep(true);
 
   } catch (error) {
-    // TIGA BUNYI CEPAT JIKA CHECK-IN DITOLAK/GAGAL.
+    /*
+      SUARA DAN GETARAN GAGAL.
+    */
+
     playQRBeep(false);
 
     setMessage(
@@ -1867,23 +3711,31 @@ async function confirmQRCheckin() {
 }
 
 /* ============================================================
-   QR SCANNER
+   STOP SCANNER
 ============================================================ */
 
 function stopScanner() {
   scannerGeneration++;
+
   scannerActive = false;
   scannerStarting = false;
 
-  if (scannerFrameId !== null) {
-    cancelAnimationFrame(scannerFrameId);
+  if (
+    scannerFrameId !== null
+  ) {
+    cancelAnimationFrame(
+      scannerFrameId
+    );
+
     scannerFrameId = null;
   }
 
   if (scannerStream) {
-    scannerStream.getTracks().forEach(
-      track => track.stop()
-    );
+    scannerStream
+      .getTracks()
+      .forEach(track => {
+        track.stop();
+      });
 
     scannerStream = null;
   }
@@ -1892,9 +3744,17 @@ function stopScanner() {
     $("qrVideo").pause();
   } catch {}
 
-  $("qrVideo").srcObject = null;
-  $("scannerPanel").classList.remove("active");
+  $("qrVideo").srcObject =
+    null;
+
+  $("scannerPanel").classList.remove(
+    "active"
+  );
 }
+
+/* ============================================================
+   FRAME SCANNER
+============================================================ */
 
 function scanVideoFrame(generation) {
   if (
@@ -1914,21 +3774,30 @@ function scanVideoFrame(generation) {
     try {
       const scale = Math.min(
         1,
-        720 / Math.max(
+        720 /
+        Math.max(
           video.videoWidth,
           video.videoHeight
         )
       );
 
-      scannerCanvas.width = Math.max(
-        1,
-        Math.round(video.videoWidth * scale)
-      );
+      scannerCanvas.width =
+        Math.max(
+          1,
+          Math.round(
+            video.videoWidth *
+            scale
+          )
+        );
 
-      scannerCanvas.height = Math.max(
-        1,
-        Math.round(video.videoHeight * scale)
-      );
+      scannerCanvas.height =
+        Math.max(
+          1,
+          Math.round(
+            video.videoHeight *
+            scale
+          )
+        );
 
       scannerContext.drawImage(
         video,
@@ -1938,25 +3807,31 @@ function scanVideoFrame(generation) {
         scannerCanvas.height
       );
 
-      const imageData = scannerContext.getImageData(
-        0,
-        0,
-        scannerCanvas.width,
-        scannerCanvas.height
-      );
+      const imageData =
+        scannerContext.getImageData(
+          0,
+          0,
+          scannerCanvas.width,
+          scannerCanvas.height
+        );
 
       const result = window.jsQR(
         imageData.data,
         imageData.width,
         imageData.height,
-        { inversionAttempts: "attemptBoth" }
+        {
+          inversionAttempts:
+            "attemptBoth"
+        }
       );
 
       if (result?.data) {
         const value = result.data;
 
         stopScanner();
+
         previewTicket(value);
+
         return;
       }
 
@@ -1968,13 +3843,21 @@ function scanVideoFrame(generation) {
     }
   }
 
-  scannerFrameId = requestAnimationFrame(() => {
-    scanVideoFrame(generation);
-  });
+  scannerFrameId =
+    requestAnimationFrame(
+      () => {
+        scanVideoFrame(
+          generation
+        );
+      }
+    );
 }
 
+/* ============================================================
+   START SCANNER
+============================================================ */
+
 async function startScanner() {
-  // Aktifkan audio saat pengguna menekan tombol kamera.
   unlockQRBeep();
 
   if (
@@ -1986,73 +3869,105 @@ async function startScanner() {
   }
 
   clearMessage("qrMessage");
+
   clearQRPreview();
 
-  if (!navigator.mediaDevices?.getUserMedia) {
+  if (
+    !navigator.mediaDevices?.getUserMedia
+  ) {
     setMessage(
       "qrMessage",
       "Browser tidak mendukung kamera. Gunakan kode manual."
     );
+
     return;
   }
 
-  if (typeof window.jsQR !== "function") {
+  if (
+    typeof window.jsQR !== "function"
+  ) {
     setMessage(
       "qrMessage",
       "Pemindai QR belum termuat. Periksa internet lalu refresh."
     );
+
     return;
   }
 
   scannerStarting = true;
 
-  const generation = ++scannerGeneration;
+  const generation =
+    ++scannerGeneration;
 
-  $("startScanBtn").disabled = true;
-  $("startScanBtn").textContent = "Membuka Kamera...";
+  $("startScanBtn").disabled =
+    true;
+
+  $("startScanBtn").textContent =
+    "Membuka Kamera...";
 
   try {
     const stream =
-      await navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: {
-          facingMode: { ideal: "environment" },
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        }
-      });
+      await navigator.mediaDevices
+        .getUserMedia({
+          audio:false,
+          video:{
+            facingMode:{
+              ideal:"environment"
+            },
+            width:{
+              ideal:1280
+            },
+            height:{
+              ideal:720
+            }
+          }
+        });
 
     if (
       generation !== scannerGeneration ||
       !isDashboardOpen()
     ) {
-      stream.getTracks().forEach(
-        track => track.stop()
-      );
+      stream
+        .getTracks()
+        .forEach(
+          track => track.stop()
+        );
+
       return;
     }
 
     scannerStream = stream;
 
     const video = $("qrVideo");
+
     video.srcObject = stream;
 
     await video.play();
 
-    if (generation !== scannerGeneration) {
-      stream.getTracks().forEach(
-        track => track.stop()
-      );
+    if (
+      generation !== scannerGeneration
+    ) {
+      stream
+        .getTracks()
+        .forEach(
+          track => track.stop()
+        );
+
       return;
     }
 
     scannerCanvas =
-      document.createElement("canvas");
+      document.createElement(
+        "canvas"
+      );
 
-    scannerContext = scannerCanvas.getContext(
-      "2d",
-      { willReadFrequently: true }
-    );
+    scannerContext =
+      scannerCanvas.getContext(
+        "2d",
+        {
+          willReadFrequently:true
+        }
+      );
 
     if (!scannerContext) {
       throw new Error(
@@ -2061,7 +3976,10 @@ async function startScanner() {
     }
 
     scannerActive = true;
-    $("scannerPanel").classList.add("active");
+
+    $("scannerPanel").classList.add(
+      "active"
+    );
 
     setMessage(
       "qrMessage",
@@ -2069,37 +3987,59 @@ async function startScanner() {
       "success"
     );
 
-    scanVideoFrame(generation);
+    scanVideoFrame(
+      generation
+    );
 
   } catch (error) {
     stopScanner();
 
-    let message = "Kamera tidak dapat dibuka.";
+    let message =
+      "Kamera tidak dapat dibuka.";
 
-    if (error.name === "NotAllowedError") {
+    if (
+      error.name ===
+      "NotAllowedError"
+    ) {
       message =
         "Izin kamera ditolak. Aktifkan izin kamera di browser.";
 
-    } else if (error.name === "NotFoundError") {
-      message = "Kamera tidak ditemukan.";
+    } else if (
+      error.name ===
+      "NotFoundError"
+    ) {
+      message =
+        "Kamera tidak ditemukan.";
 
-    } else if (error.name === "NotReadableError") {
+    } else if (
+      error.name ===
+      "NotReadableError"
+    ) {
       message =
         "Kamera sedang digunakan aplikasi lain.";
 
-    } else if (error.message) {
-      message = error.message;
+    } else if (
+      error.message
+    ) {
+      message =
+        error.message;
     }
 
-    setMessage("qrMessage", message);
+    setMessage(
+      "qrMessage",
+      message
+    );
 
   } finally {
-    $("startScanBtn").disabled = false;
+    $("startScanBtn").disabled =
+      false;
 
     $("startScanBtn").textContent =
       "📷 Buka Kamera & Scan QR";
 
-    if (generation === scannerGeneration) {
+    if (
+      generation === scannerGeneration
+    ) {
       scannerStarting = false;
     }
   }
@@ -2123,17 +4063,26 @@ $("qrManualBtn").addEventListener(
   "click",
   () => {
     unlockQRBeep();
-    previewTicket($("qrManualInput").value);
+
+    previewTicket(
+      $("qrManualInput").value
+    );
   }
 );
 
 $("qrManualInput").addEventListener(
   "keydown",
   event => {
-    if (event.key === "Enter") {
+    if (
+      event.key === "Enter"
+    ) {
       event.preventDefault();
+
       unlockQRBeep();
-      previewTicket($("qrManualInput").value);
+
+      previewTicket(
+        $("qrManualInput").value
+      );
     }
   }
 );
@@ -2147,8 +4096,12 @@ $("cancelQRBtn").addEventListener(
   "click",
   () => {
     ++qrRequestId;
+
     clearQRPreview();
-    clearMessage("qrMessage");
+
+    clearMessage(
+      "qrMessage"
+    );
   }
 );
 
@@ -2156,7 +4109,9 @@ $("scanAgainBtn").addEventListener(
   "click",
   () => {
     clearQRPreview();
+
     clearMessage("qrMessage");
+
     startScanner();
   }
 );
@@ -2166,21 +4121,34 @@ $("scanAgainBtn").addEventListener(
 ============================================================ */
 
 function updateManifestStats() {
-  const total = manifestData.length;
+  const total =
+    manifestData.length;
 
-  const boarded = manifestData.filter(
-    item => item.boarding_status === "boarded"
-  ).length;
+  const boarded =
+    manifestData.filter(
+      item =>
+        item.boarding_status ===
+        "boarded"
+    ).length;
 
-  const absent = manifestData.filter(
-    item => item.boarding_status === "no_show"
-  ).length;
+  const absent =
+    manifestData.filter(
+      item =>
+        item.boarding_status ===
+        "no_show"
+    ).length;
 
-  $("statTotal").textContent = total;
-  $("statBoarded").textContent = boarded;
+  $("statTotal").textContent =
+    total;
+
+  $("statBoarded").textContent =
+    boarded;
+
   $("statPending").textContent =
     total - boarded - absent;
-  $("statNoShow").textContent = absent;
+
+  $("statNoShow").textContent =
+    absent;
 }
 
 /* ============================================================
@@ -2188,33 +4156,50 @@ function updateManifestStats() {
 ============================================================ */
 
 function getPassengerContact(value) {
-  const digits = String(value || "")
-    .replace(/\D/g, "");
+  const digits =
+    String(value || "")
+      .replace(/\D/g, "");
 
   let local = digits;
 
-  if (local.startsWith("62")) {
-    local = "0" + local.slice(2);
+  if (
+    local.startsWith("62")
+  ) {
+    local =
+      "0" + local.slice(2);
   }
 
-  if (local.startsWith("8")) {
-    local = "0" + local;
+  if (
+    local.startsWith("8")
+  ) {
+    local =
+      "0" + local;
   }
 
-  if (!/^08\d{8,11}$/.test(local)) {
+  if (
+    !/^08\d{8,11}$/.test(
+      local
+    )
+  ) {
     return null;
   }
 
   return {
     local,
-    whatsapp: "62" + local.slice(1)
+    whatsapp:
+      "62" + local.slice(1)
   };
 }
 
-function buildWhatsAppMessage(passenger) {
+function buildWhatsAppMessage(
+  passenger
+) {
   return (
     "Halo Kak " +
-    (passenger.passenger_name || "Penumpang") +
+    (
+      passenger.passenger_name ||
+      "Penumpang"
+    ) +
     ", saya petugas HSM Transport.\n\n" +
 
     "Saya ingin mengonfirmasi perjalanan Kakak:\n" +
@@ -2222,41 +4207,65 @@ function buildWhatsAppMessage(passenger) {
     "Rute: " +
     (passenger.origin || "-") +
     " ke " +
-    (passenger.destination || "-") + "\n" +
+    (passenger.destination || "-") +
+    "\n" +
 
     "Tanggal: " +
-    formatDateID(passenger.travel_date) + "\n" +
+    formatDateID(
+      passenger.travel_date
+    ) +
+    "\n" +
 
     "Jam: " +
-    formatTime(passenger.departure_time) + "\n" +
+    formatTime(
+      passenger.departure_time
+    ) +
+    "\n" +
 
-    "Armada: " + currentVehicle + "\n" +
+    "Armada: " +
+    currentVehicle +
+    "\n" +
 
     "Kursi: " +
-    (passenger.seat_number ?? "-") + "\n\n" +
+    (
+      passenger.seat_number ??
+      "-"
+    ) +
+    "\n\n" +
 
     "Mohon konfirmasi kesiapan keberangkatan. Terima kasih."
   );
 }
 
-function openRegularWhatsApp(passenger) {
-  const contact = getPassengerContact(
-    passenger.phone
-  );
+function openRegularWhatsApp(
+  passenger
+) {
+  const contact =
+    getPassengerContact(
+      passenger.phone
+    );
 
   if (!contact) {
     setMessage(
       "manifestMessage",
       "Nomor WhatsApp penumpang tidak valid."
     );
+
     return;
   }
 
-  const text = encodeURIComponent(
-    buildWhatsAppMessage(passenger)
-  );
+  const text =
+    encodeURIComponent(
+      buildWhatsAppMessage(
+        passenger
+      )
+    );
 
-  if (/Android/i.test(navigator.userAgent)) {
+  if (
+    /Android/i.test(
+      navigator.userAgent
+    )
+  ) {
     window.location.href =
       "intent://send?phone=" +
       contact.whatsapp +
@@ -2267,9 +4276,9 @@ function openRegularWhatsApp(passenger) {
   } else {
     window.open(
       "https://wa.me/" +
-        contact.whatsapp +
-        "?text=" +
-        text,
+      contact.whatsapp +
+      "?text=" +
+      text,
       "_blank",
       "noopener,noreferrer"
     );
@@ -2277,46 +4286,62 @@ function openRegularWhatsApp(passenger) {
 }
 
 /* ============================================================
-   PENCARIAN MANIFEST
+   FILTER MANIFEST
 ============================================================ */
 
 function filteredManifest() {
-  const keyword = $("manifestSearch").value
-    .trim()
-    .toLowerCase();
+  const keyword =
+    $("manifestSearch")
+      .value
+      .trim()
+      .toLowerCase();
 
-  if (!keyword) return manifestData;
+  if (!keyword) {
+    return manifestData;
+  }
 
-  return manifestData.filter(item => {
-    const text = [
-      item.passenger_name,
-      item.booking_code,
-      item.seat_number,
-      item.origin,
-      item.destination,
-      item.phone,
-      item.trip_code
-    ].join(" ").toLowerCase();
+  return manifestData.filter(
+    item => {
+      const text = [
+        item.passenger_name,
+        item.booking_code,
+        item.seat_number,
+        item.origin,
+        item.destination,
+        item.phone,
+        item.trip_code
+      ]
+        .join(" ")
+        .toLowerCase();
 
-    return text.includes(keyword);
-  });
+      return text.includes(
+        keyword
+      );
+    }
+  );
 }
 
 function getTripForPassenger(item) {
   return tripsData.find(
-    trip => trip.trip_code === item.trip_code
+    trip =>
+      trip.trip_code ===
+      item.trip_code
   ) || null;
 }
 
 function orderedPickupPoints(trip) {
-  if (trip?.stops?.length) {
+  if (
+    trip?.stops?.length
+  ) {
     return [...trip.stops]
       .sort(
         (a, b) =>
           Number(a.stop_order) -
           Number(b.stop_order)
       )
-      .map(stop => stop.stop_name);
+      .map(
+        stop => stop.stop_name
+      );
   }
 
   return [
@@ -2331,22 +4356,35 @@ function groupManifest(items) {
   const groups = new Map();
 
   items.forEach(item => {
-    const key = item.trip_code
-      ? "trip:" + item.trip_code
-      : "time:" + item.departure_time;
+    const key =
+      item.trip_code
+        ? "trip:" +
+          item.trip_code
+        : "time:" +
+          item.departure_time;
 
-    if (!groups.has(key)) {
-      groups.set(key, {
+    if (
+      !groups.has(key)
+    ) {
+      groups.set(
         key,
-        tripCode: item.trip_code || "",
-        passengers: []
-      });
+        {
+          key,
+          tripCode:
+            item.trip_code || "",
+          passengers:[]
+        }
+      );
     }
 
-    groups.get(key).passengers.push(item);
+    groups.get(key)
+      .passengers
+      .push(item);
   });
 
-  return [...groups.values()];
+  return [
+    ...groups.values()
+  ];
 }
 
 /* ============================================================
@@ -2355,7 +4393,8 @@ function groupManifest(items) {
 
 function passengerHTML(item) {
   const status =
-    item.boarding_status || "not_boarded";
+    item.boarding_status ||
+    "not_boarded";
 
   const statusClass =
     status === "boarded"
@@ -2371,9 +4410,10 @@ function passengerHTML(item) {
         ? "is-no-show"
         : "";
 
-  const contact = getPassengerContact(
-    item.phone
-  );
+  const contact =
+    getPassengerContact(
+      item.phone
+    );
 
   const paymentStatus =
     item.payment_status || "";
@@ -2382,14 +4422,21 @@ function passengerHTML(item) {
     paymentStatus === "paid" ||
     paymentStatus === "completed";
 
-  const trip = getTripForPassenger(item);
+  const trip =
+    getTripForPassenger(
+      item
+    );
 
-  const stop = trip?.stops?.find(
-    value => value.stop_name === item.origin
-  );
+  const stop =
+    trip?.stops?.find(
+      value =>
+        value.stop_name ===
+        item.origin
+    );
 
   const canEdit =
-    $("manifestDate").value === todayWIT() &&
+    $("manifestDate").value ===
+      todayWIT() &&
     trip?.status !== "completed" &&
     !!trip;
 
@@ -2403,45 +4450,57 @@ function passengerHTML(item) {
     !!stop?.departed_at &&
     !stop?.is_terminal;
 
-  const contactHTML = contact
-    ? `
-      <div class="contact-actions">
-        <button
-          class="contact-btn whatsapp"
-          type="button"
-          data-whatsapp-id="${escapeHTML(item.id)}"
-        >
-          🟢 WhatsApp Biasa
-        </button>
+  const contactHTML =
+    contact
+      ? `
+        <div class="contact-actions">
 
-        <a
-          class="contact-btn phone"
-          href="tel:${contact.local}"
-        >
-          📞 Telepon
-        </a>
-      </div>
-    `
-    : `
-      <div class="hint">
-        Nomor kontak penumpang tidak tersedia.
-      </div>
-    `;
+          <button
+            class="contact-btn whatsapp"
+            type="button"
+            data-whatsapp-id="${
+              escapeHTML(item.id)
+            }"
+          >
+            🟢 WhatsApp Biasa
+          </button>
+
+          <a
+            class="contact-btn phone"
+            href="tel:${
+              contact.local
+            }"
+          >
+            📞 Telepon
+          </a>
+
+        </div>
+      `
+      : `
+        <div class="hint">
+          Nomor kontak penumpang tidak tersedia.
+        </div>
+      `;
 
   return `
-    <article class="passenger-card ${cardClass}">
+    <article class="passenger-card ${
+      cardClass
+    }">
 
       <div class="passenger-top">
+
         <div>
           <div class="passenger-name">
             ${escapeHTML(
-              item.passenger_name || "-"
+              item.passenger_name ||
+              "-"
             )}
           </div>
 
           <div class="booking-code">
             ${escapeHTML(
-              item.booking_code || "-"
+              item.booking_code ||
+              "-"
             )}
           </div>
         </div>
@@ -2449,54 +4508,84 @@ function passengerHTML(item) {
         <div class="seat-badge">
           Kursi<br>
           ${escapeHTML(
-            item.seat_number ?? "-"
+            item.seat_number ??
+            "-"
           )}
         </div>
+
       </div>
 
       <div class="passenger-detail">
+
         <strong>Rute:</strong>
-        ${escapeHTML(item.origin || "-")}
+
+        ${escapeHTML(
+          item.origin || "-"
+        )}
         →
-        ${escapeHTML(item.destination || "-")}
+        ${escapeHTML(
+          item.destination || "-"
+        )}
+
         <br>
 
         <strong>Berangkat:</strong>
+
         ${escapeHTML(
-          formatTime(item.departure_time)
+          formatTime(
+            item.departure_time
+          )
         )}
+
         <br>
 
         <strong>No. HP:</strong>
-        ${escapeHTML(item.phone || "-")}
+
+        ${escapeHTML(
+          item.phone || "-"
+        )}
 
         ${
           item.boarded_at
             ? `
               <br>
-              <strong>Waktu naik:</strong>
+              <strong>
+                Waktu naik:
+              </strong>
+
               ${escapeHTML(
-                formatTimestampWIT(item.boarded_at)
+                formatTimestampWIT(
+                  item.boarded_at
+                )
               )}
             `
             : ""
         }
+
       </div>
 
       <div>
+
         <span class="payment-badge ${
           isPaid ? "paid" : ""
         }">
           ${escapeHTML(
-            paymentLabel(paymentStatus)
+            paymentLabel(
+              paymentStatus
+            )
           )}
         </span>
 
-        <span class="status-badge ${statusClass}">
+        <span class="status-badge ${
+          statusClass
+        }">
           ${escapeHTML(
-            boardingLabel(status)
+            boardingLabel(
+              status
+            )
           )}
         </span>
+
       </div>
 
       ${contactHTML}
@@ -2505,11 +4594,14 @@ function passengerHTML(item) {
         canBoard
           ? `
             <div class="passenger-actions">
+
               <button
                 class="small-btn board"
                 type="button"
                 data-booking-id="${
-                  escapeHTML(item.id)
+                  escapeHTML(
+                    item.id
+                  )
                 }"
                 data-boarding-status="boarded"
               >
@@ -2520,21 +4612,29 @@ function passengerHTML(item) {
                 class="small-btn no-show"
                 type="button"
                 data-booking-id="${
-                  escapeHTML(item.id)
+                  escapeHTML(
+                    item.id
+                  )
                 }"
                 data-boarding-status="no_show"
-                ${canNoShow ? "" : "disabled"}
+                ${
+                  canNoShow
+                    ? ""
+                    : "disabled"
+                }
               >
                 ✕ Tidak Hadir
               </button>
+
             </div>
 
             ${
               !canNoShow
                 ? `
                   <div class="hint">
-                    Tidak Hadir baru tersedia setelah armada
-                    berangkat dari titik naik penumpang.
+                    Tidak Hadir baru tersedia
+                    setelah armada berangkat
+                    dari titik naik penumpang.
                   </div>
                 `
                 : ""
@@ -2552,107 +4652,181 @@ function passengerHTML(item) {
 ============================================================ */
 
 function renderManifest() {
-  const items = filteredManifest();
+  const items =
+    filteredManifest();
 
-  if (!manifestData.length) {
+  if (
+    !manifestData.length
+  ) {
     $("manifestList").innerHTML = `
       <div class="empty-state">
         📭<br>
-        <strong>Belum ada penumpang</strong><br>
-        Tidak ada manifest untuk tanggal ini pada
-        armada ${escapeHTML(currentVehicle)}.
+
+        <strong>
+          Belum ada penumpang
+        </strong>
+
+        <br>
+
+        Tidak ada manifest untuk tanggal ini
+        pada armada
+        ${escapeHTML(
+          currentVehicle
+        )}.
       </div>
     `;
+
     return;
   }
 
   if (!items.length) {
     $("manifestList").innerHTML = `
       <div class="empty-state">
-        Tidak ada penumpang yang cocok dengan pencarian.
+        Tidak ada penumpang yang cocok
+        dengan pencarian.
       </div>
     `;
+
     return;
   }
 
-  const groups = groupManifest(items);
+  const groups =
+    groupManifest(items);
 
   $("manifestList").innerHTML =
     groups.map(group => {
-      const trip = tripsData.find(
-        value =>
-          value.trip_code === group.tripCode
-      );
+      const trip =
+        tripsData.find(
+          value =>
+            value.trip_code ===
+            group.tripCode
+        );
 
-      const order = orderedPickupPoints(trip);
-      const pickupMap = new Map();
+      const order =
+        orderedPickupPoints(
+          trip
+        );
 
-      group.passengers.forEach(item => {
-        const origin =
-          item.origin || "Titik Tidak Diketahui";
+      const pickupMap =
+        new Map();
 
-        if (!pickupMap.has(origin)) {
-          pickupMap.set(origin, []);
+      group.passengers.forEach(
+        item => {
+          const origin =
+            item.origin ||
+            "Titik Tidak Diketahui";
+
+          if (
+            !pickupMap.has(
+              origin
+            )
+          ) {
+            pickupMap.set(
+              origin,
+              []
+            );
+          }
+
+          pickupMap.get(
+            origin
+          ).push(item);
         }
-
-        pickupMap.get(origin).push(item);
-      });
+      );
 
       const pickupNames = [
         ...pickupMap.keys()
-      ].sort((a, b) => {
-        const ai = order.indexOf(a);
-        const bi = order.indexOf(b);
+      ].sort(
+        (a, b) => {
+          const ai =
+            order.indexOf(a);
 
-        return (
-          (ai < 0 ? 99 : ai) -
-          (bi < 0 ? 99 : bi)
-        );
-      });
+          const bi =
+            order.indexOf(b);
+
+          return (
+            (ai < 0 ? 99 : ai) -
+            (bi < 0 ? 99 : bi)
+          );
+        }
+      );
 
       const passengersHTML =
-        pickupNames.map(origin => {
-          const passengers =
-            pickupMap.get(origin);
+        pickupNames.map(
+          origin => {
+            const passengers =
+              pickupMap.get(
+                origin
+              );
 
-          passengers.sort(
-            (a, b) =>
-              Number(a.seat_number || 0) -
-              Number(b.seat_number || 0)
-          );
+            passengers.sort(
+              (a, b) =>
+                Number(
+                  a.seat_number ||
+                  0
+                ) -
+                Number(
+                  b.seat_number ||
+                  0
+                )
+            );
 
-          return `
-            <div class="pickup-heading">
-              📍 Naik dari ${escapeHTML(origin)}
-              — ${passengers.length} penumpang
-            </div>
+            return `
+              <div class="pickup-heading">
+                📍 Naik dari
+                ${escapeHTML(
+                  origin
+                )}
+                —
+                ${
+                  passengers.length
+                }
+                penumpang
+              </div>
 
-            ${
-              passengers
-                .map(passengerHTML)
-                .join("")
-            }
-          `;
-        }).join("");
+              ${
+                passengers
+                  .map(
+                    passengerHTML
+                  )
+                  .join("")
+              }
+            `;
+          }
+        ).join("");
 
-      const tripHeading = trip
-        ? `${trip.origin} → ${trip.destination}`
-        : group.tripCode ||
-          "Jadwal Penumpang";
+      const tripHeading =
+        trip
+          ? trip.origin +
+            " → " +
+            trip.destination
+          : group.tripCode ||
+            "Jadwal Penumpang";
 
       return `
         <div class="manifest-trip">
 
           <div class="manifest-trip-title">
-            🚐 ${escapeHTML(tripHeading)}<br>
+
+            🚐
+            ${escapeHTML(
+              tripHeading
+            )}
+
+            <br>
+
             <small>
+              ${escapeHTML(
+                group.tripCode ||
+                "-"
+              )}
+
+              —
               ${
-                escapeHTML(
-                  group.tripCode || "-"
-                )
+                group.passengers.length
               }
-              — ${group.passengers.length} penumpang
+              penumpang
             </small>
+
           </div>
 
           ${passengersHTML}
@@ -2666,7 +4840,10 @@ function renderManifest() {
    BOARDING MANUAL
 ============================================================ */
 
-async function updateBoarding(bookingId, status) {
+async function updateBoarding(
+  bookingId,
+  status
+) {
   if (
     boardingBusy ||
     tripBusy ||
@@ -2676,68 +4853,93 @@ async function updateBoarding(bookingId, status) {
     return;
   }
 
-  const token = getToken();
+  const token =
+    getToken();
 
   if (!token) {
     showLogin();
     return;
   }
 
-  const booking = manifestData.find(
-    item => item.id === bookingId
-  );
+  const booking =
+    manifestData.find(
+      item =>
+        String(item.id) ===
+        String(bookingId)
+    );
 
   if (!booking) {
     setMessage(
       "manifestMessage",
       "Penumpang tidak ditemukan. Refresh manifest."
     );
+
     return;
   }
 
   if (
-    booking.boarding_status !== "not_boarded"
+    booking.boarding_status !==
+    "not_boarded"
   ) {
     setMessage(
       "manifestMessage",
       "Status sudah berubah. Refresh manifest."
     );
+
     return;
   }
 
-  const text = status === "boarded"
-    ? "Konfirmasi " +
-      booking.passenger_name +
-      " sudah benar-benar naik?"
+  const text =
+    status === "boarded"
+      ? "Konfirmasi " +
+        booking.passenger_name +
+        " sudah benar-benar naik?"
+      : "Tandai " +
+        booking.passenger_name +
+        " sebagai TIDAK HADIR?";
 
-    : "Tandai " +
-      booking.passenger_name +
-      " sebagai TIDAK HADIR?";
-
-  if (!window.confirm(text)) return;
+  if (
+    !window.confirm(text)
+  ) {
+    return;
+  }
 
   boardingBusy = true;
-  clearMessage("manifestMessage");
 
-  $("manifestList").querySelectorAll(
-    "button[data-booking-id]"
-  ).forEach(button => {
-    button.disabled = true;
-  });
+  clearMessage(
+    "manifestMessage"
+  );
+
+  $("manifestList")
+    .querySelectorAll(
+      "button[data-booking-id]"
+    )
+    .forEach(
+      button => {
+        button.disabled = true;
+      }
+    );
 
   try {
-    const result = await api("boarding", {
-      token,
-      booking_id: bookingId,
-      status
-    });
+    const result = await api(
+      "boarding",
+      {
+        token,
+        booking_id:bookingId,
+        status
+      }
+    );
 
-    if (getToken() !== token) return;
+    if (
+      getToken() !== token
+    ) {
+      return;
+    }
 
     setMessage(
       "manifestMessage",
       result.message ||
-        "Status berhasil diperbarui.",
+      "Status berhasil diperbarui.",
       "success"
     );
 
@@ -2752,7 +4954,9 @@ async function updateBoarding(bookingId, status) {
   } finally {
     boardingBusy = false;
 
-    if (getToken() === token) {
+    if (
+      getToken() === token
+    ) {
       await refreshAll();
     }
   }
@@ -2765,27 +4969,36 @@ async function updateBoarding(bookingId, status) {
 $("manifestList").addEventListener(
   "click",
   event => {
-    const whatsappButton = event.target.closest(
-      "button[data-whatsapp-id]"
-    );
-
-    if (whatsappButton) {
-      const passenger = manifestData.find(
-        item =>
-          item.id ===
-          whatsappButton.dataset.whatsappId
+    const whatsappButton =
+      event.target.closest(
+        "button[data-whatsapp-id]"
       );
 
+    if (
+      whatsappButton
+    ) {
+      const passenger =
+        manifestData.find(
+          item =>
+            String(item.id) ===
+            String(
+              whatsappButton.dataset.whatsappId
+            )
+        );
+
       if (passenger) {
-        openRegularWhatsApp(passenger);
+        openRegularWhatsApp(
+          passenger
+        );
       }
 
       return;
     }
 
-    const boardingButton = event.target.closest(
-      "button[data-boarding-status]"
-    );
+    const boardingButton =
+      event.target.closest(
+        "button[data-boarding-status]"
+      );
 
     if (
       !boardingButton ||
@@ -2821,8 +5034,13 @@ $("manifestDate").addEventListener(
 ============================================================ */
 
 function stopAutoRefresh() {
-  if (autoRefreshTimer !== null) {
-    clearInterval(autoRefreshTimer);
+  if (
+    autoRefreshTimer !== null
+  ) {
+    clearInterval(
+      autoRefreshTimer
+    );
+
     autoRefreshTimer = null;
   }
 }
@@ -2830,23 +5048,27 @@ function stopAutoRefresh() {
 function startAutoRefresh() {
   stopAutoRefresh();
 
-  autoRefreshTimer = setInterval(() => {
-    if (
-      document.hidden ||
-      !isDashboardOpen() ||
-      scannerActive ||
-      qrPreview ||
-      qrBusy ||
-      boardingBusy ||
-      tripBusy ||
-      dataLoading
-    ) {
-      return;
-    }
+  autoRefreshTimer =
+    setInterval(
+      () => {
+        if (
+          document.hidden ||
+          !isDashboardOpen() ||
+          scannerActive ||
+          qrPreview ||
+          qrBusy ||
+          boardingBusy ||
+          tripBusy ||
+          dataLoading
+        ) {
+          return;
+        }
 
-    refreshAll();
+        refreshAll();
 
-  }, 60000);
+      },
+      60000
+    );
 }
 
 /* ============================================================
@@ -2860,16 +5082,21 @@ $("logoutBtn").addEventListener(
     ++dataRequestId;
     ++qrRequestId;
 
-    const token = getToken();
+    const token =
+      getToken();
 
     clearStaffSession();
+
     showLogin();
 
     if (token) {
       try {
-        await api("logout", { token });
+        await api(
+          "logout",
+          { token }
+        );
       } catch {
-        // Sesi lokal sudah dibersihkan.
+        // Sesi lokal telah dibersihkan.
       }
     }
 
@@ -2888,15 +5115,21 @@ $("logoutBtn").addEventListener(
 document.addEventListener(
   "visibilitychange",
   () => {
-    if (document.hidden) {
+    if (
+      document.hidden
+    ) {
       stopScanner();
 
     } else {
-      const token = getToken();
+      const token =
+        getToken();
 
       if (!token) {
-        if (isDashboardOpen()) {
+        if (
+          isDashboardOpen()
+        ) {
           ++sessionRequestId;
+
           showLogin();
         }
 
@@ -2909,31 +5142,41 @@ document.addEventListener(
 );
 
 /* ============================================================
-   PEMERIKSAAN PERGANTIAN HARI WIT
+   PERGANTIAN HARI WIT
 ============================================================ */
 
-setInterval(() => {
-  const dashboardOpen = isDashboardOpen();
-  const token = getToken();
+setInterval(
+  () => {
+    const dashboardOpen =
+      isDashboardOpen();
 
-  if (dashboardOpen && !token) {
-    ++sessionRequestId;
+    const token =
+      getToken();
 
-    showLogin();
+    if (
+      dashboardOpen &&
+      !token
+    ) {
+      ++sessionRequestId;
 
-    setMessage(
-      "authMessage",
-      "Tanggal WIT sudah berganti. Silakan login kembali."
-    );
-  }
+      showLogin();
 
-}, 10000);
+      setMessage(
+        "authMessage",
+        "Tanggal WIT sudah berganti. Silakan login kembali."
+      );
+    }
+
+  },
+  10000
+);
 
 /* ============================================================
-   INITIALIZATION
+   INISIALISASI
 ============================================================ */
 
-$("manifestDate").value = todayWIT();
+$("manifestDate").value =
+  todayWIT();
 
 loadSession();
 
