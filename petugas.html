@@ -20,668 +20,135 @@
   --orange:#b76a0b;
 }
 *{box-sizing:border-box}
-body{
-  margin:0;
-  min-height:100vh;
-  font-family:Arial,Helvetica,sans-serif;
-  background:var(--bg);
-  color:var(--text)
-}
+body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
 button,input{font:inherit}
 button{cursor:pointer}
 button:disabled{opacity:.55;cursor:not-allowed}
-.header{
-  background:linear-gradient(135deg,var(--blue),var(--dark));
-  color:white;
-  text-align:center;
-  padding:30px 18px 55px
-}
-.logo{
-  font-size:38px;
-  font-weight:900;
-  letter-spacing:2px
-}
+.header{background:linear-gradient(135deg,var(--blue),var(--dark));color:white;text-align:center;padding:30px 18px 55px}
+.logo{font-size:38px;font-weight:900;letter-spacing:2px}
 .logo .red{color:#ff5252}
-.logo-sub{
-  font-size:12px;
-  font-weight:bold;
-  letter-spacing:3px
-}
+.logo-sub{font-size:12px;font-weight:bold;letter-spacing:3px}
 .header h1{margin:25px 0 7px;font-size:22px}
 .header p{margin:0;font-size:13px;opacity:.9}
-.container{
-  width:min(700px,calc(100% - 28px));
-  margin:-28px auto 32px;
-  position:relative
-}
-.card{
-  background:white;
-  border-radius:18px;
-  padding:22px;
-  box-shadow:0 8px 30px rgba(15,45,85,.1)
-}
-.tabs{
-  display:flex;
-  gap:5px;
-  padding:5px;
-  background:#edf3fa;
-  border-radius:12px;
-  margin-bottom:22px
-}
-.tab{
-  flex:1;
-  border:0;
-  border-radius:9px;
-  background:transparent;
-  color:#63758d;
-  padding:12px 4px;
-  font-size:12px;
-  font-weight:bold
-}
-.tab.active{
-  background:white;
-  color:var(--blue);
-  box-shadow:0 2px 8px rgba(0,0,0,.07)
-}
+.container{width:min(700px,calc(100% - 28px));margin:-28px auto 32px;position:relative}
+.card{background:white;border-radius:18px;padding:22px;box-shadow:0 8px 30px rgba(15,45,85,.1)}
+.tabs{display:flex;gap:5px;padding:5px;background:#edf3fa;border-radius:12px;margin-bottom:22px}
+.tab{flex:1;border:0;border-radius:9px;background:transparent;color:#63758d;padding:12px 4px;font-size:12px;font-weight:bold}
+.tab.active{background:white;color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .form{display:none}
 .form.active{display:block}
 h2{margin:0 0 8px;font-size:20px}
-.description{
-  margin:0 0 22px;
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.6
-}
+.description{margin:0 0 22px;color:var(--muted);font-size:13px;line-height:1.6}
 .field{margin-bottom:17px}
-label{
-  display:block;
-  margin-bottom:8px;
-  font-size:13px;
-  font-weight:bold
-}
-input{
-  width:100%;
-  padding:14px;
-  border:1px solid var(--border);
-  border-radius:11px;
-  background:white;
-  font-size:15px;
-  outline:0
-}
-input:focus{
-  border-color:var(--blue);
-  box-shadow:0 0 0 3px rgba(7,84,166,.1)
-}
-.hint{
-  margin-top:6px;
-  color:var(--muted);
-  font-size:11px;
-  line-height:1.6
-}
-.btn{
-  width:100%;
-  padding:15px;
-  border:0;
-  border-radius:11px;
-  background:var(--blue);
-  color:white;
-  font-size:15px;
-  font-weight:bold
-}
-.btn-outline{
-  background:white;
-  color:var(--blue);
-  border:1px solid var(--blue)
-}
-.message{
-  display:none;
-  padding:13px;
-  margin:12px 0 17px;
-  border-radius:10px;
-  font-size:13px;
-  line-height:1.6;
-  overflow-wrap:anywhere
-}
-.message.error{
-  display:block;
-  background:#fff0f0;
-  color:#b42318
-}
-.message.success{
-  display:block;
-  background:#eaf8ee;
-  color:#177245
-}
+label{display:block;margin-bottom:8px;font-size:13px;font-weight:bold}
+input{width:100%;padding:14px;border:1px solid var(--border);border-radius:11px;background:white;font-size:15px;outline:0}
+input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,84,166,.1)}
+.hint{margin-top:6px;color:var(--muted);font-size:11px;line-height:1.6}
+.btn{width:100%;padding:15px;border:0;border-radius:11px;background:var(--blue);color:white;font-size:15px;font-weight:bold}
+.btn-outline{background:white;color:var(--blue);border:1px solid var(--blue)}
+.message{display:none;padding:13px;margin:12px 0 17px;border-radius:10px;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.message.error{display:block;background:#fff0f0;color:#b42318}
+.message.success{display:block;background:#eaf8ee;color:#177245}
 #dashboard{display:none}
 .welcome{text-align:center;padding:10px 0 24px}
-.avatar{
-  width:76px;
-  height:76px;
-  margin:0 auto 14px;
-  display:grid;
-  place-items:center;
-  border-radius:50%;
-  background:#e9f2fd;
-  font-size:34px
-}
+.avatar{width:76px;height:76px;margin:0 auto 14px;display:grid;place-items:center;border-radius:50%;background:#e9f2fd;font-size:34px}
 .welcome h2{margin-bottom:10px}
-.badge{
-  display:inline-block;
-  padding:7px 13px;
-  border-radius:20px;
-  background:#e9f7ed;
-  color:#208046;
-  font-size:12px;
-  font-weight:bold
-}
-.info{
-  overflow:hidden;
-  margin-bottom:20px;
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:#f6f9fd
-}
-.info-row{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:14px;
-  border-bottom:1px solid var(--border);
-  font-size:13px
-}
+.badge{display:inline-block;padding:7px 13px;border-radius:20px;background:#e9f7ed;color:#208046;font-size:12px;font-weight:bold}
+.info{overflow:hidden;margin-bottom:20px;border:1px solid var(--border);border-radius:12px;background:#f6f9fd}
+.info-row{display:flex;justify-content:space-between;gap:12px;padding:14px;border-bottom:1px solid var(--border);font-size:13px}
 .info-row:last-child{border-bottom:0}
 .info-row span{color:var(--muted)}
 .info-row strong{text-align:right;overflow-wrap:anywhere}
-.notice{
-  padding:14px;
-  margin-bottom:20px;
-  border-left:4px solid var(--blue);
-  border-radius:9px;
-  background:#eef5ff;
-  font-size:12px;
-  line-height:1.7
-}
-.section{
-  margin-bottom:23px;
-  padding-top:23px;
-  border-top:1px solid var(--border)
-}
-.section-heading{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-bottom:10px
-}
+.notice{padding:14px;margin-bottom:20px;border-left:4px solid var(--blue);border-radius:9px;background:#eef5ff;font-size:12px;line-height:1.7}
+.section{margin-bottom:23px;padding-top:23px;border-top:1px solid var(--border)}
+.section-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
 .section-heading h2{margin:0;font-size:19px}
-.vehicle-chip{
-  padding:7px 10px;
-  border-radius:20px;
-  background:#eaf2ff;
-  color:var(--blue);
-  font-size:12px;
-  font-weight:bold;
-  white-space:nowrap
-}
-.section-description{
-  margin:0 0 17px;
-  font-size:12px;
-  color:var(--muted);
-  line-height:1.7
-}
-.toolbar{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:10px;
-  align-items:end;
-  margin-bottom:15px
-}
+.vehicle-chip{padding:7px 10px;border-radius:20px;background:#eaf2ff;color:var(--blue);font-size:12px;font-weight:bold;white-space:nowrap}
+.section-description{margin:0 0 17px;font-size:12px;color:var(--muted);line-height:1.7}
+.toolbar{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-bottom:15px}
 .toolbar .field{margin:0}
-.refresh-btn{
-  border:1px solid var(--blue);
-  background:white;
-  color:var(--blue);
-  border-radius:11px;
-  padding:14px;
-  font-size:13px;
-  font-weight:bold
-}
-.trip-card{
-  border:1px solid var(--border);
-  border-radius:15px;
-  padding:16px;
-  margin-bottom:16px;
-  background:white
-}
-.trip-top{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  align-items:flex-start;
-  margin-bottom:13px
-}
-.trip-route{
-  font-size:16px;
-  font-weight:bold;
-  line-height:1.5;
-  color:var(--dark)
-}
-.trip-code{
-  margin-top:5px;
-  font-size:11px;
-  color:var(--muted);
-  overflow-wrap:anywhere
-}
-.trip-status{
-  display:inline-block;
-  padding:8px 10px;
-  border-radius:20px;
-  font-size:11px;
-  font-weight:bold;
-  white-space:nowrap
-}
+.refresh-btn{border:1px solid var(--blue);background:white;color:var(--blue);border-radius:11px;padding:14px;font-size:13px;font-weight:bold}
+.trip-card{border:1px solid var(--border);border-radius:15px;padding:16px;margin-bottom:16px;background:white}
+.trip-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:13px}
+.trip-route{font-size:16px;font-weight:bold;line-height:1.5;color:var(--dark)}
+.trip-code{margin-top:5px;font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.trip-status{display:inline-block;padding:8px 10px;border-radius:20px;font-size:11px;font-weight:bold;white-space:nowrap}
 .trip-status.not_departed{color:var(--blue);background:#eaf2ff}
 .trip-status.in_progress{color:#9c5a00;background:#fff0d3}
 .trip-status.completed{color:var(--green);background:#e5f7eb}
-.trip-meta{
-  font-size:12px;
-  color:#52627a;
-  line-height:1.9;
-  margin-bottom:14px
-}
-.stop-list{
-  border:1px solid var(--border);
-  border-radius:12px;
-  overflow:hidden
-}
-.stop-item{
-  padding:13px;
-  border-bottom:1px solid var(--border);
-  background:#fbfcff
-}
+.trip-meta{font-size:12px;color:#52627a;line-height:1.9;margin-bottom:14px}
+.stop-list{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.stop-item{padding:13px;border-bottom:1px solid var(--border);background:#fbfcff}
 .stop-item:last-child{border-bottom:0}
 .stop-item.done{background:#f1fbf5}
 .stop-item.current{background:#eff6ff}
-.stop-head{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  align-items:flex-start
-}
+.stop-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
 .stop-name{font-size:13px;font-weight:bold}
-.stop-state{
-  font-size:11px;
-  color:var(--muted);
-  text-align:right;
-  line-height:1.5
-}
+.stop-state{font-size:11px;color:var(--muted);text-align:right;line-height:1.5}
 .stop-state.done{color:var(--green);font-weight:bold}
 .stop-action{margin-top:11px}
-.action-btn{
-  width:100%;
-  border:0;
-  border-radius:10px;
-  padding:12px;
-  font-size:12px;
-  font-weight:bold
-}
+.action-btn{width:100%;border:0;border-radius:10px;padding:12px;font-size:12px;font-weight:bold}
 .action-btn.depart{background:var(--blue);color:white}
-.action-btn.undo{
-  background:white;
-  color:#a65c08;
-  border:1px solid #e7c38d
-}
-.action-btn.complete{
-  margin-top:13px;
-  background:var(--green);
-  color:white
-}
-.trip-note{
-  padding:12px;
-  border-radius:10px;
-  background:#f5f8fc;
-  font-size:11px;
-  color:#65758c;
-  line-height:1.7;
-  margin-top:14px
-}
-.scan-btn{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:10px;
-  width:100%;
-  padding:17px 14px;
-  border:0;
-  border-radius:12px;
-  background:linear-gradient(135deg,var(--blue),var(--dark));
-  color:white;
-  font-size:15px;
-  font-weight:bold
-}
-.qr-manual{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:9px;
-  margin-top:12px
-}
+.action-btn.undo{background:white;color:#a65c08;border:1px solid #e7c38d}
+.action-btn.complete{margin-top:13px;background:var(--green);color:white}
+.trip-note{padding:12px;border-radius:10px;background:#f5f8fc;font-size:11px;color:#65758c;line-height:1.7;margin-top:14px}
+.scan-btn{display:flex;justify-content:center;align-items:center;gap:10px;width:100%;padding:17px 14px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--dark));color:white;font-size:15px;font-weight:bold}
+.qr-manual{display:grid;grid-template-columns:1fr auto;gap:9px;margin-top:12px}
 .qr-manual input{min-width:0;padding:12px;font-size:13px}
-.qr-manual button{
-  border:1px solid var(--blue);
-  background:white;
-  color:var(--blue);
-  border-radius:10px;
-  padding:10px 15px;
-  font-size:12px;
-  font-weight:bold
-}
-.scanner-panel{
-  display:none;
-  margin-top:15px;
-  border:1px solid var(--border);
-  border-radius:14px;
-  overflow:hidden;
-  background:#07192e
-}
+.qr-manual button{border:1px solid var(--blue);background:white;color:var(--blue);border-radius:10px;padding:10px 15px;font-size:12px;font-weight:bold}
+.scanner-panel{display:none;margin-top:15px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#07192e}
 .scanner-panel.active{display:block}
-.scanner-top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px;
-  color:white;
-  font-size:12px;
-  font-weight:bold
-}
-.scanner-top button{
-  background:white;
-  border:0;
-  border-radius:8px;
-  padding:8px 12px;
-  color:#b42318;
-  font-weight:bold
-}
-.scanner-video-wrap{
-  position:relative;
-  width:100%;
-  aspect-ratio:1/1;
-  overflow:hidden;
-  background:black
-}
-#qrVideo{
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:cover
-}
-.scanner-frame{
-  position:absolute;
-  left:15%;
-  top:15%;
-  width:70%;
-  height:70%;
-  border:3px solid #63e6a4;
-  border-radius:18px;
-  pointer-events:none;
-  box-shadow:0 0 0 100vmax rgba(0,0,0,.18)
-}
-.scanner-instruction{
-  color:white;
-  text-align:center;
-  padding:13px;
-  font-size:12px;
-  line-height:1.6
-}
-.qr-result{
-  display:none;
-  margin-top:15px;
-  padding:16px;
-  border:1px solid #b9e6c8;
-  border-radius:13px;
-  background:#fbfffc
-}
+.scanner-top{display:flex;align-items:center;justify-content:space-between;padding:12px;color:white;font-size:12px;font-weight:bold}
+.scanner-top button{background:white;border:0;border-radius:8px;padding:8px 12px;color:#b42318;font-weight:bold}
+.scanner-video-wrap{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:black}
+#qrVideo{display:block;width:100%;height:100%;object-fit:cover}
+.scanner-frame{position:absolute;left:15%;top:15%;width:70%;height:70%;border:3px solid #63e6a4;border-radius:18px;pointer-events:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.18)}
+.scanner-instruction{color:white;text-align:center;padding:13px;font-size:12px;line-height:1.6}
+.qr-result{display:none;margin-top:15px;padding:16px;border:1px solid #b9e6c8;border-radius:13px;background:#fbfffc}
 .qr-result.active{display:block}
-.qr-result h3{
-  margin:0 0 13px;
-  color:var(--green);
-  font-size:16px
-}
-.qr-result-row{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:10px 0;
-  border-bottom:1px solid #e0eee5;
-  font-size:12px
-}
+.qr-result h3{margin:0 0 13px;color:var(--green);font-size:16px}
+.qr-result-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #e0eee5;font-size:12px}
 .qr-result-row span{color:var(--muted)}
 .qr-result-row strong{text-align:right;overflow-wrap:anywhere}
-.qr-confirm{
-  width:100%;
-  margin-top:17px;
-  padding:15px;
-  border:0;
-  border-radius:11px;
-  background:var(--green);
-  color:white;
-  font-size:14px;
-  font-weight:bold
-}
-.qr-cancel{
-  width:100%;
-  margin-top:9px;
-  padding:12px;
-  border:1px solid var(--border);
-  border-radius:10px;
-  background:white;
-  color:var(--text);
-  font-size:12px;
-  font-weight:bold
-}
-.qr-success{
-  display:none;
-  margin-top:15px;
-  padding:22px 14px;
-  border:1px solid #b9e6c8;
-  border-radius:13px;
-  background:#eaf8ee;
-  color:var(--green);
-  text-align:center;
-  line-height:1.7
-}
+.qr-confirm{width:100%;margin-top:17px;padding:15px;border:0;border-radius:11px;background:var(--green);color:white;font-size:14px;font-weight:bold}
+.qr-cancel{width:100%;margin-top:9px;padding:12px;border:1px solid var(--border);border-radius:10px;background:white;color:var(--text);font-size:12px;font-weight:bold}
+.qr-success{display:none;margin-top:15px;padding:22px 14px;border:1px solid #b9e6c8;border-radius:13px;background:#eaf8ee;color:var(--green);text-align:center;line-height:1.7}
 .qr-success.active{display:block}
 .qr-success strong{display:block;font-size:17px}
-.qr-success button{
-  margin-top:14px;
-  border:0;
-  border-radius:10px;
-  padding:12px 20px;
-  background:var(--blue);
-  color:white;
-  font-weight:bold
-}
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin-bottom:17px
-}
-.stat{
-  background:#f5f8fc;
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:12px 6px;
-  text-align:center
-}
-.stat strong{
-  display:block;
-  font-size:21px;
-  color:var(--blue);
-  margin-bottom:5px
-}
-.stat span{
-  display:block;
-  color:var(--muted);
-  font-size:10px;
-  line-height:1.4
-}
+.qr-success button{margin-top:14px;border:0;border-radius:10px;padding:12px 20px;background:var(--blue);color:white;font-weight:bold}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:17px}
+.stat{background:#f5f8fc;border:1px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center}
+.stat strong{display:block;font-size:21px;color:var(--blue);margin-bottom:5px}
+.stat span{display:block;color:var(--muted);font-size:10px;line-height:1.4}
 .stat.green strong{color:var(--green)}
 .stat.orange strong{color:var(--orange)}
 .stat.red strong{color:var(--red)}
 .search-box{margin-bottom:14px}
 .search-box input{padding:12px 14px;font-size:13px}
 .manifest-trip{margin-bottom:22px}
-.manifest-trip-title{
-  background:#eaf2ff;
-  color:var(--dark);
-  padding:13px;
-  border-radius:11px;
-  font-size:13px;
-  font-weight:bold;
-  line-height:1.6;
-  margin-bottom:12px;
-  overflow-wrap:anywhere
-}
-.pickup-heading{
-  padding:10px 12px;
-  background:#f2f5fa;
-  border-left:3px solid var(--blue);
-  border-radius:8px;
-  margin:13px 0 10px;
-  font-size:12px;
-  font-weight:bold
-}
-.passenger-card{
-  border:1px solid var(--border);
-  border-radius:13px;
-  padding:15px;
-  margin-bottom:10px;
-  background:white
-}
-.passenger-card.is-boarded{
-  border-color:#b9e6c8;
-  background:#fbfffc
-}
-.passenger-card.is-no-show{
-  border-color:#f0cccc;
-  background:#fffafa
-}
-.passenger-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-  margin-bottom:12px
-}
-.passenger-name{
-  font-size:15px;
-  font-weight:bold;
-  overflow-wrap:anywhere
-}
-.booking-code{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:5px;
-  overflow-wrap:anywhere
-}
-.seat-badge{
-  min-width:54px;
-  text-align:center;
-  background:#e9f2ff;
-  color:var(--blue);
-  border-radius:10px;
-  padding:9px;
-  font-size:12px;
-  font-weight:bold
-}
-.passenger-detail{
-  font-size:12px;
-  line-height:1.8;
-  color:#46556a;
-  overflow-wrap:anywhere
-}
-.payment-badge,.status-badge{
-  display:inline-block;
-  margin-top:10px;
-  margin-right:5px;
-  border-radius:20px;
-  padding:6px 10px;
-  background:#fff4df;
-  color:#966000;
-  font-size:11px;
-  font-weight:bold
-}
-.payment-badge.paid,.status-badge.boarded{
-  background:#e7f7ed;
-  color:#147a43
-}
-.status-badge.no-show{
-  background:#ffeaea;
-  color:#b42318
-}
-.contact-actions,.passenger-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-  margin-top:13px
-}
-.contact-btn{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:12px 6px;
-  border-radius:9px;
-  text-decoration:none;
-  font-size:12px;
-  font-weight:bold;
-  text-align:center;
-  border:0
-}
+.manifest-trip-title{background:#eaf2ff;color:var(--dark);padding:13px;border-radius:11px;font-size:13px;font-weight:bold;line-height:1.6;margin-bottom:12px;overflow-wrap:anywhere}
+.pickup-heading{padding:10px 12px;background:#f2f5fa;border-left:3px solid var(--blue);border-radius:8px;margin:13px 0 10px;font-size:12px;font-weight:bold}
+.passenger-card{border:1px solid var(--border);border-radius:13px;padding:15px;margin-bottom:10px;background:white}
+.passenger-card.is-boarded{border-color:#b9e6c8;background:#fbfffc}
+.passenger-card.is-no-show{border-color:#f0cccc;background:#fffafa}
+.passenger-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.passenger-name{font-size:15px;font-weight:bold;overflow-wrap:anywhere}
+.booking-code{font-size:11px;color:var(--muted);margin-top:5px;overflow-wrap:anywhere}
+.seat-badge{min-width:54px;text-align:center;background:#e9f2ff;color:var(--blue);border-radius:10px;padding:9px;font-size:12px;font-weight:bold}
+.passenger-detail{font-size:12px;line-height:1.8;color:#46556a;overflow-wrap:anywhere}
+.payment-badge,.status-badge{display:inline-block;margin-top:10px;margin-right:5px;border-radius:20px;padding:6px 10px;background:#fff4df;color:#966000;font-size:11px;font-weight:bold}
+.payment-badge.paid,.status-badge.boarded{background:#e7f7ed;color:#147a43}
+.status-badge.no-show{background:#ffeaea;color:#b42318}
+.contact-actions,.passenger-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}
+.contact-btn{display:flex;align-items:center;justify-content:center;padding:12px 6px;border-radius:9px;text-decoration:none;font-size:12px;font-weight:bold;text-align:center;border:0}
 .contact-btn.whatsapp{background:#25d366;color:white}
-.contact-btn.phone{
-  background:#eaf2ff;
-  color:var(--blue);
-  border:1px solid #c9dffc
-}
-.small-btn{
-  padding:11px 8px;
-  border:0;
-  border-radius:9px;
-  font-size:12px;
-  font-weight:bold
-}
+.contact-btn.phone{background:#eaf2ff;color:var(--blue);border:1px solid #c9dffc}
+.small-btn{padding:11px 8px;border:0;border-radius:9px;font-size:12px;font-weight:bold}
 .small-btn.board{background:var(--green);color:white}
-.small-btn.no-show{
-  background:white;
-  color:#b42318;
-  border:1px solid #e7b9b9
-}
-.empty-state{
-  text-align:center;
-  padding:28px 12px;
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.7;
-  border:1px dashed var(--border);
-  border-radius:12px;
-  background:#fbfcfe
-}
-.manifest-note{
-  margin-top:15px;
-  padding:12px;
-  border-radius:10px;
-  background:#f5f8fc;
-  color:#61718a;
-  font-size:11px;
-  line-height:1.7
-}
-.footer{
-  margin-top:22px;
-  text-align:center;
-  color:var(--muted);
-  font-size:11px;
-  line-height:1.8
-}
+.small-btn.no-show{background:white;color:#b42318;border:1px solid #e7b9b9}
+.empty-state{text-align:center;padding:28px 12px;color:var(--muted);font-size:13px;line-height:1.7;border:1px dashed var(--border);border-radius:12px;background:#fbfcfe}
+.manifest-note{margin-top:15px;padding:12px;border-radius:10px;background:#f5f8fc;color:#61718a;font-size:11px;line-height:1.7}
+.footer{margin-top:22px;text-align:center;color:var(--muted);font-size:11px;line-height:1.8}
 @media(max-width:390px){
   .card{padding:17px}
   .toolbar{grid-template-columns:1fr}
@@ -707,17 +174,10 @@ input:focus{
 <main class="container">
 
 <section class="card" id="authCard">
-
   <div class="tabs">
-    <button type="button" class="tab active" data-tab="login">
-      Login
-    </button>
-    <button type="button" class="tab" data-tab="activate">
-      Aktivasi
-    </button>
-    <button type="button" class="tab" data-tab="recover">
-      Lupa PIN
-    </button>
+    <button type="button" class="tab active" data-tab="login">Login</button>
+    <button type="button" class="tab" data-tab="activate">Aktivasi</button>
+    <button type="button" class="tab" data-tab="recover">Lupa PIN</button>
   </div>
 
   <div id="authMessage" class="message" role="alert"></div>
@@ -729,28 +189,14 @@ input:focus{
     </p>
     <div class="field">
       <label for="loginPhone">Nomor HP</label>
-      <input
-        id="loginPhone"
-        type="tel"
-        inputmode="tel"
-        autocomplete="tel"
-        placeholder="08xxxxxxxxxx"
-        required
-      >
+      <input id="loginPhone" type="tel" inputmode="tel"
+        autocomplete="tel" placeholder="08xxxxxxxxxx" required>
     </div>
     <div class="field">
       <label for="loginPin">PIN 6 Digit</label>
-      <input
-        id="loginPin"
-        type="password"
-        inputmode="numeric"
-        pattern="[0-9]{6}"
-        minlength="6"
-        maxlength="6"
-        autocomplete="off"
-        placeholder="Masukkan PIN"
-        required
-      >
+      <input id="loginPin" type="password" inputmode="numeric"
+        pattern="[0-9]{6}" minlength="6" maxlength="6"
+        autocomplete="off" placeholder="Masukkan PIN" required>
     </div>
     <button class="btn" type="submit">Masuk</button>
   </form>
@@ -766,45 +212,21 @@ input:focus{
     </div>
     <div class="field">
       <label for="activateCode">Kode Aktivasi</label>
-      <input
-        id="activateCode"
-        type="text"
-        inputmode="numeric"
-        pattern="[0-9]{8}"
-        minlength="8"
-        maxlength="8"
-        autocomplete="off"
-        placeholder="8 digit kode"
-        required
-      >
+      <input id="activateCode" type="text" inputmode="numeric"
+        pattern="[0-9]{8}" minlength="8" maxlength="8"
+        autocomplete="off" placeholder="8 digit kode" required>
     </div>
     <div class="field">
       <label for="activatePin">Buat PIN 6 Digit</label>
-      <input
-        id="activatePin"
-        type="password"
-        inputmode="numeric"
-        pattern="[0-9]{6}"
-        minlength="6"
-        maxlength="6"
-        autocomplete="new-password"
-        placeholder="PIN baru"
-        required
-      >
+      <input id="activatePin" type="password" inputmode="numeric"
+        pattern="[0-9]{6}" minlength="6" maxlength="6"
+        autocomplete="new-password" placeholder="PIN baru" required>
     </div>
     <div class="field">
       <label for="activatePinConfirm">Ulangi PIN</label>
-      <input
-        id="activatePinConfirm"
-        type="password"
-        inputmode="numeric"
-        pattern="[0-9]{6}"
-        minlength="6"
-        maxlength="6"
-        autocomplete="new-password"
-        placeholder="Ulangi PIN"
-        required
-      >
+      <input id="activatePinConfirm" type="password" inputmode="numeric"
+        pattern="[0-9]{6}" minlength="6" maxlength="6"
+        autocomplete="new-password" placeholder="Ulangi PIN" required>
     </div>
     <button class="btn" type="submit">Aktifkan Akun</button>
   </form>
@@ -820,51 +242,27 @@ input:focus{
     </div>
     <div class="field">
       <label for="recoverCode">Kode Pemulihan</label>
-      <input
-        id="recoverCode"
-        type="text"
-        inputmode="numeric"
-        pattern="[0-9]{8}"
-        minlength="8"
-        maxlength="8"
-        autocomplete="off"
-        placeholder="8 digit kode"
-        required
-      >
+      <input id="recoverCode" type="text" inputmode="numeric"
+        pattern="[0-9]{8}" minlength="8" maxlength="8"
+        autocomplete="off" placeholder="8 digit kode" required>
     </div>
     <div class="field">
       <label for="recoverPin">PIN Baru</label>
-      <input
-        id="recoverPin"
-        type="password"
-        inputmode="numeric"
-        pattern="[0-9]{6}"
-        minlength="6"
-        maxlength="6"
-        autocomplete="new-password"
-        required
-      >
+      <input id="recoverPin" type="password" inputmode="numeric"
+        pattern="[0-9]{6}" minlength="6" maxlength="6"
+        autocomplete="new-password" required>
     </div>
     <div class="field">
       <label for="recoverPinConfirm">Ulangi PIN Baru</label>
-      <input
-        id="recoverPinConfirm"
-        type="password"
-        inputmode="numeric"
-        pattern="[0-9]{6}"
-        minlength="6"
-        maxlength="6"
-        autocomplete="new-password"
-        required
-      >
+      <input id="recoverPinConfirm" type="password" inputmode="numeric"
+        pattern="[0-9]{6}" minlength="6" maxlength="6"
+        autocomplete="new-password" required>
     </div>
     <button class="btn" type="submit">Ganti PIN</button>
   </form>
-
 </section>
 
 <section class="card" id="dashboard">
-
   <div class="welcome">
     <div class="avatar">👤</div>
     <h2 id="staffName">Petugas HSM</h2>
@@ -873,24 +271,19 @@ input:focus{
 
   <div class="info">
     <div class="info-row">
-      <span>Nama</span>
-      <strong id="infoName">-</strong>
+      <span>Nama</span><strong id="infoName">-</strong>
     </div>
     <div class="info-row">
-      <span>Jabatan</span>
-      <strong id="infoRole">-</strong>
+      <span>Jabatan</span><strong id="infoRole">-</strong>
     </div>
     <div class="info-row">
-      <span>Armada</span>
-      <strong id="infoVehicle">-</strong>
+      <span>Armada</span><strong id="infoVehicle">-</strong>
     </div>
     <div class="info-row">
-      <span>Nomor HP</span>
-      <strong id="infoPhone">-</strong>
+      <span>Nomor HP</span><strong id="infoPhone">-</strong>
     </div>
     <div class="info-row">
-      <span>Sesi Berakhir</span>
-      <strong id="infoExpiry">-</strong>
+      <span>Sesi Berakhir</span><strong id="infoExpiry">-</strong>
     </div>
   </div>
 
@@ -916,20 +309,16 @@ input:focus{
       <h2>🚐 Status Perjalanan</h2>
       <span class="vehicle-chip" id="tripVehicle">-</span>
     </div>
-
     <p class="section-description">
       Catat keberangkatan setiap titik sesuai urutan perjalanan.
       Waktu dicatat otomatis oleh server.
     </p>
-
     <div id="tripMessage" class="message" role="status"></div>
-
     <div id="tripList">
       <div class="empty-state">
         Daftar perjalanan akan muncul setelah login.
       </div>
     </div>
-
     <div class="trip-note">
       <strong>Perhatian:</strong>
       Tombol keberangkatan hanya tersedia untuk perjalanan hari ini.
@@ -939,7 +328,6 @@ input:focus{
   </section>
 
   <section class="section" aria-label="QR Check-in">
-
     <div class="section-heading">
       <h2>📷 QR Check-in</h2>
       <span class="vehicle-chip">Tiket Digital</span>
@@ -957,13 +345,10 @@ input:focus{
     </button>
 
     <div class="qr-manual">
-      <input
-        id="qrManualInput"
-        type="text"
+      <input id="qrManualInput" type="text"
         placeholder="Kode booking HSM-XXXXXX"
         autocomplete="off"
-        aria-label="Kode booking atau URL tiket"
-      >
+        aria-label="Kode booking atau URL tiket">
       <button id="qrManualBtn" type="button">Periksa</button>
     </div>
 
@@ -987,7 +372,6 @@ input:focus{
 
     <div id="qrResult" class="qr-result">
       <h3>✓ Tiket Ditemukan</h3>
-
       <div class="qr-result-row">
         <span>Nama</span><strong id="qrName">-</strong>
       </div>
@@ -1029,11 +413,9 @@ input:focus{
         📷 Scan Penumpang Berikutnya
       </button>
     </div>
-
   </section>
 
   <section class="section" aria-label="Manifest penumpang">
-
     <div class="section-heading">
       <h2>📋 Manifest Penumpang</h2>
       <span class="vehicle-chip" id="manifestVehicle">-</span>
@@ -1067,12 +449,9 @@ input:focus{
 
     <div class="search-box">
       <label for="manifestSearch">Cari Penumpang</label>
-      <input
-        id="manifestSearch"
-        type="search"
+      <input id="manifestSearch" type="search"
         placeholder="Nama, kode booking, nomor kursi..."
-        autocomplete="off"
-      >
+        autocomplete="off">
     </div>
 
     <div id="manifestList">
@@ -1088,13 +467,11 @@ input:focus{
       belum selesai. Penumpang yang sudah Tidak Hadir
       harus dikoreksi oleh admin.
     </div>
-
   </section>
 
   <button id="logoutBtn" class="btn btn-outline" type="button">
     Keluar dari Akun
   </button>
-
 </section>
 
 <div class="footer">
@@ -1155,6 +532,92 @@ const forms = {
   activate: $("activateForm"),
   recover: $("recoverForm")
 };
+
+/* ============================================================
+   SUARA SCANNER QR HSM TRANSPORT
+
+   BERHASIL:
+   Satu bunyi panjang, sekitar 0,15 detik.
+
+   GAGAL:
+   Tiga bunyi cepat, masing-masing 0,07 detik
+   dengan jarak awal bunyi 0,11 detik.
+
+   Suara sukses hanya diputar setelah server
+   mengonfirmasi check-in.
+============================================================ */
+
+let hsmAudioContext = null;
+
+function unlockQRBeep() {
+  try {
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioContextClass) return;
+
+    if (!hsmAudioContext) {
+      hsmAudioContext = new AudioContextClass();
+    }
+
+    if (hsmAudioContext.state === "suspended") {
+      hsmAudioContext.resume().catch(() => {});
+    }
+  } catch (error) {
+    console.warn("Audio QR tidak tersedia:", error);
+  }
+}
+
+function playQRBeep(success = true) {
+  try {
+    unlockQRBeep();
+
+    if (!hsmAudioContext) return;
+
+    const count = success ? 1 : 3;
+    const duration = success ? 0.15 : 0.07;
+    const interval = success ? 0 : 0.11;
+    const frequency = success ? 1200 : 750;
+
+    const baseTime = hsmAudioContext.currentTime + 0.01;
+
+    for (let i = 0; i < count; i++) {
+      const start = baseTime + (i * interval);
+
+      const oscillator =
+        hsmAudioContext.createOscillator();
+
+      const gain =
+        hsmAudioContext.createGain();
+
+      oscillator.type = "square";
+      oscillator.frequency.setValueAtTime(
+        frequency,
+        start
+      );
+
+      gain.gain.setValueAtTime(0.0001, start);
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.12,
+        start + 0.005
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        start + duration
+      );
+
+      oscillator.connect(gain);
+      gain.connect(hsmAudioContext.destination);
+
+      oscillator.start(start);
+      oscillator.stop(start + duration + 0.005);
+    }
+  } catch (error) {
+    console.warn("Suara QR gagal diputar:", error);
+  }
+}
 
 /* ============================================================
    UTILITAS
@@ -2291,6 +1754,8 @@ async function previewTicket(value) {
 
   } catch (error) {
     if (requestId === qrRequestId) {
+      playQRBeep(false);
+
       setMessage(
         "qrMessage",
         error.name === "AbortError"
@@ -2311,6 +1776,8 @@ async function previewTicket(value) {
 ============================================================ */
 
 async function confirmQRCheckin() {
+  unlockQRBeep();
+
   if (
     qrBusy ||
     !qrPreview ||
@@ -2375,7 +1842,13 @@ async function confirmQRCheckin() {
       "success"
     );
 
+    // SATU BUNYI PANJANG SETELAH SERVER MENYETUJUI.
+    playQRBeep(true);
+
   } catch (error) {
+    // TIGA BUNYI CEPAT JIKA CHECK-IN DITOLAK/GAGAL.
+    playQRBeep(false);
+
     setMessage(
       "qrMessage",
       error.name === "AbortError"
@@ -2501,6 +1974,9 @@ function scanVideoFrame(generation) {
 }
 
 async function startScanner() {
+  // Aktifkan audio saat pengguna menekan tombol kamera.
+  unlockQRBeep();
+
   if (
     scannerActive ||
     scannerStarting ||
@@ -2646,6 +2122,7 @@ $("stopScanBtn").addEventListener(
 $("qrManualBtn").addEventListener(
   "click",
   () => {
+    unlockQRBeep();
     previewTicket($("qrManualInput").value);
   }
 );
@@ -2655,6 +2132,7 @@ $("qrManualInput").addEventListener(
   event => {
     if (event.key === "Enter") {
       event.preventDefault();
+      unlockQRBeep();
       previewTicket($("qrManualInput").value);
     }
   }
