@@ -3,8 +3,6 @@
 
 <head>
 
-  <link rel="icon" type="image/png" href="/favicon.png">
-
   <meta charset="UTF-8">
 
   <meta
@@ -15,6 +13,12 @@
   <meta
     name="theme-color"
     content="#0754a6"
+  >
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="/favicon.png"
   >
 
   <title>
@@ -71,1479 +75,973 @@
   }
   </script>
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-  ></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
 
+    /* ==========================================
+       HSM TRANSPORT
+       PT HIDAYAH SARANA MULIA
+       ========================================== */
+
     :root {
-
-      --blue:#0754a6;
-      --blue-dark:#063d79;
-
-      --red:#e31e2d;
-      --red-dark:#b91422;
-
-      --text:#172033;
-      --muted:#687386;
-
-      --border:#dce3ec;
-
+      --blue: #0754a6;
+      --blue-dark: #063d79;
+      --red: #e31e2d;
+      --red-dark: #b91422;
+      --text: #172033;
+      --muted: #687386;
+      --border: #dce3ec;
     }
-
 
     * {
-      box-sizing:border-box;
+      box-sizing: border-box;
     }
-
 
     html {
-      scroll-behavior:smooth;
+      scroll-behavior: smooth;
     }
-
 
     body {
-
-      margin:0;
-
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-      color:var(--text);
-
-      background:#f5f7fa;
-
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: #f5f7fa;
     }
-
 
     button,
     input,
     select {
-
-      font-family:inherit;
-
+      font-family: inherit;
     }
-
 
     button {
-
-      cursor:pointer;
-
+      cursor: pointer;
     }
 
-
-
-    /* ========================================================
+    /* ==========================================
        HEADER
-       ======================================================== */
+       ========================================== */
 
     .header {
-
-      position:sticky;
-
-      top:0;
-
-      z-index:1000;
-
-      background:#ffffff;
-
-      border-bottom:
-        3px solid var(--blue);
-
-      box-shadow:
-        0 3px 15px rgba(0,0,0,.05);
-
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #ffffff;
+      border-bottom: 3px solid var(--blue);
+      box-shadow: 0 3px 15px rgba(0,0,0,.05);
     }
-
 
     .header-inner {
-
-      max-width:1100px;
-
-      margin:auto;
-
-      padding:
-        10px 16px;
-
-      display:flex;
-
-      align-items:center;
-
-      justify-content:
-        space-between;
-
-      gap:15px;
-
+      max-width: 1100px;
+      margin: auto;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
     }
-
 
     .header-logo {
-
-      display:block;
-
-      width:185px;
-
-      max-width:100%;
-
-      height:auto;
-
+      display: block;
+      width: 185px;
+      max-width: 100%;
+      height: auto;
     }
-
 
     .brand-company {
-
-      margin-top:2px;
-
-      font-size:10px;
-
-      font-weight:700;
-
-      color:#687386;
-
+      margin-top: 2px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #687386;
     }
-
 
     .header-link {
-
-      display:inline-flex;
-
-      align-items:center;
-
-      justify-content:center;
-
-      min-height:40px;
-
-      padding:
-        0 16px;
-
-      border-radius:10px;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--blue),
-          var(--blue-dark)
-        );
-
-      color:#ffffff;
-
-      text-decoration:none;
-
-      font-size:13px;
-
-      font-weight:900;
-
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 16px;
+      border-radius: 10px;
+      background: linear-gradient(
+        135deg,
+        var(--blue),
+        var(--blue-dark)
+      );
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 900;
     }
 
-
-
-    /* ========================================================
+    /* ==========================================
        HERO
-       ======================================================== */
+       ========================================== */
 
     .hero {
-
-      position:relative;
-
-      width:100%;
-
-      height:500px;
-
-      overflow:hidden;
-
-      background:#dceaf1;
-
-      border-bottom:
-        5px solid var(--blue);
-
+      position: relative;
+      width: 100%;
+      height: 500px;
+      overflow: hidden;
+      background: #dceaf1;
+      border-bottom: 5px solid var(--blue);
     }
-
 
     .hero-photo {
-
-      position:absolute;
-
-      inset:0;
-
-      width:100%;
-
-      height:100%;
-
-      object-fit:cover;
-
-      object-position:center;
-
-      z-index:0;
-
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      z-index: 0;
     }
-
 
     .hero-shade {
-
-      position:absolute;
-
-      inset:0;
-
-      z-index:1;
-
-      pointer-events:none;
-
-      background:
-        linear-gradient(
-          180deg,
-          rgba(3,30,60,.10),
-          rgba(3,30,60,.01) 65%,
-          rgba(3,30,60,.14)
-        );
-
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(
+        180deg,
+        rgba(3,30,60,.10),
+        rgba(3,30,60,.01) 65%,
+        rgba(3,30,60,.14)
+      );
     }
-
 
     .hero-content {
-
-      position:relative;
-
-      z-index:3;
-
-      width:100%;
-
-      height:100%;
-
-      max-width:760px;
-
-      margin:auto;
-
-      text-align:center;
-
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      height: 100%;
+      max-width: 760px;
+      margin: auto;
+      text-align: center;
     }
-
 
     .hero-badge {
-
-      position:absolute;
-
-      top:18px;
-
-      left:50%;
-
-      transform:
-        translateX(-50%);
-
-      white-space:nowrap;
-
-      padding:
-        7px 13px;
-
-      border-radius:999px;
-
-      background:
-        rgba(3,47,91,.88);
-
-      color:#ffffff;
-
-      font-size:11px;
-
-      font-weight:900;
-
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: rgba(3,47,91,.88);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 900;
     }
-
 
     .hero-logo {
-
-      position:absolute;
-
-      top:60px;
-
-      left:50%;
-
-      transform:
-        translateX(-50%);
-
-      width:220px;
-
-      max-width:58vw;
-
-      height:auto;
-
-      filter:
-        drop-shadow(
-          0 3px 6px rgba(0,0,0,.28)
-        );
-
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      max-width: 58vw;
+      height: auto;
+      filter: drop-shadow(
+        0 3px 6px rgba(0,0,0,.28)
+      );
     }
-
 
     .hero-description {
-
-      position:absolute;
-
-      top:135px;
-
-      left:50%;
-
-      transform:
-        translateX(-50%);
-
-      width:
-        min(
-          520px,
-          calc(100% - 32px)
-        );
-
-      margin:0;
-
-      padding:
-        8px 12px;
-
-      border-radius:9px;
-
-      background:
-        rgba(3,47,91,.60);
-
-      border:
-        1px solid rgba(255,255,255,.16);
-
-      color:#ffffff;
-
-      font-size:12px;
-
-      font-weight:700;
-
-      line-height:1.45;
-
-      backdrop-filter:
-        blur(3px);
-
+      position: absolute;
+      top: 135px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(520px, calc(100% - 32px));
+      margin: 0;
+      padding: 8px 12px;
+      border-radius: 9px;
+      background: rgba(3,47,91,.60);
+      border: 1px solid rgba(255,255,255,.16);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.45;
+      backdrop-filter: blur(3px);
     }
-
 
     .hero-button {
-
-      position:absolute;
-
-      z-index:5;
-
-      top:315px;
-
-      left:50%;
-
-      transform:
-        translateX(-50%);
-
-      min-width:175px;
-
-      padding:
-        12px 19px;
-
-      border-radius:10px;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--red),
-          var(--red-dark)
-        );
-
-      color:#ffffff;
-
-      text-decoration:none;
-
-      font-size:13px;
-
-      font-weight:900;
-
-      box-shadow:
-        0 6px 18px rgba(0,0,0,.25);
-
+      position: absolute;
+      z-index: 5;
+      top: 315px;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 175px;
+      padding: 12px 19px;
+      border-radius: 10px;
+      background: linear-gradient(
+        135deg,
+        var(--red),
+        var(--red-dark)
+      );
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 6px 18px rgba(0,0,0,.25);
     }
-
 
     .hero-route {
-
-      position:absolute;
-
-      left:50%;
-
-      bottom:18px;
-
-      transform:
-        translateX(-50%);
-
-      white-space:nowrap;
-
-      padding:
-        8px 13px;
-
-      border-radius:9px;
-
-      background:
-        rgba(3,47,91,.90);
-
-      color:#ffffff;
-
-      font-size:12px;
-
-      font-weight:900;
-
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      padding: 8px 13px;
+      border-radius: 9px;
+      background: rgba(3,47,91,.90);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 900;
     }
 
-
-
-    /* ========================================================
+    /* ==========================================
        MAIN
-       ======================================================== */
+       ========================================== */
 
     main {
-
-      width:100%;
-
-      max-width:1100px;
-
-      margin:auto;
-
-      padding:
-        35px 18px 60px;
-
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
+      padding: 35px 18px 60px;
     }
-
 
     .booking-card {
-
-      position:relative;
-
-      overflow:hidden;
-
-      padding:28px;
-
-      border:
-        1px solid #e1e7ef;
-
-      border-radius:20px;
-
-      background:#ffffff;
-
-      box-shadow:
-        0 15px 45px rgba(21,45,80,.09);
-
+      position: relative;
+      overflow: hidden;
+      padding: 28px;
+      border: 1px solid #e1e7ef;
+      border-radius: 20px;
+      background: #ffffff;
+      box-shadow: 0 15px 45px rgba(21,45,80,.09);
     }
-
 
     .booking-card::before {
-
-      content:"";
-
-      position:absolute;
-
-      top:0;
-
-      left:0;
-
-      width:72%;
-
-      height:4px;
-
-      background:var(--blue);
-
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 72%;
+      height: 4px;
+      background: var(--blue);
     }
-
 
     .booking-card::after {
-
-      content:"";
-
-      position:absolute;
-
-      top:0;
-
-      right:0;
-
-      width:28%;
-
-      height:4px;
-
-      background:var(--red);
-
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 28%;
+      height: 4px;
+      background: var(--red);
     }
-
 
     .section-title {
-
-      margin:
-        0 0 8px;
-
-      font-size:29px;
-
-      color:#15233a;
-
+      margin: 0 0 8px;
+      font-size: 29px;
+      color: #15233a;
     }
-
 
     .section-description {
-
-      margin:
-        0 0 27px;
-
-      color:var(--muted);
-
-      line-height:1.55;
-
-      font-size:14px;
-
+      margin: 0 0 27px;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14px;
     }
 
-
-
-    /* ========================================================
-       FROM TO
-       ======================================================== */
+    /* ==========================================
+       PILIH RUTE
+       ========================================== */
 
     .trip-selector {
-
-      display:grid;
-
-      grid-template-columns:
-        1fr 48px 1fr;
-
-      gap:10px;
-
-      align-items:end;
-
-      margin-bottom:27px;
-
+      display: grid;
+      grid-template-columns: 1fr 48px 1fr;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 27px;
     }
-
 
     .trip-field label {
-
-      display:block;
-
-      margin-bottom:8px;
-
-      color:#17233a;
-
-      font-size:13px;
-
-      font-weight:900;
-
+      display: block;
+      margin-bottom: 8px;
+      color: #17233a;
+      font-size: 13px;
+      font-weight: 900;
     }
-
 
     .trip-arrow {
-
-      height:52px;
-
-      display:flex;
-
-      align-items:center;
-
-      justify-content:center;
-
-      color:var(--blue);
-
-      font-size:24px;
-
-      font-weight:900;
-
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue);
+      font-size: 24px;
+      font-weight: 900;
     }
-
 
     .select-wrap {
-
-      position:relative;
-
+      position: relative;
     }
-
 
     .select-wrap::after {
-
-      content:"▼";
-
-      position:absolute;
-
-      top:50%;
-
-      right:15px;
-
-      transform:
-        translateY(-50%);
-
-      pointer-events:none;
-
-      color:var(--blue);
-
-      font-size:11px;
-
+      content: "▼";
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--blue);
+      font-size: 11px;
     }
-
 
     .route-select {
-
-      width:100%;
-
-      height:52px;
-
-      padding:
-        0 42px 0 14px;
-
-      border:
-        1.5px solid var(--border);
-
-      border-radius:11px;
-
-      appearance:none;
-
-      -webkit-appearance:none;
-
-      outline:none;
-
-      background:#fbfcfe;
-
-      color:#172033;
-
-      font-size:15px;
-
-      font-weight:800;
-
+      width: 100%;
+      height: 52px;
+      padding: 0 42px 0 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      appearance: none;
+      -webkit-appearance: none;
+      outline: none;
+      background: #fbfcfe;
+      color: #172033;
+      font-size: 15px;
+      font-weight: 800;
     }
-
 
     .route-select:focus {
-
-      border-color:
-        var(--blue);
-
-      background:#ffffff;
-
-      box-shadow:
-        0 0 0 4px rgba(7,84,166,.10);
-
+      border-color: var(--blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(7,84,166,.10);
     }
-
 
     .route-select:disabled {
-
-      opacity:.55;
-
-      cursor:not-allowed;
-
+      opacity: .55;
+      cursor: not-allowed;
     }
 
-
-
-    /* ========================================================
+    /* ==========================================
        FORM
-       ======================================================== */
+       ========================================== */
 
     .form-group {
-
-      margin-bottom:26px;
-
+      margin-bottom: 26px;
     }
-
 
     .form-group > label {
-
-      display:block;
-
-      margin-bottom:9px;
-
-      font-size:14px;
-
-      font-weight:900;
-
+      display: block;
+      margin-bottom: 9px;
+      font-size: 14px;
+      font-weight: 900;
     }
-
 
     .input {
-
-      width:100%;
-
-      min-height:51px;
-
-      padding:
-        12px 14px;
-
-      border:
-        1.5px solid var(--border);
-
-      border-radius:11px;
-
-      outline:none;
-
-      background:#fbfcfe;
-
-      color:#172033;
-
-      font-size:15px;
-
+      width: 100%;
+      min-height: 51px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      outline: none;
+      background: #fbfcfe;
+      color: #172033;
+      font-size: 15px;
     }
-
 
     .input:focus {
-
-      border-color:
-        var(--blue);
-
-      background:#ffffff;
-
-      box-shadow:
-        0 0 0 4px rgba(7,84,166,.10);
-
+      border-color: var(--blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(7,84,166,.10);
     }
 
-
-
-    /* ========================================================
-       SCHEDULE
-       ======================================================== */
+    /* ==========================================
+       JADWAL
+       ========================================== */
 
     #schedule {
-
-      display:grid;
-
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0,1fr)
-        );
-
-      gap:12px;
-
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 12px;
     }
-
 
     .schedule-card {
-
-      width:100%;
-
-      min-height:105px;
-
-      padding:0;
-
-      display:flex;
-
-      overflow:hidden;
-
-      border:
-        1.5px solid var(--border);
-
-      border-radius:14px;
-
-      background:#ffffff;
-
-      color:#172033;
-
-      text-align:left;
-
-      box-shadow:
-        0 5px 15px rgba(20,40,70,.05);
-
+      width: 100%;
+      min-height: 105px;
+      padding: 0;
+      display: flex;
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      background: #ffffff;
+      color: #172033;
+      text-align: left;
+      box-shadow: 0 5px 15px rgba(20,40,70,.05);
     }
-
 
     .schedule-time {
-
-      min-width:88px;
-
-      display:flex;
-
-      align-items:center;
-
-      justify-content:center;
-
-      padding:12px;
-
-      background:
-        linear-gradient(
-          145deg,
-          var(--blue),
-          var(--blue-dark)
-        );
-
-      color:#ffffff;
-
-      font-size:20px;
-
-      font-weight:900;
-
+      min-width: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      background: linear-gradient(
+        145deg,
+        var(--blue),
+        var(--blue-dark)
+      );
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 900;
     }
-
 
     .schedule-info {
-
-      flex:1;
-
-      padding:14px;
-
-      display:flex;
-
-      flex-direction:column;
-
-      justify-content:center;
-
-      gap:5px;
-
+      flex: 1;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
     }
-
 
     .schedule-info strong {
-
-      color:var(--blue);
-
-      font-size:14px;
-
+      color: var(--blue);
+      font-size: 14px;
     }
-
 
     .schedule-info span {
-
-      color:#687386;
-
-      font-size:12px;
-
+      color: #687386;
+      font-size: 12px;
     }
-
 
     .schedule-info span:last-child {
-
-      color:var(--red);
-
-      font-size:14px;
-
-      font-weight:900;
-
+      color: var(--red);
+      font-size: 14px;
+      font-weight: 900;
     }
-
 
     .schedule-card.selected {
-
-      border-color:
-        var(--blue);
-
-      background:#f5f9ff;
-
-      box-shadow:
-        0 8px 24px rgba(7,84,166,.16);
-
+      border-color: var(--blue);
+      background: #f5f9ff;
+      box-shadow: 0 8px 24px rgba(7,84,166,.16);
     }
 
-
-
-    /* ========================================================
-       SEAT
-       ======================================================== */
+    /* ==========================================
+       KURSI
+       ========================================== */
 
     #seats {
-
-      margin-top:8px;
-
-      padding:20px;
-
-      overflow-x:auto;
-
-      border:
-        1.5px solid #dce5f0;
-
-      border-radius:16px;
-
-      background:#f8fbff;
-
+      margin-top: 8px;
+      padding: 20px;
+      overflow-x: auto;
+      border: 1.5px solid #dce5f0;
+      border-radius: 16px;
+      background: #f8fbff;
     }
-
 
     .seatLegend {
-
-      display:flex;
-
-      flex-wrap:wrap;
-
-      justify-content:center;
-
-      gap:8px;
-
-      margin-bottom:18px;
-
-      color:#4b5563;
-
-      font-size:11px;
-
-      font-weight:800;
-
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      color: #4b5563;
+      font-size: 11px;
+      font-weight: 800;
     }
-
 
     .seatLegend span {
-
-      display:inline-flex;
-
-      align-items:center;
-
-      gap:5px;
-
-      padding:
-        6px 8px;
-
-      border:
-        1px solid #e0e5eb;
-
-      border-radius:999px;
-
-      background:#ffffff;
-
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 8px;
+      border: 1px solid #e0e5eb;
+      border-radius: 999px;
+      background: #ffffff;
     }
-
 
     .seatLegend i {
-
-      width:11px;
-
-      height:11px;
-
-      display:inline-block;
-
-      border-radius:3px;
-
+      width: 11px;
+      height: 11px;
+      display: inline-block;
+      border-radius: 3px;
     }
-
 
     .legendAvailable {
-
-      background:#22c55e;
-
+      background: #22c55e;
     }
-
 
     .legendPending {
-
-      background:#facc15;
-
+      background: #facc15;
     }
-
 
     .legendPaid {
-
-      background:#ef4444;
-
+      background: #ef4444;
     }
-
 
     .seat {
-
-      width:54px;
-
-      height:48px;
-
-      border:0;
-
-      border-radius:10px;
-
-      font-size:14px;
-
-      font-weight:900;
-
-      box-shadow:
-        0 4px 10px rgba(0,0,0,.08);
-
+      width: 54px;
+      height: 48px;
+      border: 0;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 900;
+      box-shadow: 0 4px 10px rgba(0,0,0,.08);
     }
-
 
     .seat.available {
-
-      background:#22c55e;
-
-      color:#ffffff;
-
+      background: #22c55e;
+      color: #ffffff;
     }
-
 
     .seat.available.selected {
-
-      outline:
-        4px solid rgba(7,84,166,.30);
-
-      transform:
-        scale(1.06);
-
+      outline: 4px solid rgba(7,84,166,.30);
+      transform: scale(1.06);
     }
-
 
     .seat.pending {
-
-      background:#facc15;
-
-      color:#302b00;
-
-      cursor:not-allowed;
-
+      background: #facc15;
+      color: #302b00;
+      cursor: not-allowed;
     }
-
 
     .seat.paid {
-
-      background:#ef4444;
-
-      color:#ffffff;
-
-      cursor:not-allowed;
-
+      background: #ef4444;
+      color: #ffffff;
+      cursor: not-allowed;
     }
 
-
-
-    /* ========================================================
-       SUMMARY
-       ======================================================== */
+    /* ==========================================
+       RINGKASAN BOOKING
+       ========================================== */
 
     .bookingSummary {
-
-      margin-top:18px;
-
-      padding:18px;
-
-      display:grid;
-
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0,1fr)
-        );
-
-      gap:14px;
-
-      border:
-        1px solid #dce5f0;
-
-      border-radius:14px;
-
-      background:#f6faff;
-
-      line-height:1.5;
-
+      margin-top: 18px;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 14px;
+      border: 1px solid #dce5f0;
+      border-radius: 14px;
+      background: #f6faff;
+      line-height: 1.5;
     }
-
 
     .bookingSummary strong {
-
-      color:
-        var(--blue-dark);
-
+      color: var(--blue-dark);
     }
-
-
-
-    /* ========================================================
-       PASSENGER FORMS
-       ======================================================== */
 
     #passengerForms {
-
-      margin-top:4px;
-      margin-bottom:8px;
-
+      margin-top: 4px;
+      margin-bottom: 8px;
     }
 
-
-
-    /* ========================================================
-       BOOK
-       ======================================================== */
+    /* ==========================================
+       TOMBOL BOOKING
+       ========================================== */
 
     #book {
-
-      width:100%;
-
-      min-height:55px;
-
-      margin-top:8px;
-
-      border:0;
-
-      border-radius:12px;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--blue),
-          var(--blue-dark)
-        );
-
-      color:#ffffff;
-
-      font-size:16px;
-
-      font-weight:900;
-
-      box-shadow:
-        0 9px 22px rgba(7,84,166,.24);
-
+      width: 100%;
+      min-height: 55px;
+      margin-top: 8px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(
+        135deg,
+        var(--blue),
+        var(--blue-dark)
+      );
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 900;
+      box-shadow: 0 9px 22px rgba(7,84,166,.24);
     }
-
 
     #book:disabled {
-
-      opacity:.6;
-
-      cursor:not-allowed;
-
+      opacity: .6;
+      cursor: not-allowed;
     }
 
+    /* ==========================================
+       PROMOSI APLIKASI ANDROID
+       ========================================== */
 
+    .hsm-app-promo {
+      margin-top: 32px;
+      margin-bottom: 32px;
+    }
 
-    /* ========================================================
-       INFO
-       ======================================================== */
+    .hsm-app-box {
+      position: relative;
+      overflow: hidden;
+      padding: 34px 25px;
+      background: #ffffff;
+      border: 1px solid #dce7f5;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 12px 35px rgba(7,84,166,.08);
+    }
+
+    .hsm-app-box::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 70%;
+      height: 4px;
+      background: var(--blue);
+    }
+
+    .hsm-app-box::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 30%;
+      height: 4px;
+      background: var(--red);
+    }
+
+    .hsm-app-icon {
+      display: block;
+      width: 105px;
+      height: 105px;
+      margin: 0 auto 17px;
+      object-fit: cover;
+      border-radius: 24px;
+      border: 1px solid #edf1f6;
+      box-shadow: 0 8px 24px rgba(7,84,166,.10);
+    }
+
+    .hsm-app-badge {
+      display: inline-block;
+      padding: 7px 14px;
+      border-radius: 30px;
+      background: #eaf3ff;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .3px;
+    }
+
+    .hsm-app-title {
+      margin: 15px auto 12px;
+      max-width: 600px;
+      font-size: 28px;
+      line-height: 1.3;
+      font-weight: 900;
+      color: var(--blue-dark);
+    }
+
+    .hsm-app-description {
+      max-width: 550px;
+      margin: 0 auto 20px;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .hsm-app-features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .hsm-app-feature {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 12px;
+      border: 1px solid #e1eaf5;
+      border-radius: 30px;
+      background: #f8fbff;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .hsm-app-check {
+      color: #16a34a;
+      font-weight: 900;
+      font-size: 15px;
+    }
+
+    .hsm-app-download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      width: 100%;
+      max-width: 340px;
+      min-height: 53px;
+      padding: 14px 19px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(
+        135deg,
+        var(--blue),
+        var(--blue-dark)
+      );
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 900;
+      box-shadow: 0 8px 20px rgba(7,84,166,.18);
+      transition: .2s;
+    }
+
+    .hsm-app-download:not(.is-disabled):hover {
+      background: linear-gradient(
+        135deg,
+        var(--blue-dark),
+        #052d59
+      );
+      transform: translateY(-1px);
+    }
+
+    .hsm-app-download.is-disabled {
+      background: #94a3b8;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .hsm-app-note {
+      margin: 14px 0 0;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    /* ==========================================
+       INFORMASI LAYANAN
+       ========================================== */
 
     .info-section {
-
-      margin-top:35px;
-
-      padding:27px;
-
-      border:
-        1px solid #e1e7ef;
-
-      border-radius:18px;
-
-      background:#ffffff;
-
-      line-height:1.75;
-
-      box-shadow:
-        0 10px 30px rgba(20,40,70,.06);
-
+      margin-top: 35px;
+      padding: 27px;
+      border: 1px solid #e1e7ef;
+      border-radius: 18px;
+      background: #ffffff;
+      line-height: 1.75;
+      box-shadow: 0 10px 30px rgba(20,40,70,.06);
     }
-
 
     .info-section h2 {
-
-      margin-top:0;
-
-      color:var(--blue-dark);
-
+      margin-top: 0;
+      color: var(--blue-dark);
     }
-
 
     .info-section p {
-
-      color:#596579;
-
+      color: #596579;
     }
 
-
-
-    /* ========================================================
+    /* ==========================================
        FOOTER
-       ======================================================== */
+       ========================================== */
 
     footer {
-
-      padding:
-        38px 18px;
-
-      background:
-        linear-gradient(
-          135deg,
-          #052d59,
-          #071d36
-        );
-
-      color:#cbd5e1;
-
-      text-align:center;
-
-      line-height:1.75;
-
-      border-top:
-        4px solid var(--red);
-
+      padding: 38px 18px;
+      background: linear-gradient(
+        135deg,
+        #052d59,
+        #071d36
+      );
+      color: #cbd5e1;
+      text-align: center;
+      line-height: 1.75;
+      border-top: 4px solid var(--red);
     }
-
 
     footer strong {
-
-      color:#ffffff;
-
-      font-size:18px;
-
+      color: #ffffff;
+      font-size: 18px;
     }
 
-
-
-    /* ========================================================
+    /* ==========================================
        MOBILE
-       ======================================================== */
+       ========================================== */
 
-    @media(max-width:760px) {
-
+    @media (max-width: 760px) {
 
       .header-inner {
-
-        padding:
-          9px 13px;
-
+        padding: 9px 13px;
       }
-
 
       .header-logo {
-
-        width:145px;
-
+        width: 145px;
       }
-
 
       .brand-company {
-
-        font-size:8px;
-
+        font-size: 8px;
       }
-
 
       .header-link {
-
-        min-height:36px;
-
-        padding:
-          0 12px;
-
-        font-size:11px;
-
+        min-height: 36px;
+        padding: 0 12px;
+        font-size: 11px;
       }
-
-
-
-      /* HERO */
 
       .hero {
-
-        height:440px;
-
+        height: 440px;
       }
-
 
       .hero-photo {
-
-        width:112%;
-
-        max-width:none;
-
-        height:100%;
-
-        left:50%;
-
-        right:auto;
-
-        transform:
-          translateX(-50%);
-
-        object-fit:cover;
-
-        object-position:
-          50% 57%;
-
+        width: 112%;
+        max-width: none;
+        height: 100%;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        object-fit: cover;
+        object-position: 50% 57%;
       }
-
 
       .hero-badge {
-
-        top:13px;
-
-        padding:
-          5px 10px;
-
-        font-size:9.5px;
-
+        top: 13px;
+        padding: 5px 10px;
+        font-size: 9.5px;
       }
-
 
       .hero-logo {
-
-        top:48px;
-
-        width:155px;
-
-        max-width:44vw;
-
+        top: 48px;
+        width: 155px;
+        max-width: 44vw;
       }
-
 
       .hero-description {
-
-        top:104px;
-
-        width:
-          calc(100% - 50px);
-
-        max-width:350px;
-
-        padding:
-          6px 9px;
-
-        font-size:10.5px;
-
-        line-height:1.35;
-
+        top: 104px;
+        width: calc(100% - 50px);
+        max-width: 350px;
+        padding: 6px 9px;
+        font-size: 10.5px;
+        line-height: 1.35;
       }
-
 
       .hero-button {
-
-        top:292px;
-
-        min-width:155px;
-
-        padding:
-          10px 15px;
-
-        font-size:11.5px;
-
+        top: 292px;
+        min-width: 155px;
+        padding: 10px 15px;
+        font-size: 11.5px;
       }
-
 
       .hero-route {
-
-        bottom:13px;
-
-        padding:
-          7px 10px;
-
-        font-size:10px;
-
+        bottom: 13px;
+        padding: 7px 10px;
+        font-size: 10px;
       }
-
-
-
-      /* MAIN */
 
       main {
-
-        padding:
-          26px 13px 45px;
-
+        padding: 26px 13px 45px;
       }
-
 
       .booking-card {
-
-        padding:
-          19px 15px 21px;
-
-        border-radius:16px;
-
+        padding: 19px 15px 21px;
+        border-radius: 16px;
       }
-
 
       .section-title {
-
-        font-size:25px;
-
+        font-size: 25px;
       }
-
 
       .trip-selector {
-
-        grid-template-columns:
-          1fr 28px 1fr;
-
-        gap:5px;
-
+        grid-template-columns: 1fr 28px 1fr;
+        gap: 5px;
       }
-
 
       .trip-arrow {
-
-        height:51px;
-
-        font-size:18px;
-
+        height: 51px;
+        font-size: 18px;
       }
-
 
       .trip-field label {
-
-        font-size:12px;
-
+        font-size: 12px;
       }
-
 
       .route-select {
-
-        height:51px;
-
-        padding:
-          0 28px 0 10px;
-
-        font-size:13px;
-
+        height: 51px;
+        padding: 0 28px 0 10px;
+        font-size: 13px;
       }
-
 
       .select-wrap::after {
-
-        right:10px;
-
-        font-size:9px;
-
+        right: 10px;
+        font-size: 9px;
       }
-
 
       #schedule {
-
-        grid-template-columns:
-          1fr;
-
+        grid-template-columns: 1fr;
       }
-
 
       .schedule-card {
-
-        min-height:94px;
-
+        min-height: 94px;
       }
-
 
       .schedule-time {
-
-        min-width:82px;
-
-        font-size:19px;
-
+        min-width: 82px;
+        font-size: 19px;
       }
-
 
       #seats {
-
-        padding:
-          15px 8px;
-
+        padding: 15px 8px;
       }
-
 
       .seat {
-
-        width:48px;
-
-        height:45px;
-
+        width: 48px;
+        height: 45px;
       }
-
 
       .bookingSummary {
-
-        grid-template-columns:
-          1fr;
-
+        grid-template-columns: 1fr;
       }
 
+      .hsm-app-promo {
+        margin-top: 25px;
+        margin-bottom: 25px;
+      }
+
+      .hsm-app-box {
+        padding: 27px 18px;
+        border-radius: 16px;
+      }
+
+      .hsm-app-icon {
+        width: 92px;
+        height: 92px;
+        border-radius: 20px;
+      }
+
+      .hsm-app-title {
+        font-size: 23px;
+      }
+
+      .hsm-app-description {
+        font-size: 13px;
+      }
+
+      .hsm-app-features {
+        flex-direction: column;
+        align-items: center;
+        gap: 9px;
+      }
+
+      .hsm-app-feature {
+        width: 100%;
+        max-width: 290px;
+        justify-content: center;
+      }
+
+      .hsm-app-download {
+        max-width: 100%;
+        font-size: 14px;
+      }
 
       .info-section {
-
-        padding:
-          22px 20px;
-
+        padding: 22px 20px;
       }
 
     }
@@ -1552,11 +1050,11 @@
 
 </head>
 
-
 <body>
 
-
-  <!-- HEADER -->
+  <!-- ==========================================
+       HEADER
+       ========================================== -->
 
   <header class="header">
 
@@ -1576,7 +1074,6 @@
 
       </div>
 
-
       <a
         href="#booking"
         class="header-link"
@@ -1588,9 +1085,9 @@
 
   </header>
 
-
-
-  <!-- HERO -->
+  <!-- ==========================================
+       HERO
+       ========================================== -->
 
   <section class="hero">
 
@@ -1600,17 +1097,13 @@
       class="hero-photo"
     >
 
-
     <div class="hero-shade"></div>
 
-
     <div class="hero-content">
-
 
       <div class="hero-badge">
         Travel Maluku Utara
       </div>
-
 
       <img
         src="hsm-logo.png"
@@ -1618,16 +1111,12 @@
         class="hero-logo"
       >
 
-
       <p class="hero-description">
-
         Layanan perjalanan yang nyaman untuk
         Sofifi, Loleo, Weda dan Lelilef.
         Pilih rute, jadwal dan kursi langsung
         melalui website.
-
       </p>
-
 
       <a
         href="#booking"
@@ -1636,51 +1125,132 @@
         Pesan Sekarang
       </a>
 
-
       <div class="hero-route">
         Sofifi ↔ Loleo ↔ Weda ↔ Lelilef
       </div>
-
 
     </div>
 
   </section>
 
-
-
-  <!-- BOOKING -->
+  <!-- ==========================================
+       MAIN
+       ========================================== -->
 
   <main>
 
+    <!-- ========================================
+         PROMOSI DOWNLOAD APLIKASI ANDROID
+         FITUR BARU
+         ======================================== -->
+
+    <section
+      class="hsm-app-promo"
+      id="download-aplikasi"
+      aria-labelledby="hsm-app-heading"
+    >
+
+      <div class="hsm-app-box">
+
+        <img
+          src="hsm-apk-icon.png"
+          alt="Ikon Aplikasi HSM Transport"
+          class="hsm-app-icon"
+          loading="lazy"
+        >
+
+        <div>
+
+          <span class="hsm-app-badge">
+            📱 APLIKASI ANDROID
+          </span>
+
+        </div>
+
+        <h2
+          class="hsm-app-title"
+          id="hsm-app-heading"
+        >
+          HSM Transport Kini Hadir di Android!
+        </h2>
+
+        <p class="hsm-app-description">
+          Nikmati kemudahan mengakses layanan
+          HSM Transport langsung dari smartphone Anda.
+          Lebih praktis, cepat, dan mudah digunakan
+          kapan saja.
+        </p>
+
+        <div class="hsm-app-features">
+
+          <span class="hsm-app-feature">
+            <span class="hsm-app-check">✓</span>
+            Akses lebih praktis
+          </span>
+
+          <span class="hsm-app-feature">
+            <span class="hsm-app-check">✓</span>
+            Informasi perjalanan
+          </span>
+
+          <span class="hsm-app-feature">
+            <span class="hsm-app-check">✓</span>
+            Pemesanan tiket online
+          </span>
+
+        </div>
+
+        <a
+          id="hsm-download-button"
+          class="hsm-app-download is-disabled"
+          aria-disabled="true"
+          tabindex="-1"
+        >
+          📱 Aplikasi Segera Tersedia
+        </a>
+
+        <p
+          class="hsm-app-note"
+          id="hsm-app-note"
+        >
+          Gratis • Khusus Android
+          <br>
+          Tautan unduhan akan tersedia
+          setelah aplikasi siap digunakan.
+        </p>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================
+         BOOKING
+         BAGIAN ASLI WEBSITE DIPERTAHANKAN
+         ======================================== -->
 
     <section
       id="booking"
       class="booking-card"
     >
 
-
       <h1 class="section-title">
         Pesan Tiket
       </h1>
 
-
       <p class="section-description">
-        Tentukan lokasi keberangkatan dan tujuan perjalanan Anda.
+        Tentukan lokasi keberangkatan
+        dan tujuan perjalanan Anda.
       </p>
-
-
 
       <!-- DARI / TUJUAN -->
 
       <div class="trip-selector">
-
 
         <div class="trip-field">
 
           <label for="from">
             Dari
           </label>
-
 
           <div class="select-wrap">
 
@@ -1715,20 +1285,15 @@
 
         </div>
 
-
-
         <div class="trip-arrow">
           →
         </div>
-
-
 
         <div class="trip-field">
 
           <label for="to">
             Tujuan
           </label>
-
 
           <div class="select-wrap">
 
@@ -1748,19 +1313,15 @@
 
         </div>
 
-
       </div>
 
-
-
-      <!-- TANGGAL -->
+      <!-- TANGGAL KEBERANGKATAN -->
 
       <div class="form-group">
 
         <label for="date">
           Tanggal Keberangkatan
         </label>
-
 
         <input
           type="date"
@@ -1771,16 +1332,13 @@
 
       </div>
 
-
-
-      <!-- JADWAL -->
+      <!-- PILIH JADWAL -->
 
       <div class="form-group">
 
         <label>
           Pilih Jadwal
         </label>
-
 
         <div id="schedule">
 
@@ -1795,16 +1353,13 @@
 
       </div>
 
-
-
-      <!-- KURSI -->
+      <!-- PILIH KURSI -->
 
       <div class="form-group">
 
         <label>
           Pilih Kursi
         </label>
-
 
         <div id="seats">
 
@@ -1819,9 +1374,7 @@
 
       </div>
 
-
-
-      <!-- DATA PENUMPANG DINAMIS -->
+      <!-- DATA PENUMPANG -->
 
       <div id="passengerForms">
 
@@ -1837,14 +1390,13 @@
             font-size:13px;
           "
         >
-          Pilih kursi untuk mengisi data penumpang.
+          Pilih kursi untuk mengisi
+          data penumpang.
         </div>
 
       </div>
 
-
-
-      <!-- BOOK -->
+      <!-- TOMBOL PESAN -->
 
       <button
         type="button"
@@ -1853,15 +1405,13 @@
         Pesan Sekarang
       </button>
 
-
       <div id="result"></div>
-
 
     </section>
 
-
-
-    <!-- INFO -->
+    <!-- ========================================
+         INFORMASI LAYANAN
+         ======================================== -->
 
     <section class="info-section">
 
@@ -1869,14 +1419,12 @@
         Travel Sofifi, Loleo, Weda & Lelilef
       </h2>
 
-
       <p>
         HSM Transport melayani perjalanan
         penumpang di wilayah Maluku Utara
         dengan rute Sofifi, Loleo, Weda
         dan Lelilef.
       </p>
-
 
       <p>
         Pilih lokasi keberangkatan dan tujuan,
@@ -1886,12 +1434,11 @@
 
     </section>
 
-
   </main>
 
-
-
-  <!-- FOOTER -->
+  <!-- ==========================================
+       FOOTER
+       ========================================== -->
 
   <footer>
 
@@ -1915,13 +1462,167 @@
     </small>
 
   </footer>
-<script src="config.js"></script>
-<script src="app.js"></script>
-<script src="hsm-site-public.js?v=1"></script>
 
-</body>
-</html>
-  
+  <!-- ==========================================
+       SCRIPT WEBSITE ASLI
+       JANGAN DIHAPUS
+       ========================================== -->
+
+  <script src="config.js"></script>
+
+  <script src="app.js"></script>
+
+  <script src="hsm-site-public.js?v=1"></script>
+
+  <!-- ==========================================
+       PENGATURAN DOWNLOAD APK
+       ========================================== -->
+
+  <script>
+
+    /*
+      HSM TRANSPORT - DOWNLOAD APLIKASI
+
+      Kalau APK sudah siap dibagikan,
+      masukkan link download resmi
+      pada APK_DOWNLOAD_URL.
+
+      Contoh format:
+
+      const APK_DOWNLOAD_URL =
+        "https://github.com/OWNER/REPO/releases/download/v1.0/HSM-Transport.apk";
+
+      Untuk sekarang dibiarkan kosong,
+      sehingga tombol menampilkan:
+      "Aplikasi Segera Tersedia".
+    */
+
+    (function () {
+
+      "use strict";
+
+      const APK_DOWNLOAD_URL = "";
+
+      const promo = document.getElementById(
+        "download-aplikasi"
+      );
+
+      const button = document.getElementById(
+        "hsm-download-button"
+      );
+
+      const note = document.getElementById(
+        "hsm-app-note"
+      );
+
+      /*
+        Jangan tampilkan promosi download
+        di dalam APK Android Capacitor.
+      */
+
+      const isCapacitorApp =
+        window.location.origin === "https://localhost" ||
+        window.location.protocol === "capacitor:" ||
+        (
+          window.Capacitor &&
+          typeof window.Capacitor.isNativePlatform === "function" &&
+          window.Capacitor.isNativePlatform()
+        );
+
+      if (isCapacitorApp) {
+
+        if (promo) {
+          promo.style.display = "none";
+        }
+
+        return;
+
+      }
+
+      /*
+        Aktifkan tombol jika link APK
+        sudah dimasukkan.
+      */
+
+      if (!button || !note) {
+        return;
+      }
+
+      const downloadURL = APK_DOWNLOAD_URL.trim();
+
+      let isValidDownloadURL = false;
+
+      try {
+
+        if (downloadURL) {
+
+          const parsedURL = new URL(
+            downloadURL,
+            window.location.href
+          );
+
+          isValidDownloadURL =
+            parsedURL.protocol === "https:";
+
+        }
+
+      } catch (error) {
+
+        isValidDownloadURL = false;
+
+      }
+
+      if (isValidDownloadURL) {
+
+        button.href = downloadURL;
+
+        button.classList.remove(
+          "is-disabled"
+        );
+
+        button.removeAttribute(
+          "aria-disabled"
+        );
+
+        button.removeAttribute(
+          "tabindex"
+        );
+
+        button.textContent =
+          "📥 DOWNLOAD APLIKASI HSM";
+
+        note.innerHTML =
+          "Gratis • Khusus Android" +
+          "<br>" +
+          "Unduh aplikasi resmi HSM Transport.";
+
+      } else {
+
+        button.removeAttribute("href");
+
+        button.classList.add(
+          "is-disabled"
+        );
+
+        button.setAttribute(
+          "aria-disabled",
+          "true"
+        );
+
+        button.setAttribute(
+          "tabindex",
+          "-1"
+        );
+
+        button.textContent =
+          "📱 Aplikasi Segera Tersedia";
+
+      }
+
+    })();
+
+  </script>
+
 </body>
 
 </html>
