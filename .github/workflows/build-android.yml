@@ -19,17 +19,21 @@
 # 12. Install Capacitor
 # 13. Generate Android Project
 # 14. Konfigurasi Tombol Back Android
-# 15. Generate Ikon Resmi HSM
-# 16. Sinkronisasi Android
-# 17. Build APK
-# 18. Ubah Nama APK
-# 19. Upload APK
+# 15. Tambahkan Izin Kamera QR Scanner
+# 16. Generate Ikon Resmi HSM
+# 17. Sinkronisasi Android
+# 18. Build APK
+# 19. Ubah Nama APK
+# 20. Upload APK
 #
 # LOGO SPLASH:
 # hsm-logo.png
 #
 # IKON APK:
 # hsm-apk-icon.png
+#
+# IZIN:
+# android.permission.CAMERA
 #
 # WEBSITE VERCEL TIDAK DIUBAH
 #
@@ -605,7 +609,8 @@ jobs:
       # ======================================================
       # 13. GENERATE ANDROID PROJECT
       #
-      # LANGKAH INI HARUS SEBELUM KONFIGURASI TOMBOL BACK.
+      # LANGKAH INI HARUS SEBELUM KONFIGURASI
+      # TOMBOL BACK DAN IZIN KAMERA.
       # ======================================================
 
       - name: Generate Android Project
@@ -809,7 +814,121 @@ jobs:
 
 
       # ======================================================
-      # 15. GENERATE IKON RESMI HSM TRANSPORT
+      # 15. IZIN KAMERA QR SCANNER HSM TRANSPORT
+      #
+      # FITUR BARU:
+      # - Menambahkan android.permission.CAMERA
+      # - Kamera tidak diwajibkan untuk instalasi
+      # - Mempertahankan WebChromeClient bawaan Capacitor
+      # - Tidak membutuhkan izin mikrofon
+      #
+      # PETUGAS:
+      # Saat menekan tombol Scan QR,
+      # Android dapat menampilkan permintaan izin kamera.
+      #
+      # FILE:
+      # android/app/src/main/AndroidManifest.xml
+      # ======================================================
+
+      - name: Enable HSM QR Camera Permission
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          manifest = Path(
+              "android-app/android/app/src/main/AndroidManifest.xml"
+          )
+
+          if not manifest.exists():
+              raise RuntimeError(
+                  "AndroidManifest.xml tidak ditemukan. "
+                  "Pastikan langkah Generate Android Project "
+                  "berhasil dijalankan."
+              )
+
+          content = manifest.read_text(
+              encoding="utf-8"
+          )
+
+          camera_permission = (
+              '<uses-permission '
+              'android:name="android.permission.CAMERA" />'
+          )
+
+          camera_feature = (
+              '<uses-feature '
+              'android:name="android.hardware.camera" '
+              'android:required="false" />'
+          )
+
+          if (
+              'android.permission.CAMERA'
+              not in content
+          ):
+
+              if "<application" not in content:
+                  raise RuntimeError(
+                      "Tag application tidak ditemukan."
+                  )
+
+              content = content.replace(
+                  "<application",
+                  "    "
+                  + camera_permission
+                  + "\n\n    <application",
+                  1
+              )
+
+          if (
+              'android.hardware.camera'
+              not in content
+          ):
+
+              if "<application" not in content:
+                  raise RuntimeError(
+                      "Tag application tidak ditemukan."
+                  )
+
+              content = content.replace(
+                  "<application",
+                  "    "
+                  + camera_feature
+                  + "\n\n    <application",
+                  1
+              )
+
+          manifest.write_text(
+              content,
+              encoding="utf-8"
+          )
+
+          # Periksa apakah Manifest XML tetap valid.
+          import xml.etree.ElementTree as ET
+
+          ET.parse(manifest)
+
+          if (
+              'android.permission.CAMERA'
+              not in content
+          ):
+              raise RuntimeError(
+                  "Izin kamera gagal dipasang."
+              )
+
+          print(
+              "Izin CAMERA HSM Transport berhasil dipasang."
+          )
+
+          print(
+              "WebChromeClient bawaan Capacitor "
+              "tetap digunakan."
+          )
+          PY
+
+
+      # ======================================================
+      # 16. GENERATE IKON RESMI HSM TRANSPORT
       #
       # SUMBER:
       # hsm-apk-icon.png
@@ -855,7 +974,7 @@ jobs:
 
 
       # ======================================================
-      # 16. SINKRONISASI ANDROID
+      # 17. SINKRONISASI ANDROID
       # ======================================================
 
       - name: Sync Android
@@ -866,7 +985,7 @@ jobs:
 
 
       # ======================================================
-      # 17. BUILD APK
+      # 18. BUILD APK
       # ======================================================
 
       - name: Build APK
@@ -880,7 +999,7 @@ jobs:
 
 
       # ======================================================
-      # 18. UBAH NAMA APK
+      # 19. UBAH NAMA APK
       # ======================================================
 
       - name: Rename APK
@@ -899,7 +1018,7 @@ jobs:
 
 
       # ======================================================
-      # 19. UPLOAD APK KE GITHUB ACTIONS
+      # 20. UPLOAD APK KE GITHUB ACTIONS
       # ======================================================
 
       - name: Upload HSM Transport APK
