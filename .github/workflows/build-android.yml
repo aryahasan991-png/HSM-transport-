@@ -2,23 +2,17 @@
 # HSM TRANSPORT
 # PT HIDAYAH SARANA MULIA
 #
-# BUILD APK ANDROID
+# BUILD 2 APK ANDROID
 #
-# FITUR:
-# - Website Penumpang
-# - Dashboard Admin
-# - Portal Sopir dan Kernet
-# - QR Scanner Otomatis
-# - Custom WAV Scanner
-# - Getaran Native Android
-# - Splash Screen 3 Detik
-# - Ikon HSM Transport
-# - Tombol Back Android
+# 1. HSM Transport
+#    com.hsmtransport.app
+#    Khusus penumpang
 #
-# PERBAIKAN:
-# - Android SDK
-# - Java onDestroy()
-# - Indentasi YAML
+# 2. HSM Internal
+#    com.hsmtransport.internal
+#    Admin + Sopir & Kernet
+#
+# Capacitor 8
 # ============================================================
 
 name: Build APK HSM Transport
@@ -28,7 +22,7 @@ on:
 
 jobs:
   build:
-    name: Build Android APK
+    name: Build 2 Android APK
 
     runs-on: ubuntu-latest
 
@@ -67,9 +61,6 @@ jobs:
 
       # ======================================================
       # 4. ANDROID SDK
-      #
-      # FIX:
-      # Tidak menginstal package "tools" yang sudah tidak ada.
       # ======================================================
 
       - name: Setup Android SDK
@@ -78,10 +69,6 @@ jobs:
           cmdline-tools-version: "12266719"
           accept-android-sdk-licenses: "true"
           packages: ""
-
-      # ======================================================
-      # 5. INSTALL ANDROID PLATFORM
-      # ======================================================
 
       - name: Install Android Platform
         shell: bash
@@ -93,10 +80,8 @@ jobs:
             "build-tools;36.0.0" \
             "platform-tools"
 
-          echo "Android SDK siap."
-
       # ======================================================
-      # 6. VALIDASI FILE HSM
+      # 5. VALIDASI
       # ======================================================
 
       - name: Validate HSM Files
@@ -118,24 +103,34 @@ jobs:
           do
 
             if [ ! -s "$file" ]; then
-              echo "ERROR: File tidak ditemukan atau kosong: $file"
+              echo "File tidak ditemukan: $file"
               exit 1
             fi
 
           done
 
-          echo "Semua file utama HSM tersedia."
+          echo "Semua file utama tersedia."
 
       # ======================================================
-      # 7. PREPARE WEBSITE
+      # 6. MEMBUAT DUA PROJECT CAPACITOR
       # ======================================================
 
-      - name: Prepare HSM Website
+      - name: Prepare Two Capacitor Projects
         shell: bash
         run: |
           set -e
 
-          mkdir -p android-app/www
+          mkdir -p builds/passenger/www
+          mkdir -p builds/internal/www
+
+          cp android-app/package.json \
+            builds/passenger/package.json
+
+          cp android-app/package.json \
+            builds/internal/package.json
+
+          # Salin file website ke masing-masing project.
+          # Hanya mengambil file pada folder utama repository.
 
           for file in \
             ./*.html \
@@ -147,33 +142,89 @@ jobs:
             ./*.webp \
             ./*.svg \
             ./*.ico \
-            ./*.json
+            ./*.json \
+            ./*.webmanifest \
+            ./*.wav
           do
 
             if [ -f "$file" ]; then
-              cp "$file" android-app/www/
+              cp "$file" builds/passenger/www/
+              cp "$file" builds/internal/www/
             fi
 
           done
 
-          echo "Website HSM siap."
+          # APK Penumpang:
+          # Hilangkan halaman dan skrip internal.
+
+          rm -f builds/passenger/www/admin.html
+          rm -f builds/passenger/www/petugas.html
+          rm -f builds/passenger/www/portal.html
+
+          rm -f builds/passenger/www/admin.js
+          rm -f builds/passenger/www/hsm-admin-extra.js
+
+          # Menu PWA khusus iPhone tidak diperlukan
+          # dalam APK Android penumpang.
+
+          rm -f builds/passenger/www/hsm-pwa-menu.js
+
+          # Konfigurasi masing-masing aplikasi.
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          configs = {
+              "passenger": {
+                  "appId": "com.hsmtransport.app",
+                  "appName": "HSM Transport",
+                  "webDir": "www",
+                  "android": {
+                      "backgroundColor": "#ffffff"
+                  }
+              },
+              "internal": {
+                  "appId": "com.hsmtransport.internal",
+                  "appName": "HSM Internal",
+                  "webDir": "www",
+                  "android": {
+                      "backgroundColor": "#ffffff"
+                  }
+              }
+          }
+
+          for name, config in configs.items():
+              path = Path(
+                  f"builds/{name}/capacitor.config.json"
+              )
+
+              path.write_text(
+                  json.dumps(
+                      config,
+                      indent=2
+                  ),
+                  encoding="utf-8"
+              )
+
+          print("Dua konfigurasi Capacitor siap.")
+          PY
 
       # ======================================================
-      # 8. PORTAL INTERNAL APK
+      # 7. HALAMAN UTAMA HSM INTERNAL
       # ======================================================
 
-      - name: Prepare Internal Portal
+      - name: Create HSM Internal Home
         shell: bash
         run: |
           set -e
 
-          if [ ! -f android-app/www/portal.html ]; then
-
-            cat > android-app/www/portal.html <<'HTML'
+          cat > builds/internal/www/index.html <<'HTML'
           <!DOCTYPE html>
           <html lang="id">
 
           <head>
+
             <meta charset="UTF-8">
 
             <meta
@@ -186,376 +237,254 @@ jobs:
               content="#0754a6"
             >
 
-            <title>Portal Internal HSM Transport</title>
+            <meta
+              name="robots"
+              content="noindex,nofollow"
+            >
+
+            <title>
+              HSM Internal
+            </title>
 
             <style>
+
               * {
                 box-sizing: border-box;
               }
 
               body {
                 margin: 0;
-                padding: 20px;
                 min-height: 100vh;
-                font-family: Arial, sans-serif;
-                background: #f4f7fb;
+                padding: 25px 18px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                background: #f2f6fc;
+                font-family: Arial, sans-serif;
               }
 
               .card {
                 width: 100%;
                 max-width: 440px;
-                padding: 30px 22px;
                 background: white;
-                border-radius: 18px;
+                border-radius: 20px;
+                padding: 34px 23px;
                 text-align: center;
-                box-shadow: 0 8px 28px rgba(0,0,0,.08);
+                box-shadow:
+                  0 10px 35px rgba(7,84,166,.09);
+                border: 1px solid #dce5f0;
+              }
+
+              .logo {
+                display: block;
+                width: 180px;
+                max-width: 75%;
+                margin: 0 auto 22px;
               }
 
               h1 {
-                margin: 0 0 10px;
+                margin: 0;
+                font-size: 25px;
                 color: #0754a6;
-                font-size: 27px;
               }
 
-              p {
+              .company {
+                margin: 9px 0 27px;
+                font-size: 12px;
                 color: #64748b;
-                font-size: 14px;
-                line-height: 1.7;
-                margin-bottom: 25px;
+                line-height: 1.6;
               }
 
-              a {
+              .menu {
                 display: block;
-                margin-top: 13px;
-                padding: 16px;
-                border-radius: 11px;
+                padding: 19px 15px;
+                margin-top: 14px;
+                text-decoration: none;
                 background: #0754a6;
                 color: white;
+                border-radius: 13px;
                 font-weight: bold;
-                text-decoration: none;
+                font-size: 15px;
               }
 
-              a.secondary {
-                background: #e2e8f0;
-                color: #334155;
+              .menu.petugas {
+                background: #063d79;
+              }
+
+              .menu span {
+                display: block;
+                margin-top: 7px;
+                font-size: 11px;
+                font-weight: normal;
+                opacity: .9;
               }
 
               .footer {
-                margin-top: 25px;
+                margin-top: 29px;
                 font-size: 11px;
                 color: #94a3b8;
               }
+
             </style>
+
           </head>
 
           <body>
 
             <main class="card">
 
-              <h1>HSM Transport</h1>
+              <img
+                src="hsm-logo.png"
+                class="logo"
+                alt="HSM Transport"
+              >
 
-              <p>
-                Portal Internal<br>
+              <h1>HSM Internal</h1>
+
+              <div class="company">
+                Portal Resmi Perusahaan<br>
                 PT Hidayah Sarana Mulia
-              </p>
+              </div>
 
-              <a href="admin.html">
-                🔐 Dashboard Admin
+              <a
+                class="menu"
+                href="admin.html"
+              >
+                🔐 Login Admin
+
+                <span>
+                  Dashboard pengelolaan HSM Transport
+                </span>
               </a>
 
-              <a href="petugas.html">
-                🚐 Portal Sopir & Kernet
-              </a>
+              <a
+                class="menu petugas"
+                href="petugas.html"
+              >
+                🚐 Login Sopir & Kernet
 
-              <a href="index.html" class="secondary">
-                Kembali ke Penumpang
+                <span>
+                  Manifest, perjalanan, dan QR Scanner
+                </span>
               </a>
 
               <div class="footer">
-                HSM Transport © 2026
+                KHUSUS INTERNAL HSM TRANSPORT
               </div>
 
             </main>
 
           </body>
+
           </html>
           HTML
 
-          fi
-
-          echo "Portal internal siap."
-
       # ======================================================
-      # 9. AKSES INTERNAL DAN SPLASH SCREEN
+      # 8. INSTALL CAPACITOR
       # ======================================================
 
-      - name: Add APK Access and Splash Screen
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          index = Path("android-app/www/index.html")
-
-          html = index.read_text(
-              encoding="utf-8"
-          )
-
-          def insert_before_body(content, addition):
-              pos = content.lower().rfind("</body>")
-
-              if pos < 0:
-                  raise RuntimeError(
-                      "Tag body tidak ditemukan."
-                  )
-
-              return (
-                  content[:pos] +
-                  addition +
-                  "\n" +
-                  content[pos:]
-              )
-
-          if "hsm-apk-internal-access" not in html:
-
-              internal_link = """
-          <div
-            id="hsm-apk-internal-access"
-            style="
-              text-align:center;
-              padding:16px;
-              background:#f5f7fa;
-            "
-          >
-            <a
-              href="portal.html"
-              style="
-                color:#64748b;
-                font-size:12px;
-                text-decoration:none;
-              "
-            >
-              🔐 Akses Internal HSM
-            </a>
-          </div>
-          """
-
-              html = insert_before_body(
-                  html,
-                  internal_link
-              )
-
-          if "hsm-custom-splash" not in html:
-
-              splash = """
-          <style>
-            #hsm-custom-splash {
-              position: fixed;
-              inset: 0;
-              z-index: 2147483647;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              padding: 24px;
-              text-align: center;
-              background: white;
-              opacity: 1;
-              transition: opacity .4s ease;
-            }
-
-            #hsm-custom-splash.hsm-hide {
-              opacity: 0;
-              pointer-events: none;
-            }
-
-            #hsm-custom-splash img {
-              width: min(55vw,230px);
-              max-height: 230px;
-              object-fit: contain;
-              margin-bottom: 35px;
-            }
-
-            .hsm-splash-title {
-              color: #0754a6;
-              font-family: Arial,sans-serif;
-              font-size: 22px;
-              font-weight: 800;
-              letter-spacing: 1px;
-              margin-bottom: 12px;
-            }
-
-            .hsm-splash-tagline {
-              color: #64748b;
-              font-family: Arial,sans-serif;
-              font-size: 14px;
-              line-height: 1.6;
-            }
-
-            .hsm-splash-company {
-              position: absolute;
-              bottom: 45px;
-              left: 15px;
-              right: 15px;
-              color: #0754a6;
-              font-family: Arial,sans-serif;
-              font-size: 11px;
-              font-weight: 700;
-              letter-spacing: 1px;
-            }
-          </style>
-
-          <div id="hsm-custom-splash">
-
-            <img
-              src="hsm-logo.png"
-              alt="HSM Transport"
-            >
-
-            <div class="hsm-splash-title">
-              SELAMAT DATANG
-            </div>
-
-            <div class="hsm-splash-tagline">
-              Perjalanan Nyaman, Pilihan Tepat.
-            </div>
-
-            <div class="hsm-splash-company">
-              PT HIDAYAH SARANA MULIA
-            </div>
-
-          </div>
-
-          <script>
-          (function(){
-
-            function closeSplash(){
-
-              var splash =
-                document.getElementById(
-                  "hsm-custom-splash"
-                );
-
-              if (!splash) return;
-
-              setTimeout(function(){
-
-                splash.classList.add("hsm-hide");
-
-                setTimeout(function(){
-                  splash.remove();
-                },450);
-
-              },3000);
-
-            }
-
-            if (document.readyState === "loading") {
-
-              document.addEventListener(
-                "DOMContentLoaded",
-                closeSplash,
-                {once:true}
-              );
-
-            } else {
-
-              closeSplash();
-
-            }
-
-          })();
-          </script>
-          """
-
-              html = insert_before_body(
-                  html,
-                  splash
-              )
-
-          index.write_text(
-              html,
-              encoding="utf-8"
-          )
-
-          print("Akses internal dan splash screen siap.")
-          PY
-
-      # ======================================================
-      # 10. INSTALL CAPACITOR
-      # ======================================================
-
-      - name: Install Capacitor
-        working-directory: android-app
-        shell: bash
-        run: |
-          npm install --no-audit --no-fund
-
-      # ======================================================
-      # 11. ANDROID PROJECT
-      # ======================================================
-
-      - name: Generate Android Project
-        working-directory: android-app
+      - name: Install Capacitor Dependencies
         shell: bash
         run: |
           set -e
 
-          if [ -f android/app/build.gradle ]; then
-            echo "Android project sudah tersedia."
-          else
-            npx cap add android
-          fi
+          for app in passenger internal
+          do
+
+            echo "Install Capacitor: $app"
+
+            (
+              cd "builds/$app"
+
+              npm install \
+                --no-audit \
+                --no-fund
+            )
+
+          done
 
       # ======================================================
-      # 12. INSTALL CUSTOM SCANNER AUDIO
-      #
-      # Menggunakan file WAV pilihan pemilik HSM.
-      #
-      # BERHASIL:
-      # hsm_scan_success.wav
-      #
-      # GAGAL:
-      # hsm_scan_error.wav
+      # 9. GENERATE ANDROID PROJECTS
       # ======================================================
 
-      - name: Install HSM Custom Scanner Sounds
+      - name: Generate Android Projects
         shell: bash
         run: |
           set -e
 
-          AUDIO_DIR="android-app/android/app/src/main/res/raw"
+          for app in passenger internal
+          do
 
-          mkdir -p "$AUDIO_DIR"
+            echo "Generate Android: $app"
 
-          cp \
-            hsm_scan_success.wav \
-            "$AUDIO_DIR/hsm_scan_success.wav"
+            (
+              cd "builds/$app"
 
-          cp \
-            hsm_scan_error.wav \
-            "$AUDIO_DIR/hsm_scan_error.wav"
+              npx cap add android
+            )
 
-          echo "Suara scanner HSM berhasil dipasang."
-
-          ls -lh "$AUDIO_DIR"
+          done
 
       # ======================================================
-      # 13. NATIVE ANDROID FEATURES
-      #
-      # JavaScript:
-      #
-      # window.HSMNative.feedback(true)
-      # Suara berhasil + getar sekali.
-      #
-      # window.HSMNative.feedback(false)
-      # Suara gagal + getar tiga kali.
+      # 10. IKON KEDUA APLIKASI
       # ======================================================
 
-      - name: Configure HSM Native Android Features
+      - name: Generate HSM App Icons
+        shell: bash
+        run: |
+          set -e
+
+          for app in passenger internal
+          do
+
+            (
+              cd "builds/$app"
+
+              mkdir -p assets
+
+              cp ../../hsm-apk-icon.png \
+                assets/icon.png
+
+              npm install \
+                --no-save \
+                --no-audit \
+                --no-fund \
+                @capacitor/assets
+
+              npx capacitor-assets generate \
+                --android \
+                --iconBackgroundColor '#ffffff' \
+                --iconBackgroundColorDark '#ffffff'
+            )
+
+          done
+
+      # ======================================================
+      # 11. INSTALL AUDIO HSM INTERNAL
+      # ======================================================
+
+      - name: Install HSM Internal Scanner Sounds
+        shell: bash
+        run: |
+          set -e
+
+          RAW_DIR="builds/internal/android/app/src/main/res/raw"
+
+          mkdir -p "$RAW_DIR"
+
+          cp hsm_scan_success.wav \
+            "$RAW_DIR/hsm_scan_success.wav"
+
+          cp hsm_scan_error.wav \
+            "$RAW_DIR/hsm_scan_error.wav"
+
+          echo "Kedua suara scanner terpasang."
+
+      # ======================================================
+      # 12. NATIVE AUDIO + GETARAN INTERNAL
+      # ======================================================
+
+      - name: Configure HSM Internal Android
         shell: bash
         run: |
           python3 - <<'PY'
@@ -563,7 +492,7 @@ jobs:
           import re
 
           root = Path(
-              "android-app/android/app/src/main/java"
+              "builds/internal/android/app/src/main/java"
           )
 
           files = list(
@@ -572,7 +501,7 @@ jobs:
 
           if len(files) != 1:
               raise RuntimeError(
-                  "MainActivity.java tidak ditemukan atau ganda."
+                  "MainActivity.java tidak ditemukan."
               )
 
           path = files[0]
@@ -589,7 +518,7 @@ jobs:
 
           if not match:
               raise RuntimeError(
-                  "Nama package Android tidak ditemukan."
+                  "Package Java tidak ditemukan."
               )
 
           package_name = match.group(1)
@@ -674,7 +603,7 @@ jobs:
               }
 
               // ============================================
-              // ANDROID ONCREATE
+              // ON CREATE
               // ============================================
 
               @Override
@@ -757,7 +686,7 @@ jobs:
               }
 
               // ============================================
-              // SCANNER FEEDBACK
+              // FEEDBACK
               // ============================================
 
               private void playFeedback(boolean success) {
@@ -766,10 +695,6 @@ jobs:
                   playSound(success);
 
               }
-
-              // ============================================
-              // CUSTOM SCANNER SOUND
-              // ============================================
 
               private void playSound(boolean success) {
 
@@ -832,7 +757,7 @@ jobs:
               }
 
               // ============================================
-              // GETARAN SCANNER
+              // VIBRATION
               // ============================================
 
               private void playVibration(boolean success) {
@@ -935,34 +860,13 @@ jobs:
                                       path.equals("/") ||
                                       path.endsWith("/index.html");
 
-                                  boolean portal =
-                                      path.endsWith("/portal.html");
-
                                   boolean staff =
                                       path.endsWith("/petugas.html");
 
                                   boolean admin =
                                       path.endsWith("/admin.html");
 
-                                  if (staff || admin) {
-
-                                      webView.loadUrl(
-                                          "https://localhost/portal.html"
-                                      );
-
-                                      return;
-                                  }
-
-                                  if (portal) {
-
-                                      webView.loadUrl(
-                                          "https://localhost/index.html"
-                                      );
-
-                                      return;
-                                  }
-
-                                  if (!home) {
+                                  if (staff || admin || !home) {
 
                                       webView.loadUrl(
                                           "https://localhost/index.html"
@@ -986,7 +890,7 @@ jobs:
 
                                       Toast.makeText(
                                           MainActivity.this,
-                                          "Tekan sekali lagi untuk keluar dari HSM Transport",
+                                          "Tekan sekali lagi untuk keluar",
                                           Toast.LENGTH_SHORT
                                       ).show();
 
@@ -1000,9 +904,7 @@ jobs:
               }
 
               // ============================================
-              // FIX CAPACITOR ONDESTROY
-              //
-              // HARUS public, BUKAN protected.
+              // CLEANUP
               // ============================================
 
               @Override
@@ -1033,14 +935,16 @@ jobs:
               encoding="utf-8"
           )
 
-          print("Native audio dan getaran HSM siap.")
+          print(
+              "HSM Internal Native Android siap."
+          )
           PY
 
       # ======================================================
-      # 14. ANDROID PERMISSIONS
+      # 13. IZIN KAMERA DAN GETARAN
       # ======================================================
 
-      - name: Enable Android Permissions
+      - name: Enable HSM Internal Permissions
         shell: bash
         run: |
           python3 - <<'PY'
@@ -1048,7 +952,7 @@ jobs:
           import xml.etree.ElementTree as ET
 
           manifest = Path(
-              "android-app/android/app/src/main/AndroidManifest.xml"
+              "builds/internal/android/app/src/main/AndroidManifest.xml"
           )
 
           content = manifest.read_text(
@@ -1074,22 +978,18 @@ jobs:
                   content = content.replace(
                       "<application",
                       "    " + line +
-                      "\n\n    <application",
+                      "\n    <application",
                       1
                   )
 
           if "android.hardware.camera" not in content:
 
-              line = (
-                  '<uses-feature '
-                  'android:name="android.hardware.camera" '
-                  'android:required="false" />'
-              )
-
               content = content.replace(
                   "<application",
-                  "    " + line +
-                  "\n\n    <application",
+                  '    <uses-feature '
+                  'android:name="android.hardware.camera" '
+                  'android:required="false" />'
+                  "\n    <application",
                   1
               )
 
@@ -1104,84 +1004,60 @@ jobs:
           PY
 
       # ======================================================
-      # 15. GENERATE ICON HSM
+      # 14. CAPACITOR SYNC
       # ======================================================
 
-      - name: Generate HSM App Icon
-        working-directory: android-app
+      - name: Sync Both Android Projects
         shell: bash
         run: |
           set -e
 
-          mkdir -p assets
+          for app in passenger internal
+          do
 
-          cp \
-            ../hsm-apk-icon.png \
-            assets/icon.png
+            (
+              cd "builds/$app"
 
-          npm install \
-            --no-save \
-            --no-audit \
-            --no-fund \
-            @capacitor/assets
+              npx cap sync android
+            )
 
-          npx capacitor-assets generate \
-            --android \
-            --iconBackgroundColor '#ffffff' \
-            --iconBackgroundColorDark '#ffffff'
-
-          echo "Ikon APK HSM siap."
+          done
 
       # ======================================================
-      # 16. CAPACITOR SYNC
+      # 15. BUILD APK PENUMPANG
       # ======================================================
 
-      - name: Sync Android
-        working-directory: android-app
+      - name: Build HSM Transport APK
         shell: bash
         run: |
           set -e
 
-          npx cap sync android
-
-      # ======================================================
-      # 17. VERIFY SCANNER AUDIO
-      # ======================================================
-
-      - name: Verify HSM Scanner Sounds
-        shell: bash
-        run: |
-          set -e
-
-          RAW="android-app/android/app/src/main/res/raw"
-
-          test -s "$RAW/hsm_scan_success.wav"
-
-          test -s "$RAW/hsm_scan_error.wav"
-
-          echo "Kedua suara scanner tersedia."
-
-          ls -lh "$RAW"
-
-      # ======================================================
-      # 18. BUILD APK
-      # ======================================================
-
-      - name: Build APK
-        working-directory: android-app/android
-        shell: bash
-        run: |
-          set -e
+          cd builds/passenger/android
 
           chmod +x gradlew
 
           ./gradlew assembleDebug --no-daemon
 
       # ======================================================
-      # 19. RENAME APK
+      # 16. BUILD APK INTERNAL
       # ======================================================
 
-      - name: Rename APK
+      - name: Build HSM Internal APK
+        shell: bash
+        run: |
+          set -e
+
+          cd builds/internal/android
+
+          chmod +x gradlew
+
+          ./gradlew assembleDebug --no-daemon
+
+      # ======================================================
+      # 17. PREPARE OUTPUT
+      # ======================================================
+
+      - name: Prepare Two APK Files
         shell: bash
         run: |
           set -e
@@ -1189,15 +1065,19 @@ jobs:
           mkdir -p output
 
           cp \
-            android-app/android/app/build/outputs/apk/debug/app-debug.apk \
+            builds/passenger/android/app/build/outputs/apk/debug/app-debug.apk \
             output/HSM-Transport.apk
 
-          echo "APK HSM Transport berhasil dibuat."
+          cp \
+            builds/internal/android/app/build/outputs/apk/debug/app-debug.apk \
+            output/HSM-Internal.apk
+
+          echo "Kedua APK berhasil dibuat."
 
           ls -lh output/
 
       # ======================================================
-      # 20. UPLOAD APK
+      # 18. UPLOAD APK
       # ======================================================
 
       - name: Upload HSM Transport APK
@@ -1205,5 +1085,13 @@ jobs:
         with:
           name: HSM-Transport-APK
           path: output/HSM-Transport.apk
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Upload HSM Internal APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: HSM-Internal-APK
+          path: output/HSM-Internal.apk
           retention-days: 30
           if-no-files-found: error
