@@ -2,22 +2,23 @@
 # HSM TRANSPORT
 # PT HIDAYAH SARANA MULIA
 #
-# BUILD ANDROID APK
+# BUILD APK ANDROID
 #
 # FITUR:
 # - Website Penumpang
 # - Dashboard Admin
-# - Portal Sopir & Kernet
+# - Portal Sopir dan Kernet
 # - QR Scanner Otomatis
 # - Custom WAV Scanner
-# - Native Android Vibration
+# - Getaran Native Android
 # - Splash Screen 3 Detik
-# - Ikon HSM
-# - Android Back Button
+# - Ikon HSM Transport
+# - Tombol Back Android
 #
-# FIX:
-# Android SDK tidak menginstal paket "tools"
-# yang menyebabkan workflow sebelumnya gagal.
+# PERBAIKAN:
+# - Android SDK
+# - Java onDestroy()
+# - Indentasi YAML
 # ============================================================
 
 name: Build APK HSM Transport
@@ -27,7 +28,6 @@ on:
 
 jobs:
   build:
-
     name: Build Android APK
 
     runs-on: ubuntu-latest
@@ -66,7 +66,10 @@ jobs:
           java-version: "21"
 
       # ======================================================
-      # 4. ANDROID SDK - FIX ERROR SEBELUMNYA
+      # 4. ANDROID SDK
+      #
+      # FIX:
+      # Tidak menginstal package "tools" yang sudah tidak ada.
       # ======================================================
 
       - name: Setup Android SDK
@@ -74,7 +77,6 @@ jobs:
         with:
           cmdline-tools-version: "12266719"
           accept-android-sdk-licenses: "true"
-          log-accepted-android-sdk-licenses: "false"
           packages: ""
 
       # ======================================================
@@ -91,10 +93,10 @@ jobs:
             "build-tools;36.0.0" \
             "platform-tools"
 
-          echo "Android SDK berhasil disiapkan."
+          echo "Android SDK siap."
 
       # ======================================================
-      # 6. VALIDASI FILE
+      # 6. VALIDASI FILE HSM
       # ======================================================
 
       - name: Validate HSM Files
@@ -122,7 +124,7 @@ jobs:
 
           done
 
-          echo "Semua file HSM tersedia."
+          echo "Semua file utama HSM tersedia."
 
       # ======================================================
       # 7. PREPARE WEBSITE
@@ -154,32 +156,34 @@ jobs:
 
           done
 
-          echo "Website HSM berhasil disalin."
+          echo "Website HSM siap."
 
       # ======================================================
-      # 8. PORTAL INTERNAL DAN SPLASH SCREEN
+      # 8. PORTAL INTERNAL APK
       # ======================================================
 
-      - name: Prepare Internal Portal and Splash
+      - name: Prepare Internal Portal
         shell: bash
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
+          set -e
 
-          web = Path("android-app/www")
+          if [ ! -f android-app/www/portal.html ]; then
 
-          portal = web / "portal.html"
-
-          if not portal.exists():
-              portal.write_text("""
+            cat > android-app/www/portal.html <<'HTML'
           <!DOCTYPE html>
           <html lang="id">
 
           <head>
             <meta charset="UTF-8">
+
             <meta
               name="viewport"
               content="width=device-width,initial-scale=1"
+            >
+
+            <meta
+              name="theme-color"
+              content="#0754a6"
             >
 
             <title>Portal Internal HSM Transport</title>
@@ -191,29 +195,29 @@ jobs:
 
               body {
                 margin: 0;
-                min-height: 100vh;
                 padding: 20px;
+                min-height: 100vh;
+                font-family: Arial, sans-serif;
+                background: #f4f7fb;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background: #f4f7fb;
-                font-family: Arial, sans-serif;
               }
 
               .card {
                 width: 100%;
-                max-width: 430px;
+                max-width: 440px;
                 padding: 30px 22px;
-                border-radius: 18px;
                 background: white;
+                border-radius: 18px;
                 text-align: center;
                 box-shadow: 0 8px 28px rgba(0,0,0,.08);
               }
 
               h1 {
+                margin: 0 0 10px;
                 color: #0754a6;
                 font-size: 27px;
-                margin: 0 0 10px;
               }
 
               p {
@@ -230,8 +234,8 @@ jobs:
                 border-radius: 11px;
                 background: #0754a6;
                 color: white;
-                text-decoration: none;
                 font-weight: bold;
+                text-decoration: none;
               }
 
               a.secondary {
@@ -241,13 +245,14 @@ jobs:
 
               .footer {
                 margin-top: 25px;
-                color: #94a3b8;
                 font-size: 11px;
+                color: #94a3b8;
               }
             </style>
           </head>
 
           <body>
+
             <main class="card">
 
               <h1>HSM Transport</h1>
@@ -274,30 +279,48 @@ jobs:
               </div>
 
             </main>
+
           </body>
           </html>
-          """, encoding="utf-8")
+          HTML
 
-          index = web / "index.html"
+          fi
 
-          html = index.read_text(encoding="utf-8")
+          echo "Portal internal siap."
+
+      # ======================================================
+      # 9. AKSES INTERNAL DAN SPLASH SCREEN
+      # ======================================================
+
+      - name: Add APK Access and Splash Screen
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          index = Path("android-app/www/index.html")
+
+          html = index.read_text(
+              encoding="utf-8"
+          )
 
           def insert_before_body(content, addition):
-              position = content.lower().rfind("</body>")
+              pos = content.lower().rfind("</body>")
 
-              if position < 0:
+              if pos < 0:
                   raise RuntimeError(
-                      "Tag </body> tidak ditemukan."
+                      "Tag body tidak ditemukan."
                   )
 
               return (
-                  content[:position] +
+                  content[:pos] +
                   addition +
                   "\n" +
-                  content[position:]
+                  content[pos:]
               )
 
           if "hsm-apk-internal-access" not in html:
+
               internal_link = """
           <div
             id="hsm-apk-internal-access"
@@ -326,6 +349,7 @@ jobs:
               )
 
           if "hsm-custom-splash" not in html:
+
               splash = """
           <style>
             #hsm-custom-splash {
@@ -457,11 +481,11 @@ jobs:
               encoding="utf-8"
           )
 
-          print("Portal internal dan splash siap.")
+          print("Akses internal dan splash screen siap.")
           PY
 
       # ======================================================
-      # 9. INSTALL CAPACITOR
+      # 10. INSTALL CAPACITOR
       # ======================================================
 
       - name: Install Capacitor
@@ -471,7 +495,7 @@ jobs:
           npm install --no-audit --no-fund
 
       # ======================================================
-      # 10. GENERATE ANDROID PROJECT
+      # 11. ANDROID PROJECT
       # ======================================================
 
       - name: Generate Android Project
@@ -481,17 +505,21 @@ jobs:
           set -e
 
           if [ -f android/app/build.gradle ]; then
-
             echo "Android project sudah tersedia."
-
           else
-
             npx cap add android
-
           fi
 
       # ======================================================
-      # 11. INSTALL CUSTOM SCANNER AUDIO
+      # 12. INSTALL CUSTOM SCANNER AUDIO
+      #
+      # Menggunakan file WAV pilihan pemilik HSM.
+      #
+      # BERHASIL:
+      # hsm_scan_success.wav
+      #
+      # GAGAL:
+      # hsm_scan_error.wav
       # ======================================================
 
       - name: Install HSM Custom Scanner Sounds
@@ -511,12 +539,20 @@ jobs:
             hsm_scan_error.wav \
             "$AUDIO_DIR/hsm_scan_error.wav"
 
-          echo "Suara scanner berhasil dipasang."
+          echo "Suara scanner HSM berhasil dipasang."
 
           ls -lh "$AUDIO_DIR"
 
       # ======================================================
-      # 12. NATIVE ANDROID SOUND AND VIBRATION
+      # 13. NATIVE ANDROID FEATURES
+      #
+      # JavaScript:
+      #
+      # window.HSMNative.feedback(true)
+      # Suara berhasil + getar sekali.
+      #
+      # window.HSMNative.feedback(false)
+      # Suara gagal + getar tiga kali.
       # ======================================================
 
       - name: Configure HSM Native Android Features
@@ -530,7 +566,9 @@ jobs:
               "android-app/android/app/src/main/java"
           )
 
-          files = list(root.rglob("MainActivity.java"))
+          files = list(
+              root.rglob("MainActivity.java")
+          )
 
           if len(files) != 1:
               raise RuntimeError(
@@ -551,7 +589,7 @@ jobs:
 
           if not match:
               raise RuntimeError(
-                  "Package Java tidak ditemukan."
+                  "Nama package Android tidak ditemukan."
               )
 
           package_name = match.group(1)
@@ -589,6 +627,10 @@ jobs:
 
               private int successStream = 0;
               private int errorStream = 0;
+
+              // ============================================
+              // JAVASCRIPT BRIDGE
+              // ============================================
 
               private final class HSMNativeBridge {
 
@@ -630,6 +672,10 @@ jobs:
                   }
 
               }
+
+              // ============================================
+              // ANDROID ONCREATE
+              // ============================================
 
               @Override
               public void onCreate(Bundle state) {
@@ -711,7 +757,7 @@ jobs:
               }
 
               // ============================================
-              // FEEDBACK SCANNER
+              // SCANNER FEEDBACK
               // ============================================
 
               private void playFeedback(boolean success) {
@@ -722,7 +768,7 @@ jobs:
               }
 
               // ============================================
-              // CUSTOM AUDIO
+              // CUSTOM SCANNER SOUND
               // ============================================
 
               private void playSound(boolean success) {
@@ -786,7 +832,7 @@ jobs:
               }
 
               // ============================================
-              // VIBRATION
+              // GETARAN SCANNER
               // ============================================
 
               private void playVibration(boolean success) {
@@ -953,20 +999,26 @@ jobs:
 
               }
 
+              // ============================================
+              // FIX CAPACITOR ONDESTROY
+              //
+              // HARUS public, BUKAN protected.
+              // ============================================
+
               @Override
-public void onDestroy() {
+              public void onDestroy() {
 
-    if (soundPool != null) {
+                  if (soundPool != null) {
 
-        soundPool.release();
+                      soundPool.release();
 
-        soundPool = null;
+                      soundPool = null;
 
-    }
+                  }
 
-    super.onDestroy();
+                  super.onDestroy();
 
-}
+              }
 
           }
           """
@@ -981,13 +1033,11 @@ public void onDestroy() {
               encoding="utf-8"
           )
 
-          print(
-              "Native scanner audio dan getaran siap."
-          )
+          print("Native audio dan getaran HSM siap.")
           PY
 
       # ======================================================
-      # 13. ANDROID PERMISSIONS
+      # 14. ANDROID PERMISSIONS
       # ======================================================
 
       - name: Enable Android Permissions
@@ -1054,7 +1104,7 @@ public void onDestroy() {
           PY
 
       # ======================================================
-      # 14. GENERATE APP ICON
+      # 15. GENERATE ICON HSM
       # ======================================================
 
       - name: Generate HSM App Icon
@@ -1080,18 +1130,22 @@ public void onDestroy() {
             --iconBackgroundColor '#ffffff' \
             --iconBackgroundColorDark '#ffffff'
 
+          echo "Ikon APK HSM siap."
+
       # ======================================================
-      # 15. SYNC ANDROID
+      # 16. CAPACITOR SYNC
       # ======================================================
 
       - name: Sync Android
         working-directory: android-app
         shell: bash
         run: |
+          set -e
+
           npx cap sync android
 
       # ======================================================
-      # 16. VERIFY SCANNER AUDIO
+      # 17. VERIFY SCANNER AUDIO
       # ======================================================
 
       - name: Verify HSM Scanner Sounds
@@ -1105,12 +1159,12 @@ public void onDestroy() {
 
           test -s "$RAW/hsm_scan_error.wav"
 
-          echo "Suara scanner siap."
+          echo "Kedua suara scanner tersedia."
 
           ls -lh "$RAW"
 
       # ======================================================
-      # 17. BUILD APK
+      # 18. BUILD APK
       # ======================================================
 
       - name: Build APK
@@ -1124,7 +1178,7 @@ public void onDestroy() {
           ./gradlew assembleDebug --no-daemon
 
       # ======================================================
-      # 18. RENAME APK
+      # 19. RENAME APK
       # ======================================================
 
       - name: Rename APK
@@ -1143,7 +1197,7 @@ public void onDestroy() {
           ls -lh output/
 
       # ======================================================
-      # 19. UPLOAD APK
+      # 20. UPLOAD APK
       # ======================================================
 
       - name: Upload HSM Transport APK
