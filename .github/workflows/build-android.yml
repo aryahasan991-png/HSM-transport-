@@ -954,19 +954,19 @@ jobs:
               }
 
               @Override
-              protected void onDestroy() {
+public void onDestroy() {
 
-                  if (soundPool != null) {
+    if (soundPool != null) {
 
-                      soundPool.release();
+        soundPool.release();
 
-                      soundPool = null;
+        soundPool = null;
 
-                  }
+    }
 
-                  super.onDestroy();
+    super.onDestroy();
 
-              }
+}
 
           }
           """
