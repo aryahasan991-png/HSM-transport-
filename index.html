@@ -14,7 +14,34 @@
     name="theme-color"
     content="#0754a6"
   >
+<!-- ==========================================
+     HSM TRANSPORT PWA
+     ========================================== -->
 
+<link
+  rel="manifest"
+  href="/manifest.webmanifest"
+>
+
+<meta
+  name="apple-mobile-web-app-capable"
+  content="yes"
+>
+
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="default"
+>
+
+<meta
+  name="apple-mobile-web-app-title"
+  content="HSM Transport"
+>
+
+<link
+  rel="apple-touch-icon"
+  href="/hsm-apk-icon.png"
+>
   <link
     rel="icon"
     type="image/png"
@@ -1622,7 +1649,47 @@
     })();
 
   </script>
+<!-- HSM PWA REGISTRATION -->
 
+<script>
+(function () {
+  "use strict";
+
+  /*
+    Service worker hanya untuk website HTTPS.
+
+    Jangan aktifkan pada APK Capacitor.
+  */
+
+  const isNativeApp =
+    window.location.origin === "https://localhost" ||
+    window.location.protocol === "capacitor:" ||
+    (
+      window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === "function" &&
+      window.Capacitor.isNativePlatform()
+    );
+
+  if (
+    !isNativeApp &&
+    "serviceWorker" in navigator
+  ) {
+    window.addEventListener(
+      "load",
+      function () {
+        navigator.serviceWorker.register(
+          "/sw.js"
+        ).catch(error => {
+          console.warn(
+            "HSM PWA:",
+            error
+          );
+        });
+      }
+    );
+  }
+})();
+</script>
 </body>
 
 </html>
