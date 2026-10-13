@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <meta
+    name="theme-color"
+    content="#0754a6"
+  >
+
+  <meta
+    name="robots"
+    content="noindex, nofollow"
+  >
+
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="default"
+  >
+
+  <meta
+    name="apple-mobile-web-app-title"
+    content="HSM Internal"
+  >
+
+  <link
+    rel="manifest"
+    href="/manifest.webmanifest"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="/hsm-apk-icon.png"
+  >
+
+  <title>HSM Internal | PT Hidayah Sarana Mulia</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 25px 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f2f6fc;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 440px;
+      background: white;
+      padding: 35px 24px;
+      border-radius: 20px;
+      text-align: center;
+      border: 1px solid #dce5f0;
+      box-shadow: 0 12px 35px rgba(7,84,166,.09);
+    }
+
+    .logo {
+      display: block;
+      width: 190px;
+      max-width: 80%;
+      height: auto;
+      margin: 0 auto 20px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      color: #0754a6;
+    }
+
+    .company {
+      margin: 0 0 30px;
+      font-size: 12px;
+      line-height: 1.7;
+      color: #64748b;
+    }
+
+    .menu {
+      display: block;
+      padding: 19px 15px;
+      margin-top: 14px;
+      text-decoration: none;
+      background: linear-gradient(
+        135deg,
+        #0754a6,
+        #063d79
+      );
+      color: white;
+      border-radius: 13px;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .menu.petugas {
+      background: linear-gradient(
+        135deg,
+        #063d79,
+        #052d59
+      );
+    }
+
+    .menu span {
+      display: block;
+      margin-top: 7px;
+      font-size: 11px;
+      font-weight: normal;
+      opacity: .9;
+      line-height: 1.5;
+    }
+
+    .footer {
+      margin-top: 30px;
+      color: #94a3b8;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    @media (display-mode: standalone) {
+
+      body {
+        padding-top: max(
+          25px,
+          env(safe-area-inset-top)
+        );
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <main class="card">
+
+    <img
+      src="/hsm-logo.png"
+      class="logo"
+      alt="HSM Transport"
+    >
+
+    <h1>HSM Internal</h1>
+
+    <p class="company">
+      Portal Resmi Perusahaan<br>
+      PT Hidayah Sarana Mulia
+    </p>
+
+    <a
+      class="menu"
+      href="/admin.html"
+    >
+      🔐 Login Admin
+
+      <span>
+        Dashboard pengelolaan HSM Transport
+      </span>
+    </a>
+
+    <a
+      class="menu petugas"
+      href="/petugas.html"
+    >
+      🚐 Login Sopir & Kernet
+
+      <span>
+        Manifest penumpang, perjalanan,
+        dan QR Scanner
+      </span>
+    </a>
+
+    <div class="footer">
+      KHUSUS INTERNAL HSM TRANSPORT
+      <br>
+      © 2026 PT Hidayah Sarana Mulia
+    </div>
+
+  </main>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js")
+          .catch(error => {
+            console.warn("HSM Internal PWA:", error);
+          });
+      });
+    }
+  </script>
+
+</body>
+
+</html>
