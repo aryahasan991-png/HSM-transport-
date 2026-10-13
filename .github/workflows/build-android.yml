@@ -2,29 +2,31 @@
 # HSM TRANSPORT
 # PT HIDAYAH SARANA MULIA
 #
-# BUILD APK ANDROID - CAPACITOR
+# ANDROID APK BUILD
 #
 # FITUR:
-# - Website penumpang
-# - Portal internal APK
-# - Dashboard admin
-# - Portal sopir dan kernet
-# - Splash screen 3 detik
-# - Ikon HSM
-# - Tombol Back Android
-# - Kamera QR Code
-# - Scanner boarding otomatis
-# - Suara WAV native Android
-# - Getaran native Android
+# - Website Penumpang
+# - Dashboard Admin
+# - Portal Petugas
+# - QR Scanner Otomatis
+# - Native Android Audio
+# - Custom Scanner Sounds
+# - Native Android Vibration
+# - Splash Screen HSM
+# - Android Back Navigation
+# - Official HSM App Icon
 #
-# SUARA:
-# BERHASIL: 1 BIP BANDARA
-# GAGAL:    3 BIP PERINGATAN
+# CUSTOM AUDIO:
 #
-# WEBSITE VERCEL TIDAK DIUBAH
+# hsm_scan_success.wav
+#   -> Suara scan berhasil
 #
-# OUTPUT:
-# HSM-Transport.apk
+# hsm_scan_error.wav
+#   -> Suara scan gagal
+#
+# Tidak membuat suara sintetis.
+# Menggunakan file WAV asli dari repository.
+#
 # ============================================================
 
 name: Build APK HSM Transport
@@ -33,6 +35,7 @@ on:
   workflow_dispatch:
 
 jobs:
+
   build:
 
     name: Build Android APK
@@ -47,7 +50,7 @@ jobs:
     steps:
 
       # ======================================================
-      # 1. CHECKOUT
+      # 1. CHECKOUT REPOSITORY
       # ======================================================
 
       - name: Checkout Repository
@@ -78,33 +81,9 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-        with:
-          cmdline-tools-version: "12266719"
-          accept-android-sdk-licenses: "false"
-          packages: ""
 
       # ======================================================
-      # 5. SDK LICENSES
-      # ======================================================
-
-      - name: Accept Android SDK Licenses
-        shell: bash
-        run: |
-          set +o pipefail
-
-          yes | sdkmanager --licenses > /dev/null
-
-          result=${PIPESTATUS[1]}
-
-          set -o pipefail
-
-          if [ "$result" -ne 0 ]; then
-            echo "Gagal menerima lisensi Android SDK."
-            exit "$result"
-          fi
-
-      # ======================================================
-      # 6. ANDROID PLATFORM
+      # 5. ANDROID PLATFORM
       # ======================================================
 
       - name: Install Android Platform
@@ -116,7 +95,40 @@ jobs:
             "platform-tools"
 
       # ======================================================
-      # 7. WEBSITE HSM
+      # 6. VALIDASI FILE HSM
+      # ======================================================
+
+      - name: Validate HSM Files
+        shell: bash
+        run: |
+          echo "Memeriksa file utama HSM Transport..."
+
+          for file in \
+            index.html \
+            admin.html \
+            petugas.html \
+            config.js \
+            app.js \
+            hsm-logo.png \
+            hsm-apk-icon.png \
+            hsm_scan_success.wav \
+            hsm_scan_error.wav
+          do
+            if [ ! -f "$file" ]; then
+              echo "ERROR: File tidak ditemukan: $file"
+              exit 1
+            fi
+          done
+
+          if [ ! -f android-app/package.json ]; then
+            echo "ERROR: android-app/package.json tidak ditemukan."
+            exit 1
+          fi
+
+          echo "Semua file utama tersedia."
+
+      # ======================================================
+      # 7. PREPARE WEBSITE
       # ======================================================
 
       - name: Prepare HSM Website
@@ -141,13 +153,7 @@ jobs:
             fi
           done
 
-          test -f android-app/www/index.html
-          test -f android-app/www/admin.html
-          test -f android-app/www/petugas.html
-          test -f android-app/www/config.js
-          test -f android-app/www/app.js
-
-          echo "Website HSM siap."
+          echo "Website HSM Transport siap."
 
       # ======================================================
       # 8. PORTAL INTERNAL
@@ -163,6 +169,7 @@ jobs:
           <html lang="id">
 
           <head>
+
             <meta charset="UTF-8">
 
             <meta
@@ -175,61 +182,81 @@ jobs:
               content="#0754a6"
             >
 
-            <title>Portal Internal HSM Transport</title>
+            <title>
+              Portal Internal | HSM Transport
+            </title>
 
             <style>
-              *{box-sizing:border-box}
+
+              *{
+                box-sizing:border-box;
+              }
 
               body{
                 margin:0;
                 padding:20px;
                 min-height:100vh;
-                font-family:Arial,sans-serif;
+                font-family:Arial,Helvetica,sans-serif;
                 background:#f4f7fb;
                 display:flex;
                 align-items:center;
-                justify-content:center
+                justify-content:center;
               }
 
               .card{
                 width:100%;
                 max-width:440px;
-                padding:28px 22px;
+                padding:30px 22px;
                 background:white;
                 border-radius:18px;
                 text-align:center;
-                box-shadow:0 8px 28px rgba(0,0,0,.08)
+                box-shadow:
+                  0 8px 28px rgba(0,0,0,.08);
               }
 
               h1{
+                margin:0 0 10px;
                 color:#0754a6;
-                font-size:24px
+                font-size:27px;
+                font-weight:800;
               }
 
               p{
                 color:#64748b;
-                line-height:1.7
+                line-height:1.7;
+                font-size:14px;
+                margin-bottom:25px;
               }
 
               a{
                 display:block;
-                margin-top:14px;
-                padding:15px;
+                margin-top:13px;
+                padding:16px;
                 border-radius:11px;
                 background:#0754a6;
                 color:white;
+                font-size:14px;
                 font-weight:bold;
-                text-decoration:none
+                text-decoration:none;
               }
 
               a.secondary{
                 background:#e2e8f0;
-                color:#334155
+                color:#334155;
               }
+
+              .footer{
+                margin-top:25px;
+                color:#94a3b8;
+                font-size:11px;
+              }
+
             </style>
+
           </head>
 
           <body>
+
             <main class="card">
 
               <h1>HSM Transport</h1>
@@ -247,11 +274,19 @@ jobs:
                 🚐 Portal Sopir & Kernet
               </a>
 
-              <a href="index.html" class="secondary">
+              <a
+                href="index.html"
+                class="secondary"
+              >
                 Kembali ke Penumpang
               </a>
 
+              <div class="footer">
+                HSM Transport © 2026
+              </div>
+
             </main>
+
           </body>
 
           </html>
@@ -259,8 +294,10 @@ jobs:
 
           fi
 
+          echo "Portal internal siap."
+
       # ======================================================
-      # 9. AKSES INTERNAL
+      # 9. TOMBOL AKSES INTERNAL APK
       # ======================================================
 
       - name: Add APK Internal Access
@@ -269,12 +306,18 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          path = Path("android-app/www/index.html")
-          html = path.read_text(encoding="utf-8")
+          path = Path(
+              "android-app/www/index.html"
+          )
+
+          html = path.read_text(
+              encoding="utf-8"
+          )
 
           marker = "hsm-apk-internal-access"
 
           if marker not in html:
+
               link = '''
           <div
             id="hsm-apk-internal-access"
@@ -284,6 +327,7 @@ jobs:
               background:#f5f7fa;
             "
           >
+
             <a
               href="portal.html"
               style="
@@ -294,15 +338,20 @@ jobs:
             >
               🔐 Akses Internal HSM
             </a>
+
           </div>
           '''
 
-              if "</body>" not in html:
-                  raise RuntimeError(
-                      "Tag body tidak ditemukan."
-                  )
+              lower = html.lower()
 
-              position = html.rfind("</body>")
+              position = lower.rfind(
+                  "</body>"
+              )
+
+              if position < 0:
+                  raise RuntimeError(
+                      "Tag </body> tidak ditemukan."
+                  )
 
               html = (
                   html[:position]
@@ -316,27 +365,13 @@ jobs:
                   encoding="utf-8"
               )
 
-          print("Akses internal APK siap.")
+          print(
+              "Akses internal APK siap."
+          )
           PY
 
       # ======================================================
-      # 10. LOGO SPLASH
-      # ======================================================
-
-      - name: Copy HSM Splash Logo
-        shell: bash
-        run: |
-          if [ ! -f hsm-logo.png ]; then
-            echo "ERROR: hsm-logo.png tidak ditemukan."
-            exit 1
-          fi
-
-          mkdir -p android-app/www
-
-          cp hsm-logo.png android-app/www/hsm-logo.png
-
-      # ======================================================
-      # 11. SPLASH SCREEN 3 DETIK
+      # 10. SPLASH SCREEN HSM
       # ======================================================
 
       - name: Add HSM Splash Screen
@@ -345,14 +380,21 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          path = Path("android-app/www/index.html")
-          html = path.read_text(encoding="utf-8")
+          path = Path(
+              "android-app/www/index.html"
+          )
+
+          html = path.read_text(
+              encoding="utf-8"
+          )
 
           if "hsm-custom-splash" not in html:
+
               splash = """
           <!-- HSM CUSTOM SPLASH SCREEN -->
 
           <style>
+
             #hsm-custom-splash{
               position:fixed;
               inset:0;
@@ -365,12 +407,12 @@ jobs:
               padding:24px;
               text-align:center;
               opacity:1;
-              transition:opacity .4s ease
+              transition:opacity .4s ease;
             }
 
             #hsm-custom-splash.hsm-hide{
               opacity:0;
-              pointer-events:none
+              pointer-events:none;
             }
 
             #hsm-custom-splash .hsm-splash-logo{
@@ -378,7 +420,7 @@ jobs:
               max-height:230px;
               object-fit:contain;
               margin-bottom:35px;
-              animation:hsmFadeIn .9s ease both
+              animation:hsmFadeIn .9s ease both;
             }
 
             #hsm-custom-splash .hsm-splash-welcome{
@@ -388,7 +430,7 @@ jobs:
               font-weight:800;
               letter-spacing:1px;
               margin-bottom:12px;
-              animation:hsmFadeIn 1.1s ease both
+              animation:hsmFadeIn 1.1s ease both;
             }
 
             #hsm-custom-splash .hsm-splash-tagline{
@@ -396,7 +438,7 @@ jobs:
               font-family:Arial,sans-serif;
               font-size:14px;
               line-height:1.6;
-              animation:hsmFadeIn 1.3s ease both
+              animation:hsmFadeIn 1.3s ease both;
             }
 
             #hsm-custom-splash .hsm-splash-company{
@@ -409,19 +451,23 @@ jobs:
               font-size:11px;
               font-weight:700;
               letter-spacing:1px;
-              animation:hsmFadeIn 1.5s ease both
+              animation:hsmFadeIn 1.5s ease both;
             }
 
             @keyframes hsmFadeIn{
+
               from{
                 opacity:0;
-                transform:translateY(15px)
+                transform:translateY(15px);
               }
+
               to{
                 opacity:1;
-                transform:translateY(0)
+                transform:translateY(0);
               }
+
             }
+
           </style>
 
           <div id="hsm-custom-splash">
@@ -447,45 +493,63 @@ jobs:
           </div>
 
           <script>
+
           (function(){
+
             function closeSplash(){
-              var splash=document.getElementById(
-                "hsm-custom-splash"
-              );
+
+              var splash =
+                document.getElementById(
+                  "hsm-custom-splash"
+                );
 
               if(!splash)return;
 
               setTimeout(function(){
-                splash.classList.add("hsm-hide");
+
+                splash.classList.add(
+                  "hsm-hide"
+                );
 
                 setTimeout(function(){
                   splash.remove();
                 },450);
 
               },3000);
+
             }
 
             if(document.readyState==="loading"){
+
               document.addEventListener(
                 "DOMContentLoaded",
                 closeSplash,
                 {once:true}
               );
+
             }else{
+
               closeSplash();
+
             }
+
           })();
+
           </script>
 
           <!-- END HSM CUSTOM SPLASH SCREEN -->
           """
 
-              if "</body>" not in html:
-                  raise RuntimeError(
-                      "Tag body tidak ditemukan."
-                  )
+              lower = html.lower()
 
-              position = html.rfind("</body>")
+              position = lower.rfind(
+                  "</body>"
+              )
+
+              if position < 0:
+                  raise RuntimeError(
+                      "Tag </body> tidak ditemukan."
+                  )
 
               html = (
                   html[:position]
@@ -499,11 +563,11 @@ jobs:
                   encoding="utf-8"
               )
 
-          print("Splash screen siap.")
+          print("Splash screen HSM siap.")
           PY
 
       # ======================================================
-      # 12. INSTALL CAPACITOR
+      # 11. INSTALL CAPACITOR
       # ======================================================
 
       - name: Install Capacitor
@@ -513,174 +577,80 @@ jobs:
           npm install --no-audit --no-fund
 
       # ======================================================
-      # 13. GENERATE ANDROID PROJECT
+      # 12. GENERATE ANDROID PROJECT
       # ======================================================
 
       - name: Generate Android Project
         working-directory: android-app
         shell: bash
         run: |
-          npx cap add android
+          if [ -f android/app/build.gradle ]; then
+            echo "Android project sudah tersedia."
+          else
+            npx cap add android
+          fi
 
       # ======================================================
-      # 14. GENERATE SUARA BOARDING BANDARA
+      # 13. INSTALL SUARA SCANNER HSM
       #
-      # Dibuat langsung dari Python.
-      # Menghasilkan WAV tanpa file eksternal.
+      # AUDIO ASLI PILIHAN PEMILIK HSM
       #
       # SUCCESS:
-      # Satu beep naik yang pendek.
+      # hsm_scan_success.wav
       #
       # ERROR:
-      # Tiga beep peringatan bernada rendah.
+      # hsm_scan_error.wav
+      #
+      # Tidak menggunakan suara sintetis.
       # ======================================================
 
-      - name: Generate HSM Airport Scanner Sounds
+      - name: Install HSM Custom Scanner Sounds
         shell: bash
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import math
-          import wave
-          import struct
+          echo "Memasang suara scanner HSM..."
 
-          target = Path(
-              "android-app/android/app/src/main/res/raw"
-          )
+          mkdir -p \
+            android-app/android/app/src/main/res/raw
 
-          target.mkdir(
-              parents=True,
-              exist_ok=True
-          )
+          test -s hsm_scan_success.wav || {
+            echo "ERROR: hsm_scan_success.wav tidak tersedia."
+            exit 1
+          }
 
-          RATE = 44100
+          test -s hsm_scan_error.wav || {
+            echo "ERROR: hsm_scan_error.wav tidak tersedia."
+            exit 1
+          }
 
-          def make_sound(
-              filename,
-              segments
-          ):
-              samples = []
+          cp \
+            hsm_scan_success.wav \
+            android-app/android/app/src/main/res/raw/hsm_scan_success.wav
 
-              for start_freq, end_freq, duration, silence in segments:
+          cp \
+            hsm_scan_error.wav \
+            android-app/android/app/src/main/res/raw/hsm_scan_error.wav
 
-                  count = int(RATE * duration)
+          echo "Suara berhasil:"
+          ls -lh \
+            android-app/android/app/src/main/res/raw/hsm_scan_success.wav
 
-                  for i in range(count):
-                      progress = i / max(count - 1, 1)
-                      t = i / RATE
+          echo "Suara gagal:"
+          ls -lh \
+            android-app/android/app/src/main/res/raw/hsm_scan_error.wav
 
-                      freq = (
-                          start_freq +
-                          (end_freq - start_freq) * progress
-                      )
-
-                      phase = (
-                          2 * math.pi *
-                          (
-                              start_freq * t +
-                              0.5 *
-                              (end_freq - start_freq) *
-                              t * t / duration
-                          )
-                      )
-
-                      attack = min(
-                          1.0,
-                          i / max(1, int(RATE * .008))
-                      )
-
-                      release = min(
-                          1.0,
-                          (count - i) /
-                          max(1, int(RATE * .025))
-                      )
-
-                      envelope = max(
-                          0.0,
-                          min(attack, release)
-                      )
-
-                      main = math.sin(phase)
-
-                      overtone = math.sin(
-                          2 * phase
-                      )
-
-                      signal = (
-                          main * 0.88 +
-                          overtone * 0.12
-                      )
-
-                      value = int(
-                          26000 *
-                          signal *
-                          envelope
-                      )
-
-                      value = max(
-                          -32767,
-                          min(32767, value)
-                      )
-
-                      samples.append(value)
-
-                  samples.extend(
-                      [0] * int(RATE * silence)
-                  )
-
-              path = target / filename
-
-              with wave.open(str(path), "wb") as output:
-                  output.setnchannels(1)
-                  output.setsampwidth(2)
-                  output.setframerate(RATE)
-
-                  output.writeframes(
-                      struct.pack(
-                          "<" + "h" * len(samples),
-                          *samples
-                      )
-                  )
-
-              print(
-                  "Suara berhasil dibuat:",
-                  path,
-                  path.stat().st_size,
-                  "bytes"
-              )
-
-          # Suara boarding berhasil:
-          # Satu bip jernih dengan nada naik.
-          make_sound(
-              "hsm_scan_success.wav",
-              [
-                  (1170, 1510, 0.19, 0.0)
-              ]
-          )
-
-          # Suara boarding gagal:
-          # Tiga bip peringatan.
-          make_sound(
-              "hsm_scan_error.wav",
-              [
-                  (700, 560, 0.12, 0.065),
-                  (700, 560, 0.12, 0.065),
-                  (700, 560, 0.12, 0.0)
-              ]
-          )
-          PY
+          echo "Audio scanner HSM berhasil dipasang."
 
       # ======================================================
-      # 15. MAINACTIVITY ANDROID
+      # 14. NATIVE ANDROID SOUND + VIBRATION
       #
-      # - Back Android
-      # - JavaScript bridge aman untuk petugas.html
-      # - SoundPool memutar WAV native
-      # - Getaran native
+      # JAVASCRIPT:
       #
-      # Catatan:
-      # Bridge hanya memproses feedback jika
-      # WebView berada di halaman petugas lokal.
+      # window.HSMNative.feedback(true)
+      #   -> Suara berhasil + 1 getaran
+      #
+      # window.HSMNative.feedback(false)
+      #   -> Suara gagal + 3 getaran
+      #
       # ======================================================
 
       - name: Configure HSM Native Android Features
@@ -695,10 +665,13 @@ jobs:
           )
 
           files = list(
-              java_root.rglob("MainActivity.java")
+              java_root.rglob(
+                  "MainActivity.java"
+              )
           )
 
           if len(files) != 1:
+
               raise RuntimeError(
                   "MainActivity.java tidak ditemukan atau ganda."
               )
@@ -716,6 +689,7 @@ jobs:
           )
 
           if not match:
+
               raise RuntimeError(
                   "Package Android tidak ditemukan."
               )
@@ -727,7 +701,6 @@ jobs:
 
           import android.content.Context;
           import android.media.AudioAttributes;
-          import android.media.AudioManager;
           import android.media.SoundPool;
           import android.net.Uri;
           import android.os.Build;
@@ -756,6 +729,10 @@ jobs:
 
               private int successStreamId = 0;
               private int errorStreamId = 0;
+
+              // ============================================
+              // JAVASCRIPT BRIDGE
+              // ============================================
 
               private final class HSMNativeBridge {
 
@@ -799,13 +776,23 @@ jobs:
                           playHSMFeedback(success);
 
                       });
+
                   }
+
               }
 
-              @Override
-              public void onCreate(Bundle savedInstanceState) {
+              // ============================================
+              // ON CREATE
+              // ============================================
 
-                  super.onCreate(savedInstanceState);
+              @Override
+              public void onCreate(
+                  Bundle savedInstanceState
+              ) {
+
+                  super.onCreate(
+                      savedInstanceState
+                  );
 
                   initializeHSMSounds();
 
@@ -820,31 +807,41 @@ jobs:
                           new HSMNativeBridge(),
                           "HSMNative"
                       );
+
                   }
 
                   configureBackButton();
+
               }
 
-              // =============================================
-              // SOUNDPOOL
-              // =============================================
+              // ============================================
+              // LOAD AUDIO
+              // ============================================
 
               private void initializeHSMSounds() {
 
                   AudioAttributes attributes =
                       new AudioAttributes.Builder()
+
                           .setUsage(
-                              AudioAttributes.USAGE_ASSISTANCE_SONIFICATION
+                              AudioAttributes.USAGE_MEDIA
                           )
+
                           .setContentType(
                               AudioAttributes.CONTENT_TYPE_SONIFICATION
                           )
+
                           .build();
 
                   hsmSoundPool =
                       new SoundPool.Builder()
+
                           .setMaxStreams(2)
-                          .setAudioAttributes(attributes)
+
+                          .setAudioAttributes(
+                              attributes
+                          )
+
                           .build();
 
                   hsmSoundPool.setOnLoadCompleteListener(
@@ -852,45 +849,64 @@ jobs:
 
                           if (status == 0) {
 
-                              if (sampleId == successSoundId) {
+                              if (
+                                  sampleId == successSoundId
+                              ) {
                                   successSoundReady = true;
                               }
 
-                              if (sampleId == errorSoundId) {
+                              if (
+                                  sampleId == errorSoundId
+                              ) {
                                   errorSoundReady = true;
                               }
+
                           }
+
                       }
                   );
 
-                  successSoundId = hsmSoundPool.load(
-                      this,
-                      R.raw.hsm_scan_success,
-                      1
-                  );
+                  successSoundId =
+                      hsmSoundPool.load(
+                          this,
+                          R.raw.hsm_scan_success,
+                          1
+                      );
 
-                  errorSoundId = hsmSoundPool.load(
-                      this,
-                      R.raw.hsm_scan_error,
-                      1
-                  );
+                  errorSoundId =
+                      hsmSoundPool.load(
+                          this,
+                          R.raw.hsm_scan_error,
+                          1
+                      );
+
               }
 
-              // =============================================
-              // FEEDBACK UTAMA
-              // =============================================
+              // ============================================
+              // FEEDBACK
+              // ============================================
 
-              private void playHSMFeedback(boolean success) {
+              private void playHSMFeedback(
+                  boolean success
+              ) {
 
-                  playHSMVibration(success);
-                  playHSMSound(success);
+                  playHSMVibration(
+                      success
+                  );
+
+                  playHSMSound(
+                      success
+                  );
+
               }
 
-              // =============================================
-              // WAV SCANNER BANDARA
-              // =============================================
+              // ============================================
+              // CUSTOM SCANNER AUDIO
+              // ============================================
 
-              private void playHSMSound(boolean success) {
+              private void playHSMSound(
+                  boolean success
+              ) {
 
                   if (hsmSoundPool == null) {
                       return;
@@ -905,17 +921,22 @@ jobs:
                           }
 
                           if (successStreamId != 0) {
-                              hsmSoundPool.stop(successStreamId);
+
+                              hsmSoundPool.stop(
+                                  successStreamId
+                              );
+
                           }
 
-                          successStreamId = hsmSoundPool.play(
-                              successSoundId,
-                              1.0f,
-                              1.0f,
-                              1,
-                              0,
-                              1.0f
-                          );
+                          successStreamId =
+                              hsmSoundPool.play(
+                                  successSoundId,
+                                  1.0f,
+                                  1.0f,
+                                  1,
+                                  0,
+                                  1.0f
+                              );
 
                       } else {
 
@@ -924,17 +945,23 @@ jobs:
                           }
 
                           if (errorStreamId != 0) {
-                              hsmSoundPool.stop(errorStreamId);
+
+                              hsmSoundPool.stop(
+                                  errorStreamId
+                              );
+
                           }
 
-                          errorStreamId = hsmSoundPool.play(
-                              errorSoundId,
-                              1.0f,
-                              1.0f,
-                              1,
-                              0,
-                              1.0f
-                          );
+                          errorStreamId =
+                              hsmSoundPool.play(
+                                  errorSoundId,
+                                  1.0f,
+                                  1.0f,
+                                  1,
+                                  0,
+                                  1.0f
+                              );
+
                       }
 
                   } catch (Exception error) {
@@ -944,14 +971,18 @@ jobs:
                           "Scanner sound failed",
                           error
                       );
+
                   }
+
               }
 
-              // =============================================
-              // GETARAN SCANNER
-              // =============================================
+              // ============================================
+              // GETARAN
+              // ============================================
 
-              private void playHSMVibration(boolean success) {
+              private void playHSMVibration(
+                  boolean success
+              ) {
 
                   try {
 
@@ -967,9 +998,22 @@ jobs:
                           return;
                       }
 
-                      long[] pattern = success
-                          ? new long[]{0, 180}
-                          : new long[]{0, 100, 70, 100, 70, 100};
+                      long[] pattern =
+                          success
+
+                              ? new long[]{
+                                  0,
+                                  180
+                                }
+
+                              : new long[]{
+                                  0,
+                                  100,
+                                  70,
+                                  100,
+                                  70,
+                                  100
+                                };
 
                       if (
                           Build.VERSION.SDK_INT >=
@@ -989,6 +1033,7 @@ jobs:
                               pattern,
                               -1
                           );
+
                       }
 
                   } catch (Exception error) {
@@ -998,122 +1043,160 @@ jobs:
                           "Scanner vibration failed",
                           error
                       );
+
                   }
+
               }
 
-              // =============================================
-              // TOMBOL BACK ANDROID
-              // =============================================
+              // ============================================
+              // ANDROID BACK BUTTON
+              // ============================================
 
               private void configureBackButton() {
 
-                  getOnBackPressedDispatcher().addCallback(
-                      this,
-                      new OnBackPressedCallback(true) {
+                  getOnBackPressedDispatcher()
+                      .addCallback(
+                          this,
+                          new OnBackPressedCallback(
+                              true
+                          ) {
 
-                          @Override
-                          public void handleOnBackPressed() {
+                              @Override
+                              public void handleOnBackPressed() {
 
-                              WebView webView =
-                                  getBridge() == null
-                                      ? null
-                                      : getBridge().getWebView();
+                                  WebView webView =
+                                      getBridge() == null
+                                          ? null
+                                          : getBridge().getWebView();
 
-                              if (webView == null) {
-                                  finish();
-                                  return;
-                              }
-
-                              String url = webView.getUrl();
-                              String path = "";
-
-                              if (url != null) {
-
-                                  String parsedPath =
-                                      Uri.parse(url).getPath();
-
-                                  if (parsedPath != null) {
-                                      path = parsedPath;
+                                  if (webView == null) {
+                                      finish();
+                                      return;
                                   }
-                              }
 
-                              path = path.toLowerCase(
-                                  java.util.Locale.ROOT
-                              );
+                                  String url =
+                                      webView.getUrl();
 
-                              boolean isHome =
-                                  path.isEmpty() ||
-                                  path.equals("/") ||
-                                  path.endsWith("/index.html");
+                                  String path = "";
 
-                              boolean isPortal =
-                                  path.endsWith("/portal.html");
+                                  if (url != null) {
 
-                              boolean isStaff =
-                                  path.endsWith("/petugas.html");
+                                      String parsedPath =
+                                          Uri.parse(url).getPath();
 
-                              boolean isAdmin =
-                                  path.endsWith("/admin.html");
+                                      if (
+                                          parsedPath != null
+                                      ) {
 
-                              if (isStaff || isAdmin) {
+                                          path = parsedPath;
 
-                                  webView.loadUrl(
-                                      "https://localhost/portal.html"
+                                      }
+
+                                  }
+
+                                  path = path.toLowerCase(
+                                      java.util.Locale.ROOT
                                   );
 
-                                  return;
+                                  boolean isHome =
+                                      path.isEmpty() ||
+                                      path.equals("/") ||
+                                      path.endsWith(
+                                          "/index.html"
+                                      );
+
+                                  boolean isPortal =
+                                      path.endsWith(
+                                          "/portal.html"
+                                      );
+
+                                  boolean isStaff =
+                                      path.endsWith(
+                                          "/petugas.html"
+                                      );
+
+                                  boolean isAdmin =
+                                      path.endsWith(
+                                          "/admin.html"
+                                      );
+
+                                  if (
+                                      isStaff ||
+                                      isAdmin
+                                  ) {
+
+                                      webView.loadUrl(
+                                          "https://localhost/portal.html"
+                                      );
+
+                                      return;
+                                  }
+
+                                  if (isPortal) {
+
+                                      webView.loadUrl(
+                                          "https://localhost/index.html"
+                                      );
+
+                                      return;
+                                  }
+
+                                  if (!isHome) {
+
+                                      webView.loadUrl(
+                                          "https://localhost/index.html"
+                                      );
+
+                                      return;
+                                  }
+
+                                  long now =
+                                      System.currentTimeMillis();
+
+                                  if (
+                                      now - lastBackPressed < 2000
+                                  ) {
+
+                                      finish();
+
+                                  } else {
+
+                                      lastBackPressed = now;
+
+                                      Toast.makeText(
+                                          MainActivity.this,
+                                          "Tekan sekali lagi untuk keluar dari HSM Transport",
+                                          Toast.LENGTH_SHORT
+                                      ).show();
+
+                                  }
+
                               }
 
-                              if (isPortal) {
-
-                                  webView.loadUrl(
-                                      "https://localhost/index.html"
-                                  );
-
-                                  return;
-                              }
-
-                              if (!isHome) {
-
-                                  webView.loadUrl(
-                                      "https://localhost/index.html"
-                                  );
-
-                                  return;
-                              }
-
-                              long now =
-                                  System.currentTimeMillis();
-
-                              if (now - lastBackPressed < 2000) {
-
-                                  finish();
-
-                              } else {
-
-                                  lastBackPressed = now;
-
-                                  Toast.makeText(
-                                      MainActivity.this,
-                                      "Tekan sekali lagi untuk keluar dari HSM Transport",
-                                      Toast.LENGTH_SHORT
-                                  ).show();
-                              }
                           }
-                      }
-                  );
+                      );
+
               }
+
+              // ============================================
+              // CLEANUP
+              // ============================================
 
               @Override
               protected void onDestroy() {
 
                   if (hsmSoundPool != null) {
+
                       hsmSoundPool.release();
+
                       hsmSoundPool = null;
+
                   }
 
                   super.onDestroy();
+
               }
+
           }
           """
 
@@ -1128,13 +1211,12 @@ jobs:
           )
 
           print(
-              "MainActivity HSM dengan suara WAV native "
-              "dan getaran Android berhasil dibuat."
+              "Native Android HSM berhasil dikonfigurasi."
           )
           PY
 
       # ======================================================
-      # 16. CAMERA + VIBRATE PERMISSIONS
+      # 15. ANDROID PERMISSIONS
       # ======================================================
 
       - name: Enable HSM Android Permissions
@@ -1149,6 +1231,7 @@ jobs:
           )
 
           if not manifest.exists():
+
               raise RuntimeError(
                   "AndroidManifest.xml tidak ditemukan."
               )
@@ -1158,26 +1241,24 @@ jobs:
           )
 
           permissions = [
+
               (
                   "android.permission.CAMERA",
                   '<uses-permission '
                   'android:name="android.permission.CAMERA" />'
               ),
+
               (
                   "android.permission.VIBRATE",
                   '<uses-permission '
                   'android:name="android.permission.VIBRATE" />'
               )
+
           ]
 
           for permission_name, xml in permissions:
 
               if permission_name not in content:
-
-                  if "<application" not in content:
-                      raise RuntimeError(
-                          "Tag application tidak ditemukan."
-                      )
 
                   content = content.replace(
                       "<application",
@@ -1209,26 +1290,23 @@ jobs:
           ET.parse(manifest)
 
           print(
-              "Izin CAMERA dan VIBRATE siap."
+              "Izin kamera dan getaran berhasil ditambahkan."
           )
           PY
 
       # ======================================================
-      # 17. GENERATE IKON HSM
+      # 16. GENERATE APK ICON
       # ======================================================
 
       - name: Generate HSM Transport App Icon
         working-directory: android-app
         shell: bash
         run: |
-          if [ ! -f ../hsm-apk-icon.png ]; then
-            echo "ERROR: hsm-apk-icon.png tidak ditemukan!"
-            exit 1
-          fi
-
           mkdir -p assets
 
-          cp ../hsm-apk-icon.png assets/icon.png
+          cp \
+            ../hsm-apk-icon.png \
+            assets/icon.png
 
           npm install \
             --no-save \
@@ -1241,10 +1319,10 @@ jobs:
             --iconBackgroundColor '#ffffff' \
             --iconBackgroundColorDark '#ffffff'
 
-          echo "Ikon resmi HSM siap."
+          echo "Ikon APK HSM berhasil dibuat."
 
       # ======================================================
-      # 18. CAPACITOR SYNC
+      # 17. CAPACITOR SYNC
       # ======================================================
 
       - name: Sync Android
@@ -1254,7 +1332,35 @@ jobs:
           npx cap sync android
 
       # ======================================================
-      # 19. BUILD APK
+      # 18. VERIFY CUSTOM SCANNER AUDIO
+      # ======================================================
+
+      - name: Verify HSM Scanner Sounds
+        shell: bash
+        run: |
+          echo "Memverifikasi suara scanner..."
+
+          SUCCESS_FILE="android-app/android/app/src/main/res/raw/hsm_scan_success.wav"
+          ERROR_FILE="android-app/android/app/src/main/res/raw/hsm_scan_error.wav"
+
+          test -s "$SUCCESS_FILE" || {
+            echo "ERROR: Suara sukses hilang."
+            exit 1
+          }
+
+          test -s "$ERROR_FILE" || {
+            echo "ERROR: Suara gagal hilang."
+            exit 1
+          }
+
+          echo "Kedua suara tersedia."
+
+          ls -lh \
+            "$SUCCESS_FILE" \
+            "$ERROR_FILE"
+
+      # ======================================================
+      # 19. BUILD ANDROID APK
       # ======================================================
 
       - name: Build APK
@@ -1278,7 +1384,7 @@ jobs:
             android-app/android/app/build/outputs/apk/debug/app-debug.apk \
             output/HSM-Transport.apk
 
-          echo "APK HSM Transport berhasil dibuat."
+          echo "APK berhasil dibuat."
 
           ls -lh output/
 
