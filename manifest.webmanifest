@@ -1,0 +1,21 @@
+{
+  "id": "/",
+  "name": "HSM Transport",
+  "short_name": "HSM Transport",
+  "description": "Aplikasi resmi HSM Transport - PT Hidayah Sarana Mulia",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0754a6",
+  "orientation": "portrait-primary",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "/hsm-apk-icon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
