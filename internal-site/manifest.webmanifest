@@ -1,0 +1,20 @@
+{
+  "id": "/",
+  "name": "HSM Internal",
+  "short_name": "HSM Internal",
+  "description": "Portal Admin, Sopir dan Kernet PT Hidayah Sarana Mulia",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0754a6",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "/hsm-apk-icon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
