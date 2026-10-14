@@ -483,7 +483,7 @@ async function reportAdminSecurity() {
 
     const url =
       HSM_CONFIG.SUPABASE_URL.replace(/\/$/, "") +
-      "/functions/v1/hsm-admin-security";
+      "/functions/v1/clever-processor";
 
     const response = await fetch(url, {
       method: "POST",
