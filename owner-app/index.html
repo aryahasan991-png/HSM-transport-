@@ -1,514 +1,545 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="theme-color"
-    content="#0754a6"
-  >
-
-  <meta
-    name="robots"
-    content="noindex,nofollow"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0754a6">
+  <meta name="robots" content="noindex,nofollow">
 
   <title>HSM OWNER | PT Hidayah Sarana Mulia</title>
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-  ></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js"></script>
 
   <style>
-
     :root {
-      --blue: #0754a6;
-      --dark: #063d79;
-      --red: #e31e2d;
-      --green: #16834b;
-      --bg: #edf3fa;
-      --text: #172033;
-      --muted: #64748b;
-      --border: #dce3ec;
+      --blue:#0754a6;
+      --dark:#063d79;
+      --red:#e31e2d;
+      --green:#16834b;
+      --bg:#edf3fa;
+      --text:#172033;
+      --muted:#64748b;
+      --border:#dce3ec;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing:border-box; }
 
     body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
+      margin:0;
+      min-height:100vh;
+      background:var(--bg);
+      font-family:Arial,Helvetica,sans-serif;
+      color:var(--text);
     }
 
-    button,
-    input {
-      font-family: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: .55;
-      cursor: not-allowed;
-    }
+    button,input,select { font-family:inherit; }
+    button { cursor:pointer; }
+    button:disabled { opacity:.55;cursor:not-allowed; }
 
     .header {
-      padding: 32px 16px 65px;
-      text-align: center;
-      background: linear-gradient(
-        135deg,
-        var(--blue),
-        var(--dark)
-      );
-      color: white;
+      padding:24px 15px 55px;
+      text-align:center;
+      color:white;
+      background:linear-gradient(135deg,var(--blue),var(--dark));
     }
 
     .logo {
-      font-size: 43px;
-      font-weight: 900;
-      font-style: italic;
-      letter-spacing: 2px;
+      font-size:40px;
+      font-weight:900;
+      font-style:italic;
+      letter-spacing:2px;
     }
 
-    .logo span {
-      color: #ff5252;
-    }
+    .logo span { color:#ff5252; }
 
     .company {
-      margin-top: 5px;
-      font-size: 11px;
-      font-weight: bold;
-      letter-spacing: 2px;
+      margin-top:5px;
+      font-size:10px;
+      font-weight:bold;
+      letter-spacing:1.5px;
     }
 
     .container {
-      width: min(
-        440px,
-        calc(100% - 28px)
-      );
-
-      margin: -35px auto 35px;
-      position: relative;
+      width:min(1050px,calc(100% - 24px));
+      margin:-32px auto 35px;
+      position:relative;
     }
 
     .card {
-      padding: 27px 23px;
-      background: white;
-      border-radius: 19px;
-      box-shadow: 0 12px 35px rgba(7,84,166,.12);
+      padding:25px;
+      border-radius:18px;
+      background:white;
+      box-shadow:0 12px 35px rgba(7,84,166,.10);
     }
 
-    .page {
-      display: none;
+    .auth-card {
+      max-width:440px;
+      margin:auto;
     }
 
-    .page.active {
-      display: block;
-    }
+    .page { display:none; }
+    .page.active { display:block; }
 
     h1 {
-      margin: 0 0 9px;
-      text-align: center;
-      font-size: 24px;
-      color: var(--dark);
+      margin:0 0 10px;
+      color:var(--dark);
+      font-size:24px;
     }
 
+    .auth-card h1 { text-align:center; }
+
     h2 {
-      margin: 0 0 12px;
-      font-size: 20px;
-      color: var(--dark);
+      margin:0 0 15px;
+      color:var(--dark);
+      font-size:19px;
     }
 
     .description {
-      margin: 0 0 25px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
+      margin:0 0 25px;
+      color:var(--muted);
+      text-align:center;
+      font-size:13px;
+      line-height:1.7;
     }
 
-    .field {
-      margin-bottom: 18px;
-    }
+    .field { margin-bottom:18px; }
 
     label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 13px;
-      font-weight: bold;
+      display:block;
+      margin-bottom:8px;
+      font-size:13px;
+      font-weight:bold;
     }
 
-    input {
-      display: block;
-      width: 100%;
-      min-height: 51px;
-      padding: 13px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: 11px;
-      outline: none;
-      background: #fff;
-      color: var(--text);
-      font-size: 15px;
+    input,select {
+      display:block;
+      width:100%;
+      min-height:48px;
+      padding:12px;
+      border:1.5px solid var(--border);
+      border-radius:10px;
+      background:white;
+      color:var(--text);
+      font-size:14px;
     }
 
-    input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(7,84,166,.10);
+    input:focus,select:focus {
+      outline:none;
+      border-color:var(--blue);
     }
 
     .btn {
-      display: block;
-      width: 100%;
-      min-height: 51px;
-      padding: 13px;
-      border: 0;
-      border-radius: 11px;
-      background: linear-gradient(
-        135deg,
-        var(--blue),
-        var(--dark)
-      );
-      color: white;
-      font-size: 14px;
-      font-weight: 900;
+      width:100%;
+      min-height:48px;
+      padding:12px;
+      border:0;
+      border-radius:10px;
+      color:white;
+      background:linear-gradient(135deg,var(--blue),var(--dark));
+      font-size:13px;
+      font-weight:900;
     }
 
     .btn-secondary {
-      margin-top: 10px;
-      background: white;
-      color: var(--blue);
-      border: 1px solid var(--blue);
+      margin-top:10px;
+      background:white;
+      border:1px solid var(--blue);
+      color:var(--blue);
     }
 
     .message {
-      display: none;
-      margin-bottom: 18px;
-      padding: 13px;
-      border-radius: 10px;
-      font-size: 12px;
-      line-height: 1.7;
-      overflow-wrap: anywhere;
+      display:none;
+      margin-bottom:17px;
+      padding:13px;
+      border-radius:10px;
+      font-size:12px;
+      line-height:1.6;
+      overflow-wrap:anywhere;
     }
 
     .message.error {
-      display: block;
-      background: #fff0f0;
-      color: #ad2424;
+      display:block;
+      background:#fff0f0;
+      color:#ad2424;
     }
 
     .message.success {
-      display: block;
-      background: #eaf8ee;
-      color: #16834b;
+      display:block;
+      background:#eaf8ee;
+      color:var(--green);
     }
 
     .notice {
-      margin-top: 22px;
-      padding: 13px;
-      border-radius: 10px;
-      background: #eef5ff;
-      color: var(--muted);
-      font-size: 11px;
-      text-align: center;
-      line-height: 1.8;
+      margin-top:20px;
+      padding:13px;
+      border-radius:10px;
+      background:#eef5ff;
+      color:var(--muted);
+      font-size:11px;
+      text-align:center;
+      line-height:1.7;
     }
 
     .step {
-      padding: 15px;
-      margin-bottom: 15px;
-      background: #f6f9fd;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-size: 12px;
-      line-height: 1.7;
+      padding:15px;
+      margin-bottom:15px;
+      background:#f6f9fd;
+      border:1px solid var(--border);
+      border-radius:12px;
+      font-size:12px;
+      line-height:1.7;
     }
 
     .qr-image {
-      display: block;
-      width: 215px;
-      max-width: 100%;
-      margin: 18px auto;
-      border-radius: 12px;
-      background: white;
+      display:block;
+      width:210px;
+      max-width:100%;
+      margin:15px auto;
     }
 
+    .qr-image[hidden] { display:none; }
+
     .secret {
-      padding: 12px;
-      margin-bottom: 18px;
-      border: 1px dashed #afc8e8;
-      border-radius: 10px;
-      background: #f6faff;
-      font-size: 11px;
-      text-align: center;
-      overflow-wrap: anywhere;
-      user-select: all;
+      margin:12px 0;
+      padding:12px;
+      background:white;
+      border:1px dashed #afc8e8;
+      border-radius:9px;
+      overflow-wrap:anywhere;
+      user-select:all;
     }
 
     .code-input {
-      font-size: 23px;
-      font-weight: 900;
-      text-align: center;
-      letter-spacing: 8px;
+      text-align:center;
+      font-size:22px;
+      font-weight:900;
+      letter-spacing:7px;
     }
 
     .owner-badge {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 8px 13px;
-      border-radius: 30px;
-      background: #eaf8ee;
-      color: var(--green);
-      font-size: 12px;
-      font-weight: bold;
+      display:inline-block;
+      padding:7px 12px;
+      background:#eaf8ee;
+      border-radius:30px;
+      color:var(--green);
+      font-size:11px;
+      font-weight:900;
     }
 
-    .dashboard-heading {
-      text-align: center;
+    .dashboard-head {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-bottom:23px;
     }
 
-    .dashboard-heading h1 {
-      margin-bottom: 15px;
+    .dashboard-head h1 { margin:8px 0 5px; }
+
+    .account {
+      color:var(--muted);
+      font-size:12px;
+      overflow-wrap:anywhere;
     }
 
-    .dashboard-info {
-      margin-top: 20px;
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #f8fbff;
-      font-size: 13px;
-      line-height: 1.9;
+    .logout-small {
+      padding:10px 13px;
+      border:1px solid var(--border);
+      border-radius:9px;
+      background:white;
+      color:#b91c1c;
+      font-size:12px;
+      font-weight:bold;
     }
 
-    .dashboard-info strong {
-      color: var(--dark);
+    .tabs {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:8px;
+      margin-bottom:19px;
     }
 
-    .locked-feature {
-      margin-top: 15px;
-      padding: 15px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #f8fbff;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
+    .tab {
+      min-height:43px;
+      padding:9px 6px;
+      border:1px solid #d9e5f3;
+      border-radius:9px;
+      background:#f5f9ff;
+      color:var(--blue);
+      font-size:12px;
+      font-weight:900;
+    }
+
+    .tab.active {
+      background:var(--blue);
+      color:white;
+    }
+
+    .filter-box {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin-bottom:19px;
+    }
+
+    .filter-box .full { grid-column:1/-1; }
+
+    .filter-box label { font-size:11px; }
+
+    .stats {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:22px;
+    }
+
+    .stat {
+      min-width:0;
+      padding:17px 14px;
+      border:1px solid #dce7f5;
+      border-radius:13px;
+      background:#f8fbff;
+    }
+
+    .stat.primary {
+      grid-column:1/-1;
+      background:linear-gradient(135deg,var(--blue),var(--dark));
+      color:white;
+    }
+
+    .stat-label {
+      margin-bottom:10px;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+    }
+
+    .primary .stat-label { color:#dcecff; }
+
+    .stat-value {
+      font-size:19px;
+      font-weight:900;
+      overflow-wrap:anywhere;
+    }
+
+    .stat.primary .stat-value { font-size:29px; }
+
+    .stat-note {
+      margin-top:9px;
+      font-size:11px;
+      opacity:.75;
+    }
+
+    .section-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:25px 0 12px;
+    }
+
+    .section-head h2 { margin:0; }
+
+    .pill {
+      background:#edf4fc;
+      color:var(--dark);
+      border-radius:30px;
+      padding:6px 10px;
+      font-size:11px;
+      font-weight:bold;
+    }
+
+    .trip-card {
+      margin-bottom:12px;
+      padding:16px;
+      border:1px solid #dce7f5;
+      border-radius:13px;
+      background:white;
+    }
+
+    .trip-top {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .trip-name {
+      font-size:14px;
+      font-weight:900;
+      color:var(--dark);
+    }
+
+    .trip-date {
+      margin-top:5px;
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .trip-total {
+      color:var(--green);
+      font-size:16px;
+      font-weight:900;
+      text-align:right;
+    }
+
+    .trip-bottom {
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:8px;
+      padding-top:11px;
+      border-top:1px solid #edf0f5;
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .empty {
+      padding:26px 15px;
+      text-align:center;
+      border:1px dashed var(--border);
+      border-radius:12px;
+      background:#f8fbff;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.7;
+    }
+
+    .upcoming {
+      margin-top:15px;
+      padding:14px;
+      border-radius:11px;
+      background:#fff8e8;
+      border:1px solid #f5dda1;
+      color:#805b13;
+      font-size:11px;
+      line-height:1.7;
     }
 
     .footer {
-      margin-top: 23px;
-      text-align: center;
-      color: #718096;
-      font-size: 11px;
-      line-height: 1.8;
+      margin-top:22px;
+      text-align:center;
+      color:#718096;
+      font-size:11px;
+      line-height:1.7;
     }
 
+    @media(max-width:550px) {
+      .card { padding:19px 15px; }
+      .stat-value { font-size:15px; }
+      .stat.primary .stat-value { font-size:25px; }
+      .trip-total { font-size:14px; }
+    }
   </style>
-
 </head>
 
 <body>
 
 <header class="header">
-
-  <div class="logo">
-    H<span>S</span>M
-  </div>
-
-  <div class="company">
-    PT HIDAYAH SARANA MULIA
-  </div>
-
+  <div class="logo">H<span>S</span>M</div>
+  <div class="company">PT HIDAYAH SARANA MULIA</div>
 </header>
 
 <main class="container">
 
   <section class="card">
 
-    <div
-      id="globalMessage"
-      class="message"
-      role="alert"
-    ></div>
+    <div id="globalMessage" class="message" role="alert"></div>
 
-    <!-- =========================
-         HALAMAN LOGIN
-         ========================= -->
-
-    <div id="loginPage" class="page active">
+    <!-- LOGIN -->
+    <div id="loginPage" class="page active auth-card">
 
       <h1>👑 HSM OWNER</h1>
 
       <p class="description">
-        Pusat Pengawasan dan Manajemen
-        HSM Transport
-        <br>
-        Akses Khusus Pemilik Perusahaan
+        Pusat Pengawasan dan Manajemen HSM Transport
       </p>
 
       <form id="loginForm">
 
         <div class="field">
-
-          <label for="ownerEmail">
-            Email Owner
-          </label>
-
+          <label for="ownerEmail">Email Owner</label>
           <input
             id="ownerEmail"
             type="email"
             autocomplete="username"
-            placeholder="Masukkan email"
             required
           >
-
         </div>
 
         <div class="field">
-
-          <label for="ownerPassword">
-            Password
-          </label>
-
+          <label for="ownerPassword">Password</label>
           <input
             id="ownerPassword"
             type="password"
             autocomplete="current-password"
-            placeholder="Masukkan password"
             required
           >
-
         </div>
 
-        <button
-          id="loginBtn"
-          type="submit"
-          class="btn"
-        >
+        <button id="loginBtn" type="submit" class="btn">
           🔐 Login HSM Owner
         </button>
 
       </form>
 
       <div class="notice">
-
-        Akses hanya untuk pemilik HSM Transport.
-
-        <br>
-
-        Dilindungi email, password,
-        dan verifikasi Authenticator.
-
+        Akses khusus pemilik perusahaan.<br>
+        Dilindungi verifikasi dua langkah.
       </div>
 
     </div>
 
-    <!-- =========================
-         DAFTAR AUTHENTICATOR
-         ========================= -->
-
-    <div id="enrollPage" class="page">
+    <!-- AKTIVASI MFA -->
+    <div id="enrollPage" class="page auth-card">
 
       <h1>🔑 Aktivasi Keamanan</h1>
 
       <p class="description">
-        Hubungkan akun HSM Owner dengan
-        Google Authenticator atau aplikasi
-        Authenticator lain.
+        Hubungkan akun dengan Google Authenticator.
       </p>
 
       <div class="step">
-
-        <strong>Langkah 1</strong>
-
-        <br>
-
-        Buka Google Authenticator di HP.
-
-        <br>
-
-        Tambahkan akun baru menggunakan
-        QR Code atau kunci penyiapan.
-
+        Buka Google Authenticator, kemudian
+        tambahkan akun menggunakan QR Code
+        atau kunci penyiapan.
       </div>
 
       <img
         id="totpQR"
         class="qr-image"
-        alt="QR Code aktivasi Authenticator"
+        alt="QR Authenticator"
         hidden
       >
 
       <div class="step">
-
         <strong>Kunci penyiapan:</strong>
-
-        <div
-          id="totpSecret"
-          class="secret"
-        >
-          Memuat...
-        </div>
-
-        Simpan kunci ini secara aman.
-        Jangan dibagikan kepada orang lain.
-
-      </div>
-
-      <div class="step">
-
-        <strong>Langkah 2</strong>
-
-        <br>
-
-        Masukkan kode 6 digit yang
-        muncul di Authenticator.
-
+        <div id="totpSecret" class="secret">Memuat...</div>
+        Jangan bagikan kunci ini.
       </div>
 
       <form id="enrollForm">
 
         <div class="field">
-
-          <label for="enrollCode">
-            Kode Verifikasi
-          </label>
-
+          <label for="enrollCode">Kode Authenticator</label>
           <input
             id="enrollCode"
             class="code-input"
             type="text"
             inputmode="numeric"
             pattern="[0-9]{6}"
-            minlength="6"
             maxlength="6"
             autocomplete="one-time-code"
             required
           >
-
         </div>
 
-        <button
-          class="btn"
-          type="submit"
-        >
-          ✓ Aktifkan Authenticator
+        <button type="submit" class="btn">
+          Aktifkan Authenticator
         </button>
 
       </form>
@@ -517,53 +548,38 @@
         id="enrollLogoutBtn"
         class="btn btn-secondary"
         type="button"
-      >
-        Keluar
-      </button>
+      >Keluar</button>
 
     </div>
 
-    <!-- =========================
-         VERIFIKASI MFA
-         ========================= -->
-
-    <div id="verifyPage" class="page">
+    <!-- VERIFIKASI MFA -->
+    <div id="verifyPage" class="page auth-card">
 
       <h1>🛡️ Verifikasi Keamanan</h1>
 
       <p class="description">
         Masukkan kode 6 digit dari
-        Google Authenticator untuk
-        melanjutkan ke HSM Owner.
+        Google Authenticator.
       </p>
 
       <form id="verifyForm">
 
         <div class="field">
-
-          <label for="verifyCode">
-            Kode Authenticator
-          </label>
-
+          <label for="verifyCode">Kode Authenticator</label>
           <input
             id="verifyCode"
             class="code-input"
             type="text"
             inputmode="numeric"
             pattern="[0-9]{6}"
-            minlength="6"
             maxlength="6"
             autocomplete="one-time-code"
             required
           >
-
         </div>
 
-        <button
-          class="btn"
-          type="submit"
-        >
-          🔐 Verifikasi dan Masuk
+        <button type="submit" class="btn">
+          Verifikasi dan Masuk
         </button>
 
       </form>
@@ -572,144 +588,292 @@
         id="verifyLogoutBtn"
         class="btn btn-secondary"
         type="button"
-      >
-        Batalkan Login
-      </button>
+      >Batalkan Login</button>
 
     </div>
 
-    <!-- =========================
-         DASHBOARD OWNER
-         ========================= -->
-
+    <!-- DASHBOARD OWNER -->
     <div id="dashboardPage" class="page">
 
-      <div class="dashboard-heading">
+      <div class="dashboard-head">
 
-        <span class="owner-badge">
-          ● OWNER VERIFIED
-        </span>
+        <div>
+          <span class="owner-badge">● OWNER VERIFIED</span>
+          <h1>👑 HSM OWNER</h1>
+          <div id="ownerAccount" class="account">-</div>
+        </div>
 
-        <h1>👑 HSM OWNER</h1>
-
-        <p class="description">
-          Pusat Pengawasan
-          PT Hidayah Sarana Mulia
-        </p>
-
-      </div>
-
-      <div class="dashboard-info">
-
-        <strong>Status Keamanan</strong>
-
-        <br>
-
-        ✅ Email dan password terverifikasi
-
-        <br>
-
-        ✅ Authenticator terverifikasi
-
-        <br>
-
-        ✅ Hak akses Owner terverifikasi
-
-        <br><br>
-
-        <strong>Akun:</strong>
-
-        <br>
-
-        <span id="ownerAccount">
-          -
-        </span>
+        <button
+          id="logoutBtn"
+          class="logout-small"
+          type="button"
+        >Keluar</button>
 
       </div>
 
-      <div class="locked-feature">
+      <h2>💰 Dashboard Pendapatan</h2>
 
-        🚐 <strong>Dashboard Armada</strong>
+      <div class="tabs">
+        <button class="tab active" data-period="daily" type="button">
+          Harian
+        </button>
+        <button class="tab" data-period="monthly" type="button">
+          Bulanan
+        </button>
+        <button class="tab" data-period="yearly" type="button">
+          Tahunan
+        </button>
+      </div>
 
-        <br>
+      <div class="filter-box">
 
-        💰 Keuangan Perusahaan
+        <div id="dailyField" class="full">
+          <label for="reportDate">Tanggal</label>
+          <input type="date" id="reportDate">
+        </div>
 
-        <br>
+        <div id="monthlyField" class="full" hidden>
+          <label for="reportMonth">Bulan</label>
+          <input type="month" id="reportMonth">
+        </div>
 
-        ⛽ BBM dan Nota SPBU
+        <div id="yearlyField" class="full" hidden>
+          <label for="reportYear">Tahun</label>
+          <select id="reportYear"></select>
+        </div>
 
-        <br>
+        <div class="full">
+          <label for="vehicleFilter">Armada</label>
+          <select id="vehicleFilter">
+            <option value="ALL">Semua Armada</option>
+            <option value="HSM-01">HSM-01</option>
+            <option value="HSM-02">HSM-02</option>
+          </select>
+        </div>
 
-        📊 Laporan Harian, Bulanan, Tahunan
-
-        <br>
-
-        🔐 Monitoring Admin dan Petugas
-
-        <br><br>
-
-        Fitur manajemen akan ditambahkan
-        setelah sistem keamanan Owner selesai.
+        <div class="full">
+          <button
+            id="refreshBtn"
+            class="btn"
+            type="button"
+          >🔄 Tampilkan Laporan</button>
+        </div>
 
       </div>
 
-      <button
-        id="logoutBtn"
-        class="btn btn-secondary"
-        type="button"
-        style="margin-top:20px"
-      >
-        Keluar dari HSM Owner
-      </button>
+      <div class="stats">
+
+        <div class="stat primary">
+          <div class="stat-label">
+            TOTAL NILAI TIKET LUNAS
+          </div>
+          <div id="totalRevenue" class="stat-value">
+            Rp0
+          </div>
+          <div id="reportPeriodLabel" class="stat-note">
+            -
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">🚐 HSM-01</div>
+          <div id="revenue01" class="stat-value">Rp0</div>
+          <div id="trips01" class="stat-note">0 perjalanan</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">🚐 HSM-02</div>
+          <div id="revenue02" class="stat-value">Rp0</div>
+          <div id="trips02" class="stat-note">0 perjalanan</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">🎫 Tiket Lunas</div>
+          <div id="totalTickets" class="stat-value">0</div>
+          <div class="stat-note">Tiket tercatat</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">🛣️ Perjalanan</div>
+          <div id="totalTrips" class="stat-value">0</div>
+          <div class="stat-note">Perjalanan berpendapatan</div>
+        </div>
+
+      </div>
+
+      <div class="section-head">
+        <h2>🚐 Pendapatan Sekali Jalan</h2>
+        <span id="tripCountBadge" class="pill">0 perjalanan</span>
+      </div>
+
+      <div id="tripList" aria-live="polite">
+        <div class="empty">Memuat laporan...</div>
+      </div>
+
+      <div class="upcoming">
+        <strong>Catatan:</strong><br>
+        Laporan menghitung nilai tiket berstatus lunas
+        berdasarkan tanggal perjalanan, armada,
+        dan kode perjalanan.
+
+        Tiket perjalanan mendatang yang sudah lunas
+        juga tercakup pada periode tanggalnya.
+        Nilai ini belum dikurangi BBM atau pengeluaran lainnya.
+      </div>
 
     </div>
 
   </section>
 
   <div class="footer">
-
-    HSM OWNER
-
-    <br>
-
+    HSM OWNER<br>
     PT Hidayah Sarana Mulia
-
-    <br>
-
-    Sistem Manajemen Internal Perusahaan
-
   </div>
 
 </main>
 
 <script>
-
 "use strict";
 
-/* ==========================================
-   SUPABASE CONFIG
-   ========================================== */
+/* ========================================
+   HSM OWNER - SUPABASE & KEAMANAN
+   ======================================== */
 
 const CONFIG = window.HSM_OWNER_CONFIG;
 
 const $ = id => document.getElementById(id);
 
 let ownerDB = null;
-
 let pendingFactorId = null;
-
 let loading = false;
 
-try {
+let currentPeriod = "daily";
 
+function showMessage(text, type = "error") {
+  const el = $("globalMessage");
+  el.textContent = text;
+  el.className = "message " + type;
+}
+
+function clearMessage() {
+  const el = $("globalMessage");
+  el.textContent = "";
+  el.className = "message";
+}
+
+function showPage(pageId) {
+  document.querySelectorAll(".page").forEach(el => {
+    el.classList.remove("active");
+  });
+
+  $(pageId).classList.add("active");
+  clearMessage();
+}
+
+async function runLoading(button, callback) {
+  if (loading) return;
+
+  loading = true;
+
+  const oldText = button.textContent;
+  button.disabled = true;
+  button.textContent = "Memproses...";
+
+  try {
+    await callback();
+  } catch (error) {
+    console.error("HSM OWNER:", error);
+    showMessage(
+      error?.message || "Terjadi kesalahan."
+    );
+  } finally {
+    loading = false;
+    button.disabled = false;
+    button.textContent = oldText;
+  }
+}
+
+function validCode(code) {
+  return /^\d{6}$/.test(code);
+}
+
+function money(value) {
+  return "Rp" + Number(value || 0)
+    .toLocaleString("id-ID");
+}
+
+function witDateParts() {
+  const parts = new Intl.DateTimeFormat(
+    "en-GB",
+    {
+      timeZone:"Asia/Jayapura",
+      year:"numeric",
+      month:"2-digit",
+      day:"2-digit"
+    }
+  ).formatToParts(new Date());
+
+  return Object.fromEntries(
+    parts.map(p => [p.type, p.value])
+  );
+}
+
+function todayWIT() {
+  const p = witDateParts();
+  return `${p.year}-${p.month}-${p.day}`;
+}
+
+function safeDate(value) {
+  const str = String(value || "").slice(0,10);
+
+  return /^\d{4}-\d{2}-\d{2}$/.test(str)
+    ? str
+    : "";
+}
+
+function formatDate(value) {
+  const dateStr = safeDate(value);
+
+  if (!dateStr) return "-";
+
+  const date = new Date(dateStr + "T12:00:00Z");
+
+  return new Intl.DateTimeFormat(
+    "id-ID",
+    {
+      timeZone:"UTC",
+      day:"numeric",
+      month:"short",
+      year:"numeric"
+    }
+  ).format(date);
+}
+
+function nextMonthStart(year, month) {
+  if (month === 12) {
+    return `${year + 1}-01-01`;
+  }
+
+  return `${year}-${String(month + 1).padStart(2,"0")}-01`;
+}
+
+function lastDayOfMonth(year, month) {
+  return new Date(Date.UTC(year, month, 0))
+    .toISOString()
+    .slice(0,10);
+}
+
+/* ========================================
+   SUPABASE CONFIG
+   ======================================== */
+
+try {
   if (
     !CONFIG ||
     !CONFIG.SUPABASE_URL ||
     !CONFIG.SUPABASE_PUBLISHABLE_KEY ||
-    CONFIG.SUPABASE_PUBLISHABLE_KEY.includes(
-      "MASUKKAN_"
-    )
+    CONFIG.SUPABASE_PUBLISHABLE_KEY.includes("MASUKKAN_") ||
+    CONFIG.SUPABASE_PUBLISHABLE_KEY.includes("ISI_")
   ) {
     throw new Error(
       "Konfigurasi Supabase Owner belum lengkap."
@@ -717,267 +881,101 @@ try {
   }
 
   if (!window.supabase) {
-    throw new Error(
-      "Library Supabase tidak tersedia."
-    );
+    throw new Error("Library Supabase tidak tersedia.");
   }
 
   ownerDB = window.supabase.createClient(
     CONFIG.SUPABASE_URL,
     CONFIG.SUPABASE_PUBLISHABLE_KEY,
     {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: false
+      auth:{
+        persistSession:true,
+        autoRefreshToken:true,
+        detectSessionInUrl:false
       }
     }
   );
 
 } catch (error) {
-
-  console.error("HSM OWNER CONFIG:", error);
-
   window.addEventListener("DOMContentLoaded", () => {
     showMessage(error.message);
     $("loginBtn").disabled = true;
   });
-
 }
 
-/* ==========================================
-   UTILITAS
-   ========================================== */
+/* ========================================
+   MFA
+   ======================================== */
 
-function showPage(pageId) {
+async function getVerifiedFactor() {
+  const { data, error } =
+    await ownerDB.auth.mfa.listFactors();
 
-  document.querySelectorAll(
-    ".page"
-  ).forEach(page => {
-    page.classList.remove("active");
-  });
+  if (error) throw error;
 
-  $(pageId).classList.add("active");
-
-  clearMessage();
-
-}
-
-function showMessage(
-  text,
-  type = "error"
-) {
-
-  const element = $("globalMessage");
-
-  element.textContent = text;
-
-  element.className =
-    "message " + type;
-
-}
-
-function clearMessage() {
-
-  const element = $("globalMessage");
-
-  element.textContent = "";
-
-  element.className = "message";
-
-}
-
-function validateCode(code) {
-
-  return /^\d{6}$/.test(code);
-
-}
-
-async function runLoading(
-  button,
-  callback
-) {
-
-  if (loading) return;
-
-  loading = true;
-
-  const original = button.textContent;
-
-  button.disabled = true;
-
-  button.textContent = "Memproses...";
-
-  try {
-
-    await callback();
-
-  } catch (error) {
-
-    console.error(
-      "HSM OWNER AUTH:",
-      error.message
-    );
-
-    showMessage(
-      error.message ||
-      "Terjadi kesalahan."
-    );
-
-  } finally {
-
-    loading = false;
-
-    button.disabled = false;
-
-    button.textContent = original;
-
-  }
-
-}
-
-/* ==========================================
-   CEK MFA
-   ========================================== */
-
-async function getVerifiedTOTPFactor() {
-
-  const {
-    data,
-    error
-  } = await ownerDB.auth.mfa.listFactors();
-
-  if (error) {
-    throw error;
-  }
-
-  return (
-    data?.totp || []
-  ).find(
-    factor =>
-      factor.status === "verified"
+  return (data?.totp || []).find(
+    factor => factor.status === "verified"
   ) || null;
-
 }
-
-/* ==========================================
-   CEK AAL
-   ========================================== */
 
 async function getAAL() {
-
-  const {
-    data,
-    error
-  } =
+  const { data, error } =
     await ownerDB.auth.mfa
       .getAuthenticatorAssuranceLevel();
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
   return data?.currentLevel || "aal1";
-
 }
 
-/* ==========================================
-   PEMERIKSAAN OWNER
-
-   Fungsi database:
-   hsm_owner_check_access
-
-   Akan dibuat pada tahap berikutnya.
-
-   Dashboard tidak boleh dibuka
-   sebelum fungsi ini mengizinkan.
-   ========================================== */
-
 async function checkOwnerAccess() {
-
-  if (
-    await getAAL() !== "aal2"
-  ) {
+  if (await getAAL() !== "aal2") {
     throw new Error(
-      "Verifikasi dua langkah wajib dilakukan."
+      "Verifikasi Authenticator wajib dilakukan."
     );
   }
 
-  const {
-    data,
-    error
-  } = await ownerDB.rpc(
+  const { data, error } = await ownerDB.rpc(
     "hsm_owner_check_access"
   );
 
   if (error) {
-
-    console.error(
-      "OWNER ACCESS CHECK:",
-      error
-    );
-
     throw new Error(
-      "Pemeriksaan izin Owner belum tersedia atau gagal."
+      "Gagal memeriksa hak akses Owner."
     );
-
   }
 
   if (data !== true) {
-
     throw new Error(
-      "Akun ini tidak mempunyai izin sebagai HSM Owner."
+      "Akun tidak mempunyai izin HSM Owner."
     );
-
   }
 
   return true;
-
 }
 
-/* ==========================================
-   BUKA DASHBOARD
-   ========================================== */
+async function verifyFactor(factorId, code) {
+  const { data:challenge, error:challengeError } =
+    await ownerDB.auth.mfa.challenge({ factorId });
 
-async function openOwnerDashboard() {
+  if (challengeError) throw challengeError;
 
-  await checkOwnerAccess();
-
-  const {
-    data,
-    error
-  } = await ownerDB.auth.getUser();
-
-  if (error || !data?.user) {
-    throw new Error(
-      "Sesi Owner tidak valid."
-    );
-  }
-
-  $("ownerAccount").textContent =
-    data.user.email || "-";
-
-  showPage("dashboardPage");
-
-}
-
-/* ==========================================
-   DAFTARKAN MFA
-   ========================================== */
-
-async function startMFAEnrollment() {
-
-  const {
-    data,
-    error
-  } = await ownerDB.auth.mfa.enroll({
-    factorType: "totp",
-    friendlyName: "HSM Owner Authenticator"
+  const { error } = await ownerDB.auth.mfa.verify({
+    factorId,
+    challengeId:challenge.id,
+    code
   });
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
+}
+
+async function startEnrollment() {
+  const { data, error } = await ownerDB.auth.mfa.enroll({
+    factorType:"totp",
+    friendlyName:"HSM Owner Authenticator"
+  });
+
+  if (error) throw error;
 
   if (!data?.id || !data?.totp) {
     throw new Error(
@@ -987,325 +985,573 @@ async function startMFAEnrollment() {
 
   pendingFactorId = data.id;
 
-  const qr = $("totpQR");
-
-  qr.hidden = false;
-
-  qr.src = data.totp.qr_code;
+  $("totpQR").src = data.totp.qr_code;
+  $("totpQR").hidden = false;
 
   $("totpSecret").textContent =
     data.totp.secret || "-";
 
   showPage("enrollPage");
-
 }
 
-/* ==========================================
-   VERIFIKASI MFA
-   ========================================== */
+async function openDashboard() {
+  await checkOwnerAccess();
 
-async function verifyFactor(
-  factorId,
-  code
-) {
+  const { data, error } = await ownerDB.auth.getUser();
 
-  const {
-    data: challenge,
-    error: challengeError
-  } = await ownerDB.auth.mfa.challenge({
-    factorId
-  });
-
-  if (challengeError) {
-    throw challengeError;
+  if (error || !data?.user) {
+    throw new Error("Sesi Owner tidak valid.");
   }
 
-  const {
-    error
-  } = await ownerDB.auth.mfa.verify({
-    factorId,
-    challengeId: challenge.id,
-    code
-  });
+  $("ownerAccount").textContent =
+    data.user.email || "-";
 
-  if (error) {
-    throw error;
-  }
+  showPage("dashboardPage");
 
+  await loadRevenue();
 }
-
-/* ==========================================
-   CEK STATUS LOGIN
-   ========================================== */
 
 async function resolveOwnerState() {
-
   if (!ownerDB) return;
 
-  const {
-    data,
-    error
-  } = await ownerDB.auth.getUser();
+  const { data, error } = await ownerDB.auth.getUser();
 
   if (error || !data?.user) {
     showPage("loginPage");
     return;
   }
 
-  const aal = await getAAL();
-
-  if (aal === "aal2") {
-
-    await openOwnerDashboard();
-
+  if (await getAAL() === "aal2") {
+    await openDashboard();
     return;
-
   }
 
-  const factor =
-    await getVerifiedTOTPFactor();
+  const factor = await getVerifiedFactor();
 
   if (factor) {
-
     pendingFactorId = factor.id;
-
     showPage("verifyPage");
-
     return;
-
   }
 
-  /*
-    Akun belum punya Authenticator.
-
-    Proses pendaftaran MFA dimulai.
-    Dashboard tetap terkunci.
-  */
-
-  await startMFAEnrollment();
-
+  await startEnrollment();
 }
 
-/* ==========================================
-   LOGIN EMAIL PASSWORD
-   ========================================== */
+/* ========================================
+   FORM LOGIN
+   ======================================== */
 
-$("loginForm").addEventListener(
-  "submit",
-  async event => {
+$("loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
 
-    event.preventDefault();
+  if (!ownerDB) {
+    showMessage("Supabase belum dikonfigurasi.");
+    return;
+  }
 
-    if (!ownerDB) {
-      showMessage(
-        "Supabase belum dikonfigurasi."
-      );
-      return;
+  await runLoading($("loginBtn"), async () => {
+    const email = $("ownerEmail").value.trim();
+    const password = $("ownerPassword").value;
+
+    const { error } =
+      await ownerDB.auth.signInWithPassword({
+        email,
+        password
+      });
+
+    $("ownerPassword").value = "";
+
+    if (error) {
+      throw new Error("Email atau password tidak valid.");
     }
 
-    await runLoading(
-      $("loginBtn"),
-      async () => {
+    await resolveOwnerState();
+  });
+});
 
-        const email =
-          $("ownerEmail").value.trim();
-
-        const password =
-          $("ownerPassword").value;
-
-        const {
-          error
-        } =
-          await ownerDB.auth
-            .signInWithPassword({
-              email,
-              password
-            });
-
-        $("ownerPassword").value = "";
-
-        if (error) {
-          throw new Error(
-            "Email atau password tidak valid."
-          );
-        }
-
-        await resolveOwnerState();
-
-      }
-    );
-
-  }
-);
-
-/* ==========================================
+/* ========================================
    AKTIVASI AUTHENTICATOR
-   ========================================== */
+   ======================================== */
 
-$("enrollForm").addEventListener(
-  "submit",
-  async event => {
+$("enrollForm").addEventListener("submit", async e => {
+  e.preventDefault();
 
-    event.preventDefault();
+  const btn = $("enrollForm")
+    .querySelector('button[type="submit"]');
 
-    await runLoading(
-      $("enrollForm").querySelector(
-        'button[type="submit"]'
-      ),
-      async () => {
+  await runLoading(btn, async () => {
+    const code = $("enrollCode").value.trim();
 
-        const code =
-          $("enrollCode").value.trim();
+    if (!validCode(code)) {
+      throw new Error("Kode harus 6 digit.");
+    }
 
-        if (!validateCode(code)) {
-          throw new Error(
-            "Kode harus 6 digit."
-          );
-        }
+    if (!pendingFactorId) {
+      throw new Error("Faktor MFA tidak tersedia.");
+    }
 
-        if (!pendingFactorId) {
-          throw new Error(
-            "Aktivasi Authenticator belum dimulai."
-          );
-        }
+    await verifyFactor(pendingFactorId, code);
 
-        await verifyFactor(
-          pendingFactorId,
-          code
-        );
+    $("enrollCode").value = "";
 
-        $("enrollCode").value = "";
+    await openDashboard();
+  });
+});
 
-        /*
-          Sesudah MFA berhasil,
-          pemeriksaan Owner wajib dilakukan.
-        */
-
-        await openOwnerDashboard();
-
-      }
-    );
-
-  }
-);
-
-/* ==========================================
+/* ========================================
    VERIFIKASI AUTHENTICATOR
-   ========================================== */
+   ======================================== */
 
-$("verifyForm").addEventListener(
-  "submit",
-  async event => {
+$("verifyForm").addEventListener("submit", async e => {
+  e.preventDefault();
 
-    event.preventDefault();
+  const btn = $("verifyForm")
+    .querySelector('button[type="submit"]');
 
-    await runLoading(
-      $("verifyForm").querySelector(
-        'button[type="submit"]'
-      ),
-      async () => {
+  await runLoading(btn, async () => {
+    const code = $("verifyCode").value.trim();
 
-        const code =
-          $("verifyCode").value.trim();
+    if (!validCode(code)) {
+      throw new Error("Kode harus 6 digit.");
+    }
 
-        if (!validateCode(code)) {
-          throw new Error(
-            "Kode Authenticator harus 6 digit."
-          );
-        }
+    if (!pendingFactorId) {
+      throw new Error("Authenticator tidak tersedia.");
+    }
 
-        if (!pendingFactorId) {
-          throw new Error(
-            "Authenticator belum tersedia."
-          );
-        }
+    await verifyFactor(pendingFactorId, code);
 
-        await verifyFactor(
-          pendingFactorId,
-          code
-        );
+    $("verifyCode").value = "";
 
-        $("verifyCode").value = "";
+    await openDashboard();
+  });
+});
 
-        await openOwnerDashboard();
-
-      }
-    );
-
-  }
-);
-
-/* ==========================================
+/* ========================================
    LOGOUT
-   ========================================== */
+   ======================================== */
 
 async function ownerLogout() {
-
   if (ownerDB) {
-
     await ownerDB.auth.signOut();
-
   }
 
   pendingFactorId = null;
 
   $("ownerPassword").value = "";
-
   $("enrollCode").value = "";
-
   $("verifyCode").value = "";
 
   $("totpSecret").textContent = "";
-
   $("totpQR").removeAttribute("src");
-
   $("totpQR").hidden = true;
 
-  showPage("loginPage");
+  $("tripList").replaceChildren();
 
+  showPage("loginPage");
 }
 
-$("logoutBtn").addEventListener(
-  "click",
-  ownerLogout
-);
+$("logoutBtn").addEventListener("click", ownerLogout);
+$("verifyLogoutBtn").addEventListener("click", ownerLogout);
+$("enrollLogoutBtn").addEventListener("click", ownerLogout);
 
-$("enrollLogoutBtn").addEventListener(
-  "click",
-  ownerLogout
-);
+/* ========================================
+   LAPORAN KEUANGAN
+   ======================================== */
 
-$("verifyLogoutBtn").addEventListener(
-  "click",
-  ownerLogout
-);
+function getReportRange() {
+  if (currentPeriod === "daily") {
+    const date = $("reportDate").value;
 
-/* ==========================================
-   INISIALISASI
-   ========================================== */
+    if (!safeDate(date)) {
+      throw new Error("Pilih tanggal laporan.");
+    }
 
-async function initializeOwner() {
+    return {
+      start:date,
+      end:date,
+      label:`Harian • ${formatDate(date)}`
+    };
+  }
 
-  if (!ownerDB) return;
+  if (currentPeriod === "monthly") {
+    const monthValue = $("reportMonth").value;
+
+    if (!/^\d{4}-\d{2}$/.test(monthValue)) {
+      throw new Error("Pilih bulan laporan.");
+    }
+
+    const year = Number(monthValue.slice(0,4));
+    const month = Number(monthValue.slice(5,7));
+
+    if (month < 1 || month > 12) {
+      throw new Error("Bulan tidak valid.");
+    }
+
+    return {
+      start:`${monthValue}-01`,
+      end:lastDayOfMonth(year,month),
+      label:`Bulanan • ${monthValue}`
+    };
+  }
+
+  const year = Number($("reportYear").value);
+
+  if (!Number.isInteger(year) || year < 2026 || year > 2100) {
+    throw new Error("Tahun tidak valid.");
+  }
+
+  return {
+    start:`${year}-01-01`,
+    end:`${year}-12-31`,
+    label:`Tahunan • ${year}`
+  };
+}
+
+function getDirection(tripCode) {
+  const code = String(tripCode || "").toUpperCase();
+
+  if (code.includes("HSM01-AM-")) {
+    return "Sofifi → Lelilef";
+  }
+
+  if (code.includes("HSM01-PM-")) {
+    return "Lelilef → Sofifi";
+  }
+
+  if (code.includes("HSM02-AM-")) {
+    return "Lelilef → Sofifi";
+  }
+
+  if (code.includes("HSM02-PM-")) {
+    return "Sofifi → Lelilef";
+  }
+
+  return "Perjalanan lainnya";
+}
+
+function getVehicle(value) {
+  const v = String(value || "").toUpperCase()
+    .replace(/[^A-Z0-9]/g,"");
+
+  if (v === "HSM01" || v === "01" || v === "1") {
+    return "HSM-01";
+  }
+
+  if (v === "HSM02" || v === "02" || v === "2") {
+    return "HSM-02";
+  }
+
+  return String(value || "-");
+}
+
+function clearRevenue() {
+  $("totalRevenue").textContent = "Rp0";
+  $("revenue01").textContent = "Rp0";
+  $("revenue02").textContent = "Rp0";
+  $("trips01").textContent = "0 perjalanan";
+  $("trips02").textContent = "0 perjalanan";
+  $("totalTickets").textContent = "0";
+  $("totalTrips").textContent = "0";
+  $("tripCountBadge").textContent = "0 perjalanan";
+}
+
+function addText(parent, tag, className, value) {
+  const element = document.createElement(tag);
+
+  if (className) {
+    element.className = className;
+  }
+
+  element.textContent = value;
+
+  parent.appendChild(element);
+
+  return element;
+}
+
+function renderTripCards(rows) {
+  const list = $("tripList");
+
+  list.replaceChildren();
+
+  if (!rows.length) {
+    addText(
+      list,
+      "div",
+      "empty",
+      "Belum ada tiket lunas pada periode dan armada yang dipilih."
+    );
+    return;
+  }
+
+  for (const row of rows) {
+    const card = document.createElement("article");
+    card.className = "trip-card";
+
+    const top = document.createElement("div");
+    top.className = "trip-top";
+
+    const left = document.createElement("div");
+    const right = document.createElement("div");
+
+    addText(
+      left,
+      "div",
+      "trip-name",
+      `${getVehicle(row.vehicle)} • ${getDirection(row.trip_code)}`
+    );
+
+    addText(
+      left,
+      "div",
+      "trip-date",
+      `${formatDate(row.travel_date)} • ${row.departure_label || "-"}`
+    );
+
+    addText(
+      right,
+      "div",
+      "trip-total",
+      money(row.total_revenue)
+    );
+
+    top.append(left,right);
+
+    const bottom = document.createElement("div");
+    bottom.className = "trip-bottom";
+
+    addText(
+      bottom,
+      "span",
+      "",
+      `${Number(row.total_passengers || 0)} tiket lunas`
+    );
+
+    addText(
+      bottom,
+      "span",
+      "",
+      String(row.trip_code || "-")
+    );
+
+    card.append(top,bottom);
+    list.appendChild(card);
+  }
+}
+
+async function loadRevenue() {
+  if (!ownerDB) {
+    throw new Error("Supabase belum tersedia.");
+  }
+
+  clearMessage();
+
+  const range = getReportRange();
+
+  $("reportPeriodLabel").textContent = range.label;
+
+  $("tripList").replaceChildren();
+
+  addText(
+    $("tripList"),
+    "div",
+    "empty",
+    "Memuat laporan pendapatan..."
+  );
 
   try {
+    /*
+      Fungsi ini memeriksa Owner aktif
+      dan MFA di server Supabase.
+    */
+    await checkOwnerAccess();
 
-    await resolveOwnerState();
+    const { data, error } = await ownerDB.rpc(
+      "hsm_owner_trip_revenue",
+      {
+        p_start_date:range.start,
+        p_end_date:range.end
+      }
+    );
+
+    if (error) {
+      console.error("REVENUE RPC:",error);
+      throw new Error("Gagal memuat laporan pendapatan.");
+    }
+
+    const filter = $("vehicleFilter").value;
+
+    const rows = (data || []).filter(row => {
+      if (filter === "ALL") return true;
+
+      return getVehicle(row.vehicle) === filter;
+    });
+
+    rows.sort((a,b) => {
+      const dateCompare =
+        String(b.travel_date).localeCompare(
+          String(a.travel_date)
+        );
+
+      if (dateCompare !== 0) return dateCompare;
+
+      return String(a.trip_code).localeCompare(
+        String(b.trip_code)
+      );
+    });
+
+    let totalRevenue = 0;
+    let totalTickets = 0;
+
+    let revenue01 = 0;
+    let revenue02 = 0;
+
+    let trips01 = 0;
+    let trips02 = 0;
+
+    for (const row of rows) {
+      const amount = Number(row.total_revenue || 0);
+      const tickets = Number(row.total_passengers || 0);
+
+      totalRevenue += amount;
+      totalTickets += tickets;
+
+      const vehicle = getVehicle(row.vehicle);
+
+      if (vehicle === "HSM-01") {
+        revenue01 += amount;
+        trips01++;
+      }
+
+      if (vehicle === "HSM-02") {
+        revenue02 += amount;
+        trips02++;
+      }
+    }
+
+    $("totalRevenue").textContent = money(totalRevenue);
+    $("revenue01").textContent = money(revenue01);
+    $("revenue02").textContent = money(revenue02);
+
+    $("trips01").textContent = `${trips01} perjalanan`;
+    $("trips02").textContent = `${trips02} perjalanan`;
+
+    $("totalTickets").textContent =
+      totalTickets.toLocaleString("id-ID");
+
+    $("totalTrips").textContent =
+      rows.length.toLocaleString("id-ID");
+
+    $("tripCountBadge").textContent =
+      `${rows.length} perjalanan`;
+
+    renderTripCards(rows);
 
   } catch (error) {
+    clearRevenue();
 
-    console.error(
-      "OWNER INITIALIZATION:",
-      error
+    $("tripList").replaceChildren();
+
+    addText(
+      $("tripList"),
+      "div",
+      "empty",
+      "Laporan tidak dapat dimuat."
     );
 
     showMessage(
-      error.message ||
-      "Gagal memeriksa akun."
+      error.message || "Gagal memuat laporan."
     );
-
   }
+}
 
+/* ========================================
+   FILTER PERIODE
+   ======================================== */
+
+function switchPeriod(period) {
+  currentPeriod = period;
+
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.classList.toggle(
+      "active",
+      tab.dataset.period === period
+    );
+  });
+
+  $("dailyField").hidden = period !== "daily";
+  $("monthlyField").hidden = period !== "monthly";
+  $("yearlyField").hidden = period !== "yearly";
+
+  loadRevenue();
+}
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    switchPeriod(tab.dataset.period);
+  });
+});
+
+$("refreshBtn").addEventListener("click", () => {
+  loadRevenue();
+});
+
+$("reportDate").addEventListener("change", () => {
+  if (currentPeriod === "daily") loadRevenue();
+});
+
+$("reportMonth").addEventListener("change", () => {
+  if (currentPeriod === "monthly") loadRevenue();
+});
+
+$("reportYear").addEventListener("change", () => {
+  if (currentPeriod === "yearly") loadRevenue();
+});
+
+$("vehicleFilter").addEventListener("change", () => {
+  loadRevenue();
+});
+
+/* ========================================
+   INISIALISASI TANGGAL WIT
+   ======================================== */
+
+const today = todayWIT();
+
+$("reportDate").value = today;
+$("reportMonth").value = today.slice(0,7);
+
+const thisYear = Number(today.slice(0,4));
+const yearSelect = $("reportYear");
+
+for (let year = 2026; year <= Math.max(2030,thisYear+1); year++) {
+  const option = document.createElement("option");
+
+  option.value = String(year);
+  option.textContent = String(year);
+
+  if (year === thisYear) option.selected = true;
+
+  yearSelect.appendChild(option);
+}
+
+/* ========================================
+   INISIALISASI LOGIN OWNER
+   ======================================== */
+
+async function initializeOwner() {
+  if (!ownerDB) return;
+
+  try {
+    await resolveOwnerState();
+  } catch (error) {
+    console.error("OWNER INITIALIZATION:",error);
+
+    showMessage(
+      error?.message || "Gagal memeriksa akun Owner."
+    );
+  }
 }
 
 initializeOwner();
