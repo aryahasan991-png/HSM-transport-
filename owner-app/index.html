@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover"
+  >
+
   <meta name="theme-color" content="#0754a6">
   <meta name="robots" content="noindex,nofollow">
 
@@ -17,142 +23,62 @@
       --dark:#063d79;
       --red:#e31e2d;
       --green:#16834b;
-      --bg:#edf3fa;
-      --text:#172033;
-      --muted:#64748b;
-      --border:#dce3ec;
+      --bg:#f1f5fb;
+      --white:#ffffff;
+      --text:#152238;
+      --muted:#718096;
+      --border:#e2eaf3;
+      --shadow:0 7px 25px rgba(15,43,84,.07);
     }
 
-    * { box-sizing:border-box; }
+    * {
+      box-sizing:border-box;
+    }
+
+    html {
+      scroll-behavior:smooth;
+    }
 
     body {
       margin:0;
-      min-height:100vh;
       background:var(--bg);
+      color:var(--text);
       font-family:Arial,Helvetica,sans-serif;
-      color:var(--text);
+      -webkit-tap-highlight-color:transparent;
     }
 
-    button,input,select { font-family:inherit; }
-    button { cursor:pointer; }
-    button:disabled { opacity:.55;cursor:not-allowed; }
-
-    .header {
-      padding:24px 15px 55px;
-      text-align:center;
-      color:white;
-      background:linear-gradient(135deg,var(--blue),var(--dark));
+    button,
+    input,
+    select {
+      font-family:inherit;
     }
 
-    .logo {
-      font-size:40px;
-      font-weight:900;
-      font-style:italic;
-      letter-spacing:2px;
+    button {
+      cursor:pointer;
     }
 
-    .logo span { color:#ff5252; }
-
-    .company {
-      margin-top:5px;
-      font-size:10px;
-      font-weight:bold;
-      letter-spacing:1.5px;
+    button:disabled {
+      opacity:.55;
+      cursor:not-allowed;
     }
 
-    .container {
-      width:min(1050px,calc(100% - 24px));
-      margin:-32px auto 35px;
-      position:relative;
+    [hidden] {
+      display:none !important;
     }
 
-    .card {
-      padding:25px;
-      border-radius:18px;
-      background:white;
-      box-shadow:0 12px 35px rgba(7,84,166,.10);
+    .page {
+      display:none;
     }
 
-    .auth-card {
-      max-width:440px;
-      margin:auto;
-    }
-
-    .page { display:none; }
-    .page.active { display:block; }
-
-    h1 {
-      margin:0 0 10px;
-      color:var(--dark);
-      font-size:24px;
-    }
-
-    .auth-card h1 { text-align:center; }
-
-    h2 {
-      margin:0 0 15px;
-      color:var(--dark);
-      font-size:19px;
-    }
-
-    .description {
-      margin:0 0 25px;
-      color:var(--muted);
-      text-align:center;
-      font-size:13px;
-      line-height:1.7;
-    }
-
-    .field { margin-bottom:18px; }
-
-    label {
+    .page.active {
       display:block;
-      margin-bottom:8px;
-      font-size:13px;
-      font-weight:bold;
-    }
-
-    input,select {
-      display:block;
-      width:100%;
-      min-height:48px;
-      padding:12px;
-      border:1.5px solid var(--border);
-      border-radius:10px;
-      background:white;
-      color:var(--text);
-      font-size:14px;
-    }
-
-    input:focus,select:focus {
-      outline:none;
-      border-color:var(--blue);
-    }
-
-    .btn {
-      width:100%;
-      min-height:48px;
-      padding:12px;
-      border:0;
-      border-radius:10px;
-      color:white;
-      background:linear-gradient(135deg,var(--blue),var(--dark));
-      font-size:13px;
-      font-weight:900;
-    }
-
-    .btn-secondary {
-      margin-top:10px;
-      background:white;
-      border:1px solid var(--blue);
-      color:var(--blue);
     }
 
     .message {
       display:none;
-      margin-bottom:17px;
+      margin:12px;
       padding:13px;
-      border-radius:10px;
+      border-radius:12px;
       font-size:12px;
       line-height:1.6;
       overflow-wrap:anywhere;
@@ -161,203 +87,495 @@
     .message.error {
       display:block;
       background:#fff0f0;
-      color:#ad2424;
+      color:#a91f1f;
     }
 
     .message.success {
       display:block;
-      background:#eaf8ee;
-      color:var(--green);
+      background:#eaf8ef;
+      color:#137344;
     }
 
-    .notice {
-      margin-top:20px;
-      padding:13px;
-      border-radius:10px;
-      background:#eef5ff;
-      color:var(--muted);
-      font-size:11px;
+    /* =====================================
+       LOGIN
+    ===================================== */
+
+    .auth-background {
+      min-height:100dvh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:25px 16px;
+      background:linear-gradient(
+        155deg,
+        #0754a6 0%,
+        #063d79 50%,
+        #eef4fb 50%
+      );
+    }
+
+    .auth-card {
+      width:100%;
+      max-width:420px;
+      padding:30px 23px;
+      background:white;
+      border-radius:23px;
+      box-shadow:0 14px 45px rgba(0,0,0,.15);
+    }
+
+    .auth-logo {
       text-align:center;
-      line-height:1.7;
+      font-size:45px;
+      font-weight:900;
+      font-style:italic;
+      color:var(--blue);
+      letter-spacing:2px;
     }
 
-    .step {
-      padding:15px;
-      margin-bottom:15px;
-      background:#f6f9fd;
-      border:1px solid var(--border);
-      border-radius:12px;
+    .auth-logo span {
+      color:var(--red);
+    }
+
+    .auth-company {
+      text-align:center;
+      color:#52657b;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.3px;
+    }
+
+    .auth-title {
+      margin:26px 0 9px;
+      font-size:24px;
+      font-weight:900;
+      color:var(--dark);
+      text-align:center;
+    }
+
+    .auth-description {
+      color:var(--muted);
+      text-align:center;
       font-size:12px;
       line-height:1.7;
+      margin-bottom:24px;
+    }
+
+    .field {
+      margin-bottom:17px;
+    }
+
+    .field label {
+      display:block;
+      margin-bottom:8px;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    input,
+    select {
+      width:100%;
+      min-height:47px;
+      padding:12px;
+      background:#fff;
+      border:1px solid #dce5ef;
+      border-radius:11px;
+      color:var(--text);
+      font-size:14px;
+    }
+
+    input:focus,
+    select:focus {
+      outline:none;
+      border-color:var(--blue);
+      box-shadow:0 0 0 3px rgba(7,84,166,.08);
+    }
+
+    .btn {
+      display:block;
+      width:100%;
+      min-height:48px;
+      padding:12px 14px;
+      border:0;
+      border-radius:11px;
+      background:var(--blue);
+      color:#fff;
+      font-size:13px;
+      font-weight:900;
+    }
+
+    .btn-secondary {
+      background:white;
+      color:var(--blue);
+      border:1px solid var(--blue);
+    }
+
+    .auth-note {
+      margin-top:20px;
+      padding:13px;
+      background:#eef5ff;
+      border-radius:12px;
+      color:#66788d;
+      font-size:11px;
+      line-height:1.7;
+      text-align:center;
+    }
+
+    .code-input {
+      font-size:23px;
+      font-weight:900;
+      text-align:center;
+      letter-spacing:7px;
     }
 
     .qr-image {
       display:block;
-      width:210px;
+      width:205px;
       max-width:100%;
-      margin:15px auto;
+      margin:17px auto;
+      background:white;
     }
 
-    .qr-image[hidden] { display:none; }
-
     .secret {
-      margin:12px 0;
       padding:12px;
-      background:white;
-      border:1px dashed #afc8e8;
-      border-radius:9px;
+      background:#f2f7ff;
+      border:1px dashed #adc9ec;
+      border-radius:10px;
       overflow-wrap:anywhere;
+      font-size:12px;
       user-select:all;
     }
 
-    .code-input {
-      text-align:center;
-      font-size:22px;
-      font-weight:900;
-      letter-spacing:7px;
-    }
-
-    .owner-badge {
-      display:inline-block;
-      padding:7px 12px;
-      background:#eaf8ee;
-      border-radius:30px;
-      color:var(--green);
-      font-size:11px;
-      font-weight:900;
-    }
-
-    .dashboard-head {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      flex-wrap:wrap;
-      gap:12px;
-      margin-bottom:23px;
-    }
-
-    .dashboard-head h1 { margin:8px 0 5px; }
-
-    .account {
-      color:var(--muted);
+    .step {
+      margin-bottom:15px;
+      padding:14px;
+      border-radius:11px;
+      background:#f7faff;
+      border:1px solid var(--border);
+      color:#53657a;
       font-size:12px;
+      line-height:1.7;
+    }
+
+    /* =====================================
+       APLIKASI OWNER
+    ===================================== */
+
+    .app-shell {
+      max-width:1100px;
+      margin:auto;
+      min-height:100dvh;
+      padding-bottom:105px;
+    }
+
+    .app-header {
+      padding:
+        calc(18px + env(safe-area-inset-top))
+        18px
+        27px;
+
+      background:linear-gradient(
+        130deg,
+        var(--blue),
+        var(--dark)
+      );
+
+      color:white;
+      border-radius:0 0 25px 25px;
+    }
+
+    .header-top {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:15px;
+    }
+
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:11px;
+    }
+
+    .brand-logo {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:49px;
+      height:49px;
+      border-radius:13px;
+      background:white;
+      color:var(--blue);
+      font-size:18px;
+      font-weight:900;
+      font-style:italic;
+    }
+
+    .brand-logo span {
+      color:var(--red);
+    }
+
+    .brand-name {
+      font-size:17px;
+      font-weight:900;
+    }
+
+    .brand-sub {
+      margin-top:4px;
+      font-size:10px;
+      color:#d5e6fc;
+    }
+
+    .header-action {
+      position:relative;
+      width:43px;
+      height:43px;
+      border:1px solid rgba(255,255,255,.23);
+      border-radius:12px;
+      background:rgba(255,255,255,.12);
+      color:white;
+      font-size:21px;
+    }
+
+    .notification-dot {
+      position:absolute;
+      top:7px;
+      right:7px;
+      width:9px;
+      height:9px;
+      border-radius:50%;
+      background:#ff6262;
+      border:2px solid var(--blue);
+    }
+
+    .greeting {
+      margin-top:27px;
+    }
+
+    .greeting small {
+      color:#d4e6fc;
+      font-size:11px;
+    }
+
+    .greeting h1 {
+      margin:7px 0;
+      color:white;
+      font-size:24px;
+    }
+
+    .greeting p {
+      margin:0;
+      color:#d4e6fc;
+      font-size:12px;
+    }
+
+    .content {
+      padding:17px 14px;
+    }
+
+    .screen {
+      display:none;
+    }
+
+    .screen.active {
+      display:block;
+    }
+
+    .section-title {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin:9px 0 15px;
+    }
+
+    .section-title h2 {
+      margin:0;
+      font-size:18px;
+      color:var(--dark);
+    }
+
+    .section-title small {
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .card {
+      padding:17px;
+      border-radius:16px;
+      background:white;
+      box-shadow:var(--shadow);
+      margin-bottom:13px;
+    }
+
+    .revenue-hero {
+      background:linear-gradient(
+        130deg,
+        #0754a6,
+        #063d79
+      );
+      color:white;
+      padding:22px;
+      border-radius:19px;
+      margin-bottom:14px;
+    }
+
+    .hero-label {
+      font-size:12px;
+      color:#d6e8ff;
+      font-weight:700;
+    }
+
+    .hero-amount {
+      margin:12px 0 8px;
+      font-size:32px;
+      font-weight:900;
       overflow-wrap:anywhere;
     }
 
-    .logout-small {
-      padding:10px 13px;
-      border:1px solid var(--border);
-      border-radius:9px;
-      background:white;
-      color:#b91c1c;
-      font-size:12px;
-      font-weight:bold;
+    .hero-caption {
+      font-size:11px;
+      color:#c6ddf7;
     }
 
-    .tabs {
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:8px;
-      margin-bottom:19px;
-    }
-
-    .tab {
-      min-height:43px;
-      padding:9px 6px;
-      border:1px solid #d9e5f3;
-      border-radius:9px;
-      background:#f5f9ff;
-      color:var(--blue);
-      font-size:12px;
-      font-weight:900;
-    }
-
-    .tab.active {
-      background:var(--blue);
-      color:white;
-    }
-
-    .filter-box {
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-      margin-bottom:19px;
-    }
-
-    .filter-box .full { grid-column:1/-1; }
-
-    .filter-box label { font-size:11px; }
-
-    .stats {
+    .stat-grid {
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:12px;
-      margin-bottom:22px;
+      margin-bottom:20px;
     }
 
-    .stat {
+    .stat-card {
       min-width:0;
-      padding:17px 14px;
-      border:1px solid #dce7f5;
-      border-radius:13px;
-      background:#f8fbff;
+      padding:16px;
+      border-radius:15px;
+      background:white;
+      box-shadow:var(--shadow);
     }
 
-    .stat.primary {
-      grid-column:1/-1;
-      background:linear-gradient(135deg,var(--blue),var(--dark));
-      color:white;
+    .stat-icon {
+      width:38px;
+      height:38px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:11px;
+      background:#ecf4ff;
+      font-size:21px;
+      margin-bottom:11px;
     }
 
     .stat-label {
-      margin-bottom:10px;
       color:var(--muted);
       font-size:11px;
-      font-weight:800;
+      margin-bottom:8px;
     }
 
-    .primary .stat-label { color:#dcecff; }
-
-    .stat-value {
+    .stat-number {
+      color:var(--dark);
       font-size:19px;
       font-weight:900;
       overflow-wrap:anywhere;
     }
 
-    .stat.primary .stat-value { font-size:29px; }
-
-    .stat-note {
-      margin-top:9px;
-      font-size:11px;
-      opacity:.75;
+    .stat-extra {
+      margin-top:7px;
+      color:var(--muted);
+      font-size:10px;
     }
 
-    .section-head {
+    .quick-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .quick-item {
       display:flex;
       align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      margin:25px 0 12px;
+      gap:11px;
+      text-align:left;
+      padding:16px 13px;
+      background:white;
+      border:1px solid var(--border);
+      border-radius:14px;
+      color:var(--text);
     }
 
-    .section-head h2 { margin:0; }
+    .quick-icon {
+      font-size:25px;
+    }
 
-    .pill {
-      background:#edf4fc;
-      color:var(--dark);
-      border-radius:30px;
-      padding:6px 10px;
+    .quick-item strong {
+      display:block;
+      font-size:12px;
+    }
+
+    .quick-item small {
+      display:block;
+      margin-top:5px;
+      color:var(--muted);
+      font-size:10px;
+    }
+
+    /* =====================================
+       LAPORAN
+    ===================================== */
+
+    .period-tabs {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:8px;
+      margin-bottom:16px;
+    }
+
+    .period-tab {
+      padding:12px 7px;
+      border-radius:11px;
+      border:1px solid var(--border);
+      background:white;
+      color:var(--blue);
+      font-size:12px;
+      font-weight:900;
+    }
+
+    .period-tab.active {
+      background:var(--blue);
+      color:white;
+    }
+
+    .filter-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .filter-grid .wide {
+      grid-column:1/-1;
+    }
+
+    .filter-grid label {
+      display:block;
+      margin-bottom:7px;
       font-size:11px;
-      font-weight:bold;
+      font-weight:800;
+    }
+
+    .report-summary {
+      margin:12px 0;
+      padding:15px;
+      border-radius:13px;
+      background:#eef6ff;
+      color:var(--dark);
+      font-size:12px;
+      line-height:1.8;
     }
 
     .trip-card {
+      padding:17px;
       margin-bottom:12px;
-      padding:16px;
-      border:1px solid #dce7f5;
-      border-radius:13px;
+      border-radius:15px;
       background:white;
+      box-shadow:var(--shadow);
     }
 
     .trip-top {
@@ -365,26 +583,25 @@
       justify-content:space-between;
       align-items:flex-start;
       gap:10px;
-      margin-bottom:12px;
     }
 
-    .trip-name {
-      font-size:14px;
-      font-weight:900;
+    .trip-title {
       color:var(--dark);
+      font-size:13px;
+      font-weight:900;
     }
 
     .trip-date {
-      margin-top:5px;
-      color:var(--muted);
+      margin-top:7px;
       font-size:11px;
+      color:var(--muted);
     }
 
-    .trip-total {
-      color:var(--green);
-      font-size:16px;
+    .trip-amount {
+      font-size:15px;
       font-weight:900;
-      text-align:right;
+      color:var(--green);
+      white-space:nowrap;
     }
 
     .trip-bottom {
@@ -392,71 +609,394 @@
       justify-content:space-between;
       flex-wrap:wrap;
       gap:8px;
-      padding-top:11px;
-      border-top:1px solid #edf0f5;
+      padding-top:12px;
+      margin-top:13px;
+      border-top:1px solid var(--border);
       color:var(--muted);
       font-size:11px;
+    }
+
+    .vehicle-card {
+      padding:19px;
+      margin-bottom:13px;
+      background:white;
+      border-radius:17px;
+      box-shadow:var(--shadow);
+    }
+
+    .vehicle-heading {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:15px;
+    }
+
+    .vehicle-icon {
+      width:52px;
+      height:52px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#edf5ff;
+      border-radius:14px;
+      font-size:25px;
+    }
+
+    .vehicle-name {
+      font-size:16px;
+      font-weight:900;
+      color:var(--dark);
+    }
+
+    .vehicle-sub {
+      margin-top:5px;
+      font-size:11px;
+      color:var(--muted);
+    }
+
+    .vehicle-amount {
+      margin-bottom:10px;
+      font-size:26px;
+      font-weight:900;
+      color:var(--blue);
+    }
+
+    .vehicle-footer {
+      font-size:11px;
+      color:var(--muted);
+    }
+
+    /* =====================================
+       KEAMANAN
+    ===================================== */
+
+    .security-summary {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .security-summary strong {
+      display:block;
+      margin-bottom:6px;
+      font-size:17px;
+      color:var(--dark);
+    }
+
+    .security-summary small {
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .security-count {
+      min-width:44px;
+      height:44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:13px;
+      color:#a31f1f;
+      background:#fff0f0;
+      font-size:20px;
+      font-weight:900;
+    }
+
+    .security-filters {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:9px;
+      margin-bottom:15px;
+    }
+
+    .security-filter {
+      padding:12px 7px;
+      border:1px solid var(--border);
+      border-radius:11px;
+      background:white;
+      color:var(--blue);
+      font-size:11px;
+      font-weight:900;
+    }
+
+    .security-filter.active {
+      color:white;
+      background:var(--blue);
+    }
+
+    .event-card {
+      position:relative;
+      margin-bottom:12px;
+      padding:16px;
+      border-radius:15px;
+      background:white;
+      box-shadow:var(--shadow);
+      border-left:4px solid #f4b942;
+    }
+
+    .event-card.info {
+      border-left-color:var(--blue);
+    }
+
+    .event-card.critical {
+      border-left-color:#db2828;
+    }
+
+    .event-title {
+      margin-bottom:7px;
+      font-size:13px;
+      font-weight:900;
+      color:var(--dark);
+    }
+
+    .event-time {
+      color:var(--muted);
+      font-size:10px;
+    }
+
+    .event-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:11px;
+      font-size:11px;
+    }
+
+    .event-row span {
+      color:var(--muted);
+      flex:0 0 33%;
+    }
+
+    .event-row strong {
+      text-align:right;
+      flex:1;
+      font-weight:700;
+      overflow-wrap:anywhere;
+    }
+
+    .event-tag {
+      display:inline-block;
+      margin-top:12px;
+      padding:6px 10px;
+      border-radius:20px;
+      font-size:10px;
+      font-weight:900;
+      color:#9b5d00;
+      background:#fff5df;
+    }
+
+    .event-tag.critical {
+      background:#ffeded;
+      color:#bb2424;
+    }
+
+    .event-tag.info {
+      color:var(--blue);
+      background:#edf5ff;
     }
 
     .empty {
-      padding:26px 15px;
+      padding:27px 17px;
       text-align:center;
-      border:1px dashed var(--border);
-      border-radius:12px;
-      background:#f8fbff;
       color:var(--muted);
-      font-size:13px;
+      background:white;
+      border:1px dashed var(--border);
+      border-radius:15px;
+      font-size:12px;
+      line-height:1.8;
+    }
+
+    /* =====================================
+       PENGATURAN
+    ===================================== */
+
+    .profile-avatar {
+      width:66px;
+      height:66px;
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#edf5ff;
+      font-size:32px;
+      margin-bottom:13px;
+    }
+
+    .profile-title {
+      color:var(--dark);
+      font-size:17px;
+      font-weight:900;
+    }
+
+    .profile-email {
+      margin-top:8px;
+      color:var(--muted);
+      font-size:12px;
+      overflow-wrap:anywhere;
+    }
+
+    .setting-line {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 0;
+      border-bottom:1px solid var(--border);
+      font-size:12px;
+    }
+
+    .setting-line:last-child {
+      border-bottom:0;
+    }
+
+    .setting-line strong {
+      color:var(--green);
+      font-size:11px;
+    }
+
+    .hint {
+      margin-top:14px;
+      color:var(--muted);
+      font-size:11px;
       line-height:1.7;
     }
 
-    .upcoming {
-      margin-top:15px;
-      padding:14px;
+    /* =====================================
+       NAVIGASI BAWAH
+    ===================================== */
+
+    .bottom-nav {
+      position:fixed;
+      z-index:100;
+      bottom:0;
+      left:50%;
+      transform:translateX(-50%);
+      width:100%;
+      max-width:1100px;
+      display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      padding:
+        9px 7px
+        calc(9px + env(safe-area-inset-bottom));
+      border-top:1px solid var(--border);
+      background:rgba(255,255,255,.98);
+      box-shadow:0 -7px 30px rgba(15,43,84,.08);
+    }
+
+    .nav-item {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:5px;
+      min-height:51px;
+      border:0;
       border-radius:11px;
-      background:#fff8e8;
-      border:1px solid #f5dda1;
-      color:#805b13;
-      font-size:11px;
-      line-height:1.7;
+      background:transparent;
+      color:#7b899a;
+      font-size:10px;
+      font-weight:800;
     }
 
-    .footer {
-      margin-top:22px;
-      text-align:center;
-      color:#718096;
-      font-size:11px;
-      line-height:1.7;
+    .nav-item.active {
+      background:#edf5ff;
+      color:var(--blue);
     }
 
-    @media(max-width:550px) {
-      .card { padding:19px 15px; }
-      .stat-value { font-size:15px; }
-      .stat.primary .stat-value { font-size:25px; }
-      .trip-total { font-size:14px; }
+    .nav-icon {
+      font-size:23px;
+      line-height:1;
+    }
+
+    .nav-icon-wrap {
+      position:relative;
+    }
+
+    .nav-badge {
+      position:absolute;
+      top:-7px;
+      right:-12px;
+      min-width:17px;
+      padding:2px 4px;
+      border-radius:10px;
+      background:var(--red);
+      color:white;
+      font-size:9px;
+    }
+
+    @media(min-width:700px) {
+      .content {
+        padding:22px;
+      }
+
+      .stat-grid {
+        grid-template-columns:repeat(4,minmax(0,1fr));
+      }
+
+      .quick-grid {
+        grid-template-columns:repeat(4,minmax(0,1fr));
+      }
+
+      .vehicle-list {
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:14px;
+      }
+
+      .hero-amount {
+        font-size:40px;
+      }
+    }
+
+    @media(max-width:400px) {
+      .stat-number {
+        font-size:16px;
+      }
+
+      .hero-amount {
+        font-size:28px;
+      }
+
+      .trip-amount {
+        font-size:13px;
+      }
+
+      .nav-item {
+        font-size:9px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<header class="header">
-  <div class="logo">H<span>S</span>M</div>
-  <div class="company">PT HIDAYAH SARANA MULIA</div>
-</header>
+<div id="globalMessage" class="message" role="alert"></div>
 
-<main class="container">
+<!-- =====================================
+     LOGIN
+===================================== -->
 
-  <section class="card">
+<section id="loginPage" class="page active">
 
-    <div id="globalMessage" class="message" role="alert"></div>
+  <div class="auth-background">
+    <div class="auth-card">
 
-    <!-- LOGIN -->
-    <div id="loginPage" class="page active auth-card">
+      <div class="auth-logo">
+        H<span>S</span>M
+      </div>
 
-      <h1>👑 HSM OWNER</h1>
+      <div class="auth-company">
+        PT HIDAYAH SARANA MULIA
+      </div>
 
-      <p class="description">
-        Pusat Pengawasan dan Manajemen HSM Transport
+      <h1 class="auth-title">
+        👑 HSM OWNER
+      </h1>
+
+      <p class="auth-description">
+        Pusat Pengawasan dan Manajemen
+        HSM Transport
       </p>
 
       <form id="loginForm">
@@ -481,32 +1021,49 @@
           >
         </div>
 
-        <button id="loginBtn" type="submit" class="btn">
-          🔐 Login HSM Owner
+        <button
+          id="loginBtn"
+          type="submit"
+          class="btn"
+        >
+          🔐 Masuk ke HSM Owner
         </button>
 
       </form>
 
-      <div class="notice">
+      <div class="auth-note">
         Akses khusus pemilik perusahaan.<br>
-        Dilindungi verifikasi dua langkah.
+        Dilindungi email, password,
+        dan Google Authenticator.
       </div>
 
     </div>
+  </div>
 
-    <!-- AKTIVASI MFA -->
-    <div id="enrollPage" class="page auth-card">
+</section>
 
-      <h1>🔑 Aktivasi Keamanan</h1>
+<!-- =====================================
+     PENDAFTARAN AUTHENTICATOR
+===================================== -->
 
-      <p class="description">
-        Hubungkan akun dengan Google Authenticator.
+<section id="enrollPage" class="page">
+
+  <div class="auth-background">
+    <div class="auth-card">
+
+      <h1 class="auth-title">
+        🔑 Aktivasi Authenticator
+      </h1>
+
+      <p class="auth-description">
+        Hubungkan akun HSM Owner dengan
+        Google Authenticator.
       </p>
 
       <div class="step">
-        Buka Google Authenticator, kemudian
-        tambahkan akun menggunakan QR Code
-        atau kunci penyiapan.
+        Tambahkan akun baru di Google Authenticator
+        dengan memindai QR Code atau memasukkan
+        kunci penyiapan.
       </div>
 
       <img
@@ -517,15 +1074,20 @@
       >
 
       <div class="step">
-        <strong>Kunci penyiapan:</strong>
-        <div id="totpSecret" class="secret">Memuat...</div>
-        Jangan bagikan kunci ini.
+        <strong>Kunci penyiapan</strong>
+        <div id="totpSecret" class="secret">
+          Memuat...
+        </div>
+        Jangan bagikan kunci kepada siapa pun.
       </div>
 
       <form id="enrollForm">
 
         <div class="field">
-          <label for="enrollCode">Kode Authenticator</label>
+          <label for="enrollCode">
+            Kode Authenticator
+          </label>
+
           <input
             id="enrollCode"
             class="code-input"
@@ -546,18 +1108,32 @@
 
       <button
         id="enrollLogoutBtn"
-        class="btn btn-secondary"
         type="button"
-      >Keluar</button>
+        class="btn btn-secondary"
+        style="margin-top:10px"
+      >
+        Keluar
+      </button>
 
     </div>
+  </div>
 
-    <!-- VERIFIKASI MFA -->
-    <div id="verifyPage" class="page auth-card">
+</section>
 
-      <h1>🛡️ Verifikasi Keamanan</h1>
+<!-- =====================================
+     VERIFIKASI MFA
+===================================== -->
 
-      <p class="description">
+<section id="verifyPage" class="page">
+
+  <div class="auth-background">
+    <div class="auth-card">
+
+      <h1 class="auth-title">
+        🛡️ Verifikasi Keamanan
+      </h1>
+
+      <p class="auth-description">
         Masukkan kode 6 digit dari
         Google Authenticator.
       </p>
@@ -565,7 +1141,10 @@
       <form id="verifyForm">
 
         <div class="field">
-          <label for="verifyCode">Kode Authenticator</label>
+          <label for="verifyCode">
+            Kode Authenticator
+          </label>
+
           <input
             id="verifyCode"
             class="code-input"
@@ -579,184 +1158,760 @@
         </div>
 
         <button type="submit" class="btn">
-          Verifikasi dan Masuk
+          🔐 Verifikasi dan Masuk
         </button>
 
       </form>
 
       <button
         id="verifyLogoutBtn"
-        class="btn btn-secondary"
         type="button"
-      >Batalkan Login</button>
+        class="btn btn-secondary"
+        style="margin-top:10px"
+      >
+        Batalkan Login
+      </button>
 
     </div>
+  </div>
 
-    <!-- DASHBOARD OWNER -->
-    <div id="dashboardPage" class="page">
+</section>
 
-      <div class="dashboard-head">
+<!-- =====================================
+     APLIKASI HSM OWNER
+===================================== -->
 
-        <div>
-          <span class="owner-badge">● OWNER VERIFIED</span>
-          <h1>👑 HSM OWNER</h1>
-          <div id="ownerAccount" class="account">-</div>
+<section id="dashboardPage" class="page">
+
+  <div class="app-shell">
+
+    <header class="app-header">
+
+      <div class="header-top">
+
+        <div class="brand">
+
+          <div class="brand-logo">
+            H<span>S</span>M
+          </div>
+
+          <div>
+            <div class="brand-name">
+              HSM OWNER
+            </div>
+
+            <div class="brand-sub">
+              PT HIDAYAH SARANA MULIA
+            </div>
+          </div>
+
+        </div>
+
+        <button
+          id="headerNotificationBtn"
+          class="header-action"
+          type="button"
+          aria-label="Buka keamanan"
+        >
+          🔔
+          <span
+            id="headerNotificationDot"
+            class="notification-dot"
+            hidden
+          ></span>
+        </button>
+
+      </div>
+
+      <div class="greeting">
+        <small>Dashboard Pemilik Perusahaan</small>
+        <h1 id="headerScreenTitle">
+          Selamat Datang 👑
+        </h1>
+        <p id="headerDate">
+          -
+        </p>
+      </div>
+
+    </header>
+
+    <div class="content">
+
+      <!-- =========================
+           BERANDA
+      ========================= -->
+
+      <section
+        id="screen-home"
+        class="screen active"
+      >
+
+        <div class="revenue-hero">
+
+          <div class="hero-label">
+            💰 Pendapatan Perjalanan Hari Ini
+          </div>
+
+          <div
+            id="homeRevenue"
+            class="hero-amount"
+          >
+            Rp0
+          </div>
+
+          <div class="hero-caption">
+            Penumpang yang sudah naik dan lunas
+          </div>
+
+        </div>
+
+        <div class="stat-grid">
+
+          <div class="stat-card">
+            <div class="stat-icon">🚐</div>
+            <div class="stat-label">HSM-01</div>
+            <div id="homeRevenue01" class="stat-number">
+              Rp0
+            </div>
+            <div class="stat-extra">
+              Pendapatan hari ini
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">🚐</div>
+            <div class="stat-label">HSM-02</div>
+            <div id="homeRevenue02" class="stat-number">
+              Rp0
+            </div>
+            <div class="stat-extra">
+              Pendapatan hari ini
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">🎫</div>
+            <div class="stat-label">Penumpang Naik</div>
+            <div id="homeTickets" class="stat-number">
+              0
+            </div>
+            <div class="stat-extra">
+              Tiket naik dan lunas
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">🛣️</div>
+            <div class="stat-label">Perjalanan</div>
+            <div id="homeTrips" class="stat-number">
+              0
+            </div>
+            <div class="stat-extra">
+              Perjalanan berpendapatan
+            </div>
+          </div>
+
+        </div>
+
+        <div class="section-title">
+          <h2>⚡ Akses Cepat</h2>
+        </div>
+
+        <div class="quick-grid">
+
+          <button
+            class="quick-item"
+            type="button"
+            data-go="fleet"
+          >
+            <div class="quick-icon">🚐</div>
+            <div>
+              <strong>Armada</strong>
+              <small>Pendapatan mobil</small>
+            </div>
+          </button>
+
+          <button
+            class="quick-item"
+            type="button"
+            data-go="reports"
+          >
+            <div class="quick-icon">📊</div>
+            <div>
+              <strong>Laporan</strong>
+              <small>Harian hingga tahunan</small>
+            </div>
+          </button>
+
+          <button
+            class="quick-item"
+            type="button"
+            data-go="security"
+          >
+            <div class="quick-icon">🔐</div>
+            <div>
+              <strong>Keamanan</strong>
+              <small>Aktivitas Admin & Petugas</small>
+            </div>
+          </button>
+
+          <button
+            class="quick-item"
+            type="button"
+            data-go="settings"
+          >
+            <div class="quick-icon">⚙️</div>
+            <div>
+              <strong>Pengaturan</strong>
+              <small>Akun dan MFA</small>
+            </div>
+          </button>
+
+        </div>
+
+        <div class="section-title" style="margin-top:25px">
+          <h2>🚨 Peringatan Keamanan</h2>
+          <small id="homeSecurityCount">0 peringatan</small>
+        </div>
+
+        <div id="homeSecurityList">
+          <div class="empty">
+            Memuat aktivitas keamanan...
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =========================
+           ARMADA
+      ========================= -->
+
+      <section id="screen-fleet" class="screen">
+
+        <div class="section-title">
+          <h2>🚐 Pendapatan Armada</h2>
+        </div>
+
+        <div class="vehicle-list">
+
+          <div class="vehicle-card">
+
+            <div class="vehicle-heading">
+              <div class="vehicle-icon">🚐</div>
+              <div>
+                <div class="vehicle-name">
+                  HSM-01
+                </div>
+                <div class="vehicle-sub">
+                  Pendapatan berdasarkan perjalanan
+                </div>
+              </div>
+            </div>
+
+            <div id="fleetRevenue01" class="vehicle-amount">
+              Rp0
+            </div>
+
+            <div id="fleetTrips01" class="vehicle-footer">
+              0 perjalanan
+            </div>
+
+          </div>
+
+          <div class="vehicle-card">
+
+            <div class="vehicle-heading">
+              <div class="vehicle-icon">🚐</div>
+              <div>
+                <div class="vehicle-name">
+                  HSM-02
+                </div>
+                <div class="vehicle-sub">
+                  Pendapatan berdasarkan perjalanan
+                </div>
+              </div>
+            </div>
+
+            <div id="fleetRevenue02" class="vehicle-amount">
+              Rp0
+            </div>
+
+            <div id="fleetTrips02" class="vehicle-footer">
+              0 perjalanan
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="section-title">
+          <h2>🛣️ Perjalanan Hari Ini</h2>
+        </div>
+
+        <div id="fleetTripList">
+          <div class="empty">Memuat perjalanan...</div>
+        </div>
+
+        <button
+          class="btn"
+          type="button"
+          data-go="reports"
+        >
+          📊 Lihat Laporan Lengkap
+        </button>
+
+      </section>
+
+      <!-- =========================
+           LAPORAN
+      ========================= -->
+
+      <section id="screen-reports" class="screen">
+
+        <div class="section-title">
+          <h2>📊 Laporan Perusahaan</h2>
+        </div>
+
+        <div class="period-tabs">
+
+          <button
+            class="period-tab active"
+            data-period="daily"
+            type="button"
+          >
+            Harian
+          </button>
+
+          <button
+            class="period-tab"
+            data-period="monthly"
+            type="button"
+          >
+            Bulanan
+          </button>
+
+          <button
+            class="period-tab"
+            data-period="yearly"
+            type="button"
+          >
+            Tahunan
+          </button>
+
+        </div>
+
+        <div class="card">
+
+          <div class="filter-grid">
+
+            <div id="dailyField" class="wide">
+              <label for="reportDate">
+                Tanggal
+              </label>
+              <input id="reportDate" type="date">
+            </div>
+
+            <div id="monthlyField" class="wide" hidden>
+              <label for="reportMonth">
+                Bulan
+              </label>
+              <input id="reportMonth" type="month">
+            </div>
+
+            <div id="yearlyField" class="wide" hidden>
+              <label for="reportYear">
+                Tahun
+              </label>
+              <select id="reportYear"></select>
+            </div>
+
+            <div class="wide">
+              <label for="vehicleFilter">
+                Filter Armada
+              </label>
+
+              <select id="vehicleFilter">
+                <option value="ALL">Semua Armada</option>
+                <option value="HSM-01">HSM-01</option>
+                <option value="HSM-02">HSM-02</option>
+              </select>
+            </div>
+
+            <div class="wide">
+              <button
+                id="refreshBtn"
+                class="btn"
+                type="button"
+              >
+                🔄 Tampilkan Laporan
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="revenue-hero">
+
+          <div class="hero-label">
+            Total Pendapatan
+          </div>
+
+          <div id="totalRevenue" class="hero-amount">
+            Rp0
+          </div>
+
+          <div
+            id="reportPeriodLabel"
+            class="hero-caption"
+          >
+            -
+          </div>
+
+        </div>
+
+        <div class="stat-grid">
+
+          <div class="stat-card">
+            <div class="stat-label">
+              HSM-01
+            </div>
+            <div id="revenue01" class="stat-number">
+              Rp0
+            </div>
+            <div id="trips01" class="stat-extra">
+              0 perjalanan
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">
+              HSM-02
+            </div>
+            <div id="revenue02" class="stat-number">
+              Rp0
+            </div>
+            <div id="trips02" class="stat-extra">
+              0 perjalanan
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">
+              Penumpang Naik
+            </div>
+            <div id="totalTickets" class="stat-number">
+              0
+            </div>
+            <div class="stat-extra">
+              Tiket naik dan lunas
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">
+              Perjalanan
+            </div>
+            <div id="totalTrips" class="stat-number">
+              0
+            </div>
+            <div class="stat-extra">
+              Berpendapatan
+            </div>
+          </div>
+
+        </div>
+
+        <div class="section-title">
+
+          <h2>Pendapatan Sekali Jalan</h2>
+
+          <small id="tripCountBadge">
+            0 perjalanan
+          </small>
+
+        </div>
+
+        <div id="tripList">
+          <div class="empty">Memuat laporan...</div>
+        </div>
+
+        <div class="report-summary">
+          Laporan berdasarkan penumpang yang sudah
+          <strong>naik dan lunas</strong>.
+
+          Semua penumpang dari berbagai titik naik
+          digabung ke satu perjalanan berdasarkan
+          kode perjalanan yang sama.
+
+          <br><br>
+
+          Angka ini belum termasuk perhitungan
+          biaya operasional atau laba bersih.
+        </div>
+
+      </section>
+
+      <!-- =========================
+           KEAMANAN
+      ========================= -->
+
+      <section id="screen-security" class="screen">
+
+        <div class="section-title">
+          <h2>🔐 Pusat Keamanan</h2>
+        </div>
+
+        <div class="card">
+
+          <div class="security-summary">
+
+            <div>
+              <strong>
+                Monitoring HSM Internal
+              </strong>
+
+              <small>
+                Admin, Sopir dan Kernet
+              </small>
+            </div>
+
+            <div
+              id="securityWarningCount"
+              class="security-count"
+            >
+              0
+            </div>
+
+          </div>
+
+          <button
+            id="securityRefreshBtn"
+            class="btn"
+            type="button"
+            style="margin-top:17px"
+          >
+            🔄 Perbarui Riwayat Keamanan
+          </button>
+
+        </div>
+
+        <div class="security-filters">
+
+          <button
+            class="security-filter active"
+            data-security-filter="alerts"
+            type="button"
+          >
+            🚨 Peringatan
+          </button>
+
+          <button
+            class="security-filter"
+            data-security-filter="all"
+            type="button"
+          >
+            📋 Semua Aktivitas
+          </button>
+
+        </div>
+
+        <div id="securityList">
+          <div class="empty">
+            Memuat riwayat keamanan...
+          </div>
+        </div>
+
+        <div class="report-summary">
+          Lokasi hanya ditampilkan jika tercatat
+          dalam database.
+
+          Informasi perangkat yang berasal dari
+          browser merupakan perkiraan dan tidak
+          selalu menunjukkan model HP secara tepat.
+        </div>
+
+      </section>
+
+      <!-- =========================
+           PENGATURAN
+      ========================= -->
+
+      <section id="screen-settings" class="screen">
+
+        <div class="section-title">
+          <h2>⚙️ Pengaturan Owner</h2>
+        </div>
+
+        <div class="card">
+
+          <div class="profile-avatar">👑</div>
+
+          <div class="profile-title">
+            Pemilik HSM Transport
+          </div>
+
+          <div
+            id="ownerAccount"
+            class="profile-email"
+          >
+            -
+          </div>
+
+        </div>
+
+        <div class="card">
+
+          <div class="setting-line">
+            <span>Email & Password</span>
+            <strong>● Aktif</strong>
+          </div>
+
+          <div class="setting-line">
+            <span>Google Authenticator</span>
+            <strong>● Terverifikasi</strong>
+          </div>
+
+          <div class="setting-line">
+            <span>Hak Akses Owner</span>
+            <strong>● Terverifikasi</strong>
+          </div>
+
+          <div class="setting-line">
+            <span>Database Perusahaan</span>
+            <strong>● Supabase</strong>
+          </div>
+
         </div>
 
         <button
           id="logoutBtn"
-          class="logout-small"
+          class="btn"
           type="button"
-        >Keluar</button>
-
-      </div>
-
-      <h2>💰 Dashboard Pendapatan</h2>
-
-      <div class="tabs">
-        <button class="tab active" data-period="daily" type="button">
-          Harian
+          style="background:#b3262d"
+        >
+          🚪 Keluar dari HSM Owner
         </button>
-        <button class="tab" data-period="monthly" type="button">
-          Bulanan
-        </button>
-        <button class="tab" data-period="yearly" type="button">
-          Tahunan
-        </button>
-      </div>
 
-      <div class="filter-box">
+        <p class="hint">
+          Seluruh data keuangan dan keamanan
+          diakses melalui autentikasi Owner.
 
-        <div id="dailyField" class="full">
-          <label for="reportDate">Tanggal</label>
-          <input type="date" id="reportDate">
-        </div>
+          Jangan bagikan password,
+          kode Authenticator, atau akses perangkat.
+        </p>
 
-        <div id="monthlyField" class="full" hidden>
-          <label for="reportMonth">Bulan</label>
-          <input type="month" id="reportMonth">
-        </div>
-
-        <div id="yearlyField" class="full" hidden>
-          <label for="reportYear">Tahun</label>
-          <select id="reportYear"></select>
-        </div>
-
-        <div class="full">
-          <label for="vehicleFilter">Armada</label>
-          <select id="vehicleFilter">
-            <option value="ALL">Semua Armada</option>
-            <option value="HSM-01">HSM-01</option>
-            <option value="HSM-02">HSM-02</option>
-          </select>
-        </div>
-
-        <div class="full">
-          <button
-            id="refreshBtn"
-            class="btn"
-            type="button"
-          >🔄 Tampilkan Laporan</button>
-        </div>
-
-      </div>
-
-      <div class="stats">
-
-        <div class="stat primary">
-          <div class="stat-label">
-            TOTAL NILAI TIKET LUNAS
-          </div>
-          <div id="totalRevenue" class="stat-value">
-            Rp0
-          </div>
-          <div id="reportPeriodLabel" class="stat-note">
-            -
-          </div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">🚐 HSM-01</div>
-          <div id="revenue01" class="stat-value">Rp0</div>
-          <div id="trips01" class="stat-note">0 perjalanan</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">🚐 HSM-02</div>
-          <div id="revenue02" class="stat-value">Rp0</div>
-          <div id="trips02" class="stat-note">0 perjalanan</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">🎫 Tiket Lunas</div>
-          <div id="totalTickets" class="stat-value">0</div>
-          <div class="stat-note">Tiket tercatat</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">🛣️ Perjalanan</div>
-          <div id="totalTrips" class="stat-value">0</div>
-          <div class="stat-note">Perjalanan berpendapatan</div>
-        </div>
-
-      </div>
-
-      <div class="section-head">
-        <h2>🚐 Pendapatan Sekali Jalan</h2>
-        <span id="tripCountBadge" class="pill">0 perjalanan</span>
-      </div>
-
-      <div id="tripList" aria-live="polite">
-        <div class="empty">Memuat laporan...</div>
-      </div>
-
-      <div class="upcoming">
-        <strong>Catatan:</strong><br>
-        Laporan menghitung nilai tiket berstatus lunas
-        berdasarkan tanggal perjalanan, armada,
-        dan kode perjalanan.
-
-        Tiket perjalanan mendatang yang sudah lunas
-        juga tercakup pada periode tanggalnya.
-        Nilai ini belum dikurangi BBM atau pengeluaran lainnya.
-      </div>
+      </section>
 
     </div>
 
-  </section>
-
-  <div class="footer">
-    HSM OWNER<br>
-    PT Hidayah Sarana Mulia
   </div>
 
-</main>
+  <!-- =========================
+       NAVIGASI BAWAH
+  ========================= -->
+
+  <nav class="bottom-nav" aria-label="Menu HSM Owner">
+
+    <button
+      class="nav-item active"
+      data-nav="home"
+      type="button"
+    >
+      <span class="nav-icon">🏠</span>
+      Beranda
+    </button>
+
+    <button
+      class="nav-item"
+      data-nav="fleet"
+      type="button"
+    >
+      <span class="nav-icon">🚐</span>
+      Armada
+    </button>
+
+    <button
+      class="nav-item"
+      data-nav="reports"
+      type="button"
+    >
+      <span class="nav-icon">📊</span>
+      Laporan
+    </button>
+
+    <button
+      class="nav-item"
+      data-nav="security"
+      type="button"
+    >
+      <span class="nav-icon-wrap">
+        <span class="nav-icon">🔔</span>
+        <span
+          id="securityNavBadge"
+          class="nav-badge"
+          hidden
+        >!</span>
+      </span>
+      Keamanan
+    </button>
+
+    <button
+      class="nav-item"
+      data-nav="settings"
+      type="button"
+    >
+      <span class="nav-icon">⚙️</span>
+      Pengaturan
+    </button>
+
+  </nav>
+
+</section>
 
 <script>
 "use strict";
 
-/* ========================================
-   HSM OWNER - SUPABASE & KEAMANAN
-   ======================================== */
+/* =====================================
+   KONFIGURASI
+===================================== */
 
 const CONFIG = window.HSM_OWNER_CONFIG;
 
 const $ = id => document.getElementById(id);
 
 let ownerDB = null;
+
 let pendingFactorId = null;
+
 let loading = false;
 
 let currentPeriod = "daily";
 
+let securityFilter = "alerts";
+
+let securityEvents = [];
+
+let securityRefreshTimer = null;
+
+let securityRequestRunning = false;
+
+let revenueRequestVersion = 0;
+
+/* =====================================
+   UTILITAS
+===================================== */
+
 function showMessage(text, type = "error") {
   const el = $("globalMessage");
+
   el.textContent = text;
   el.className = "message " + type;
 }
 
 function clearMessage() {
   const el = $("globalMessage");
+
   el.textContent = "";
   el.className = "message";
 }
@@ -767,7 +1922,33 @@ function showPage(pageId) {
   });
 
   $(pageId).classList.add("active");
+
   clearMessage();
+
+  window.scrollTo(0,0);
+}
+
+function addText(parent, tag, className, value) {
+  const element = document.createElement(tag);
+
+  if (className) {
+    element.className = className;
+  }
+
+  element.textContent = String(value ?? "");
+
+  parent.appendChild(element);
+
+  return element;
+}
+
+function money(value) {
+  return "Rp" + Number(value || 0)
+    .toLocaleString("id-ID");
+}
+
+function validCode(code) {
+  return /^\d{6}$/.test(code);
 }
 
 async function runLoading(button, callback) {
@@ -775,7 +1956,8 @@ async function runLoading(button, callback) {
 
   loading = true;
 
-  const oldText = button.textContent;
+  const original = button.textContent;
+
   button.disabled = true;
   button.textContent = "Memproses...";
 
@@ -783,24 +1965,21 @@ async function runLoading(button, callback) {
     await callback();
   } catch (error) {
     console.error("HSM OWNER:", error);
+
     showMessage(
       error?.message || "Terjadi kesalahan."
     );
   } finally {
     loading = false;
+
     button.disabled = false;
-    button.textContent = oldText;
+    button.textContent = original;
   }
 }
 
-function validCode(code) {
-  return /^\d{6}$/.test(code);
-}
-
-function money(value) {
-  return "Rp" + Number(value || 0)
-    .toLocaleString("id-ID");
-}
+/* =====================================
+   WAKTU WIT
+===================================== */
 
 function witDateParts() {
   const parts = new Intl.DateTimeFormat(
@@ -814,12 +1993,16 @@ function witDateParts() {
   ).formatToParts(new Date());
 
   return Object.fromEntries(
-    parts.map(p => [p.type, p.value])
+    parts.map(part => [
+      part.type,
+      part.value
+    ])
   );
 }
 
 function todayWIT() {
   const p = witDateParts();
+
   return `${p.year}-${p.month}-${p.day}`;
 }
 
@@ -832,11 +2015,9 @@ function safeDate(value) {
 }
 
 function formatDate(value) {
-  const dateStr = safeDate(value);
+  const str = safeDate(value);
 
-  if (!dateStr) return "-";
-
-  const date = new Date(dateStr + "T12:00:00Z");
+  if (!str) return "-";
 
   return new Intl.DateTimeFormat(
     "id-ID",
@@ -846,26 +2027,43 @@ function formatDate(value) {
       month:"short",
       year:"numeric"
     }
-  ).format(date);
+  ).format(new Date(str + "T12:00:00Z"));
 }
 
-function nextMonthStart(year, month) {
-  if (month === 12) {
-    return `${year + 1}-01-01`;
+function formatDateTimeWIT(value) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "-";
   }
 
-  return `${year}-${String(month + 1).padStart(2,"0")}-01`;
+  const result = new Intl.DateTimeFormat(
+    "id-ID",
+    {
+      timeZone:"Asia/Jayapura",
+      day:"2-digit",
+      month:"short",
+      year:"numeric",
+      hour:"2-digit",
+      minute:"2-digit",
+      hour12:false
+    }
+  ).format(date);
+
+  return result + " WIT";
 }
 
-function lastDayOfMonth(year, month) {
-  return new Date(Date.UTC(year, month, 0))
-    .toISOString()
-    .slice(0,10);
+function lastDayOfMonth(year,month) {
+  return new Date(
+    Date.UTC(year,month,0)
+  ).toISOString().slice(0,10);
 }
 
-/* ========================================
-   SUPABASE CONFIG
-   ======================================== */
+/* =====================================
+   SUPABASE
+===================================== */
 
 try {
   if (
@@ -881,7 +2079,9 @@ try {
   }
 
   if (!window.supabase) {
-    throw new Error("Library Supabase tidak tersedia.");
+    throw new Error(
+      "Library Supabase belum tersedia."
+    );
   }
 
   ownerDB = window.supabase.createClient(
@@ -903,12 +2103,12 @@ try {
   });
 }
 
-/* ========================================
+/* =====================================
    MFA
-   ======================================== */
+===================================== */
 
 async function getVerifiedFactor() {
-  const { data, error } =
+  const { data,error } =
     await ownerDB.auth.mfa.listFactors();
 
   if (error) throw error;
@@ -919,7 +2119,7 @@ async function getVerifiedFactor() {
 }
 
 async function getAAL() {
-  const { data, error } =
+  const { data,error } =
     await ownerDB.auth.mfa
       .getAuthenticatorAssuranceLevel();
 
@@ -929,51 +2129,65 @@ async function getAAL() {
 }
 
 async function checkOwnerAccess() {
+  if (!ownerDB) {
+    throw new Error(
+      "Supabase tidak tersedia."
+    );
+  }
+
   if (await getAAL() !== "aal2") {
     throw new Error(
       "Verifikasi Authenticator wajib dilakukan."
     );
   }
 
-  const { data, error } = await ownerDB.rpc(
+  const { data,error } = await ownerDB.rpc(
     "hsm_owner_check_access"
   );
 
   if (error) {
     throw new Error(
-      "Gagal memeriksa hak akses Owner."
+      "Gagal memeriksa izin Owner."
     );
   }
 
   if (data !== true) {
     throw new Error(
-      "Akun tidak mempunyai izin HSM Owner."
+      "Akun tidak mempunyai akses Owner."
     );
   }
 
   return true;
 }
 
-async function verifyFactor(factorId, code) {
-  const { data:challenge, error:challengeError } =
-    await ownerDB.auth.mfa.challenge({ factorId });
-
-  if (challengeError) throw challengeError;
-
-  const { error } = await ownerDB.auth.mfa.verify({
-    factorId,
-    challengeId:challenge.id,
-    code
+async function verifyFactor(factorId,code) {
+  const {
+    data:challenge,
+    error:challengeError
+  } = await ownerDB.auth.mfa.challenge({
+    factorId
   });
+
+  if (challengeError) {
+    throw challengeError;
+  }
+
+  const { error } =
+    await ownerDB.auth.mfa.verify({
+      factorId,
+      challengeId:challenge.id,
+      code
+    });
 
   if (error) throw error;
 }
 
 async function startEnrollment() {
-  const { data, error } = await ownerDB.auth.mfa.enroll({
-    factorType:"totp",
-    friendlyName:"HSM Owner Authenticator"
-  });
+  const { data,error } =
+    await ownerDB.auth.mfa.enroll({
+      factorType:"totp",
+      friendlyName:"HSM Owner Authenticator"
+    });
 
   if (error) throw error;
 
@@ -994,27 +2208,109 @@ async function startEnrollment() {
   showPage("enrollPage");
 }
 
+/* =====================================
+   NAVIGASI
+===================================== */
+
+const screenTitles = {
+  home:"Selamat Datang 👑",
+  fleet:"Manajemen Armada",
+  reports:"Laporan Perusahaan",
+  security:"Pusat Keamanan",
+  settings:"Pengaturan Owner"
+};
+
+function openScreen(screen) {
+  if (!$("dashboardPage").classList.contains("active")) {
+    return;
+  }
+
+  document.querySelectorAll(".screen").forEach(el => {
+    el.classList.toggle(
+      "active",
+      el.id === "screen-" + screen
+    );
+  });
+
+  document.querySelectorAll(".nav-item").forEach(el => {
+    el.classList.toggle(
+      "active",
+      el.dataset.nav === screen
+    );
+  });
+
+  $("headerScreenTitle").textContent =
+    screenTitles[screen] || "HSM Owner";
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+  if (screen === "security") {
+    void loadSecurityEvents();
+  }
+
+  if (screen === "reports") {
+    void loadRevenue();
+  }
+}
+
+document.querySelectorAll("[data-nav]").forEach(button => {
+  button.addEventListener("click", () => {
+    openScreen(button.dataset.nav);
+  });
+});
+
+document.querySelectorAll("[data-go]").forEach(button => {
+  button.addEventListener("click", () => {
+    openScreen(button.dataset.go);
+  });
+});
+
+$("headerNotificationBtn").addEventListener(
+  "click",
+  () => openScreen("security")
+);
+
+/* =====================================
+   DASHBOARD
+===================================== */
+
 async function openDashboard() {
   await checkOwnerAccess();
 
-  const { data, error } = await ownerDB.auth.getUser();
+  const { data,error } =
+    await ownerDB.auth.getUser();
 
   if (error || !data?.user) {
-    throw new Error("Sesi Owner tidak valid.");
+    throw new Error(
+      "Sesi Owner tidak valid."
+    );
   }
 
   $("ownerAccount").textContent =
     data.user.email || "-";
 
+  $("headerDate").textContent =
+    formatDate(todayWIT()) + " • WIT";
+
   showPage("dashboardPage");
 
-  await loadRevenue();
+  openScreen("home");
+
+  await loadTodayOverview();
+
+  await loadSecurityEvents();
+
+  startSecurityRefresh();
 }
 
 async function resolveOwnerState() {
   if (!ownerDB) return;
 
-  const { data, error } = await ownerDB.auth.getUser();
+  const { data,error } =
+    await ownerDB.auth.getUser();
 
   if (error || !data?.user) {
     showPage("loginPage");
@@ -1037,101 +2333,133 @@ async function resolveOwnerState() {
   await startEnrollment();
 }
 
-/* ========================================
-   FORM LOGIN
-   ======================================== */
+/* =====================================
+   LOGIN
+===================================== */
 
-$("loginForm").addEventListener("submit", async e => {
-  e.preventDefault();
+$("loginForm").addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
 
-  if (!ownerDB) {
-    showMessage("Supabase belum dikonfigurasi.");
-    return;
+    await runLoading(
+      $("loginBtn"),
+      async () => {
+        if (!ownerDB) {
+          throw new Error(
+            "Supabase belum dikonfigurasi."
+          );
+        }
+
+        const email =
+          $("ownerEmail").value.trim();
+
+        const password =
+          $("ownerPassword").value;
+
+        const { error } =
+          await ownerDB.auth.signInWithPassword({
+            email,
+            password
+          });
+
+        $("ownerPassword").value = "";
+
+        if (error) {
+          throw new Error(
+            "Email atau password tidak valid."
+          );
+        }
+
+        await resolveOwnerState();
+      }
+    );
   }
+);
 
-  await runLoading($("loginBtn"), async () => {
-    const email = $("ownerEmail").value.trim();
-    const password = $("ownerPassword").value;
+$("enrollForm").addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
 
-    const { error } =
-      await ownerDB.auth.signInWithPassword({
-        email,
-        password
-      });
+    const button = $("enrollForm")
+      .querySelector('button[type="submit"]');
 
-    $("ownerPassword").value = "";
+    await runLoading(button, async () => {
+      const code =
+        $("enrollCode").value.trim();
 
-    if (error) {
-      throw new Error("Email atau password tidak valid.");
-    }
+      if (!validCode(code)) {
+        throw new Error(
+          "Kode harus 6 digit."
+        );
+      }
 
-    await resolveOwnerState();
-  });
-});
+      if (!pendingFactorId) {
+        throw new Error(
+          "Authenticator belum tersedia."
+        );
+      }
 
-/* ========================================
-   AKTIVASI AUTHENTICATOR
-   ======================================== */
+      await verifyFactor(
+        pendingFactorId,
+        code
+      );
 
-$("enrollForm").addEventListener("submit", async e => {
-  e.preventDefault();
+      $("enrollCode").value = "";
 
-  const btn = $("enrollForm")
-    .querySelector('button[type="submit"]');
+      await openDashboard();
+    });
+  }
+);
 
-  await runLoading(btn, async () => {
-    const code = $("enrollCode").value.trim();
+$("verifyForm").addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
 
-    if (!validCode(code)) {
-      throw new Error("Kode harus 6 digit.");
-    }
+    const button = $("verifyForm")
+      .querySelector('button[type="submit"]');
 
-    if (!pendingFactorId) {
-      throw new Error("Faktor MFA tidak tersedia.");
-    }
+    await runLoading(button, async () => {
+      const code =
+        $("verifyCode").value.trim();
 
-    await verifyFactor(pendingFactorId, code);
+      if (!validCode(code)) {
+        throw new Error(
+          "Kode harus 6 digit."
+        );
+      }
 
-    $("enrollCode").value = "";
+      if (!pendingFactorId) {
+        throw new Error(
+          "Authenticator belum tersedia."
+        );
+      }
 
-    await openDashboard();
-  });
-});
+      await verifyFactor(
+        pendingFactorId,
+        code
+      );
 
-/* ========================================
-   VERIFIKASI AUTHENTICATOR
-   ======================================== */
+      $("verifyCode").value = "";
 
-$("verifyForm").addEventListener("submit", async e => {
-  e.preventDefault();
+      await openDashboard();
+    });
+  }
+);
 
-  const btn = $("verifyForm")
-    .querySelector('button[type="submit"]');
-
-  await runLoading(btn, async () => {
-    const code = $("verifyCode").value.trim();
-
-    if (!validCode(code)) {
-      throw new Error("Kode harus 6 digit.");
-    }
-
-    if (!pendingFactorId) {
-      throw new Error("Authenticator tidak tersedia.");
-    }
-
-    await verifyFactor(pendingFactorId, code);
-
-    $("verifyCode").value = "";
-
-    await openDashboard();
-  });
-});
-
-/* ========================================
+/* =====================================
    LOGOUT
-   ======================================== */
+===================================== */
 
 async function ownerLogout() {
+  stopSecurityRefresh();
+
+  revenueRequestVersion++;
+
+  securityEvents = [];
+
   if (ownerDB) {
     await ownerDB.auth.signOut();
   }
@@ -1147,69 +2475,59 @@ async function ownerLogout() {
   $("totpQR").hidden = true;
 
   $("tripList").replaceChildren();
+  $("fleetTripList").replaceChildren();
+  $("securityList").replaceChildren();
+  $("homeSecurityList").replaceChildren();
 
   showPage("loginPage");
 }
 
-$("logoutBtn").addEventListener("click", ownerLogout);
-$("verifyLogoutBtn").addEventListener("click", ownerLogout);
-$("enrollLogoutBtn").addEventListener("click", ownerLogout);
+$("logoutBtn").addEventListener(
+  "click",
+  ownerLogout
+);
 
-/* ========================================
-   LAPORAN KEUANGAN
-   ======================================== */
+$("verifyLogoutBtn").addEventListener(
+  "click",
+  ownerLogout
+);
 
-function getReportRange() {
-  if (currentPeriod === "daily") {
-    const date = $("reportDate").value;
+$("enrollLogoutBtn").addEventListener(
+  "click",
+  ownerLogout
+);
 
-    if (!safeDate(date)) {
-      throw new Error("Pilih tanggal laporan.");
-    }
+/* =====================================
+   PENDAPATAN
+===================================== */
 
-    return {
-      start:date,
-      end:date,
-      label:`Harian • ${formatDate(date)}`
-    };
+function getVehicle(value) {
+  const normalized = String(value || "")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g,"");
+
+  if (
+    normalized === "HSM01" ||
+    normalized === "01" ||
+    normalized === "1"
+  ) {
+    return "HSM-01";
   }
 
-  if (currentPeriod === "monthly") {
-    const monthValue = $("reportMonth").value;
-
-    if (!/^\d{4}-\d{2}$/.test(monthValue)) {
-      throw new Error("Pilih bulan laporan.");
-    }
-
-    const year = Number(monthValue.slice(0,4));
-    const month = Number(monthValue.slice(5,7));
-
-    if (month < 1 || month > 12) {
-      throw new Error("Bulan tidak valid.");
-    }
-
-    return {
-      start:`${monthValue}-01`,
-      end:lastDayOfMonth(year,month),
-      label:`Bulanan • ${monthValue}`
-    };
+  if (
+    normalized === "HSM02" ||
+    normalized === "02" ||
+    normalized === "2"
+  ) {
+    return "HSM-02";
   }
 
-  const year = Number($("reportYear").value);
-
-  if (!Number.isInteger(year) || year < 2026 || year > 2100) {
-    throw new Error("Tahun tidak valid.");
-  }
-
-  return {
-    start:`${year}-01-01`,
-    end:`${year}-12-31`,
-    label:`Tahunan • ${year}`
-  };
+  return String(value || "-");
 }
 
 function getDirection(tripCode) {
-  const code = String(tripCode || "").toUpperCase();
+  const code = String(tripCode || "")
+    .toUpperCase();
 
   if (code.includes("HSM01-AM-")) {
     return "Sofifi → Lelilef";
@@ -1230,48 +2548,128 @@ function getDirection(tripCode) {
   return "Perjalanan lainnya";
 }
 
-function getVehicle(value) {
-  const v = String(value || "").toUpperCase()
-    .replace(/[^A-Z0-9]/g,"");
+function getReportRange() {
+  if (currentPeriod === "daily") {
+    const date = $("reportDate").value;
 
-  if (v === "HSM01" || v === "01" || v === "1") {
-    return "HSM-01";
+    if (!safeDate(date)) {
+      throw new Error(
+        "Pilih tanggal laporan."
+      );
+    }
+
+    return {
+      start:date,
+      end:date,
+      label:"Harian • " + formatDate(date)
+    };
   }
 
-  if (v === "HSM02" || v === "02" || v === "2") {
-    return "HSM-02";
+  if (currentPeriod === "monthly") {
+    const value = $("reportMonth").value;
+
+    if (!/^\d{4}-\d{2}$/.test(value)) {
+      throw new Error(
+        "Pilih bulan laporan."
+      );
+    }
+
+    const year = Number(value.slice(0,4));
+    const month = Number(value.slice(5,7));
+
+    if (month < 1 || month > 12) {
+      throw new Error(
+        "Bulan tidak valid."
+      );
+    }
+
+    return {
+      start:value + "-01",
+      end:lastDayOfMonth(year,month),
+      label:"Bulanan • " + value
+    };
   }
 
-  return String(value || "-");
-}
+  const year = Number($("reportYear").value);
 
-function clearRevenue() {
-  $("totalRevenue").textContent = "Rp0";
-  $("revenue01").textContent = "Rp0";
-  $("revenue02").textContent = "Rp0";
-  $("trips01").textContent = "0 perjalanan";
-  $("trips02").textContent = "0 perjalanan";
-  $("totalTickets").textContent = "0";
-  $("totalTrips").textContent = "0";
-  $("tripCountBadge").textContent = "0 perjalanan";
-}
-
-function addText(parent, tag, className, value) {
-  const element = document.createElement(tag);
-
-  if (className) {
-    element.className = className;
+  if (
+    !Number.isInteger(year) ||
+    year < 2026 ||
+    year > 2100
+  ) {
+    throw new Error(
+      "Tahun tidak valid."
+    );
   }
 
-  element.textContent = value;
-
-  parent.appendChild(element);
-
-  return element;
+  return {
+    start:year + "-01-01",
+    end:year + "-12-31",
+    label:"Tahunan • " + year
+  };
 }
 
-function renderTripCards(rows) {
-  const list = $("tripList");
+async function fetchRevenue(start,end) {
+  await checkOwnerAccess();
+
+  const { data,error } = await ownerDB.rpc(
+    "hsm_owner_trip_revenue",
+    {
+      p_start_date:start,
+      p_end_date:end
+    }
+  );
+
+  if (error) {
+    console.error("HSM REVENUE:",error);
+
+    throw new Error(
+      "Gagal memuat laporan pendapatan."
+    );
+  }
+
+  return data || [];
+}
+
+function revenueSummary(rows) {
+  const result = {
+    total:0,
+    tickets:0,
+    trips:rows.length,
+    hsm01:0,
+    hsm02:0,
+    trips01:0,
+    trips02:0
+  };
+
+  for (const row of rows) {
+    const amount =
+      Number(row.total_revenue || 0);
+
+    const tickets =
+      Number(row.total_passengers || 0);
+
+    result.total += amount;
+    result.tickets += tickets;
+
+    const vehicle = getVehicle(row.vehicle);
+
+    if (vehicle === "HSM-01") {
+      result.hsm01 += amount;
+      result.trips01++;
+    }
+
+    if (vehicle === "HSM-02") {
+      result.hsm02 += amount;
+      result.trips02++;
+    }
+  }
+
+  return result;
+}
+
+function renderTripCards(target,rows) {
+  const list = $(target);
 
   list.replaceChildren();
 
@@ -1280,8 +2678,9 @@ function renderTripCards(rows) {
       list,
       "div",
       "empty",
-      "Belum ada tiket lunas pada periode dan armada yang dipilih."
+      "Belum ada pendapatan perjalanan pada periode ini."
     );
+
     return;
   }
 
@@ -1298,21 +2697,25 @@ function renderTripCards(rows) {
     addText(
       left,
       "div",
-      "trip-name",
-      `${getVehicle(row.vehicle)} • ${getDirection(row.trip_code)}`
+      "trip-title",
+      getVehicle(row.vehicle) +
+      " • " +
+      getDirection(row.trip_code)
     );
 
     addText(
       left,
       "div",
       "trip-date",
-      `${formatDate(row.travel_date)} • ${row.departure_label || "-"}`
+      formatDate(row.travel_date) +
+      " • " +
+      String(row.departure_label || "-")
     );
 
     addText(
       right,
       "div",
-      "trip-total",
+      "trip-amount",
       money(row.total_revenue)
     );
 
@@ -1325,7 +2728,8 @@ function renderTripCards(rows) {
       bottom,
       "span",
       "",
-      `${Number(row.total_passengers || 0)} tiket lunas`
+      String(row.total_passengers || 0) +
+      " penumpang naik"
     );
 
     addText(
@@ -1340,49 +2744,104 @@ function renderTripCards(rows) {
   }
 }
 
-async function loadRevenue() {
-  if (!ownerDB) {
-    throw new Error("Supabase belum tersedia.");
-  }
+/* =====================================
+   BERANDA & ARMADA
+===================================== */
 
-  clearMessage();
-
-  const range = getReportRange();
-
-  $("reportPeriodLabel").textContent = range.label;
-
-  $("tripList").replaceChildren();
-
-  addText(
-    $("tripList"),
-    "div",
-    "empty",
-    "Memuat laporan pendapatan..."
-  );
+async function loadTodayOverview() {
+  const today = todayWIT();
 
   try {
-    /*
-      Fungsi ini memeriksa Owner aktif
-      dan MFA di server Supabase.
-    */
-    await checkOwnerAccess();
+    const rows = await fetchRevenue(today,today);
 
-    const { data, error } = await ownerDB.rpc(
-      "hsm_owner_trip_revenue",
-      {
-        p_start_date:range.start,
-        p_end_date:range.end
-      }
+    if (
+      !$("dashboardPage").classList.contains("active")
+    ) {
+      return;
+    }
+
+    const summary = revenueSummary(rows);
+
+    $("homeRevenue").textContent =
+      money(summary.total);
+
+    $("homeRevenue01").textContent =
+      money(summary.hsm01);
+
+    $("homeRevenue02").textContent =
+      money(summary.hsm02);
+
+    $("homeTickets").textContent =
+      summary.tickets.toLocaleString("id-ID");
+
+    $("homeTrips").textContent =
+      summary.trips.toLocaleString("id-ID");
+
+    $("fleetRevenue01").textContent =
+      money(summary.hsm01);
+
+    $("fleetRevenue02").textContent =
+      money(summary.hsm02);
+
+    $("fleetTrips01").textContent =
+      summary.trips01 + " perjalanan";
+
+    $("fleetTrips02").textContent =
+      summary.trips02 + " perjalanan";
+
+    renderTripCards("fleetTripList",rows);
+
+  } catch (error) {
+    console.error("HSM TODAY:",error);
+
+    addText(
+      $("fleetTripList"),
+      "div",
+      "empty",
+      "Gagal memuat data perjalanan."
     );
 
-    if (error) {
-      console.error("REVENUE RPC:",error);
-      throw new Error("Gagal memuat laporan pendapatan.");
+    showMessage(error.message);
+  }
+}
+
+/* =====================================
+   LAPORAN HARIAN/BULANAN/TAHUNAN
+===================================== */
+
+async function loadRevenue() {
+  const requestVersion = ++revenueRequestVersion;
+
+  try {
+    const range = getReportRange();
+
+    $("reportPeriodLabel").textContent =
+      range.label;
+
+    $("tripList").replaceChildren();
+
+    addText(
+      $("tripList"),
+      "div",
+      "empty",
+      "Memuat laporan..."
+    );
+
+    const allRows = await fetchRevenue(
+      range.start,
+      range.end
+    );
+
+    if (
+      requestVersion !== revenueRequestVersion ||
+      !$("dashboardPage").classList.contains("active")
+    ) {
+      return;
     }
 
     const filter = $("vehicleFilter").value;
 
-    const rows = (data || []).filter(row => {
+    const rows = allRows.filter(row => {
       if (filter === "ALL") return true;
 
       return getVehicle(row.vehicle) === filter;
@@ -1394,62 +2853,47 @@ async function loadRevenue() {
           String(a.travel_date)
         );
 
-      if (dateCompare !== 0) return dateCompare;
+      if (dateCompare !== 0) {
+        return dateCompare;
+      }
 
       return String(a.trip_code).localeCompare(
         String(b.trip_code)
       );
     });
 
-    let totalRevenue = 0;
-    let totalTickets = 0;
+    const summary = revenueSummary(rows);
 
-    let revenue01 = 0;
-    let revenue02 = 0;
+    $("totalRevenue").textContent =
+      money(summary.total);
 
-    let trips01 = 0;
-    let trips02 = 0;
+    $("revenue01").textContent =
+      money(summary.hsm01);
 
-    for (const row of rows) {
-      const amount = Number(row.total_revenue || 0);
-      const tickets = Number(row.total_passengers || 0);
+    $("revenue02").textContent =
+      money(summary.hsm02);
 
-      totalRevenue += amount;
-      totalTickets += tickets;
+    $("trips01").textContent =
+      summary.trips01 + " perjalanan";
 
-      const vehicle = getVehicle(row.vehicle);
-
-      if (vehicle === "HSM-01") {
-        revenue01 += amount;
-        trips01++;
-      }
-
-      if (vehicle === "HSM-02") {
-        revenue02 += amount;
-        trips02++;
-      }
-    }
-
-    $("totalRevenue").textContent = money(totalRevenue);
-    $("revenue01").textContent = money(revenue01);
-    $("revenue02").textContent = money(revenue02);
-
-    $("trips01").textContent = `${trips01} perjalanan`;
-    $("trips02").textContent = `${trips02} perjalanan`;
+    $("trips02").textContent =
+      summary.trips02 + " perjalanan";
 
     $("totalTickets").textContent =
-      totalTickets.toLocaleString("id-ID");
+      summary.tickets.toLocaleString("id-ID");
 
     $("totalTrips").textContent =
-      rows.length.toLocaleString("id-ID");
+      summary.trips.toLocaleString("id-ID");
 
     $("tripCountBadge").textContent =
-      `${rows.length} perjalanan`;
+      summary.trips + " perjalanan";
 
-    renderTripCards(rows);
+    renderTripCards("tripList",rows);
 
   } catch (error) {
-    clearRevenue();
+    if (requestVersion !== revenueRequestVersion) {
+      return;
+    }
 
     $("tripList").replaceChildren();
 
@@ -1457,88 +2901,593 @@ async function loadRevenue() {
       $("tripList"),
       "div",
       "empty",
-      "Laporan tidak dapat dimuat."
+      "Laporan gagal dimuat."
     );
 
     showMessage(
-      error.message || "Gagal memuat laporan."
+      error?.message || "Gagal memuat laporan."
     );
   }
 }
 
-/* ========================================
-   FILTER PERIODE
-   ======================================== */
-
 function switchPeriod(period) {
   currentPeriod = period;
 
-  document.querySelectorAll(".tab").forEach(tab => {
-    tab.classList.toggle(
-      "active",
-      tab.dataset.period === period
-    );
-  });
+  document.querySelectorAll(".period-tab")
+    .forEach(button => {
+      button.classList.toggle(
+        "active",
+        button.dataset.period === period
+      );
+    });
 
-  $("dailyField").hidden = period !== "daily";
-  $("monthlyField").hidden = period !== "monthly";
-  $("yearlyField").hidden = period !== "yearly";
+  $("dailyField").hidden =
+    period !== "daily";
 
-  loadRevenue();
+  $("monthlyField").hidden =
+    period !== "monthly";
+
+  $("yearlyField").hidden =
+    period !== "yearly";
+
+  void loadRevenue();
 }
 
-document.querySelectorAll(".tab").forEach(tab => {
-  tab.addEventListener("click", () => {
-    switchPeriod(tab.dataset.period);
+document.querySelectorAll(".period-tab")
+  .forEach(button => {
+    button.addEventListener("click", () => {
+      switchPeriod(button.dataset.period);
+    });
   });
-});
 
-$("refreshBtn").addEventListener("click", () => {
-  loadRevenue();
-});
+$("refreshBtn").addEventListener(
+  "click",
+  () => void loadRevenue()
+);
 
-$("reportDate").addEventListener("change", () => {
-  if (currentPeriod === "daily") loadRevenue();
-});
+$("reportDate").addEventListener(
+  "change",
+  () => {
+    if (currentPeriod === "daily") {
+      void loadRevenue();
+    }
+  }
+);
 
-$("reportMonth").addEventListener("change", () => {
-  if (currentPeriod === "monthly") loadRevenue();
-});
+$("reportMonth").addEventListener(
+  "change",
+  () => {
+    if (currentPeriod === "monthly") {
+      void loadRevenue();
+    }
+  }
+);
 
-$("reportYear").addEventListener("change", () => {
-  if (currentPeriod === "yearly") loadRevenue();
-});
+$("reportYear").addEventListener(
+  "change",
+  () => {
+    if (currentPeriod === "yearly") {
+      void loadRevenue();
+    }
+  }
+);
 
-$("vehicleFilter").addEventListener("change", () => {
-  loadRevenue();
-});
+$("vehicleFilter").addEventListener(
+  "change",
+  () => void loadRevenue()
+);
 
-/* ========================================
-   INISIALISASI TANGGAL WIT
-   ======================================== */
+/* =====================================
+   RIWAYAT KEAMANAN
+===================================== */
+
+function eventTitle(type) {
+  const titles = {
+    new_device_login:
+      "📱 Login dari Perangkat Baru",
+
+    staff_activation_code_issued:
+      "🔑 Kode Aktivasi Petugas Dibuat",
+
+    crew_profile_updated:
+      "👤 Identitas Petugas Diubah",
+
+    staff_login:
+      "🔐 Login Petugas",
+
+    admin_login:
+      "🔐 Login Admin",
+
+    suspicious_login:
+      "🚨 Aktivitas Login Mencurigakan",
+
+    unauthorized_access:
+      "⛔ Percobaan Akses Tanpa Izin"
+  };
+
+  return titles[type] ||
+    "🔔 Aktivitas Keamanan";
+}
+
+function isAlert(event) {
+  return (
+    String(event.severity || "").toLowerCase()
+      !== "info"
+  );
+}
+
+function shortDevice(userAgent) {
+  const ua = String(userAgent || "");
+
+  if (!ua) {
+    return "Tidak tersedia";
+  }
+
+  const model = ua.match(
+    /Android\s+[\d.]+;\s*([^;)]+?)(?:\s+Build\/|;\s*wv|\))/
+  );
+
+  if (model) {
+    const value = model[1].trim();
+
+    if (
+      value &&
+      value !== "K" &&
+      value.length < 70
+    ) {
+      return "Android • " + value;
+    }
+  }
+
+  if (/iPhone/i.test(ua)) {
+    return "iPhone";
+  }
+
+  if (/iPad/i.test(ua)) {
+    return "iPad";
+  }
+
+  if (/Android/i.test(ua)) {
+    return "Android";
+  }
+
+  if (/Windows/i.test(ua)) {
+    return "Windows";
+  }
+
+  if (/Macintosh/i.test(ua)) {
+    return "Mac";
+  }
+
+  return ua.slice(0,80);
+}
+
+function detailValue(details,key) {
+  if (
+    !details ||
+    typeof details !== "object"
+  ) {
+    return "";
+  }
+
+  const value = details[key];
+
+  if (
+    value === null ||
+    value === undefined
+  ) {
+    return "";
+  }
+
+  return String(value);
+}
+
+function appendEventRow(parent,label,value) {
+  if (
+    !value ||
+    value === "-"
+  ) {
+    return;
+  }
+
+  const row = document.createElement("div");
+  row.className = "event-row";
+
+  addText(row,"span","",label);
+  addText(row,"strong","",value);
+
+  parent.appendChild(row);
+}
+
+function makeEventCard(event) {
+  const severity =
+    String(event.severity || "info")
+      .toLowerCase();
+
+  const card = document.createElement("article");
+
+  card.className =
+    "event-card " +
+    (
+      severity === "critical" ||
+      severity === "high"
+        ? "critical"
+        : severity === "info"
+          ? "info"
+          : ""
+    );
+
+  addText(
+    card,
+    "div",
+    "event-title",
+    eventTitle(event.event_type)
+  );
+
+  addText(
+    card,
+    "div",
+    "event-time",
+    formatDateTimeWIT(event.created_at)
+  );
+
+  appendEventRow(
+    card,
+    "Pelaku",
+    event.actor_name || "Tidak diketahui"
+  );
+
+  appendEventRow(
+    card,
+    "Jabatan",
+    event.actor_role || ""
+  );
+
+  appendEventRow(
+    card,
+    "Armada",
+    event.vehicle || ""
+  );
+
+  appendEventRow(
+    card,
+    "Perangkat",
+    event.device_name
+      ? shortDevice(event.device_name)
+      : ""
+  );
+
+  appendEventRow(
+    card,
+    "Platform",
+    event.access_platform || ""
+  );
+
+  appendEventRow(
+    card,
+    "IP",
+    event.ip_address || ""
+  );
+
+  appendEventRow(
+    card,
+    "Lokasi",
+    event.location_name || "Belum tersedia"
+  );
+
+  const details = event.details || {};
+
+  if (event.event_type === "crew_profile_updated") {
+    appendEventRow(
+      card,
+      "Petugas",
+      detailValue(details,"crew_name")
+    );
+
+    const changed = details.changed_fields;
+
+    appendEventRow(
+      card,
+      "Data diubah",
+      Array.isArray(changed)
+        ? changed.join(", ")
+        : ""
+    );
+
+    appendEventRow(
+      card,
+      "Jabatan Lama",
+      detailValue(details,"old_role")
+    );
+
+    appendEventRow(
+      card,
+      "Jabatan Baru",
+      detailValue(details,"new_role")
+    );
+
+    appendEventRow(
+      card,
+      "Armada Lama",
+      detailValue(details,"old_vehicle")
+    );
+
+    appendEventRow(
+      card,
+      "Armada Baru",
+      detailValue(details,"new_vehicle")
+    );
+  }
+
+  if (
+    event.event_type ===
+    "staff_activation_code_issued"
+  ) {
+    appendEventRow(
+      card,
+      "Untuk Petugas",
+      detailValue(details,"staff_name")
+    );
+
+    appendEventRow(
+      card,
+      "Jabatan Petugas",
+      detailValue(details,"staff_role")
+    );
+
+    appendEventRow(
+      card,
+      "Jenis Kode",
+      detailValue(details,"purpose")
+    );
+  }
+
+  const tag = addText(
+    card,
+    "div",
+    "event-tag",
+    severity === "info"
+      ? "INFO"
+      : severity === "critical" ||
+        severity === "high"
+        ? "PERINGATAN TINGGI"
+        : "PERINGATAN"
+  );
+
+  if (
+    severity === "critical" ||
+    severity === "high"
+  ) {
+    tag.classList.add("critical");
+  } else if (severity === "info") {
+    tag.classList.add("info");
+  }
+
+  return card;
+}
+
+function renderSecurityEvents() {
+  const warnings =
+    securityEvents.filter(isAlert);
+
+  $("securityWarningCount").textContent =
+    String(warnings.length);
+
+  $("homeSecurityCount").textContent =
+    warnings.length + " peringatan terbaru";
+
+  const hasAlerts = warnings.length > 0;
+
+  $("securityNavBadge").hidden = !hasAlerts;
+  $("headerNotificationDot").hidden = !hasAlerts;
+
+  const homeList = $("homeSecurityList");
+
+  homeList.replaceChildren();
+
+  const latestWarnings = warnings.slice(0,3);
+
+  if (!latestWarnings.length) {
+    addText(
+      homeList,
+      "div",
+      "empty",
+      "Belum ada peringatan keamanan pada riwayat terbaru."
+    );
+  } else {
+    latestWarnings.forEach(event => {
+      homeList.appendChild(
+        makeEventCard(event)
+      );
+    });
+  }
+
+  const list = $("securityList");
+
+  list.replaceChildren();
+
+  const selected = securityFilter === "alerts"
+    ? warnings
+    : securityEvents;
+
+  if (!selected.length) {
+    addText(
+      list,
+      "div",
+      "empty",
+      securityFilter === "alerts"
+        ? "Belum ada peringatan keamanan."
+        : "Belum ada riwayat aktivitas."
+    );
+
+    return;
+  }
+
+  selected.forEach(event => {
+    list.appendChild(
+      makeEventCard(event)
+    );
+  });
+}
+
+async function loadSecurityEvents() {
+  if (
+    !ownerDB ||
+    securityRequestRunning ||
+    !$("dashboardPage").classList.contains("active")
+  ) {
+    return;
+  }
+
+  securityRequestRunning = true;
+
+  try {
+    await checkOwnerAccess();
+
+    const { data,error } = await ownerDB.rpc(
+      "hsm_owner_get_security_events"
+    );
+
+    if (error) {
+      console.error("HSM SECURITY RPC:",error);
+
+      throw new Error(
+        "Gagal mengambil riwayat keamanan."
+      );
+    }
+
+    if (
+      !$("dashboardPage").classList.contains("active")
+    ) {
+      return;
+    }
+
+    securityEvents = data || [];
+
+    renderSecurityEvents();
+
+  } catch (error) {
+    console.error("HSM SECURITY:",error);
+
+    showMessage(
+      error?.message ||
+      "Gagal memperbarui keamanan."
+    );
+
+  } finally {
+    securityRequestRunning = false;
+  }
+}
+
+/* =====================================
+   FILTER KEAMANAN
+===================================== */
+
+document.querySelectorAll(".security-filter")
+  .forEach(button => {
+    button.addEventListener("click", () => {
+      securityFilter =
+        button.dataset.securityFilter;
+
+      document.querySelectorAll(".security-filter")
+        .forEach(item => {
+          item.classList.toggle(
+            "active",
+            item === button
+          );
+        });
+
+      renderSecurityEvents();
+    });
+  });
+
+$("securityRefreshBtn").addEventListener(
+  "click",
+  () => void loadSecurityEvents()
+);
+
+/* =====================================
+   REFRESH KEAMANAN
+
+   Berjalan ketika dashboard aktif.
+   Bukan push notification Android.
+===================================== */
+
+function stopSecurityRefresh() {
+  if (securityRefreshTimer) {
+    clearInterval(securityRefreshTimer);
+    securityRefreshTimer = null;
+  }
+}
+
+function startSecurityRefresh() {
+  stopSecurityRefresh();
+
+  securityRefreshTimer = setInterval(() => {
+    if (
+      document.hidden ||
+      !$("dashboardPage").classList.contains("active")
+    ) {
+      return;
+    }
+
+    void loadSecurityEvents();
+  },30000);
+}
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+    if (
+      document.hidden ||
+      !$("dashboardPage").classList.contains("active")
+    ) {
+      return;
+    }
+
+    void loadSecurityEvents();
+    void loadTodayOverview();
+  }
+);
+
+/* =====================================
+   INISIALISASI TANGGAL
+===================================== */
 
 const today = todayWIT();
 
 $("reportDate").value = today;
-$("reportMonth").value = today.slice(0,7);
 
-const thisYear = Number(today.slice(0,4));
-const yearSelect = $("reportYear");
+$("reportMonth").value =
+  today.slice(0,7);
 
-for (let year = 2026; year <= Math.max(2030,thisYear+1); year++) {
-  const option = document.createElement("option");
+const thisYear =
+  Number(today.slice(0,4));
+
+const yearSelect =
+  $("reportYear");
+
+for (
+  let year=2026;
+  year<=Math.max(2030,thisYear+1);
+  year++
+) {
+  const option =
+    document.createElement("option");
 
   option.value = String(year);
   option.textContent = String(year);
 
-  if (year === thisYear) option.selected = true;
+  if (year === thisYear) {
+    option.selected = true;
+  }
 
   yearSelect.appendChild(option);
 }
 
-/* ========================================
-   INISIALISASI LOGIN OWNER
-   ======================================== */
+/* =====================================
+   INISIALISASI OWNER
+===================================== */
 
 async function initializeOwner() {
   if (!ownerDB) return;
@@ -1546,10 +3495,14 @@ async function initializeOwner() {
   try {
     await resolveOwnerState();
   } catch (error) {
-    console.error("OWNER INITIALIZATION:",error);
+    console.error(
+      "OWNER INITIALIZATION:",
+      error
+    );
 
     showMessage(
-      error?.message || "Gagal memeriksa akun Owner."
+      error?.message ||
+      "Gagal memeriksa akun Owner."
     );
   }
 }
