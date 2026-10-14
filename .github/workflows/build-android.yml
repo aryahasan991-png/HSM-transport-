@@ -431,11 +431,8 @@ jobs:
           root = Path(".")
           www = Path("builds/owner/www")
 
-          candidates = [
-              Path("owner.html"),
-              Path("hsm-owner.html"),
-              Path("owner/index.html"),
-              Path("hsm-owner/index.html")
+                    candidates = [
+              Path("owner-app/index.html")
           ]
 
           source = next(
