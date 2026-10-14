@@ -13,6 +13,6 @@ window.HSM_OWNER_CONFIG = {
     "https://lbykbgtxxlnbdixkkcsw.supabase.co",
 
   SUPABASE_PUBLISHABLE_KEY:
-    "MASUKKAN_PUBLISHABLE_KEY_DI_SINI"
+    "sb_publishable_WWiUp2cyOX6TrNy-xt9qBQ_neVFXzC5"
 
 };
