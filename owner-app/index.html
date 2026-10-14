@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0754a6">
+  <meta name="robots" content="noindex,nofollow">
+
+  <title>HSM Owner | PT Hidayah Sarana Mulia</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #edf3fa;
+      font-family: Arial, sans-serif;
+      color: #172033;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 410px;
+      padding: 32px 25px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(7, 84, 166, .12);
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 42px;
+      font-weight: 900;
+      font-style: italic;
+      color: #0754a6;
+    }
+
+    .logo span { color: #e31e2d; }
+
+    .subtitle {
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+      color: #64748b;
+    }
+
+    h1 {
+      margin: 27px 0 8px;
+      text-align: center;
+      font-size: 24px;
+      color: #063d79;
+    }
+
+    .description {
+      margin-bottom: 25px;
+      text-align: center;
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 18px;
+      border: 1px solid #dce3ec;
+      border-radius: 11px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 11px;
+      background: #0754a6;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .notice {
+      margin-top: 20px;
+      padding: 12px;
+      background: #eef5ff;
+      border-radius: 10px;
+      text-align: center;
+      color: #64748b;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="card">
+
+    <div class="logo">
+      H<span>S</span>M
+    </div>
+
+    <div class="subtitle">
+      PT HIDAYAH SARANA MULIA
+    </div>
+
+    <h1>👑 HSM OWNER</h1>
+
+    <p class="description">
+      Pusat Pengawasan dan Manajemen
+      HSM Transport
+    </p>
+
+    <form id="ownerLogin">
+
+      <label for="email">Email Owner</label>
+      <input
+        id="email"
+        type="email"
+        autocomplete="username"
+        placeholder="Masukkan email"
+        required
+      >
+
+      <label for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Masukkan password"
+        required
+      >
+
+      <button type="submit">
+        🔐 Masuk ke HSM Owner
+      </button>
+
+    </form>
+
+    <div class="notice">
+      Akses khusus pemilik HSM Transport.<br>
+      Login dilindungi verifikasi dua langkah.
+    </div>
+
+  </main>
+
+  <script>
+    document.getElementById("ownerLogin")
+      .addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        alert(
+          "Tampilan login HSM Owner berhasil dibuat. " +
+          "Integrasi autentikasi Supabase dan MFA " +
+          "akan dipasang pada tahap berikutnya."
+        );
+      });
+  </script>
+
+</body>
+</html>
