@@ -89,7 +89,7 @@ jobs:
         run: |
           set -e
 
-          for file in \
+                    for file in \
             index.html \
             admin.html \
             petugas.html \
@@ -97,6 +97,8 @@ jobs:
             app.js \
             hsm-logo.png \
             hsm-apk-icon.png \
+            hsm-petugas-premium.js \
+            hsm-pwa-audio.js \
             hsm_scan_success.wav \
             hsm_scan_error.wav \
             android-app/package.json
