@@ -1,67 +1,149 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0754a6">
-  <meta name="robots" content="noindex,nofollow">
 
-  <title>HSM Owner | PT Hidayah Sarana Mulia</title>
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#0754a6"
+  >
+
+  <meta
+    name="robots"
+    content="noindex,nofollow"
+  >
+
+  <title>HSM OWNER | PT Hidayah Sarana Mulia</title>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+  <script src="./config.js"></script>
 
   <style>
-    * { box-sizing: border-box; }
+
+    :root {
+      --blue: #0754a6;
+      --dark: #063d79;
+      --red: #e31e2d;
+      --green: #16834b;
+      --bg: #edf3fa;
+      --text: #172033;
+      --muted: #64748b;
+      --border: #dce3ec;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: #edf3fa;
-      font-family: Arial, sans-serif;
-      color: #172033;
+      background: var(--bg);
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
     }
 
-    .card {
-      width: 100%;
-      max-width: 410px;
-      padding: 32px 25px;
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 12px 40px rgba(7, 84, 166, .12);
+    button,
+    input {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .header {
+      padding: 32px 16px 65px;
+      text-align: center;
+      background: linear-gradient(
+        135deg,
+        var(--blue),
+        var(--dark)
+      );
+      color: white;
     }
 
     .logo {
-      text-align: center;
-      font-size: 42px;
+      font-size: 43px;
       font-weight: 900;
       font-style: italic;
-      color: #0754a6;
+      letter-spacing: 2px;
     }
 
-    .logo span { color: #e31e2d; }
+    .logo span {
+      color: #ff5252;
+    }
 
-    .subtitle {
-      text-align: center;
-      font-size: 12px;
+    .company {
+      margin-top: 5px;
+      font-size: 11px;
       font-weight: bold;
-      color: #64748b;
+      letter-spacing: 2px;
+    }
+
+    .container {
+      width: min(
+        440px,
+        calc(100% - 28px)
+      );
+
+      margin: -35px auto 35px;
+      position: relative;
+    }
+
+    .card {
+      padding: 27px 23px;
+      background: white;
+      border-radius: 19px;
+      box-shadow: 0 12px 35px rgba(7,84,166,.12);
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
     }
 
     h1 {
-      margin: 27px 0 8px;
+      margin: 0 0 9px;
       text-align: center;
       font-size: 24px;
-      color: #063d79;
+      color: var(--dark);
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+      color: var(--dark);
     }
 
     .description {
-      margin-bottom: 25px;
+      margin: 0 0 25px;
       text-align: center;
-      color: #64748b;
+      color: var(--muted);
       font-size: 13px;
-      line-height: 1.6;
+      line-height: 1.7;
+    }
+
+    .field {
+      margin-bottom: 18px;
     }
 
     label {
@@ -72,103 +154,1163 @@
     }
 
     input {
+      display: block;
       width: 100%;
-      padding: 14px;
-      margin-bottom: 18px;
-      border: 1px solid #dce3ec;
+      min-height: 51px;
+      padding: 13px 14px;
+      border: 1.5px solid var(--border);
       border-radius: 11px;
+      outline: none;
+      background: #fff;
+      color: var(--text);
       font-size: 15px;
     }
 
-    button {
+    input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(7,84,166,.10);
+    }
+
+    .btn {
+      display: block;
       width: 100%;
-      padding: 15px;
+      min-height: 51px;
+      padding: 13px;
       border: 0;
       border-radius: 11px;
-      background: #0754a6;
+      background: linear-gradient(
+        135deg,
+        var(--blue),
+        var(--dark)
+      );
       color: white;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .btn-secondary {
+      margin-top: 10px;
+      background: white;
+      color: var(--blue);
+      border: 1px solid var(--blue);
+    }
+
+    .message {
+      display: none;
+      margin-bottom: 18px;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .message.error {
+      display: block;
+      background: #fff0f0;
+      color: #ad2424;
+    }
+
+    .message.success {
+      display: block;
+      background: #eaf8ee;
+      color: #16834b;
     }
 
     .notice {
-      margin-top: 20px;
-      padding: 12px;
-      background: #eef5ff;
+      margin-top: 22px;
+      padding: 13px;
       border-radius: 10px;
-      text-align: center;
-      color: #64748b;
+      background: #eef5ff;
+      color: var(--muted);
       font-size: 11px;
-      line-height: 1.6;
+      text-align: center;
+      line-height: 1.8;
     }
+
+    .step {
+      padding: 15px;
+      margin-bottom: 15px;
+      background: #f6f9fd;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .qr-image {
+      display: block;
+      width: 215px;
+      max-width: 100%;
+      margin: 18px auto;
+      border-radius: 12px;
+      background: white;
+    }
+
+    .secret {
+      padding: 12px;
+      margin-bottom: 18px;
+      border: 1px dashed #afc8e8;
+      border-radius: 10px;
+      background: #f6faff;
+      font-size: 11px;
+      text-align: center;
+      overflow-wrap: anywhere;
+      user-select: all;
+    }
+
+    .code-input {
+      font-size: 23px;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: 8px;
+    }
+
+    .owner-badge {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 13px;
+      border-radius: 30px;
+      background: #eaf8ee;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .dashboard-heading {
+      text-align: center;
+    }
+
+    .dashboard-heading h1 {
+      margin-bottom: 15px;
+    }
+
+    .dashboard-info {
+      margin-top: 20px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fbff;
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .dashboard-info strong {
+      color: var(--dark);
+    }
+
+    .locked-feature {
+      margin-top: 15px;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fbff;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .footer {
+      margin-top: 23px;
+      text-align: center;
+      color: #718096;
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
   </style>
+
 </head>
 
 <body>
 
-  <main class="card">
+<header class="header">
 
-    <div class="logo">
-      H<span>S</span>M
+  <div class="logo">
+    H<span>S</span>M
+  </div>
+
+  <div class="company">
+    PT HIDAYAH SARANA MULIA
+  </div>
+
+</header>
+
+<main class="container">
+
+  <section class="card">
+
+    <div
+      id="globalMessage"
+      class="message"
+      role="alert"
+    ></div>
+
+    <!-- =========================
+         HALAMAN LOGIN
+         ========================= -->
+
+    <div id="loginPage" class="page active">
+
+      <h1>👑 HSM OWNER</h1>
+
+      <p class="description">
+        Pusat Pengawasan dan Manajemen
+        HSM Transport
+        <br>
+        Akses Khusus Pemilik Perusahaan
+      </p>
+
+      <form id="loginForm">
+
+        <div class="field">
+
+          <label for="ownerEmail">
+            Email Owner
+          </label>
+
+          <input
+            id="ownerEmail"
+            type="email"
+            autocomplete="username"
+            placeholder="Masukkan email"
+            required
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label for="ownerPassword">
+            Password
+          </label>
+
+          <input
+            id="ownerPassword"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Masukkan password"
+            required
+          >
+
+        </div>
+
+        <button
+          id="loginBtn"
+          type="submit"
+          class="btn"
+        >
+          🔐 Login HSM Owner
+        </button>
+
+      </form>
+
+      <div class="notice">
+
+        Akses hanya untuk pemilik HSM Transport.
+
+        <br>
+
+        Dilindungi email, password,
+        dan verifikasi Authenticator.
+
+      </div>
+
     </div>
 
-    <div class="subtitle">
-      PT HIDAYAH SARANA MULIA
-    </div>
+    <!-- =========================
+         DAFTAR AUTHENTICATOR
+         ========================= -->
 
-    <h1>👑 HSM OWNER</h1>
+    <div id="enrollPage" class="page">
 
-    <p class="description">
-      Pusat Pengawasan dan Manajemen
-      HSM Transport
-    </p>
+      <h1>🔑 Aktivasi Keamanan</h1>
 
-    <form id="ownerLogin">
+      <p class="description">
+        Hubungkan akun HSM Owner dengan
+        Google Authenticator atau aplikasi
+        Authenticator lain.
+      </p>
 
-      <label for="email">Email Owner</label>
-      <input
-        id="email"
-        type="email"
-        autocomplete="username"
-        placeholder="Masukkan email"
-        required
+      <div class="step">
+
+        <strong>Langkah 1</strong>
+
+        <br>
+
+        Buka Google Authenticator di HP.
+
+        <br>
+
+        Tambahkan akun baru menggunakan
+        QR Code atau kunci penyiapan.
+
+      </div>
+
+      <img
+        id="totpQR"
+        class="qr-image"
+        alt="QR Code aktivasi Authenticator"
+        hidden
       >
 
-      <label for="password">Password</label>
-      <input
-        id="password"
-        type="password"
-        autocomplete="current-password"
-        placeholder="Masukkan password"
-        required
-      >
+      <div class="step">
 
-      <button type="submit">
-        🔐 Masuk ke HSM Owner
+        <strong>Kunci penyiapan:</strong>
+
+        <div
+          id="totpSecret"
+          class="secret"
+        >
+          Memuat...
+        </div>
+
+        Simpan kunci ini secara aman.
+        Jangan dibagikan kepada orang lain.
+
+      </div>
+
+      <div class="step">
+
+        <strong>Langkah 2</strong>
+
+        <br>
+
+        Masukkan kode 6 digit yang
+        muncul di Authenticator.
+
+      </div>
+
+      <form id="enrollForm">
+
+        <div class="field">
+
+          <label for="enrollCode">
+            Kode Verifikasi
+          </label>
+
+          <input
+            id="enrollCode"
+            class="code-input"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]{6}"
+            minlength="6"
+            maxlength="6"
+            autocomplete="one-time-code"
+            required
+          >
+
+        </div>
+
+        <button
+          class="btn"
+          type="submit"
+        >
+          ✓ Aktifkan Authenticator
+        </button>
+
+      </form>
+
+      <button
+        id="enrollLogoutBtn"
+        class="btn btn-secondary"
+        type="button"
+      >
+        Keluar
       </button>
 
-    </form>
-
-    <div class="notice">
-      Akses khusus pemilik HSM Transport.<br>
-      Login dilindungi verifikasi dua langkah.
     </div>
 
-  </main>
+    <!-- =========================
+         VERIFIKASI MFA
+         ========================= -->
 
-  <script>
-    document.getElementById("ownerLogin")
-      .addEventListener("submit", function(event) {
-        event.preventDefault();
+    <div id="verifyPage" class="page">
 
-        alert(
-          "Tampilan login HSM Owner berhasil dibuat. " +
-          "Integrasi autentikasi Supabase dan MFA " +
-          "akan dipasang pada tahap berikutnya."
+      <h1>🛡️ Verifikasi Keamanan</h1>
+
+      <p class="description">
+        Masukkan kode 6 digit dari
+        Google Authenticator untuk
+        melanjutkan ke HSM Owner.
+      </p>
+
+      <form id="verifyForm">
+
+        <div class="field">
+
+          <label for="verifyCode">
+            Kode Authenticator
+          </label>
+
+          <input
+            id="verifyCode"
+            class="code-input"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]{6}"
+            minlength="6"
+            maxlength="6"
+            autocomplete="one-time-code"
+            required
+          >
+
+        </div>
+
+        <button
+          class="btn"
+          type="submit"
+        >
+          🔐 Verifikasi dan Masuk
+        </button>
+
+      </form>
+
+      <button
+        id="verifyLogoutBtn"
+        class="btn btn-secondary"
+        type="button"
+      >
+        Batalkan Login
+      </button>
+
+    </div>
+
+    <!-- =========================
+         DASHBOARD OWNER
+         ========================= -->
+
+    <div id="dashboardPage" class="page">
+
+      <div class="dashboard-heading">
+
+        <span class="owner-badge">
+          ● OWNER VERIFIED
+        </span>
+
+        <h1>👑 HSM OWNER</h1>
+
+        <p class="description">
+          Pusat Pengawasan
+          PT Hidayah Sarana Mulia
+        </p>
+
+      </div>
+
+      <div class="dashboard-info">
+
+        <strong>Status Keamanan</strong>
+
+        <br>
+
+        ✅ Email dan password terverifikasi
+
+        <br>
+
+        ✅ Authenticator terverifikasi
+
+        <br>
+
+        ✅ Hak akses Owner terverifikasi
+
+        <br><br>
+
+        <strong>Akun:</strong>
+
+        <br>
+
+        <span id="ownerAccount">
+          -
+        </span>
+
+      </div>
+
+      <div class="locked-feature">
+
+        🚐 <strong>Dashboard Armada</strong>
+
+        <br>
+
+        💰 Keuangan Perusahaan
+
+        <br>
+
+        ⛽ BBM dan Nota SPBU
+
+        <br>
+
+        📊 Laporan Harian, Bulanan, Tahunan
+
+        <br>
+
+        🔐 Monitoring Admin dan Petugas
+
+        <br><br>
+
+        Fitur manajemen akan ditambahkan
+        setelah sistem keamanan Owner selesai.
+
+      </div>
+
+      <button
+        id="logoutBtn"
+        class="btn btn-secondary"
+        type="button"
+        style="margin-top:20px"
+      >
+        Keluar dari HSM Owner
+      </button>
+
+    </div>
+
+  </section>
+
+  <div class="footer">
+
+    HSM OWNER
+
+    <br>
+
+    PT Hidayah Sarana Mulia
+
+    <br>
+
+    Sistem Manajemen Internal Perusahaan
+
+  </div>
+
+</main>
+
+<script>
+
+"use strict";
+
+/* ==========================================
+   SUPABASE CONFIG
+   ========================================== */
+
+const CONFIG = window.HSM_OWNER_CONFIG;
+
+const $ = id => document.getElementById(id);
+
+let ownerDB = null;
+
+let pendingFactorId = null;
+
+let loading = false;
+
+try {
+
+  if (
+    !CONFIG ||
+    !CONFIG.SUPABASE_URL ||
+    !CONFIG.SUPABASE_PUBLISHABLE_KEY ||
+    CONFIG.SUPABASE_PUBLISHABLE_KEY.includes(
+      "MASUKKAN_"
+    )
+  ) {
+    throw new Error(
+      "Konfigurasi Supabase Owner belum lengkap."
+    );
+  }
+
+  if (!window.supabase) {
+    throw new Error(
+      "Library Supabase tidak tersedia."
+    );
+  }
+
+  ownerDB = window.supabase.createClient(
+    CONFIG.SUPABASE_URL,
+    CONFIG.SUPABASE_PUBLISHABLE_KEY,
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: false
+      }
+    }
+  );
+
+} catch (error) {
+
+  console.error("HSM OWNER CONFIG:", error);
+
+  window.addEventListener("DOMContentLoaded", () => {
+    showMessage(error.message);
+    $("loginBtn").disabled = true;
+  });
+
+}
+
+/* ==========================================
+   UTILITAS
+   ========================================== */
+
+function showPage(pageId) {
+
+  document.querySelectorAll(
+    ".page"
+  ).forEach(page => {
+    page.classList.remove("active");
+  });
+
+  $(pageId).classList.add("active");
+
+  clearMessage();
+
+}
+
+function showMessage(
+  text,
+  type = "error"
+) {
+
+  const element = $("globalMessage");
+
+  element.textContent = text;
+
+  element.className =
+    "message " + type;
+
+}
+
+function clearMessage() {
+
+  const element = $("globalMessage");
+
+  element.textContent = "";
+
+  element.className = "message";
+
+}
+
+function validateCode(code) {
+
+  return /^\d{6}$/.test(code);
+
+}
+
+async function runLoading(
+  button,
+  callback
+) {
+
+  if (loading) return;
+
+  loading = true;
+
+  const original = button.textContent;
+
+  button.disabled = true;
+
+  button.textContent = "Memproses...";
+
+  try {
+
+    await callback();
+
+  } catch (error) {
+
+    console.error(
+      "HSM OWNER AUTH:",
+      error.message
+    );
+
+    showMessage(
+      error.message ||
+      "Terjadi kesalahan."
+    );
+
+  } finally {
+
+    loading = false;
+
+    button.disabled = false;
+
+    button.textContent = original;
+
+  }
+
+}
+
+/* ==========================================
+   CEK MFA
+   ========================================== */
+
+async function getVerifiedTOTPFactor() {
+
+  const {
+    data,
+    error
+  } = await ownerDB.auth.mfa.listFactors();
+
+  if (error) {
+    throw error;
+  }
+
+  return (
+    data?.totp || []
+  ).find(
+    factor =>
+      factor.status === "verified"
+  ) || null;
+
+}
+
+/* ==========================================
+   CEK AAL
+   ========================================== */
+
+async function getAAL() {
+
+  const {
+    data,
+    error
+  } =
+    await ownerDB.auth.mfa
+      .getAuthenticatorAssuranceLevel();
+
+  if (error) {
+    throw error;
+  }
+
+  return data?.currentLevel || "aal1";
+
+}
+
+/* ==========================================
+   PEMERIKSAAN OWNER
+
+   Fungsi database:
+   hsm_owner_check_access
+
+   Akan dibuat pada tahap berikutnya.
+
+   Dashboard tidak boleh dibuka
+   sebelum fungsi ini mengizinkan.
+   ========================================== */
+
+async function checkOwnerAccess() {
+
+  if (
+    await getAAL() !== "aal2"
+  ) {
+    throw new Error(
+      "Verifikasi dua langkah wajib dilakukan."
+    );
+  }
+
+  const {
+    data,
+    error
+  } = await ownerDB.rpc(
+    "hsm_owner_check_access"
+  );
+
+  if (error) {
+
+    console.error(
+      "OWNER ACCESS CHECK:",
+      error
+    );
+
+    throw new Error(
+      "Pemeriksaan izin Owner belum tersedia atau gagal."
+    );
+
+  }
+
+  if (data !== true) {
+
+    throw new Error(
+      "Akun ini tidak mempunyai izin sebagai HSM Owner."
+    );
+
+  }
+
+  return true;
+
+}
+
+/* ==========================================
+   BUKA DASHBOARD
+   ========================================== */
+
+async function openOwnerDashboard() {
+
+  await checkOwnerAccess();
+
+  const {
+    data,
+    error
+  } = await ownerDB.auth.getUser();
+
+  if (error || !data?.user) {
+    throw new Error(
+      "Sesi Owner tidak valid."
+    );
+  }
+
+  $("ownerAccount").textContent =
+    data.user.email || "-";
+
+  showPage("dashboardPage");
+
+}
+
+/* ==========================================
+   DAFTARKAN MFA
+   ========================================== */
+
+async function startMFAEnrollment() {
+
+  const {
+    data,
+    error
+  } = await ownerDB.auth.mfa.enroll({
+    factorType: "totp",
+    friendlyName: "HSM Owner Authenticator"
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data?.id || !data?.totp) {
+    throw new Error(
+      "Data Authenticator tidak tersedia."
+    );
+  }
+
+  pendingFactorId = data.id;
+
+  const qr = $("totpQR");
+
+  qr.hidden = false;
+
+  qr.src = data.totp.qr_code;
+
+  $("totpSecret").textContent =
+    data.totp.secret || "-";
+
+  showPage("enrollPage");
+
+}
+
+/* ==========================================
+   VERIFIKASI MFA
+   ========================================== */
+
+async function verifyFactor(
+  factorId,
+  code
+) {
+
+  const {
+    data: challenge,
+    error: challengeError
+  } = await ownerDB.auth.mfa.challenge({
+    factorId
+  });
+
+  if (challengeError) {
+    throw challengeError;
+  }
+
+  const {
+    error
+  } = await ownerDB.auth.mfa.verify({
+    factorId,
+    challengeId: challenge.id,
+    code
+  });
+
+  if (error) {
+    throw error;
+  }
+
+}
+
+/* ==========================================
+   CEK STATUS LOGIN
+   ========================================== */
+
+async function resolveOwnerState() {
+
+  if (!ownerDB) return;
+
+  const {
+    data,
+    error
+  } = await ownerDB.auth.getUser();
+
+  if (error || !data?.user) {
+    showPage("loginPage");
+    return;
+  }
+
+  const aal = await getAAL();
+
+  if (aal === "aal2") {
+
+    await openOwnerDashboard();
+
+    return;
+
+  }
+
+  const factor =
+    await getVerifiedTOTPFactor();
+
+  if (factor) {
+
+    pendingFactorId = factor.id;
+
+    showPage("verifyPage");
+
+    return;
+
+  }
+
+  /*
+    Akun belum punya Authenticator.
+
+    Proses pendaftaran MFA dimulai.
+    Dashboard tetap terkunci.
+  */
+
+  await startMFAEnrollment();
+
+}
+
+/* ==========================================
+   LOGIN EMAIL PASSWORD
+   ========================================== */
+
+$("loginForm").addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+    if (!ownerDB) {
+      showMessage(
+        "Supabase belum dikonfigurasi."
+      );
+      return;
+    }
+
+    await runLoading(
+      $("loginBtn"),
+      async () => {
+
+        const email =
+          $("ownerEmail").value.trim();
+
+        const password =
+          $("ownerPassword").value;
+
+        const {
+          error
+        } =
+          await ownerDB.auth
+            .signInWithPassword({
+              email,
+              password
+            });
+
+        $("ownerPassword").value = "";
+
+        if (error) {
+          throw new Error(
+            "Email atau password tidak valid."
+          );
+        }
+
+        await resolveOwnerState();
+
+      }
+    );
+
+  }
+);
+
+/* ==========================================
+   AKTIVASI AUTHENTICATOR
+   ========================================== */
+
+$("enrollForm").addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+    await runLoading(
+      $("enrollForm").querySelector(
+        'button[type="submit"]'
+      ),
+      async () => {
+
+        const code =
+          $("enrollCode").value.trim();
+
+        if (!validateCode(code)) {
+          throw new Error(
+            "Kode harus 6 digit."
+          );
+        }
+
+        if (!pendingFactorId) {
+          throw new Error(
+            "Aktivasi Authenticator belum dimulai."
+          );
+        }
+
+        await verifyFactor(
+          pendingFactorId,
+          code
         );
-      });
-  </script>
+
+        $("enrollCode").value = "";
+
+        /*
+          Sesudah MFA berhasil,
+          pemeriksaan Owner wajib dilakukan.
+        */
+
+        await openOwnerDashboard();
+
+      }
+    );
+
+  }
+);
+
+/* ==========================================
+   VERIFIKASI AUTHENTICATOR
+   ========================================== */
+
+$("verifyForm").addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+    await runLoading(
+      $("verifyForm").querySelector(
+        'button[type="submit"]'
+      ),
+      async () => {
+
+        const code =
+          $("verifyCode").value.trim();
+
+        if (!validateCode(code)) {
+          throw new Error(
+            "Kode Authenticator harus 6 digit."
+          );
+        }
+
+        if (!pendingFactorId) {
+          throw new Error(
+            "Authenticator belum tersedia."
+          );
+        }
+
+        await verifyFactor(
+          pendingFactorId,
+          code
+        );
+
+        $("verifyCode").value = "";
+
+        await openOwnerDashboard();
+
+      }
+    );
+
+  }
+);
+
+/* ==========================================
+   LOGOUT
+   ========================================== */
+
+async function ownerLogout() {
+
+  if (ownerDB) {
+
+    await ownerDB.auth.signOut();
+
+  }
+
+  pendingFactorId = null;
+
+  $("ownerPassword").value = "";
+
+  $("enrollCode").value = "";
+
+  $("verifyCode").value = "";
+
+  $("totpSecret").textContent = "";
+
+  $("totpQR").removeAttribute("src");
+
+  $("totpQR").hidden = true;
+
+  showPage("loginPage");
+
+}
+
+$("logoutBtn").addEventListener(
+  "click",
+  ownerLogout
+);
+
+$("enrollLogoutBtn").addEventListener(
+  "click",
+  ownerLogout
+);
+
+$("verifyLogoutBtn").addEventListener(
+  "click",
+  ownerLogout
+);
+
+/* ==========================================
+   INISIALISASI
+   ========================================== */
+
+async function initializeOwner() {
+
+  if (!ownerDB) return;
+
+  try {
+
+    await resolveOwnerState();
+
+  } catch (error) {
+
+    console.error(
+      "OWNER INITIALIZATION:",
+      error
+    );
+
+    showMessage(
+      error.message ||
+      "Gagal memeriksa akun."
+    );
+
+  }
+
+}
+
+initializeOwner();
+
+</script>
 
 </body>
 </html>
