@@ -1,941 +1,2369 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0754a6">
+<meta name="theme-color" content="#071e42">
 <meta name="robots" content="noindex,nofollow">
+
 <link rel="icon" type="image/png" href="./favicon.png">
 <link rel="apple-touch-icon" href="./hsm-apk-icon.png">
+
 <title>HSM OWNER | PT Hidayah Sarana Mulia</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./config.js"></script>
 
 <style>
-:root{
-  --blue:#0754a6;
+:root {
   --navy:#071e42;
-  --navy2:#0d3263;
+  --navy2:#0b2a55;
+  --navy3:#123a70;
+  --blue:#0754a6;
+  --bright:#3186de;
   --red:#e31e2d;
-  --bg:#f2f5fa;
-  --surface:#fff;
-  --text:#14243b;
-  --muted:#75859a;
-  --line:#e8edf4;
-  --green:#15976a;
-  --radius:20px;
-  --shadow:0 12px 35px rgba(24,49,84,.055);
+  --green:#27c590;
+  --bg:#dfe8f2;
+  --surface:#eaf1f8;
+  --surface2:#d4e2f0;
+  --text:#142844;
+  --muted:#687e98;
+  --line:#bfd0e3;
+  --white:#fff;
+  --shadow:0 8px 24px rgba(6,30,66,.09);
 }
 
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
+* {
+  box-sizing:border-box;
+}
+
+html {
+  scroll-behavior:smooth;
+}
+
+body {
   margin:0;
+  min-height:100vh;
   background:var(--bg);
   color:var(--text);
   font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
   -webkit-tap-highlight-color:transparent;
 }
-button,input,select{font:inherit}
-button{cursor:pointer}
-button:disabled{opacity:.55;cursor:not-allowed}
-[hidden]{display:none!important}
-svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.page,.screen{display:none}
-.page.active,.screen.active{display:block}
-.screen.active{animation:appear .24s ease}
-@keyframes appear{from{opacity:.3;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-#globalMessage{
+button,
+input,
+select {
+  font:inherit;
+}
+
+button {
+  cursor:pointer;
+}
+
+button:disabled {
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+[hidden] {
+  display:none!important;
+}
+
+svg {
+  width:21px;
+  height:21px;
+  stroke:currentColor;
+  fill:none;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.page,
+.screen {
+  display:none;
+}
+
+.page.active,
+.screen.active {
+  display:block;
+}
+
+.screen.active {
+  animation:fadeUp .22s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity:.4;
+    transform:translateY(6px);
+  }
+  to {
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* =========================
+   PESAN
+========================= */
+
+#globalMessage {
   position:fixed;
   z-index:500;
+  top:15px;
   left:12px;
   right:12px;
-  top:12px;
-  max-width:520px;
+  max-width:500px;
   margin:auto;
-  padding:13px 17px;
+  padding:13px 15px;
+  border-radius:13px;
   display:none;
-  border-radius:15px;
-  box-shadow:0 12px 35px #0002;
   font-size:12px;
   line-height:1.5;
+  box-shadow:0 10px 30px #0002;
   overflow-wrap:anywhere;
 }
-#globalMessage.error{display:block;background:#fff0f0;color:#ac2626}
-#globalMessage.success{display:block;background:#e6f8ef;color:#087346}
 
-.auth-wrap{
+#globalMessage.error {
+  display:block;
+  color:#ae2634;
+  background:#fff0f0;
+}
+
+#globalMessage.success {
+  display:block;
+  color:#116644;
+  background:#e0f8eb;
+}
+
+/* =========================
+   LOGIN / MFA
+========================= */
+
+.auth-wrap {
   min-height:100dvh;
   display:grid;
   place-items:center;
-  padding:28px 16px;
+  padding:25px 16px;
   background:
-    radial-gradient(circle at 85% 12%,#266bbd 0%,transparent 37%),
-    linear-gradient(150deg,#061a3b 0%,#0754a6 48%,#eef3fa 48%);
+    radial-gradient(circle at 100% 0%,#1d68b8 0%,transparent 40%),
+    linear-gradient(155deg,#061830 0%,#0b3972 58%,#dfe8f2 58%);
 }
-.auth-card{
-  width:min(430px,100%);
-  background:white;
-  border-radius:28px;
-  padding:30px 24px;
-  box-shadow:0 25px 70px #071d4530;
+
+.auth-card {
+  width:min(420px,100%);
+  background:#f4f7fc;
+  border:1px solid #ffffff88;
+  border-radius:24px;
+  padding:28px 23px;
+  box-shadow:0 20px 50px #061b3c40;
 }
-.auth-logo{
+
+.auth-logo {
   display:block;
   max-width:180px;
   width:65%;
-  max-height:100px;
+  max-height:95px;
   object-fit:contain;
-  margin:0 auto 12px;
+  margin:0 auto 13px;
 }
-.auth-badge{
+
+.auth-badge {
   width:max-content;
-  margin:0 auto 17px;
-  border-radius:50px;
-  padding:7px 12px;
-  background:#e8f2ff;
+  margin:0 auto 15px;
+  background:#d9eaff;
   color:var(--blue);
+  padding:7px 13px;
+  border-radius:50px;
   font-size:10px;
-  font-weight:800;
+  font-weight:900;
   letter-spacing:1px;
 }
-.auth-card h1{
+
+.auth-card h1 {
+  margin:10px 0;
   text-align:center;
-  margin:8px 0;
-  font-size:25px;
+  font-size:24px;
   color:var(--navy);
 }
-.auth-desc{
+
+.auth-desc {
+  margin:0 0 24px;
   color:var(--muted);
   font-size:12px;
+  line-height:1.7;
   text-align:center;
-  line-height:1.75;
-  margin:0 0 24px;
 }
-.field{margin-bottom:16px}
-.field label{
+
+.field {
+  margin-bottom:16px;
+}
+
+.field label {
   display:block;
-  font-size:12px;
-  font-weight:750;
   margin-bottom:8px;
+  font-size:12px;
+  font-weight:800;
 }
-input,select{
-  display:block;
-  min-height:48px;
+
+input,
+select {
   width:100%;
-  border:1px solid #dce5ef;
-  border-radius:13px;
-  background:#fff;
-  padding:12px 13px;
+  min-height:46px;
+  border:1px solid #bdd0e5;
+  border-radius:12px;
+  padding:11px 12px;
+  background:#f8fbff;
   color:var(--text);
-  outline:none;
   font-size:13px;
+  outline:none;
 }
-input:focus,select:focus{
+
+input:focus,
+select:focus {
   border-color:var(--blue);
-  box-shadow:0 0 0 3px #0754a612;
+  box-shadow:0 0 0 3px #0754a615;
 }
-.btn{
+
+.btn {
   width:100%;
+  min-height:46px;
+  padding:11px 14px;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
   gap:9px;
   border:0;
-  border-radius:13px;
-  min-height:48px;
-  padding:12px 15px;
-  background:var(--blue);
+  border-radius:12px;
+  background:linear-gradient(120deg,var(--blue),var(--navy2));
   color:white;
   font-size:12px;
   font-weight:850;
 }
-.btn.white{background:#fff;color:var(--blue);border:1px solid #bfd4ef}
-.btn.red{background:#c92e3b}
-.auth-note{
+
+.btn.secondary {
+  background:#e7f0fb;
+  border:1px solid #bdd0e5;
+  color:var(--navy2);
+}
+
+.btn.danger {
+  background:#c92f3d;
+}
+
+.auth-note {
   margin-top:17px;
   padding:13px;
-  border-radius:13px;
-  background:#f3f7fe;
+  background:#e2edf9;
+  border-radius:12px;
+  font-size:11px;
+  color:#526a86;
   text-align:center;
+  line-height:1.7;
+}
+
+.code-input {
+  text-align:center;
+  font-size:23px;
+  font-weight:900;
+  letter-spacing:7px;
+}
+
+.qr {
+  display:block;
+  width:205px;
+  max-width:100%;
+  margin:15px auto;
+}
+
+.secret {
+  margin:12px 0;
+  padding:13px;
+  background:#dfeaf8;
+  border:1px dashed #8eb3df;
+  border-radius:10px;
+  font-size:12px;
+  overflow-wrap:anywhere;
+  user-select:all;
+}
+
+.helper {
+  font-size:11px;
   color:var(--muted);
   line-height:1.7;
-  font-size:11px;
 }
-.code-input{text-align:center;letter-spacing:7px;font-size:24px;font-weight:850}
-.qr{display:block;width:210px;max-width:100%;margin:16px auto}
-.secret{padding:11px;background:#f1f6fc;word-break:break-all;border-radius:10px}
-.helper{font-size:12px;color:var(--muted);line-height:1.7;margin:12px 0}
 
-.app{
+/* =========================
+   APLIKASI UTAMA
+========================= */
+
+.app {
   width:min(1050px,100%);
   margin:auto;
   min-height:100dvh;
-  padding-bottom:calc(91px + env(safe-area-inset-bottom));
+  padding-bottom:calc(82px + env(safe-area-inset-bottom));
 }
-.topbar{
-  background:linear-gradient(125deg,#071d40,#0754a6 75%,#1672cd);
-  color:white;
-  padding:calc(17px + env(safe-area-inset-top)) 18px 28px;
-  border-radius:0 0 29px 29px;
+
+.topbar {
   position:relative;
   overflow:hidden;
+  color:white;
+  background:
+    radial-gradient(circle at 95% 10%,#185cac 0%,transparent 43%),
+    linear-gradient(115deg,#061936,#0b3975);
+  padding:
+    calc(13px + env(safe-area-inset-top))
+    15px
+    18px;
+  border-radius:0 0 21px 21px;
 }
-.topbar:before{
+
+.topbar::before {
   content:"";
   position:absolute;
-  right:-70px;
-  top:30px;
-  width:220px;height:220px;
+  width:160px;
+  height:160px;
+  border:25px solid #ffffff08;
   border-radius:50%;
-  border:38px solid #ffffff08;
+  right:-70px;
+  top:-45px;
+}
+
+.brandrow {
+  display:flex;
+  align-items:center;
+  gap:11px;
+  position:relative;
+  z-index:1;
+}
+
+.brandmark {
+  width:45px;
+  height:45px;
+  border-radius:13px;
+  background:white;
+  display:grid;
+  place-items:center;
+  padding:5px;
+  flex-shrink:0;
+  box-shadow:0 6px 15px #0002;
+}
+
+.brandmark img {
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.brandtext {
+  flex:1;
+  min-width:0;
+}
+
+.brandtext strong {
+  font-size:15px;
+  letter-spacing:.4px;
+}
+
+.brandtext small {
+  display:block;
+  margin-top:4px;
+  font-size:9px;
+  color:#c2ddfb;
+}
+
+.iconbtn {
+  position:relative;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  width:39px;
+  height:39px;
+  border:1px solid #ffffff35;
+  border-radius:12px;
+  background:#ffffff18;
+  color:#fff;
+}
+
+.dot {
+  position:absolute;
+  right:5px;
+  top:5px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#ff4d5b;
+}
+
+.welcome {
+  position:relative;
+  margin-top:18px;
+}
+
+.welcome small {
+  font-size:10px;
+  color:#bdd9fb;
+  letter-spacing:.6px;
+}
+
+.welcome h1 {
+  margin:5px 0;
+  font-size:20px;
+  font-weight:800;
+}
+
+.welcome p {
+  margin:0;
+  color:#c8dffa;
+  font-size:10px;
+}
+
+.main {
+  padding:13px 12px 20px;
+}
+
+.sectionbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin:17px 2px 11px;
+}
+
+.sectionbar h2 {
+  margin:0;
+  font-size:15px;
+  font-weight:850;
+  color:var(--navy);
+}
+
+.sectionbar small {
+  font-size:10px;
+  color:var(--muted);
+}
+
+/* =========================
+   HERO PENDAPATAN
+========================= */
+
+.hero {
+  position:relative;
+  overflow:hidden;
+  padding:17px 19px;
+  border-radius:18px;
+  color:white;
+  background:
+    radial-gradient(circle at 100% 0%,#ffffff16 0%,transparent 48%),
+    linear-gradient(125deg,#082653,#0e4c99);
+  box-shadow:0 9px 21px #082b5b25;
+}
+
+.hero::after {
+  content:"";
+  position:absolute;
+  right:-30px;
+  bottom:-50px;
+  width:135px;
+  height:135px;
+  border-radius:50%;
+  border:20px solid #ffffff08;
   pointer-events:none;
 }
-.brandrow{display:flex;align-items:center;gap:12px;position:relative}
-.brandmark{
-  background:white;
-  width:54px;height:54px;
-  border-radius:16px;
-  padding:6px;
-  display:grid;place-items:center;
-  box-shadow:0 8px 25px #0002;
+
+.hero-line {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
 }
-.brandmark img{width:100%;height:100%;object-fit:contain}
-.brandtext{flex:1;min-width:0}
-.brandtext strong{font-size:16px;letter-spacing:.5px}
-.brandtext small{display:block;font-size:9px;margin-top:4px;color:#d0e4ff}
-.iconbtn{
-  width:42px;height:42px;
-  display:grid;place-items:center;
-  border-radius:14px;
-  border:1px solid #ffffff30;
-  background:#ffffff19;color:white;
-  position:relative;
+
+.hero-kicker {
+  font-size:11px;
+  color:#cde5ff;
 }
-.dot{
-  position:absolute;
-  right:7px;top:7px;
-  width:8px;height:8px;
-  background:#ff5c66;border-radius:50%;
-}
-.welcome{margin-top:29px;position:relative}
-.welcome small{color:#c2dcfc;font-size:11px}
-.welcome h1{font-size:24px;line-height:1.3;margin:7px 0}
-.welcome p{font-size:11px;color:#c9e0ff;margin:0}
-.main{padding:18px 14px 24px}
-.sectionbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 1px 14px}
-.sectionbar h2{font-size:17px;font-weight:850;color:var(--navy);margin:0}
-.sectionbar small{font-size:11px;color:var(--muted)}
-.card{
-  background:white;
-  border:1px solid #edf0f5;
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:17px;
-  margin-bottom:13px;
-}
-.hero{
-  background:
-    radial-gradient(circle at 100% 0%,#ffffff18 0%,transparent 45%),
-    linear-gradient(130deg,#0e3673,#0754a6);
-  color:#fff;
-  border-radius:23px;
-  padding:22px;
-  margin-bottom:14px;
-  overflow:hidden;
-}
-.hero-line{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.hero-kicker{font-size:11px;color:#d9ebff}
-.hero-pill{
+
+.hero-pill {
+  background:#ffffff22;
+  border-radius:25px;
+  padding:6px 9px;
   font-size:9px;
-  background:#ffffff21;
-  padding:7px 10px;
-  border-radius:30px;
+  color:#e7f4ff;
   font-weight:800;
 }
-.hero-value{
+
+.hero-value {
+  margin:11px 0 7px;
+  font-size:clamp(25px,6vw,37px);
   font-weight:900;
-  font-size:clamp(25px,6vw,38px);
-  letter-spacing:-.8px;
-  margin:16px 0 9px;
+  line-height:1.2;
+  letter-spacing:-.7px;
   overflow-wrap:anywhere;
 }
-.hero-foot{display:flex;justify-content:space-between;gap:10px;align-items:end;font-size:10px;color:#d7e7fc}
-.hero-foot img{width:55px;height:48px;object-fit:contain;opacity:.95}
-.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.grid4{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.metric{
-  padding:16px;
-  background:white;
-  border:1px solid #ebeff5;
-  border-radius:17px;
-  box-shadow:var(--shadow);
-  min-width:0;
+
+.hero-foot {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  color:#d5e8ff;
+  font-size:10px;
 }
-.metric-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.metric-icon{
-  width:34px;height:34px;
-  display:grid;place-items:center;
-  border-radius:11px;
-  background:#eff5ff;color:var(--blue);
+
+.hero-foot img {
+  width:46px;
+  height:28px;
+  object-fit:contain;
+  opacity:.75;
 }
-.metric-icon svg{width:18px;height:18px}
-.metric-label{font-size:10px;color:var(--muted);margin:12px 0 5px}
-.metric-number{font-size:clamp(15px,3.8vw,21px);font-weight:900;color:var(--navy);overflow-wrap:anywhere}
-.metric-note{color:var(--muted);font-size:10px;margin-top:8px}
-.actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.action{
-  border:1px solid var(--line);
-  background:#fff;
-  border-radius:16px;
-  padding:14px 5px;
+
+/* =========================
+   STATISTIK RINGKAS
+========================= */
+
+.grid2,
+.grid4 {
   display:grid;
-  justify-items:center;
+  grid-template-columns:repeat(2,minmax(0,1fr));
   gap:9px;
+}
+
+.grid4 {
+  margin-top:10px;
+}
+
+.metric {
+  min-width:0;
+  padding:12px 13px;
+  border-radius:14px;
+  background:linear-gradient(145deg,#e9f1fa,#cedff0);
+  border:1px solid #c3d4e6;
+}
+
+.metric:nth-child(2) {
+  background:linear-gradient(145deg,#d9e9f9,#c0d8f0);
+}
+
+.metric:nth-child(3),
+.metric:nth-child(4) {
+  background:linear-gradient(145deg,#edf3f9,#d9e5f0);
+}
+
+.metric-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.metric-icon {
+  display:grid;
+  place-items:center;
+  width:29px;
+  height:29px;
+  background:#b9d4ef;
+  border-radius:9px;
+  color:var(--navy2);
+}
+
+.metric-icon svg {
+  width:17px;
+  height:17px;
+}
+
+.metric-label {
+  color:#56708d;
+  font-size:10px;
+  margin:9px 0 4px;
+}
+
+.metric-number {
+  font-size:clamp(15px,3.8vw,20px);
+  color:var(--navy);
+  font-weight:900;
+  overflow-wrap:anywhere;
+}
+
+.metric-note {
+  margin-top:5px;
+  color:#768ca4;
+  font-size:9px;
+}
+
+/* =========================
+   CARD & GRAFIK
+========================= */
+
+.card {
+  padding:14px;
+  border:1px solid #cbd9e8;
+  border-radius:17px;
+  background:linear-gradient(145deg,#e8f1fa,#dbe8f5);
+  box-shadow:var(--shadow);
+  margin-bottom:11px;
+}
+
+.chartwrap {
+  position:relative;
+  height:155px;
+}
+
+#homeChart,
+#reportChart {
+  display:block;
+  width:100%;
+  height:100%;
+}
+
+.chart-caption {
+  margin-top:6px;
+  font-size:10px;
+  line-height:1.6;
+  color:var(--muted);
+}
+
+/* =========================
+   AKSES CEPAT
+========================= */
+
+.actions {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+}
+
+.action {
+  min-height:78px;
+  padding:12px 3px;
+  border:1px solid #bdcfe3;
+  border-radius:13px;
+  background:linear-gradient(155deg,#d5e6f7,#c4d9ef);
+  color:var(--navy2);
   font-size:10px;
   font-weight:800;
-  color:var(--text);
-  box-shadow:var(--shadow);
-}
-.action svg{width:22px;height:22px;color:var(--blue)}
-.chartwrap{height:180px;position:relative}
-#homeChart,#reportChart{display:block;width:100%;height:100%}
-.chart-caption{font-size:10px;color:var(--muted);line-height:1.7;margin-top:8px}
-.vehicle{
-  border:1px solid var(--line);
-  background:#fff;
-  padding:17px;
-  border-radius:19px;
-  text-align:left;
-  box-shadow:var(--shadow);
-  min-width:0;
-}
-.vehicle .v-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.vehicle .v-top svg{color:var(--blue)}
-.vehicle .v-code{font-weight:900;font-size:15px;color:var(--navy)}
-.vehicle .v-amount{font-size:clamp(16px,4vw,24px);font-weight:900;color:var(--blue);overflow-wrap:anywhere}
-.vehicle .v-detail{margin-top:10px;color:var(--muted);font-size:10px}
-.vehicle.selected{border:2px solid var(--blue);background:#f1f7ff}
-.vehicles{margin-bottom:18px}
-.trip{
-  background:#fff;
-  border:1px solid var(--line);
-  padding:16px;
-  border-radius:16px;
-  margin-bottom:10px;
-}
-.triphead{display:flex;justify-content:space-between;gap:8px;align-items:start}
-.trip strong{font-size:12px;color:var(--navy)}
-.trip .amount{color:var(--green);font-size:14px;font-weight:900;text-align:right}
-.trip small{display:block;color:var(--muted);font-size:10px;margin-top:6px}
-.tripfoot{
-  border-top:1px solid var(--line);
-  margin-top:13px;
-  padding-top:10px;
-  display:flex;justify-content:space-between;gap:8px;
-  color:var(--muted);font-size:10px;
-  overflow-wrap:anywhere;
-}
-.periods{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px}
-.periods button,.chips button{
-  background:#fff;
-  color:var(--blue);
-  border:1px solid var(--line);
-  border-radius:12px;
-  min-height:43px;
-  font-size:12px;
-  font-weight:800;
-}
-.periods button.active,.chips button.active{background:var(--blue);border-color:var(--blue);color:white}
-.filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.filters .wide{grid-column:1/-1}
-.filters label{font-size:11px;display:block;margin-bottom:8px;font-weight:800}
-.chips{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:15px}
-.event{
-  display:flex;gap:12px;align-items:center;
-  border:1px solid var(--line);
-  background:#fff;
-  border-radius:16px;
-  padding:13px;
-  margin-bottom:9px;
-  width:100%;
-  text-align:left;
-}
-.event-symbol{width:42px;height:42px;flex-shrink:0;display:grid;place-items:center;background:#fff3e8;border-radius:13px;color:#c67a19}
-.event-symbol.info{background:#edf5ff;color:var(--blue)}
-.event-symbol.critical{background:#fff0f0;color:#d62d43}
-.event-main{flex:1;min-width:0}
-.event-main strong{font-size:12px;color:var(--navy);display:block}
-.event-main small{font-size:10px;color:var(--muted);margin-top:6px;display:block}
-.event-arrow{color:#9dabbd}
-.empty{padding:25px;background:#fff;border:1px dashed #d9e1ee;border-radius:15px;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
-.notice{padding:14px;background:#edf5ff;color:#55708f;font-size:11px;line-height:1.8;border-radius:13px;margin:14px 0}
-.profile{display:flex;gap:15px;align-items:center}
-.profile img{width:60px;height:60px;object-fit:contain;background:#eff5ff;border-radius:18px;padding:7px}
-.profile strong{font-size:16px;color:var(--navy)}
-.profile small{display:block;font-size:11px;color:var(--muted);margin-top:7px;overflow-wrap:anywhere}
-.setting{display:flex;justify-content:space-between;gap:10px;padding:16px 0;border-bottom:1px solid var(--line);font-size:12px}
-.setting:last-child{border-bottom:0}
-.setting b{color:var(--green);font-size:11px}
-.bottomnav{
-  position:fixed;
-  z-index:100;
-  bottom:0;left:50%;
-  transform:translateX(-50%);
-  width:min(1050px,100%);
-  background:#fff;
-  border-top:1px solid var(--line);
-  display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  padding:9px 6px calc(9px + env(safe-area-inset-bottom));
-  box-shadow:0 -6px 30px #09284a11;
-}
-.navbutton{
-  position:relative;
-  background:transparent;
-  border:0;
   display:grid;
   justify-items:center;
-  gap:5px;
-  min-height:49px;
+  align-content:center;
+  gap:8px;
+}
+
+.action svg {
+  width:23px;
+  height:23px;
+}
+
+/* =========================
+   ARMADA
+========================= */
+
+.vehicles {
+  margin-bottom:17px;
+}
+
+.vehicle {
+  min-width:0;
+  padding:15px;
+  text-align:left;
+  border:1px solid #bfd0e4;
+  border-radius:16px;
+  background:linear-gradient(145deg,#dceaf8,#c5dbf1);
+  box-shadow:var(--shadow);
+}
+
+.vehicle.selected {
+  border:2px solid var(--blue);
+  background:#bddaf6;
+}
+
+.v-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:7px;
+  margin-bottom:11px;
+}
+
+.v-code {
+  font-size:14px;
+  font-weight:900;
+  color:var(--navy);
+}
+
+.v-top svg {
+  color:var(--blue);
+}
+
+.v-amount {
+  font-size:clamp(17px,4vw,24px);
+  font-weight:900;
+  color:var(--blue);
+  overflow-wrap:anywhere;
+}
+
+.v-detail {
+  margin-top:8px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+/* =========================
+   PERJALANAN
+========================= */
+
+.trip {
+  padding:13px 14px;
+  background:linear-gradient(150deg,#eaf2fa,#dae7f4);
+  border:1px solid #c7d8e8;
+  border-radius:14px;
+  margin-bottom:9px;
+}
+
+.triphead {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.trip strong {
+  color:var(--navy);
+  font-size:12px;
+}
+
+.trip .amount {
+  color:#087d58;
+  font-size:13px;
+  font-weight:900;
+  text-align:right;
+}
+
+.trip small {
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.tripfoot {
+  margin-top:11px;
+  padding-top:9px;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:7px;
+  border-top:1px solid #bfcfe0;
+  color:var(--muted);
+  font-size:10px;
+  overflow-wrap:anywhere;
+}
+
+/* =========================
+   FILTER LAPORAN
+========================= */
+
+.periods {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:11px;
+}
+
+.periods button,
+.chips button {
+  min-height:41px;
+  border:1px solid #b9cce1;
+  border-radius:11px;
+  background:#dae7f4;
+  color:var(--navy2);
+  font-size:11px;
+  font-weight:850;
+}
+
+.periods button.active,
+.chips button.active {
+  background:var(--navy2);
+  border-color:var(--navy2);
+  color:#fff;
+}
+
+.filters {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.filters .wide {
+  grid-column:1/-1;
+}
+
+.filters label {
+  display:block;
+  margin-bottom:6px;
+  font-size:11px;
+  font-weight:800;
+}
+
+/* =========================
+   KEAMANAN
+========================= */
+
+.chips {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:12px;
+}
+
+.event {
+  width:100%;
+  display:flex;
+  gap:11px;
+  align-items:center;
+  text-align:left;
+  border:1px solid #bdcfe3;
+  background:linear-gradient(145deg,#e8f1fa,#d7e6f4);
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:9px;
+}
+
+.event-symbol {
+  flex-shrink:0;
+  display:grid;
+  place-items:center;
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  background:#f6dfbe;
+  color:#a46a20;
+}
+
+.event-symbol.info {
+  background:#b8d4f0;
+  color:var(--blue);
+}
+
+.event-symbol.critical {
+  background:#f6caca;
+  color:#bb2635;
+}
+
+.event-main {
+  flex:1;
+  min-width:0;
+}
+
+.event-main strong {
+  display:block;
+  color:var(--navy);
+  font-size:11px;
+}
+
+.event-main small {
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.event-arrow {
+  color:#748ba3;
+}
+
+.empty {
+  padding:22px 14px;
+  background:#e3edf7;
+  border:1px dashed #afc5dc;
+  border-radius:13px;
+  color:var(--muted);
+  text-align:center;
+  font-size:11px;
+  line-height:1.7;
+}
+
+.notice {
+  margin:12px 0;
+  padding:13px;
+  background:#d2e4f6;
+  border-radius:12px;
+  color:#426182;
+  font-size:10px;
+  line-height:1.8;
+}
+
+/* =========================
+   PENGATURAN
+========================= */
+
+.profile {
+  display:flex;
+  align-items:center;
+  gap:13px;
+}
+
+.profile img {
+  width:55px;
+  height:55px;
+  object-fit:contain;
+  background:#f1f6fc;
+  border-radius:14px;
+  padding:5px;
+}
+
+.profile strong {
+  color:var(--navy);
+  font-size:15px;
+}
+
+.profile small {
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:11px;
+  overflow-wrap:anywhere;
+}
+
+.setting {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:13px 0;
+  border-bottom:1px solid #c3d4e6;
+  font-size:11px;
+}
+
+.setting:last-child {
+  border-bottom:0;
+}
+
+.setting b {
+  color:#087d58;
+  font-size:10px;
+}
+
+/* =========================
+   NAVIGASI NAVY
+========================= */
+
+.bottomnav {
+  position:fixed;
+  z-index:100;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(1050px,100%);
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  padding:
+    7px 5px
+    calc(7px + env(safe-area-inset-bottom));
+  background:linear-gradient(120deg,#06162f,#0c2b55);
+  border-top:1px solid #275080;
+  box-shadow:0 -5px 22px #071b3b25;
+}
+
+.navbutton {
+  position:relative;
+  min-height:48px;
   padding:5px 1px;
-  color:#8b9bb0;
+  background:transparent;
+  border:0;
+  border-radius:10px;
+  display:grid;
+  justify-items:center;
+  gap:4px;
+  color:#91aecf;
   font-size:9px;
   font-weight:800;
-  border-radius:12px;
 }
-.navbutton svg{width:21px;height:21px}
-.navbutton.active{background:#eef5ff;color:var(--blue)}
-.navbadge{position:absolute;top:0;right:16%;width:7px;height:7px;background:var(--red);border-radius:50%}
-.modal{
-  position:fixed;inset:0;z-index:200;
-  background:#06162dcc;
-  padding:16px;
-  display:grid;place-items:center;
+
+.navbutton svg {
+  width:20px;
+  height:20px;
 }
-.modalbox{
-  background:#fff;
-  border-radius:23px;
-  padding:20px;
+
+.navbutton.active {
+  background:#1b4c88;
+  color:#fff;
+}
+
+.navbadge {
+  position:absolute;
+  right:16%;
+  top:1px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#ff485b;
+}
+
+/* =========================
+   MODAL DETAIL
+========================= */
+
+.modal {
+  position:fixed;
+  z-index:200;
+  inset:0;
+  padding:15px;
+  display:grid;
+  place-items:center;
+  background:#041126dc;
+}
+
+.modalbox {
   width:min(500px,100%);
   max-height:85dvh;
   overflow:auto;
+  background:#eaf1f9;
+  border-radius:20px;
+  padding:19px;
 }
-.modalhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.modalhead h3{font-size:17px;color:var(--navy);margin:0}
-.close{
+
+.modalhead {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.modalhead h3 {
+  margin:0;
+  color:var(--navy);
+  font-size:16px;
+}
+
+.close {
   border:0;
-  border-radius:11px;
-  width:37px;height:37px;
-  background:#edf2f8;
-  font-size:18px;
+  border-radius:9px;
+  width:35px;
+  height:35px;
+  background:#d2e0ef;
+  color:var(--navy);
+  font-size:20px;
 }
-.detailrow{display:flex;gap:12px;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:11px}
-.detailrow span{color:var(--muted)}
-.detailrow strong{text-align:right;overflow-wrap:anywhere;max-width:65%}
-@media(min-width:750px){
-  .main{padding:24px}
-  .grid4{grid-template-columns:repeat(4,1fr)}
-  .hero-value{font-size:42px}
-  .chartwrap{height:240px}
+
+.detailrow {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:1px solid #c6d6e7;
+  font-size:11px;
 }
-@media(max-width:370px){
-  .actions{gap:5px}
-  .action{font-size:9px}
-  .metric{padding:12px}
-  .triphead{flex-wrap:wrap}
+
+.detailrow span {
+  color:var(--muted);
+}
+
+.detailrow strong {
+  max-width:65%;
+  text-align:right;
+  color:var(--navy);
+  overflow-wrap:anywhere;
+}
+
+@media(min-width:750px) {
+  .main {
+    padding:22px;
+  }
+
+  .grid4 {
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .chartwrap {
+    height:220px;
+  }
+}
+
+@media(max-width:370px) {
+  .metric {
+    padding:10px;
+  }
+
+  .action {
+    font-size:9px;
+  }
+
+  .triphead {
+    flex-wrap:wrap;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- SVG ICON LIBRARY -->
+<!-- IKON SVG -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></symbol>
-  <symbol id="i-car" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="12" rx="3"/><path d="M6 7V4h12v3M3 12h18M7 19v2m10-2v2M7 15h2m6 0h2"/></symbol>
-  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V4M4 20h17M8 16l4-5 4 2 5-8"/></symbol>
-  <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 2 9 4v6c0 5-4 8-9 10-5-2-9-5-9-10V6z"/><path d="m8.5 12 2.5 2.5 5-5"/></symbol>
-  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.2-1.5l2-1.5-2-3.5-2.4 1a8 8 0 0 0-2.6-1.5L13.5 2h-4l-.3 3a8 8 0 0 0-2.6 1.5l-2.4-1-2 3.5 2 1.5a7 7 0 0 0 0 3l-2 1.5 2 3.5 2.4-1a8 8 0 0 0 2.6 1.5l.3 3h4l.3-3a8 8 0 0 0 2.6-1.5l2.4 1 2-3.5-2-1.5c.1-.5.2-1 .2-1.5z"/></symbol>
-  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 8-3 8-3 10h18c0-2-3-2-3-10M10 21h4"/></symbol>
-  <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 5h18v5a2 2 0 0 0 0 4v5H3v-5a2 2 0 0 0 0-4zM12 5v14" stroke-dasharray="4 3"/></symbol>
-  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="19" r="2"/><path d="M6 7v5h10a3 3 0 0 1 0 6h-1"/></symbol>
-  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
-  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
-  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5 9a8 8 0 0 1 14-2l1 5M4 12l1 5a8 8 0 0 0 14-2"/></symbol>
-  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 3-8 8-8s8 3 8 8"/></symbol>
+
+<symbol id="i-home" viewBox="0 0 24 24">
+<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>
+<path d="M9 21v-8h6v8"/>
+</symbol>
+
+<symbol id="i-car" viewBox="0 0 24 24">
+<rect x="3" y="7" width="18" height="12" rx="3"/>
+<path d="M6 7V4h12v3M3 12h18M7 19v2m10-2v2M7 15h2m6 0h2"/>
+</symbol>
+
+<symbol id="i-chart" viewBox="0 0 24 24">
+<path d="M4 20V4M4 20h17M8 16l4-5 4 2 5-8"/>
+</symbol>
+
+<symbol id="i-shield" viewBox="0 0 24 24">
+<path d="m12 2 9 4v6c0 5-4 8-9 10-5-2-9-5-9-10V6z"/>
+<path d="m8.5 12 2.5 2.5 5-5"/>
+</symbol>
+
+<symbol id="i-settings" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="3"/>
+<path d="M19 12a7 7 0 0 0-.2-1.5l2-1.5-2-3.5-2.4 1a8 8 0 0 0-2.6-1.5L13.5 2h-4l-.3 3a8 8 0 0 0-2.6 1.5l-2.4-1-2 3.5 2 1.5a7 7 0 0 0 0 3l-2 1.5 2 3.5 2.4-1a8 8 0 0 0 2.6 1.5l.3 3h4l.3-3a8 8 0 0 0 2.6-1.5l2.4 1 2-3.5-2-1.5c.1-.5.2-1 .2-1.5z"/>
+</symbol>
+
+<symbol id="i-bell" viewBox="0 0 24 24">
+<path d="M18 8a6 6 0 0 0-12 0c0 8-3 8-3 10h18c0-2-3-2-3-10M10 21h4"/>
+</symbol>
+
+<symbol id="i-ticket" viewBox="0 0 24 24">
+<path d="M3 5h18v5a2 2 0 0 0 0 4v5H3v-5a2 2 0 0 0 0-4zM12 5v14" stroke-dasharray="4 3"/>
+</symbol>
+
+<symbol id="i-route" viewBox="0 0 24 24">
+<circle cx="6" cy="5" r="2"/>
+<circle cx="18" cy="19" r="2"/>
+<path d="M6 7v5h10a3 3 0 0 1 0 6h-1"/>
+</symbol>
+
+<symbol id="i-arrow" viewBox="0 0 24 24">
+<path d="m9 5 7 7-7 7"/>
+</symbol>
+
+<symbol id="i-lock" viewBox="0 0 24 24">
+<rect x="4" y="10" width="16" height="11" rx="2"/>
+<path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+</symbol>
+
+<symbol id="i-refresh" viewBox="0 0 24 24">
+<path d="M20 7v5h-5M4 17v-5h5"/>
+<path d="M5 9a8 8 0 0 1 14-2l1 5M4 12l1 5a8 8 0 0 0 14-2"/>
+</symbol>
+
 </svg>
 
 <div id="globalMessage" role="alert"></div>
 
 <!-- LOGIN -->
 <section id="loginPage" class="page active">
-  <div class="auth-wrap">
-    <div class="auth-card">
-      <img class="auth-logo" src="./hsm-logo.png" alt="HSM Transport">
-      <div class="auth-badge">OWNER ACCESS</div>
-      <h1>HSM Owner</h1>
-      <p class="auth-desc">Pusat kendali PT Hidayah Sarana Mulia. Akses khusus pemilik perusahaan.</p>
-      <form id="loginForm">
-        <div class="field"><label>Email Owner</label><input id="ownerEmail" type="email" autocomplete="username" required></div>
-        <div class="field"><label>Password</label><input id="ownerPassword" type="password" autocomplete="current-password" required></div>
-        <button id="loginBtn" class="btn" type="submit"><svg><use href="#i-lock"/></svg> Masuk ke Dashboard</button>
-      </form>
-      <div class="auth-note">Akun dilindungi password dan Google Authenticator.</div>
-    </div>
-  </div>
+<div class="auth-wrap">
+<div class="auth-card">
+
+<img class="auth-logo" src="./hsm-logo.png" alt="Logo HSM Transport">
+<div class="auth-badge">OWNER ACCESS</div>
+
+<h1>HSM Owner</h1>
+
+<p class="auth-desc">
+Pusat kendali PT Hidayah Sarana Mulia.
+Akses khusus pemilik perusahaan.
+</p>
+
+<form id="loginForm">
+
+<div class="field">
+<label>Email Owner</label>
+<input id="ownerEmail" type="email" autocomplete="username" required>
+</div>
+
+<div class="field">
+<label>Password</label>
+<input id="ownerPassword" type="password" autocomplete="current-password" required>
+</div>
+
+<button id="loginBtn" class="btn" type="submit">
+<svg><use href="#i-lock"/></svg>
+Masuk ke Dashboard
+</button>
+
+</form>
+
+<div class="auth-note">
+Dilindungi email, password, dan Google Authenticator.
+</div>
+
+</div>
+</div>
 </section>
 
 <!-- MFA ENROLL -->
 <section id="enrollPage" class="page">
-  <div class="auth-wrap">
-    <div class="auth-card">
-      <img class="auth-logo" src="./hsm-logo.png" alt="HSM">
-      <h1>Aktivasi Authenticator</h1>
-      <p class="auth-desc">Pindai QR menggunakan Google Authenticator, kemudian masukkan kode enam digit.</p>
-      <img id="totpQR" class="qr" alt="QR Authenticator" hidden>
-      <p class="helper">Kunci penyiapan (jangan dibagikan):</p>
-      <div id="totpSecret" class="secret">Memuat...</div>
-      <form id="enrollForm" style="margin-top:16px">
-        <div class="field"><input id="enrollCode" class="code-input" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" placeholder="000000" required></div>
-        <button class="btn" type="submit">Aktifkan Authenticator</button>
-      </form>
-      <button id="enrollLogoutBtn" class="btn white" type="button" style="margin-top:10px">Keluar</button>
-    </div>
-  </div>
+<div class="auth-wrap">
+<div class="auth-card">
+
+<img class="auth-logo" src="./hsm-logo.png" alt="HSM">
+
+<h1>Aktivasi Authenticator</h1>
+
+<p class="auth-desc">
+Pindai QR menggunakan Google Authenticator,
+kemudian masukkan kode enam digit.
+</p>
+
+<img id="totpQR" class="qr" alt="QR Authenticator" hidden>
+
+<p class="helper">Kunci penyiapan (jangan dibagikan):</p>
+
+<div id="totpSecret" class="secret">Memuat...</div>
+
+<form id="enrollForm" style="margin-top:16px">
+
+<div class="field">
+<input id="enrollCode" class="code-input"
+type="text" inputmode="numeric"
+pattern="[0-9]{6}" maxlength="6"
+autocomplete="one-time-code"
+placeholder="000000" required>
+</div>
+
+<button class="btn" type="submit">
+Aktifkan Authenticator
+</button>
+
+</form>
+
+<button id="enrollLogoutBtn"
+class="btn secondary"
+type="button"
+style="margin-top:10px">
+Keluar
+</button>
+
+</div>
+</div>
 </section>
 
 <!-- MFA VERIFY -->
 <section id="verifyPage" class="page">
-  <div class="auth-wrap">
-    <div class="auth-card">
-      <img class="auth-logo" src="./hsm-logo.png" alt="HSM">
-      <h1>Verifikasi Keamanan</h1>
-      <p class="auth-desc">Masukkan kode enam digit dari Google Authenticator.</p>
-      <form id="verifyForm">
-        <div class="field"><input id="verifyCode" class="code-input" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" placeholder="000000" required></div>
-        <button class="btn" type="submit">Verifikasi dan Masuk</button>
-      </form>
-      <button id="verifyLogoutBtn" class="btn white" type="button" style="margin-top:10px">Batalkan Login</button>
-    </div>
-  </div>
+<div class="auth-wrap">
+<div class="auth-card">
+
+<img class="auth-logo" src="./hsm-logo.png" alt="HSM">
+
+<h1>Verifikasi Keamanan</h1>
+
+<p class="auth-desc">
+Masukkan kode enam digit dari Google Authenticator.
+</p>
+
+<form id="verifyForm">
+
+<div class="field">
+<input id="verifyCode" class="code-input"
+type="text" inputmode="numeric"
+pattern="[0-9]{6}" maxlength="6"
+autocomplete="one-time-code"
+placeholder="000000" required>
+</div>
+
+<button class="btn" type="submit">
+Verifikasi dan Masuk
+</button>
+
+</form>
+
+<button id="verifyLogoutBtn"
+class="btn secondary"
+type="button"
+style="margin-top:10px">
+Batalkan Login
+</button>
+
+</div>
+</div>
 </section>
 
-<!-- OWNER -->
+<!-- DASHBOARD -->
 <section id="dashboardPage" class="page">
-  <div class="app">
-    <header class="topbar">
-      <div class="brandrow">
-        <div class="brandmark"><img src="./hsm-logo.png" alt="Logo HSM"></div>
-        <div class="brandtext"><strong>HSM OWNER</strong><small>PT HIDAYAH SARANA MULIA</small></div>
-        <button class="iconbtn" id="headerNotificationBtn" aria-label="Pusat keamanan" type="button">
-          <svg><use href="#i-bell"/></svg><span id="headerNotificationDot" class="dot" hidden></span>
-        </button>
-      </div>
-      <div class="welcome">
-        <small>OWNER CONTROL CENTER</small>
-        <h1 id="headerScreenTitle">Selamat Datang</h1>
-        <p id="headerDate">-</p>
-      </div>
-    </header>
 
-    <main class="main">
+<div class="app">
 
-      <!-- BERANDA -->
-      <section id="screen-home" class="screen active">
-        <div class="hero">
-          <div class="hero-line"><span class="hero-kicker">Pendapatan Hari Ini</span><span class="hero-pill">● LIVE DATA</span></div>
-          <div id="homeRevenue" class="hero-value">Rp0</div>
-          <div class="hero-foot"><span>Penumpang sudah naik & lunas</span><img src="./hsm-logo.png" alt=""></div>
-        </div>
+<header class="topbar">
 
-        <div class="grid4">
-          <div class="metric">
-            <div class="metric-top"><div class="metric-icon"><svg><use href="#i-car"/></svg></div></div>
-            <div class="metric-label">HSM-01</div>
-            <div id="homeRevenue01" class="metric-number">Rp0</div>
-            <div class="metric-note">Hari ini</div>
-          </div>
-          <div class="metric">
-            <div class="metric-top"><div class="metric-icon"><svg><use href="#i-car"/></svg></div></div>
-            <div class="metric-label">HSM-02</div>
-            <div id="homeRevenue02" class="metric-number">Rp0</div>
-            <div class="metric-note">Hari ini</div>
-          </div>
-          <div class="metric">
-            <div class="metric-top"><div class="metric-icon"><svg><use href="#i-ticket"/></svg></div></div>
-            <div class="metric-label">Penumpang Naik</div>
-            <div id="homeTickets" class="metric-number">0</div>
-            <div class="metric-note">Tiket lunas</div>
-          </div>
-          <div class="metric">
-            <div class="metric-top"><div class="metric-icon"><svg><use href="#i-route"/></svg></div></div>
-            <div class="metric-label">Perjalanan</div>
-            <div id="homeTrips" class="metric-number">0</div>
-            <div class="metric-note">Berpendapatan</div>
-          </div>
-        </div>
+<div class="brandrow">
 
-        <div class="sectionbar" style="margin-top:22px"><h2>Tren Pendapatan</h2><small>7 hari terakhir</small></div>
-        <div class="card">
-          <div class="chartwrap"><canvas id="homeChart"></canvas></div>
-          <div class="chart-caption">Pendapatan perjalanan berdasarkan tanggal perjalanan dan penumpang yang telah naik serta lunas.</div>
-        </div>
+<div class="brandmark">
+<img src="./hsm-logo.png" alt="HSM">
+</div>
 
-        <div class="sectionbar"><h2>Akses Cepat</h2></div>
-        <div class="actions">
-          <button class="action" data-go="fleet" type="button"><svg><use href="#i-car"/></svg>Armada</button>
-          <button class="action" data-go="reports" type="button"><svg><use href="#i-chart"/></svg>Laporan</button>
-          <button class="action" data-go="security" type="button"><svg><use href="#i-shield"/></svg>Keamanan</button>
-          <button class="action" data-go="settings" type="button"><svg><use href="#i-settings"/></svg>Pengaturan</button>
-        </div>
+<div class="brandtext">
+<strong>HSM OWNER</strong>
+<small>PT HIDAYAH SARANA MULIA</small>
+</div>
 
-        <div class="sectionbar" style="margin-top:24px">
-          <h2>Peringatan Terbaru</h2>
-          <small id="homeSecurityCount">0 peringatan</small>
-        </div>
-        <div id="homeSecurityList"><div class="empty">Memuat keamanan...</div></div>
-      </section>
+<button id="headerNotificationBtn"
+class="iconbtn"
+type="button"
+aria-label="Pusat Keamanan">
+<svg><use href="#i-bell"/></svg>
+<span id="headerNotificationDot" class="dot" hidden></span>
+</button>
 
-      <!-- ARMADA -->
-      <section id="screen-fleet" class="screen">
-        <div class="sectionbar"><h2>Performa Armada</h2><small>Hari ini</small></div>
-        <div class="grid2 vehicles">
-          <button class="vehicle" id="vehicleCard01" data-fleet="HSM-01" type="button">
-            <div class="v-top"><span class="v-code">HSM-01</span><svg><use href="#i-car"/></svg></div>
-            <div id="fleetRevenue01" class="v-amount">Rp0</div>
-            <div id="fleetTrips01" class="v-detail">0 perjalanan</div>
-          </button>
-          <button class="vehicle" id="vehicleCard02" data-fleet="HSM-02" type="button">
-            <div class="v-top"><span class="v-code">HSM-02</span><svg><use href="#i-car"/></svg></div>
-            <div id="fleetRevenue02" class="v-amount">Rp0</div>
-            <div id="fleetTrips02" class="v-detail">0 perjalanan</div>
-          </button>
-        </div>
-        <div class="sectionbar"><h2 id="fleetListTitle">Perjalanan Hari Ini</h2><small id="fleetListCount">0 perjalanan</small></div>
-        <div id="fleetTripList"><div class="empty">Memuat...</div></div>
-        <button class="btn" data-go="reports" type="button">Lihat Laporan Lengkap <svg><use href="#i-arrow"/></svg></button>
-      </section>
+</div>
 
-      <!-- LAPORAN -->
-      <section id="screen-reports" class="screen">
-        <div class="sectionbar"><h2>Laporan Pendapatan</h2></div>
-        <div class="periods">
-          <button class="period-tab active" data-period="daily" type="button">Harian</button>
-          <button class="period-tab" data-period="monthly" type="button">Bulanan</button>
-          <button class="period-tab" data-period="yearly" type="button">Tahunan</button>
-        </div>
-        <div class="card">
-          <div class="filters">
-            <div id="dailyField" class="wide"><label>Tanggal</label><input id="reportDate" type="date"></div>
-            <div id="monthlyField" class="wide" hidden><label>Bulan</label><input id="reportMonth" type="month"></div>
-            <div id="yearlyField" class="wide" hidden><label>Tahun</label><select id="reportYear"></select></div>
-            <div class="wide"><label>Armada</label><select id="vehicleFilter"><option value="ALL">Semua Armada</option><option value="HSM-01">HSM-01</option><option value="HSM-02">HSM-02</option></select></div>
-            <div class="wide"><button id="refreshBtn" class="btn" type="button"><svg><use href="#i-refresh"/></svg> Tampilkan Laporan</button></div>
-          </div>
-        </div>
-        <div class="hero">
-          <div class="hero-kicker">Total Pendapatan</div>
-          <div id="totalRevenue" class="hero-value">Rp0</div>
-          <div id="reportPeriodLabel" class="hero-foot">-</div>
-        </div>
-        <div class="grid4">
-          <div class="metric"><div class="metric-label">HSM-01</div><div id="revenue01" class="metric-number">Rp0</div><div id="trips01" class="metric-note">0 perjalanan</div></div>
-          <div class="metric"><div class="metric-label">HSM-02</div><div id="revenue02" class="metric-number">Rp0</div><div id="trips02" class="metric-note">0 perjalanan</div></div>
-          <div class="metric"><div class="metric-label">Penumpang Naik</div><div id="totalTickets" class="metric-number">0</div><div class="metric-note">Naik & lunas</div></div>
-          <div class="metric"><div class="metric-label">Perjalanan</div><div id="totalTrips" class="metric-number">0</div><div class="metric-note">Berpendapatan</div></div>
-        </div>
-        <div class="sectionbar" style="margin-top:19px"><h2>Grafik Pendapatan</h2></div>
-        <div class="card">
-          <div class="chartwrap"><canvas id="reportChart"></canvas></div>
-          <div class="chart-caption">Grafik berdasarkan periode dan armada yang dipilih.</div>
-        </div>
-        <div class="sectionbar"><h2>Pendapatan Sekali Jalan</h2><small id="tripCountBadge">0 perjalanan</small></div>
-        <div id="tripList"><div class="empty">Memuat...</div></div>
-        <div class="notice">Pendapatan hanya dihitung dari penumpang yang sudah naik dan lunas. Semua rute penumpang dalam satu perjalanan digabung berdasarkan kode perjalanan. Tidak termasuk perhitungan laba bersih.</div>
-      </section>
+<div class="welcome">
+<small>OWNER CONTROL CENTER</small>
+<h1 id="headerScreenTitle">Selamat Datang</h1>
+<p id="headerDate">-</p>
+</div>
 
-      <!-- KEAMANAN -->
-      <section id="screen-security" class="screen">
-        <div class="sectionbar"><h2>Pusat Keamanan</h2></div>
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
-            <div><strong style="font-size:15px">Aktivitas HSM Internal</strong><div class="helper" style="margin:6px 0 0">Admin, Sopir & Kernet</div></div>
-            <div id="securityWarningCount" style="background:#fff0f0;color:#b72b3a;border-radius:12px;padding:11px;font-size:20px;font-weight:900">0</div>
-          </div>
-          <button id="securityRefreshBtn" class="btn white" style="margin-top:15px" type="button"><svg><use href="#i-refresh"/></svg> Perbarui Riwayat</button>
-        </div>
-        <div class="chips">
-          <button class="security-filter active" data-security-filter="alerts" type="button">Peringatan</button>
-          <button class="security-filter" data-security-filter="all" type="button">Semua Aktivitas</button>
-        </div>
-        <div id="securityList"><div class="empty">Memuat keamanan...</div></div>
-        <div class="notice">Lokasi hanya ditampilkan jika tersedia. Informasi perangkat dari browser merupakan perkiraan. Riwayat ini tidak sama dengan push notification saat aplikasi ditutup.</div>
-      </section>
+</header>
 
-      <!-- PENGATURAN -->
-      <section id="screen-settings" class="screen">
-        <div class="sectionbar"><h2>Pengaturan Owner</h2></div>
-        <div class="card">
-          <div class="profile">
-            <img src="./hsm-apk-icon.png" alt="HSM Owner">
-            <div><strong>Akun Pemilik</strong><small id="ownerAccount">-</small></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="setting"><span>Email & Password</span><b>Aktif</b></div>
-          <div class="setting"><span>Google Authenticator</span><b>Aktif</b></div>
-          <div class="setting"><span>Hak Akses Owner</span><b>Terverifikasi</b></div>
-          <div class="setting"><span>Data Perusahaan</span><b>Supabase</b></div>
-        </div>
-        <button id="logoutBtn" class="btn red" type="button">Keluar dari HSM Owner</button>
-        <p class="helper">Jangan bagikan password atau kode Authenticator. Akses laporan dan keamanan dilindungi pemeriksaan Owner di server.</p>
-      </section>
+<main class="main">
 
-    </main>
-  </div>
+<!-- BERANDA -->
+<section id="screen-home" class="screen active">
 
-  <nav class="bottomnav" aria-label="Navigasi HSM Owner">
-    <button class="navbutton active" data-nav="home" type="button"><svg><use href="#i-home"/></svg>Beranda</button>
-    <button class="navbutton" data-nav="fleet" type="button"><svg><use href="#i-car"/></svg>Armada</button>
-    <button class="navbutton" data-nav="reports" type="button"><svg><use href="#i-chart"/></svg>Laporan</button>
-    <button class="navbutton" data-nav="security" type="button"><svg><use href="#i-shield"/></svg>Keamanan<span id="securityNavBadge" class="navbadge" hidden></span></button>
-    <button class="navbutton" data-nav="settings" type="button"><svg><use href="#i-settings"/></svg>Akun</button>
-  </nav>
+<div class="hero">
+
+<div class="hero-line">
+<span class="hero-kicker">Pendapatan Hari Ini</span>
+<span class="hero-pill">● LIVE DATA</span>
+</div>
+
+<div id="homeRevenue" class="hero-value">Rp0</div>
+
+<div class="hero-foot">
+<span>Penumpang sudah naik & lunas</span>
+<img src="./hsm-logo.png" alt="">
+</div>
+
+</div>
+
+<div class="grid4">
+
+<div class="metric">
+<div class="metric-top">
+<div class="metric-icon">
+<svg><use href="#i-car"/></svg>
+</div>
+</div>
+<div class="metric-label">HSM-01</div>
+<div id="homeRevenue01" class="metric-number">Rp0</div>
+<div class="metric-note">Hari ini</div>
+</div>
+
+<div class="metric">
+<div class="metric-top">
+<div class="metric-icon">
+<svg><use href="#i-car"/></svg>
+</div>
+</div>
+<div class="metric-label">HSM-02</div>
+<div id="homeRevenue02" class="metric-number">Rp0</div>
+<div class="metric-note">Hari ini</div>
+</div>
+
+<div class="metric">
+<div class="metric-top">
+<div class="metric-icon">
+<svg><use href="#i-ticket"/></svg>
+</div>
+</div>
+<div class="metric-label">Penumpang Naik</div>
+<div id="homeTickets" class="metric-number">0</div>
+<div class="metric-note">Tiket lunas</div>
+</div>
+
+<div class="metric">
+<div class="metric-top">
+<div class="metric-icon">
+<svg><use href="#i-route"/></svg>
+</div>
+</div>
+<div class="metric-label">Perjalanan</div>
+<div id="homeTrips" class="metric-number">0</div>
+<div class="metric-note">Berpendapatan</div>
+</div>
+
+</div>
+
+<div class="sectionbar">
+<h2>Tren Pendapatan</h2>
+<small>7 hari terakhir</small>
+</div>
+
+<div class="card">
+<div class="chartwrap">
+<canvas id="homeChart"></canvas>
+</div>
+<div class="chart-caption">
+Pendapatan dari penumpang yang telah naik dan lunas.
+</div>
+</div>
+
+<div class="sectionbar">
+<h2>Akses Cepat</h2>
+</div>
+
+<div class="actions">
+
+<button class="action" data-go="fleet" type="button">
+<svg><use href="#i-car"/></svg>
+Armada
+</button>
+
+<button class="action" data-go="reports" type="button">
+<svg><use href="#i-chart"/></svg>
+Laporan
+</button>
+
+<button class="action" data-go="security" type="button">
+<svg><use href="#i-shield"/></svg>
+Keamanan
+</button>
+
+<button class="action" data-go="settings" type="button">
+<svg><use href="#i-settings"/></svg>
+Pengaturan
+</button>
+
+</div>
+
+<div class="sectionbar">
+<h2>Peringatan Terbaru</h2>
+<small id="homeSecurityCount">0 peringatan</small>
+</div>
+
+<div id="homeSecurityList">
+<div class="empty">Memuat keamanan...</div>
+</div>
+
 </section>
 
-<div id="detailModal" class="modal" hidden role="dialog" aria-modal="true" aria-label="Detail keamanan">
-  <div class="modalbox">
-    <div class="modalhead"><h3 id="modalTitle">Detail Aktivitas</h3><button id="closeModal" class="close" type="button" aria-label="Tutup">×</button></div>
-    <p id="modalTime" class="helper"></p>
-    <div id="modalBody"></div>
-    <button id="modalCloseBtn" class="btn" type="button" style="margin-top:18px">Tutup</button>
-  </div>
+<!-- ARMADA -->
+<section id="screen-fleet" class="screen">
+
+<div class="sectionbar">
+<h2>Performa Armada</h2>
+<small>Hari ini</small>
+</div>
+
+<div class="grid2 vehicles">
+
+<button class="vehicle"
+id="vehicleCard01"
+data-fleet="HSM-01"
+type="button">
+
+<div class="v-top">
+<span class="v-code">HSM-01</span>
+<svg><use href="#i-car"/></svg>
+</div>
+
+<div id="fleetRevenue01" class="v-amount">Rp0</div>
+<div id="fleetTrips01" class="v-detail">0 perjalanan</div>
+
+</button>
+
+<button class="vehicle"
+id="vehicleCard02"
+data-fleet="HSM-02"
+type="button">
+
+<div class="v-top">
+<span class="v-code">HSM-02</span>
+<svg><use href="#i-car"/></svg>
+</div>
+
+<div id="fleetRevenue02" class="v-amount">Rp0</div>
+<div id="fleetTrips02" class="v-detail">0 perjalanan</div>
+
+</button>
+
+</div>
+
+<div class="sectionbar">
+<h2 id="fleetListTitle">Perjalanan Hari Ini</h2>
+<small id="fleetListCount">0 perjalanan</small>
+</div>
+
+<div id="fleetTripList">
+<div class="empty">Memuat...</div>
+</div>
+
+<button class="btn" data-go="reports" type="button">
+Lihat Laporan Lengkap
+<svg><use href="#i-arrow"/></svg>
+</button>
+
+</section>
+
+<!-- LAPORAN -->
+<section id="screen-reports" class="screen">
+
+<div class="sectionbar">
+<h2>Laporan Pendapatan</h2>
+</div>
+
+<div class="periods">
+
+<button class="period-tab active"
+data-period="daily"
+type="button">Harian</button>
+
+<button class="period-tab"
+data-period="monthly"
+type="button">Bulanan</button>
+
+<button class="period-tab"
+data-period="yearly"
+type="button">Tahunan</button>
+
+</div>
+
+<div class="card">
+
+<div class="filters">
+
+<div id="dailyField" class="wide">
+<label>Tanggal</label>
+<input id="reportDate" type="date">
+</div>
+
+<div id="monthlyField" class="wide" hidden>
+<label>Bulan</label>
+<input id="reportMonth" type="month">
+</div>
+
+<div id="yearlyField" class="wide" hidden>
+<label>Tahun</label>
+<select id="reportYear"></select>
+</div>
+
+<div class="wide">
+<label>Armada</label>
+<select id="vehicleFilter">
+<option value="ALL">Semua Armada</option>
+<option value="HSM-01">HSM-01</option>
+<option value="HSM-02">HSM-02</option>
+</select>
+</div>
+
+<div class="wide">
+<button id="refreshBtn" class="btn" type="button">
+<svg><use href="#i-refresh"/></svg>
+Tampilkan Laporan
+</button>
+</div>
+
+</div>
+</div>
+
+<div class="hero">
+<div class="hero-kicker">Total Pendapatan</div>
+<div id="totalRevenue" class="hero-value">Rp0</div>
+<div id="reportPeriodLabel" class="hero-foot">-</div>
+</div>
+
+<div class="grid4">
+
+<div class="metric">
+<div class="metric-label">HSM-01</div>
+<div id="revenue01" class="metric-number">Rp0</div>
+<div id="trips01" class="metric-note">0 perjalanan</div>
+</div>
+
+<div class="metric">
+<div class="metric-label">HSM-02</div>
+<div id="revenue02" class="metric-number">Rp0</div>
+<div id="trips02" class="metric-note">0 perjalanan</div>
+</div>
+
+<div class="metric">
+<div class="metric-label">Penumpang Naik</div>
+<div id="totalTickets" class="metric-number">0</div>
+<div class="metric-note">Naik & lunas</div>
+</div>
+
+<div class="metric">
+<div class="metric-label">Perjalanan</div>
+<div id="totalTrips" class="metric-number">0</div>
+<div class="metric-note">Berpendapatan</div>
+</div>
+
+</div>
+
+<div class="sectionbar">
+<h2>Grafik Pendapatan</h2>
+</div>
+
+<div class="card">
+<div class="chartwrap">
+<canvas id="reportChart"></canvas>
+</div>
+<div class="chart-caption">
+Grafik berdasarkan periode dan armada yang dipilih.
+</div>
+</div>
+
+<div class="sectionbar">
+<h2>Pendapatan Sekali Jalan</h2>
+<small id="tripCountBadge">0 perjalanan</small>
+</div>
+
+<div id="tripList">
+<div class="empty">Memuat...</div>
+</div>
+
+<div class="notice">
+Pendapatan dihitung dari penumpang yang sudah naik dan lunas.
+Seluruh titik naik dalam perjalanan yang sama digabung berdasarkan
+kode perjalanan. Ini bukan perhitungan laba bersih.
+</div>
+
+</section>
+
+<!-- KEAMANAN -->
+<section id="screen-security" class="screen">
+
+<div class="sectionbar">
+<h2>Pusat Keamanan</h2>
+</div>
+
+<div class="card">
+
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+
+<div>
+<strong style="font-size:14px;color:var(--navy)">
+Aktivitas HSM Internal
+</strong>
+<div class="helper" style="margin-top:5px">
+Admin, Sopir & Kernet
+</div>
+</div>
+
+<div id="securityWarningCount"
+style="padding:11px;border-radius:11px;background:#f4ced5;color:#a62535;font-size:20px;font-weight:900">
+0
+</div>
+
+</div>
+
+<button id="securityRefreshBtn"
+class="btn secondary"
+style="margin-top:13px"
+type="button">
+<svg><use href="#i-refresh"/></svg>
+Perbarui Riwayat
+</button>
+
+</div>
+
+<div class="chips">
+
+<button class="security-filter active"
+data-security-filter="alerts"
+type="button">
+Peringatan
+</button>
+
+<button class="security-filter"
+data-security-filter="all"
+type="button">
+Semua Aktivitas
+</button>
+
+</div>
+
+<div id="securityList">
+<div class="empty">Memuat keamanan...</div>
+</div>
+
+<div class="notice">
+Lokasi ditampilkan jika tersedia. Informasi perangkat dari browser
+merupakan perkiraan. Notifikasi ketika aplikasi tertutup memerlukan
+integrasi push Android tersendiri.
+</div>
+
+</section>
+
+<!-- PENGATURAN -->
+<section id="screen-settings" class="screen">
+
+<div class="sectionbar">
+<h2>Pengaturan Owner</h2>
+</div>
+
+<div class="card">
+
+<div class="profile">
+
+<img src="./hsm-apk-icon.png" alt="HSM Owner">
+
+<div>
+<strong>Akun Pemilik</strong>
+<small id="ownerAccount">-</small>
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="setting">
+<span>Email & Password</span>
+<b>Aktif</b>
+</div>
+
+<div class="setting">
+<span>Google Authenticator</span>
+<b>Aktif</b>
+</div>
+
+<div class="setting">
+<span>Hak Akses Owner</span>
+<b>Terverifikasi</b>
+</div>
+
+<div class="setting">
+<span>Data Perusahaan</span>
+<b>Supabase</b>
+</div>
+
+</div>
+
+<button id="logoutBtn"
+class="btn danger"
+type="button">
+Keluar dari HSM Owner
+</button>
+
+<p class="helper">
+Jangan bagikan password atau kode Authenticator.
+Akses laporan dan keamanan dilindungi pemeriksaan Owner.
+</p>
+
+</section>
+
+</main>
+</div>
+
+<!-- NAVIGASI -->
+<nav class="bottomnav" aria-label="Navigasi HSM Owner">
+
+<button class="navbutton active"
+data-nav="home"
+type="button">
+<svg><use href="#i-home"/></svg>
+Beranda
+</button>
+
+<button class="navbutton"
+data-nav="fleet"
+type="button">
+<svg><use href="#i-car"/></svg>
+Armada
+</button>
+
+<button class="navbutton"
+data-nav="reports"
+type="button">
+<svg><use href="#i-chart"/></svg>
+Laporan
+</button>
+
+<button class="navbutton"
+data-nav="security"
+type="button">
+<svg><use href="#i-shield"/></svg>
+Keamanan
+<span id="securityNavBadge" class="navbadge" hidden></span>
+</button>
+
+<button class="navbutton"
+data-nav="settings"
+type="button">
+<svg><use href="#i-settings"/></svg>
+Akun
+</button>
+
+</nav>
+
+</section>
+
+<!-- MODAL -->
+<div id="detailModal"
+class="modal"
+hidden
+role="dialog"
+aria-modal="true"
+aria-label="Detail keamanan">
+
+<div class="modalbox">
+
+<div class="modalhead">
+<h3 id="modalTitle">Detail Aktivitas</h3>
+<button id="closeModal" class="close" type="button">×</button>
+</div>
+
+<p id="modalTime" class="helper"></p>
+
+<div id="modalBody"></div>
+
+<button id="modalCloseBtn"
+class="btn"
+type="button"
+style="margin-top:17px">
+Tutup
+</button>
+
+</div>
+
 </div>
 
 <script>
 "use strict";
 
-const CONFIG=window.HSM_OWNER_CONFIG;
-const $=id=>document.getElementById(id);
-let ownerDB=null;
-let pendingFactorId=null;
-let loading=false;
-let currentPeriod="daily";
-let securityFilter="alerts";
-let securityEvents=[];
-let securityTimer=null;
-let securityBusy=false;
-let revenueVersion=0;
-let fleetRows=[];
-let fleetSelected="ALL";
-let securityVersion=0;
-let chartHomeRows=[];
-let chartReportRows=[];
+/* ======================================
+   KONFIGURASI
+====================================== */
 
-function message(text,type="error"){
-  const el=$("globalMessage");
-  el.textContent=text;
-  el.className=type;
-  if(text) setTimeout(()=>{if(el.textContent===text)el.className=""},6500);
+const CONFIG = window.HSM_OWNER_CONFIG;
+const $ = id => document.getElementById(id);
+
+let ownerDB = null;
+let pendingFactorId = null;
+let loading = false;
+
+let currentPeriod = "daily";
+let securityFilter = "alerts";
+let securityEvents = [];
+
+let securityTimer = null;
+let securityBusy = false;
+let securityVersion = 0;
+
+let revenueVersion = 0;
+
+let fleetRows = [];
+let fleetSelected = "ALL";
+
+let chartHomeRows = [];
+let chartReportRows = [];
+
+/* ======================================
+   HELPERS
+====================================== */
+
+function message(text,type="error") {
+  const el = $("globalMessage");
+
+  el.textContent = text;
+  el.className = type;
+
+  if (text) {
+    setTimeout(() => {
+      if (el.textContent === text) {
+        el.className = "";
+      }
+    },6500);
+  }
 }
-function clearMessage(){const el=$("globalMessage");el.textContent="";el.className=""}
-function page(name){
-  document.querySelectorAll(".page").forEach(e=>e.classList.toggle("active",e.id===name));
+
+function clearMessage() {
+  const el = $("globalMessage");
+  el.textContent = "";
+  el.className = "";
+}
+
+function page(name) {
+  document.querySelectorAll(".page").forEach(el => {
+    el.classList.toggle("active",el.id===name);
+  });
+
   clearMessage();
   window.scrollTo(0,0);
 }
-function node(parent,tag,className,text){
-  const e=document.createElement(tag);
-  if(className)e.className=className;
-  e.textContent=String(text??"");
-  parent.appendChild(e);
-  return e;
+
+function node(parent,tag,className,text) {
+  const element = document.createElement(tag);
+
+  if (className) {
+    element.className = className;
+  }
+
+  element.textContent = String(text ?? "");
+  parent.appendChild(element);
+
+  return element;
 }
-function money(v){return "Rp"+Number(v||0).toLocaleString("id-ID")}
-function validCode(v){return /^\d{6}$/.test(v)}
-async function busy(btn,action){
-  if(loading)return;
-  loading=true;
-  const old=btn.textContent;
-  btn.disabled=true;
-  btn.textContent="Memproses...";
-  try{await action()}
-  catch(e){console.error("OWNER:",e);message(e?.message||"Terjadi kesalahan.")}
-  finally{loading=false;btn.disabled=false;btn.textContent=old}
+
+function money(value) {
+  return "Rp" + Number(value||0).toLocaleString("id-ID");
 }
-function todayWIT(offset=0){
-  const date=new Date(Date.now()+offset*86400000);
-  const pieces=new Intl.DateTimeFormat("en-GB",{
-    timeZone:"Asia/Jayapura",year:"numeric",month:"2-digit",day:"2-digit"
-  }).formatToParts(date);
-  const p=Object.fromEntries(pieces.map(x=>[x.type,x.value]));
-  return `${p.year}-${p.month}-${p.day}`;
+
+function validCode(value) {
+  return /^\d{6}$/.test(value);
 }
-function safeDate(v){
-  const s=String(v||"").slice(0,10);
-  return /^\d{4}-\d{2}-\d{2}$/.test(s)?s:"";
+
+async function busy(button,action) {
+  if (loading) return;
+
+  loading = true;
+
+  const original = button.textContent;
+
+  button.disabled = true;
+  button.textContent = "Memproses...";
+
+  try {
+    await action();
+  } catch (error) {
+    console.error("OWNER:",error);
+    message(error?.message||"Terjadi kesalahan.");
+  } finally {
+    loading = false;
+    button.disabled = false;
+    button.textContent = original;
+  }
 }
-function formatDate(v){
-  const s=safeDate(v);
-  if(!s)return "-";
-  return new Intl.DateTimeFormat("id-ID",{
-    timeZone:"UTC",day:"numeric",month:"short",year:"numeric"
-  }).format(new Date(s+"T12:00:00Z"));
+
+/* ======================================
+   WAKTU WIT
+====================================== */
+
+function todayWIT(offset=0) {
+  const date = new Date(Date.now()+offset*86400000);
+
+  const pieces = new Intl.DateTimeFormat(
+    "en-GB",
+    {
+      timeZone:"Asia/Jayapura",
+      year:"numeric",
+      month:"2-digit",
+      day:"2-digit"
+    }
+  ).formatToParts(date);
+
+  const parts = Object.fromEntries(
+    pieces.map(item => [item.type,item.value])
+  );
+
+  return `${parts.year}-${parts.month}-${parts.day}`;
 }
-function formatWIT(v){
-  if(!v)return "-";
-  const d=new Date(v);
-  if(Number.isNaN(d.getTime()))return "-";
-  return new Intl.DateTimeFormat("id-ID",{
-    timeZone:"Asia/Jayapura",day:"2-digit",month:"short",year:"numeric",
-    hour:"2-digit",minute:"2-digit",hour12:false
-  }).format(d)+" WIT";
+
+function safeDate(value) {
+  const str = String(value||"").slice(0,10);
+
+  return /^\d{4}-\d{2}-\d{2}$/.test(str)
+    ? str
+    : "";
 }
-function lastDay(y,m){return new Date(Date.UTC(y,m,0)).toISOString().slice(0,10)}
-function shiftDate(date,days){
-  const d=new Date(date+"T12:00:00Z");
-  d.setUTCDate(d.getUTCDate()+days);
-  return d.toISOString().slice(0,10);
+
+function formatDate(value) {
+  const str = safeDate(value);
+
+  if (!str) return "-";
+
+  return new Intl.DateTimeFormat(
+    "id-ID",
+    {
+      timeZone:"UTC",
+      day:"numeric",
+      month:"short",
+      year:"numeric"
+    }
+  ).format(new Date(str+"T12:00:00Z"));
 }
-function vehicle(v){
-  const s=String(v||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
-  if(["HSM01","01","1"].includes(s))return "HSM-01";
-  if(["HSM02","02","2"].includes(s))return "HSM-02";
-  return String(v||"-");
+
+function formatWIT(value) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "-";
+
+  return new Intl.DateTimeFormat(
+    "id-ID",
+    {
+      timeZone:"Asia/Jayapura",
+      day:"2-digit",
+      month:"short",
+      year:"numeric",
+      hour:"2-digit",
+      minute:"2-digit",
+      hour12:false
+    }
+  ).format(date)+" WIT";
 }
-function direction(code){
-  const s=String(code||"").toUpperCase();
-  if(s.includes("HSM01-AM-")||s.includes("HSM02-PM-"))return "Sofifi → Lelilef";
-  if(s.includes("HSM02-AM-")||s.includes("HSM01-PM-"))return "Lelilef → Sofifi";
+
+function lastDay(year,month) {
+  return new Date(
+    Date.UTC(year,month,0)
+  ).toISOString().slice(0,10);
+}
+
+function shiftDate(date,days) {
+  const result = new Date(date+"T12:00:00Z");
+
+  result.setUTCDate(result.getUTCDate()+days);
+
+  return result.toISOString().slice(0,10);
+}
+
+/* ======================================
+   ARMADA
+====================================== */
+
+function vehicle(value) {
+  const normalized = String(value||"")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g,"");
+
+  if (["HSM01","01","1"].includes(normalized)) {
+    return "HSM-01";
+  }
+
+  if (["HSM02","02","2"].includes(normalized)) {
+    return "HSM-02";
+  }
+
+  return String(value||"-");
+}
+
+function direction(code) {
+  const str = String(code||"").toUpperCase();
+
+  if (
+    str.includes("HSM01-AM-") ||
+    str.includes("HSM02-PM-")
+  ) {
+    return "Sofifi → Lelilef";
+  }
+
+  if (
+    str.includes("HSM02-AM-") ||
+    str.includes("HSM01-PM-")
+  ) {
+    return "Lelilef → Sofifi";
+  }
+
   return "Perjalanan lainnya";
 }
 
-try{
-  if(!CONFIG?.SUPABASE_URL||!CONFIG?.SUPABASE_PUBLISHABLE_KEY||
-     CONFIG.SUPABASE_PUBLISHABLE_KEY.includes("MASUKKAN_")||
-     CONFIG.SUPABASE_PUBLISHABLE_KEY.includes("ISI_")||
-     !window.supabase){
-    throw new Error("Konfigurasi Supabase Owner belum lengkap.");
+/* ======================================
+   SUPABASE
+====================================== */
+
+try {
+  if (
+    !CONFIG?.SUPABASE_URL ||
+    !CONFIG?.SUPABASE_PUBLISHABLE_KEY ||
+    CONFIG.SUPABASE_PUBLISHABLE_KEY.includes("MASUKKAN_") ||
+    CONFIG.SUPABASE_PUBLISHABLE_KEY.includes("ISI_") ||
+    !window.supabase
+  ) {
+    throw new Error(
+      "Konfigurasi Supabase Owner belum lengkap."
+    );
   }
-  ownerDB=window.supabase.createClient(
-    CONFIG.SUPABASE_URL,CONFIG.SUPABASE_PUBLISHABLE_KEY,
-    {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}}
+
+  ownerDB = window.supabase.createClient(
+    CONFIG.SUPABASE_URL,
+    CONFIG.SUPABASE_PUBLISHABLE_KEY,
+    {
+      auth:{
+        persistSession:true,
+        autoRefreshToken:true,
+        detectSessionInUrl:false
+      }
+    }
   );
-}catch(e){
+
+} catch(error) {
   window.addEventListener("DOMContentLoaded",()=>{
-    message(e.message);
+    message(error.message);
     $("loginBtn").disabled=true;
   });
 }
 
-async function aal(){
-  const {data,error}=await ownerDB.auth.mfa.getAuthenticatorAssuranceLevel();
-  if(error)throw error;
+/* ======================================
+   MFA
+====================================== */
+
+async function aal() {
+  const {data,error} =
+    await ownerDB.auth.mfa.getAuthenticatorAssuranceLevel();
+
+  if (error) throw error;
+
   return data?.currentLevel||"aal1";
 }
-async function factor(){
-  const {data,error}=await ownerDB.auth.mfa.listFactors();
-  if(error)throw error;
-  return (data?.totp||[]).find(x=>x.status==="verified")||null;
+
+async function factor() {
+  const {data,error} =
+    await ownerDB.auth.mfa.listFactors();
+
+  if (error) throw error;
+
+  return (data?.totp||[]).find(
+    item=>item.status==="verified"
+  )||null;
 }
-async function ownerAccess(){
-  if(!ownerDB)throw Error("Supabase tidak tersedia.");
-  if(await aal()!=="aal2")throw Error("Verifikasi Authenticator diperlukan.");
-  const {data,error}=await ownerDB.rpc("hsm_owner_check_access");
-  if(error||data!==true)throw Error("Akun tidak memiliki akses Owner.");
+
+async function ownerAccess() {
+  if (!ownerDB) {
+    throw new Error("Supabase tidak tersedia.");
+  }
+
+  if (await aal()!=="aal2") {
+    throw new Error(
+      "Verifikasi Authenticator diperlukan."
+    );
+  }
+
+  const {data,error} =
+    await ownerDB.rpc("hsm_owner_check_access");
+
+  if (error||data!==true) {
+    throw new Error(
+      "Akun tidak memiliki akses Owner."
+    );
+  }
+
+  return true;
 }
-async function verifyFactor(id,code){
-  const {data,error}=await ownerDB.auth.mfa.challenge({factorId:id});
-  if(error)throw error;
-  const result=await ownerDB.auth.mfa.verify({
-    factorId:id,challengeId:data.id,code
-  });
-  if(result.error)throw result.error;
+
+async function verifyFactor(id,code) {
+  const {data,error} =
+    await ownerDB.auth.mfa.challenge({
+      factorId:id
+    });
+
+  if (error) throw error;
+
+  const result =
+    await ownerDB.auth.mfa.verify({
+      factorId:id,
+      challengeId:data.id,
+      code
+    });
+
+  if (result.error) throw result.error;
 }
-async function enroll(){
-  const {data,error}=await ownerDB.auth.mfa.enroll({
-    factorType:"totp",friendlyName:"HSM Owner Authenticator"
-  });
-  if(error)throw error;
-  if(!data?.id||!data?.totp)throw Error("Data Authenticator tidak tersedia.");
+
+async function enroll() {
+  const {data,error} =
+    await ownerDB.auth.mfa.enroll({
+      factorType:"totp",
+      friendlyName:"HSM Owner Authenticator"
+    });
+
+  if (error) throw error;
+
+  if (!data?.id||!data?.totp) {
+    throw new Error(
+      "Data Authenticator tidak tersedia."
+    );
+  }
+
   pendingFactorId=data.id;
+
   $("totpQR").src=data.totp.qr_code;
   $("totpQR").hidden=false;
-  $("totpSecret").textContent=data.totp.secret||"-";
+
+  $("totpSecret").textContent=
+    data.totp.secret||"-";
+
   page("enrollPage");
 }
-async function dashboard(){
+
+/* ======================================
+   DASHBOARD
+====================================== */
+
+async function dashboard() {
   await ownerAccess();
-  const {data,error}=await ownerDB.auth.getUser();
-  if(error||!data?.user)throw Error("Sesi Owner tidak valid.");
-  $("ownerAccount").textContent=data.user.email||"-";
-  $("headerDate").textContent=formatDate(todayWIT())+" • WIT";
+
+  const {data,error} =
+    await ownerDB.auth.getUser();
+
+  if (error||!data?.user) {
+    throw new Error("Sesi Owner tidak valid.");
+  }
+
+  $("ownerAccount").textContent=
+    data.user.email||"-";
+
+  $("headerDate").textContent=
+    formatDate(todayWIT())+" • WIT";
+
   page("dashboardPage");
   screen("home");
-  await Promise.allSettled([loadToday(),loadSecurity(),loadHomeChart()]);
+
+  await Promise.allSettled([
+    loadToday(),
+    loadSecurity(),
+    loadHomeChart()
+  ]);
+
   startSecurityTimer();
 }
-async function resolveState(){
-  if(!ownerDB)return;
-  const {data,error}=await ownerDB.auth.getUser();
-  if(error||!data?.user){page("loginPage");return}
-  if(await aal()==="aal2"){await dashboard();return}
-  const f=await factor();
-  if(f){pendingFactorId=f.id;page("verifyPage");return}
+
+async function resolveState() {
+  if (!ownerDB) return;
+
+  const {data,error} =
+    await ownerDB.auth.getUser();
+
+  if (error||!data?.user) {
+    page("loginPage");
+    return;
+  }
+
+  if (await aal()==="aal2") {
+    await dashboard();
+    return;
+  }
+
+  const verifiedFactor=await factor();
+
+  if (verifiedFactor) {
+    pendingFactorId=verifiedFactor.id;
+    page("verifyPage");
+    return;
+  }
+
   await enroll();
 }
 
-$("loginForm").addEventListener("submit",async e=>{
-  e.preventDefault();
+/* ======================================
+   LOGIN
+====================================== */
+
+$("loginForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
   await busy($("loginBtn"),async()=>{
-    if(!ownerDB)throw Error("Supabase belum dikonfigurasi.");
+    if (!ownerDB) {
+      throw new Error(
+        "Supabase belum dikonfigurasi."
+      );
+    }
+
     const email=$("ownerEmail").value.trim();
     const password=$("ownerPassword").value;
-    const {error}=await ownerDB.auth.signInWithPassword({email,password});
+
+    const {error} =
+      await ownerDB.auth.signInWithPassword({
+        email,
+        password
+      });
+
     $("ownerPassword").value="";
-    if(error)throw Error("Email atau password tidak valid.");
+
+    if (error) {
+      throw new Error(
+        "Email atau password tidak valid."
+      );
+    }
+
     await resolveState();
   });
 });
-$("enrollForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const btn=e.currentTarget.querySelector("button");
-  await busy(btn,async()=>{
+
+$("enrollForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const button=event.currentTarget.querySelector("button");
+
+  await busy(button,async()=>{
     const code=$("enrollCode").value.trim();
-    if(!validCode(code)||!pendingFactorId)throw Error("Kode enam digit tidak valid.");
+
+    if (!validCode(code)||!pendingFactorId) {
+      throw new Error("Kode enam digit tidak valid.");
+    }
+
     await verifyFactor(pendingFactorId,code);
+
     $("enrollCode").value="";
     await dashboard();
   });
 });
-$("verifyForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const btn=e.currentTarget.querySelector("button");
-  await busy(btn,async()=>{
+
+$("verifyForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const button=event.currentTarget.querySelector("button");
+
+  await busy(button,async()=>{
     const code=$("verifyCode").value.trim();
-    if(!validCode(code)||!pendingFactorId)throw Error("Kode enam digit tidak valid.");
+
+    if (!validCode(code)||!pendingFactorId) {
+      throw new Error("Kode enam digit tidak valid.");
+    }
+
     await verifyFactor(pendingFactorId,code);
+
     $("verifyCode").value="";
     await dashboard();
   });
 });
-async function logout(){
+
+/* ======================================
+   LOGOUT
+====================================== */
+
+async function logout() {
   stopSecurityTimer();
-  revenueVersion++;securityVersion++;
-  securityEvents=[];fleetRows=[];chartHomeRows=[];chartReportRows=[];
-  if(ownerDB)await ownerDB.auth.signOut();
+
+  revenueVersion++;
+  securityVersion++;
+
+  securityEvents=[];
+  fleetRows=[];
+  chartHomeRows=[];
+  chartReportRows=[];
+
+  if (ownerDB) {
+    await ownerDB.auth.signOut();
+  }
+
   pendingFactorId=null;
-  ["ownerPassword","enrollCode","verifyCode"].forEach(id=>$(id).value="");
+
+  ["ownerPassword","enrollCode","verifyCode"].forEach(id=>{
+    $(id).value="";
+  });
+
   $("totpSecret").textContent="";
   $("totpQR").removeAttribute("src");
   $("totpQR").hidden=true;
-  ["tripList","fleetTripList","securityList","homeSecurityList"].forEach(id=>$(id).replaceChildren());
+
+  [
+    "tripList",
+    "fleetTripList",
+    "securityList",
+    "homeSecurityList"
+  ].forEach(id=>$(id).replaceChildren());
+
   page("loginPage");
 }
-["logoutBtn","verifyLogoutBtn","enrollLogoutBtn"].forEach(id=>$(id).addEventListener("click",()=>void logout()));
+
+[
+  "logoutBtn",
+  "verifyLogoutBtn",
+  "enrollLogoutBtn"
+].forEach(id=>{
+  $(id).addEventListener("click",()=>void logout());
+});
+
+/* ======================================
+   NAVIGASI
+====================================== */
 
 const titles={
   home:"Selamat Datang",
@@ -944,224 +2372,705 @@ const titles={
   security:"Pusat Keamanan",
   settings:"Pengaturan Akun"
 };
-function screen(name){
-  if(!$("dashboardPage").classList.contains("active"))return;
-  document.querySelectorAll(".screen").forEach(x=>x.classList.toggle("active",x.id==="screen-"+name));
-  document.querySelectorAll(".navbutton").forEach(x=>x.classList.toggle("active",x.dataset.nav===name));
-  $("headerScreenTitle").textContent=titles[name]||"HSM Owner";
-  window.scrollTo({top:0,behavior:"smooth"});
-  if(name==="security")void loadSecurity();
-  if(name==="reports")void loadRevenue();
-  if(name==="home")setTimeout(()=>drawChart("homeChart",chartHomeRows,"daily"),50);
-}
-document.querySelectorAll("[data-nav],[data-go]").forEach(b=>b.addEventListener("click",()=>screen(b.dataset.nav||b.dataset.go)));
-$("headerNotificationBtn").addEventListener("click",()=>screen("security"));
 
-async function revenue(start,end){
-  await ownerAccess();
-  const {data,error}=await ownerDB.rpc("hsm_owner_trip_revenue",{
-    p_start_date:start,p_end_date:end
+function screen(name) {
+  if (
+    !$("dashboardPage").classList.contains("active")
+  ) return;
+
+  document.querySelectorAll(".screen").forEach(el=>{
+    el.classList.toggle(
+      "active",
+      el.id==="screen-"+name
+    );
   });
-  if(error){console.error("REVENUE:",error);throw Error("Gagal mengambil data pendapatan.")}
+
+  document.querySelectorAll(".navbutton").forEach(el=>{
+    el.classList.toggle(
+      "active",
+      el.dataset.nav===name
+    );
+  });
+
+  $("headerScreenTitle").textContent=
+    titles[name]||"HSM Owner";
+
+  window.scrollTo({top:0,behavior:"smooth"});
+
+  if (name==="security") {
+    void loadSecurity();
+  }
+
+  if (name==="reports") {
+    void loadRevenue();
+  }
+
+  if (name==="home") {
+    setTimeout(()=>{
+      drawChart(
+        "homeChart",
+        chartHomeRows,
+        "daily",
+        shiftDate(todayWIT(),-6),
+        todayWIT()
+      );
+    },50);
+  }
+}
+
+document.querySelectorAll("[data-nav],[data-go]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    screen(
+      button.dataset.nav||
+      button.dataset.go
+    );
+  });
+});
+
+$("headerNotificationBtn").addEventListener(
+  "click",
+  ()=>screen("security")
+);
+
+/* ======================================
+   PENDAPATAN
+====================================== */
+
+async function revenue(start,end) {
+  await ownerAccess();
+
+  const {data,error} =
+    await ownerDB.rpc(
+      "hsm_owner_trip_revenue",
+      {
+        p_start_date:start,
+        p_end_date:end
+      }
+    );
+
+  if (error) {
+    console.error("REVENUE:",error);
+
+    throw new Error(
+      "Gagal mengambil data pendapatan."
+    );
+  }
+
   return data||[];
 }
-function summary(rows){
-  const x={total:0,tickets:0,trips:rows.length,hsm01:0,hsm02:0,trips01:0,trips02:0};
-  rows.forEach(r=>{
-    const n=Number(r.total_revenue||0);
-    x.total+=n;x.tickets+=Number(r.total_passengers||0);
-    if(vehicle(r.vehicle)==="HSM-01"){x.hsm01+=n;x.trips01++}
-    if(vehicle(r.vehicle)==="HSM-02"){x.hsm02+=n;x.trips02++}
+
+function summary(rows) {
+  const result={
+    total:0,
+    tickets:0,
+    trips:rows.length,
+    hsm01:0,
+    hsm02:0,
+    trips01:0,
+    trips02:0
+  };
+
+  rows.forEach(row=>{
+    const amount=Number(row.total_revenue||0);
+
+    result.total+=amount;
+    result.tickets+=Number(
+      row.total_passengers||0
+    );
+
+    if (vehicle(row.vehicle)==="HSM-01") {
+      result.hsm01+=amount;
+      result.trips01++;
+    }
+
+    if (vehicle(row.vehicle)==="HSM-02") {
+      result.hsm02+=amount;
+      result.trips02++;
+    }
   });
-  return x;
+
+  return result;
 }
-function tripCards(target,rows){
+
+function tripCards(target,rows) {
   const host=$(target);
+
   host.replaceChildren();
-  if(!rows.length){node(host,"div","empty","Belum ada perjalanan dengan pendapatan pada periode ini.");return}
-  rows.forEach(r=>{
+
+  if (!rows.length) {
+    node(
+      host,
+      "div",
+      "empty",
+      "Belum ada perjalanan dengan pendapatan pada periode ini."
+    );
+    return;
+  }
+
+  rows.forEach(row=>{
     const box=node(host,"article","trip","");
+
     const top=node(box,"div","triphead","");
+
     const left=node(top,"div","","");
-    node(left,"strong","",vehicle(r.vehicle)+" • "+direction(r.trip_code));
-    node(left,"small","",formatDate(r.travel_date)+" • "+(r.departure_label||"-"));
-    node(top,"div","amount",money(r.total_revenue));
+
+    node(
+      left,
+      "strong",
+      "",
+      vehicle(row.vehicle)+" • "+
+      direction(row.trip_code)
+    );
+
+    node(
+      left,
+      "small",
+      "",
+      formatDate(row.travel_date)+" • "+
+      (row.departure_label||"-")
+    );
+
+    node(
+      top,
+      "div",
+      "amount",
+      money(row.total_revenue)
+    );
+
     const foot=node(box,"div","tripfoot","");
-    node(foot,"span","",String(r.total_passengers||0)+" penumpang naik");
-    node(foot,"span","",r.trip_code||"-");
+
+    node(
+      foot,
+      "span",
+      "",
+      String(row.total_passengers||0)+
+      " penumpang naik"
+    );
+
+    node(
+      foot,
+      "span",
+      "",
+      row.trip_code||"-"
+    );
   });
 }
-async function loadToday(){
-  try{
-    const d=todayWIT();
-    const rows=await revenue(d,d);
-    if(!$("dashboardPage").classList.contains("active"))return;
+
+/* ======================================
+   BERANDA
+====================================== */
+
+async function loadToday() {
+  try {
+    const today=todayWIT();
+
+    const rows=await revenue(today,today);
+
+    if (
+      !$("dashboardPage").classList.contains("active")
+    ) return;
+
     fleetRows=rows;
-    const x=summary(rows);
+
+    const result=summary(rows);
+
     const values={
-      homeRevenue:money(x.total),homeRevenue01:money(x.hsm01),homeRevenue02:money(x.hsm02),
-      homeTickets:String(x.tickets),homeTrips:String(x.trips),
-      fleetRevenue01:money(x.hsm01),fleetRevenue02:money(x.hsm02),
-      fleetTrips01:x.trips01+" perjalanan",fleetTrips02:x.trips02+" perjalanan"
+      homeRevenue:money(result.total),
+      homeRevenue01:money(result.hsm01),
+      homeRevenue02:money(result.hsm02),
+      homeTickets:String(result.tickets),
+      homeTrips:String(result.trips),
+      fleetRevenue01:money(result.hsm01),
+      fleetRevenue02:money(result.hsm02),
+      fleetTrips01:result.trips01+" perjalanan",
+      fleetTrips02:result.trips02+" perjalanan"
     };
-    Object.entries(values).forEach(([id,val])=>$(id).textContent=val);
+
+    Object.entries(values).forEach(([id,value])=>{
+      $(id).textContent=value;
+    });
+
     renderFleet();
-  }catch(e){message(e.message);console.error("TODAY:",e)}
+
+  } catch(error) {
+    console.error("TODAY:",error);
+    message(error.message);
+  }
 }
-function renderFleet(){
-  document.querySelectorAll("[data-fleet]").forEach(b=>b.classList.toggle("selected",fleetSelected===b.dataset.fleet));
-  const rows=fleetRows.filter(r=>fleetSelected==="ALL"||vehicle(r.vehicle)===fleetSelected);
-  $("fleetListTitle").textContent=fleetSelected==="ALL"?"Perjalanan Hari Ini":fleetSelected+" • Hari Ini";
-  $("fleetListCount").textContent=rows.length+" perjalanan";
+
+/* ======================================
+   ARMADA
+====================================== */
+
+function renderFleet() {
+  document.querySelectorAll("[data-fleet]").forEach(button=>{
+    button.classList.toggle(
+      "selected",
+      fleetSelected===button.dataset.fleet
+    );
+  });
+
+  const rows=fleetRows.filter(row=>{
+    return fleetSelected==="ALL"||
+      vehicle(row.vehicle)===fleetSelected;
+  });
+
+  $("fleetListTitle").textContent=
+    fleetSelected==="ALL"
+      ? "Perjalanan Hari Ini"
+      : fleetSelected+" • Hari Ini";
+
+  $("fleetListCount").textContent=
+    rows.length+" perjalanan";
+
   tripCards("fleetTripList",rows);
 }
-document.querySelectorAll("[data-fleet]").forEach(b=>b.addEventListener("click",()=>{
-  fleetSelected=fleetSelected===b.dataset.fleet?"ALL":b.dataset.fleet;
-  renderFleet();
-}));
 
-function reportRange(){
-  if(currentPeriod==="daily"){
-    const d=safeDate($("reportDate").value);
-    if(!d)throw Error("Pilih tanggal.");
-    return {start:d,end:d,label:"Harian • "+formatDate(d)};
-  }
-  if(currentPeriod==="monthly"){
-    const s=$("reportMonth").value;
-    if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(s))throw Error("Pilih bulan.");
-    const y=Number(s.slice(0,4)),m=Number(s.slice(5));
-    return {start:s+"-01",end:lastDay(y,m),label:"Bulanan • "+s};
-  }
-  const y=Number($("reportYear").value);
-  if(!Number.isInteger(y)||y<2026||y>2100)throw Error("Tahun tidak valid.");
-  return {start:y+"-01-01",end:y+"-12-31",label:"Tahunan • "+y};
-}
-async function loadRevenue(){
-  const ver=++revenueVersion;
-  try{
-    const range=reportRange();
-    $("reportPeriodLabel").textContent=range.label;
-    $("tripList").replaceChildren();
-    node($("tripList"),"div","empty","Memuat laporan...");
-    const all=await revenue(range.start,range.end);
-    if(ver!==revenueVersion||!$("dashboardPage").classList.contains("active"))return;
-    const filter=$("vehicleFilter").value;
-    const rows=all.filter(r=>filter==="ALL"||vehicle(r.vehicle)===filter);
-    rows.sort((a,b)=>String(b.travel_date).localeCompare(String(a.travel_date))||String(a.trip_code).localeCompare(String(b.trip_code)));
-    const x=summary(rows);
-    const values={
-      totalRevenue:money(x.total),revenue01:money(x.hsm01),revenue02:money(x.hsm02),
-      trips01:x.trips01+" perjalanan",trips02:x.trips02+" perjalanan",
-      totalTickets:String(x.tickets),totalTrips:String(x.trips),tripCountBadge:x.trips+" perjalanan"
-    };
-    Object.entries(values).forEach(([id,val])=>$(id).textContent=val);
-    chartReportRows=rows;
-    tripCards("tripList",rows);
-    if($("screen-reports").classList.contains("active"))setTimeout(()=>drawChart("reportChart",rows,currentPeriod),40);
-  }catch(e){
-    if(ver!==revenueVersion)return;
-    $("tripList").replaceChildren();node($("tripList"),"div","empty","Laporan gagal dimuat.");
-    message(e.message);
-  }
-}
-document.querySelectorAll("[data-period]").forEach(b=>b.addEventListener("click",()=>{
-  currentPeriod=b.dataset.period;
-  document.querySelectorAll("[data-period]").forEach(x=>x.classList.toggle("active",x===b));
-  $("dailyField").hidden=currentPeriod!=="daily";
-  $("monthlyField").hidden=currentPeriod!=="monthly";
-  $("yearlyField").hidden=currentPeriod!=="yearly";
-  void loadRevenue();
-}));
-$("refreshBtn").addEventListener("click",()=>void loadRevenue());
-["reportDate","reportMonth","reportYear","vehicleFilter"].forEach(id=>$(id).addEventListener("change",()=>void loadRevenue()));
+document.querySelectorAll("[data-fleet]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    fleetSelected=
+      fleetSelected===button.dataset.fleet
+        ? "ALL"
+        : button.dataset.fleet;
 
-async function loadHomeChart(){
-  try{
-    const end=todayWIT(),start=shiftDate(end,-6);
-    chartHomeRows=await revenue(start,end);
-    if($("screen-home").classList.contains("active"))drawChart("homeChart",chartHomeRows,"daily",start,end);
-  }catch(e){console.warn("CHART:",e)}
-}
-function chartData(rows,mode,start,end){
-  const totals=new Map();
-  rows.forEach(r=>{
-    let key=String(r.travel_date);
-    if(mode==="monthly")key=key.slice(0,7);
-    if(mode==="yearly")key=key.slice(0,4);
-    totals.set(key,(totals.get(key)||0)+Number(r.total_revenue||0));
+    renderFleet();
   });
-  let keys=[...totals.keys()].sort();
-  if(mode==="daily"&&start&&end){
-    keys=[];
-    for(let d=start;d<=end;d=shiftDate(d,1))keys.push(d);
+});
+
+/* ======================================
+   PERIODE LAPORAN
+====================================== */
+
+function reportRange() {
+  if (currentPeriod==="daily") {
+    const date=safeDate($("reportDate").value);
+
+    if (!date) throw new Error("Pilih tanggal.");
+
+    return {
+      start:date,
+      end:date,
+      label:"Harian • "+formatDate(date)
+    };
   }
-  if(mode==="daily"&&!start){
-    const d=$("reportDate").value;
-    keys=[d];
-  }
-  if(mode==="monthly"&&!start){
-    const month=$("reportMonth").value;
-    const y=Number(month.slice(0,4)),m=Number(month.slice(5));
-    keys=[];
-    for(let day=1;day<=Number(lastDay(y,m).slice(8));day++){
-      keys.push(month+"-"+String(day).padStart(2,"0"));
+
+  if (currentPeriod==="monthly") {
+    const value=$("reportMonth").value;
+
+    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(value)) {
+      throw new Error("Pilih bulan.");
     }
-    const daily=new Map();
-    rows.forEach(r=>daily.set(r.travel_date,(daily.get(r.travel_date)||0)+Number(r.total_revenue||0)));
-    return {labels:keys.map(k=>String(Number(k.slice(8)))),values:keys.map(k=>daily.get(k)||0)};
+
+    const year=Number(value.slice(0,4));
+    const month=Number(value.slice(5));
+
+    return {
+      start:value+"-01",
+      end:lastDay(year,month),
+      label:"Bulanan • "+value
+    };
   }
-  if(mode==="yearly"){
-    const year=$("reportYear").value;
-    const months=Array.from({length:12},(_,i)=>year+"-"+String(i+1).padStart(2,"0"));
-    const monthly=new Map();
-    rows.forEach(r=>{const k=String(r.travel_date).slice(0,7);monthly.set(k,(monthly.get(k)||0)+Number(r.total_revenue||0))});
-    return {labels:months.map(k=>k.slice(5)),values:months.map(k=>monthly.get(k)||0)};
+
+  const year=Number($("reportYear").value);
+
+  if (
+    !Number.isInteger(year)||
+    year<2026||
+    year>2100
+  ) {
+    throw new Error("Tahun tidak valid.");
   }
-  return {labels:keys.map(k=>k.slice(8)||k),values:keys.map(k=>totals.get(k)||0)};
+
+  return {
+    start:year+"-01-01",
+    end:year+"-12-31",
+    label:"Tahunan • "+year
+  };
 }
-function drawChart(id,rows,mode,start,end){
+
+/* ======================================
+   LAPORAN
+====================================== */
+
+async function loadRevenue() {
+  const version=++revenueVersion;
+
+  try {
+    const range=reportRange();
+
+    $("reportPeriodLabel").textContent=
+      range.label;
+
+    $("tripList").replaceChildren();
+
+    node(
+      $("tripList"),
+      "div",
+      "empty",
+      "Memuat laporan..."
+    );
+
+    const allRows=await revenue(
+      range.start,
+      range.end
+    );
+
+    if (
+      version!==revenueVersion||
+      !$("dashboardPage").classList.contains("active")
+    ) return;
+
+    const filter=$("vehicleFilter").value;
+
+    const rows=allRows.filter(row=>{
+      return filter==="ALL"||
+        vehicle(row.vehicle)===filter;
+    });
+
+    rows.sort((a,b)=>{
+      return String(b.travel_date).localeCompare(
+        String(a.travel_date)
+      )||
+      String(a.trip_code).localeCompare(
+        String(b.trip_code)
+      );
+    });
+
+    const result=summary(rows);
+
+    const values={
+      totalRevenue:money(result.total),
+      revenue01:money(result.hsm01),
+      revenue02:money(result.hsm02),
+      trips01:result.trips01+" perjalanan",
+      trips02:result.trips02+" perjalanan",
+      totalTickets:String(result.tickets),
+      totalTrips:String(result.trips),
+      tripCountBadge:result.trips+" perjalanan"
+    };
+
+    Object.entries(values).forEach(([id,value])=>{
+      $(id).textContent=value;
+    });
+
+    chartReportRows=rows;
+
+    tripCards("tripList",rows);
+
+    if (
+      $("screen-reports").classList.contains("active")
+    ) {
+      setTimeout(()=>{
+        drawChart(
+          "reportChart",
+          rows,
+          currentPeriod
+        );
+      },40);
+    }
+
+  } catch(error) {
+    if (version!==revenueVersion) return;
+
+    $("tripList").replaceChildren();
+
+    node(
+      $("tripList"),
+      "div",
+      "empty",
+      "Laporan gagal dimuat."
+    );
+
+    message(error.message);
+  }
+}
+
+document.querySelectorAll("[data-period]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    currentPeriod=button.dataset.period;
+
+    document.querySelectorAll("[data-period]").forEach(el=>{
+      el.classList.toggle(
+        "active",
+        el===button
+      );
+    });
+
+    $("dailyField").hidden=
+      currentPeriod!=="daily";
+
+    $("monthlyField").hidden=
+      currentPeriod!=="monthly";
+
+    $("yearlyField").hidden=
+      currentPeriod!=="yearly";
+
+    void loadRevenue();
+  });
+});
+
+$("refreshBtn").addEventListener(
+  "click",
+  ()=>void loadRevenue()
+);
+
+[
+  "reportDate",
+  "reportMonth",
+  "reportYear",
+  "vehicleFilter"
+].forEach(id=>{
+  $(id).addEventListener(
+    "change",
+    ()=>void loadRevenue()
+  );
+});
+
+/* ======================================
+   GRAFIK
+====================================== */
+
+async function loadHomeChart() {
+  try {
+    const end=todayWIT();
+    const start=shiftDate(end,-6);
+
+    chartHomeRows=await revenue(start,end);
+
+    if (
+      $("screen-home").classList.contains("active")
+    ) {
+      drawChart(
+        "homeChart",
+        chartHomeRows,
+        "daily",
+        start,
+        end
+      );
+    }
+
+  } catch(error) {
+    console.warn("HOME CHART:",error);
+  }
+}
+
+function chartData(rows,mode,start,end) {
+  const daily=new Map();
+
+  rows.forEach(row=>{
+    const key=String(row.travel_date||"").slice(0,10);
+
+    daily.set(
+      key,
+      (daily.get(key)||0)+Number(row.total_revenue||0)
+    );
+  });
+
+  if (mode==="yearly") {
+    const year=$("reportYear").value;
+
+    const months=Array.from(
+      {length:12},
+      (_,index)=>
+        year+"-"+String(index+1).padStart(2,"0")
+    );
+
+    const monthly=new Map();
+
+    rows.forEach(row=>{
+      const key=String(row.travel_date||"").slice(0,7);
+
+      monthly.set(
+        key,
+        (monthly.get(key)||0)+
+        Number(row.total_revenue||0)
+      );
+    });
+
+    return {
+      labels:months.map(key=>key.slice(5)),
+      values:months.map(key=>monthly.get(key)||0)
+    };
+  }
+
+  if (mode==="monthly") {
+    const month=$("reportMonth").value;
+
+    const year=Number(month.slice(0,4));
+    const monthNumber=Number(month.slice(5));
+
+    const totalDays=Number(
+      lastDay(year,monthNumber).slice(8)
+    );
+
+    const keys=Array.from(
+      {length:totalDays},
+      (_,index)=>
+        month+"-"+String(index+1).padStart(2,"0")
+    );
+
+    return {
+      labels:keys.map(key=>String(Number(key.slice(8)))),
+      values:keys.map(key=>daily.get(key)||0)
+    };
+  }
+
+  if (start&&end) {
+    const keys=[];
+
+    for (
+      let date=start;
+      date<=end;
+      date=shiftDate(date,1)
+    ) {
+      keys.push(date);
+    }
+
+    return {
+      labels:keys.map(key=>key.slice(8)),
+      values:keys.map(key=>daily.get(key)||0)
+    };
+  }
+
+  const date=$("reportDate").value;
+
+  return {
+    labels:[date.slice(8)],
+    values:[daily.get(date)||0]
+  };
+}
+
+function drawChart(id,rows,mode,start,end) {
   const canvas=$(id);
-  if(!canvas||!canvas.isConnected)return;
+
+  if (!canvas) return;
+
   const rect=canvas.getBoundingClientRect();
-  const width=rect.width,height=rect.height;
-  if(width<30||height<30)return;
-  const ratio=Math.min(window.devicePixelRatio||1,2);
+
+  const width=rect.width;
+  const height=rect.height;
+
+  if (width<30||height<30) return;
+
+  const ratio=Math.min(
+    window.devicePixelRatio||1,
+    2
+  );
+
   canvas.width=Math.round(width*ratio);
   canvas.height=Math.round(height*ratio);
+
   const ctx=canvas.getContext("2d");
+
+  if (!ctx) return;
+
   ctx.scale(ratio,ratio);
-  const data=chartData(rows,mode,start,end);
-  const vals=data.values;
-  const max=Math.max(1,...vals)*1.15;
-  const padL=10,padR=9,padT=12,padB=24;
-  const plotH=height-padT-padB;
-  const plotW=width-padL-padR;
-  ctx.strokeStyle="#edf2f8";ctx.lineWidth=1;
-  for(let j=0;j<4;j++){
-    const y=padT+j*plotH/3;
-    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(width-padR,y);ctx.stroke();
-  }
-  const n=Math.max(vals.length,1);
-  const gap=plotW/n;
-  const bw=Math.min(30,Math.max(4,gap*.58));
-  const step=Math.max(1,Math.ceil(n/7));
-  vals.forEach((val,i)=>{
-    const x=padL+i*gap+gap/2-bw/2;
-    const h=Math.max(val?3:1,(val/max)*plotH);
-    ctx.fillStyle=val?"#0754a6":"#e6eef8";
+
+  const data=chartData(
+    rows,
+    mode,
+    start,
+    end
+  );
+
+  const values=data.values;
+
+  const max=Math.max(1,...values)*1.15;
+
+  const padLeft=9;
+  const padRight=8;
+  const padTop=10;
+  const padBottom=23;
+
+  const plotHeight=height-padTop-padBottom;
+  const plotWidth=width-padLeft-padRight;
+
+  ctx.strokeStyle="#bbcee2";
+  ctx.lineWidth=1;
+
+  for (let index=0;index<4;index++) {
+    const y=padTop+index*plotHeight/3;
+
     ctx.beginPath();
-    const rad=Math.min(5,bw/2,h/2);
-    if(typeof ctx.roundRect==="function")ctx.roundRect(x,padT+plotH-h,bw,h,[rad,rad,0,0]);
-    else ctx.rect(x,padT+plotH-h,bw,h);
+    ctx.moveTo(padLeft,y);
+    ctx.lineTo(width-padRight,y);
+    ctx.stroke();
+  }
+
+  const count=Math.max(values.length,1);
+  const gap=plotWidth/count;
+
+  const barWidth=Math.min(
+    28,
+    Math.max(4,gap*.58)
+  );
+
+  const labelStep=Math.max(
+    1,
+    Math.ceil(count/7)
+  );
+
+  values.forEach((value,index)=>{
+    const x=
+      padLeft+
+      index*gap+
+      gap/2-
+      barWidth/2;
+
+    const barHeight=Math.max(
+      value?3:1,
+      (value/max)*plotHeight
+    );
+
+    const y=padTop+plotHeight-barHeight;
+
+    ctx.fillStyle=
+      value?"#0754a6":"#b7cee6";
+
+    ctx.beginPath();
+
+    if (
+      typeof ctx.roundRect==="function"
+    ) {
+      const radius=Math.min(
+        5,
+        barWidth/2,
+        barHeight/2
+      );
+
+      ctx.roundRect(
+        x,y,
+        barWidth,
+        barHeight,
+        [radius,radius,0,0]
+      );
+    } else {
+      ctx.rect(
+        x,y,
+        barWidth,
+        barHeight
+      );
+    }
+
     ctx.fill();
-    if(i%step===0){
-      ctx.fillStyle="#8a9bb1";
+
+    if (index%labelStep===0) {
+      ctx.fillStyle="#67839f";
       ctx.font="10px system-ui";
       ctx.textAlign="center";
-      ctx.fillText(data.labels[i]||"",x+bw/2,height-6);
+
+      ctx.fillText(
+        data.labels[index]||"",
+        x+barWidth/2,
+        height-5
+      );
     }
   });
 }
+
+/* ======================================
+   KEAMANAN
+====================================== */
 
 const eventNames={
   new_device_login:"Login Perangkat Baru",
@@ -1172,135 +3081,432 @@ const eventNames={
   suspicious_login:"Aktivitas Mencurigakan",
   unauthorized_access:"Akses Tidak Sah"
 };
-function isAlert(e){return String(e.severity||"info").toLowerCase()!=="info"}
-function eventName(e){return eventNames[e.event_type]||"Aktivitas Keamanan"}
-function shortDevice(ua){
-  const s=String(ua||"");
-  if(!s)return "";
-  const m=s.match(/Android\s+[\d.]+;\s*([^;)]+?)(?:\s+Build\/|;\s*wv|\))/);
-  if(m&&m[1].trim()!=="K")return "Android • "+m[1].trim().slice(0,40);
-  if(/iPhone/i.test(s))return "iPhone";
-  if(/iPad/i.test(s))return "iPad";
-  if(/Android/i.test(s))return "Android";
-  if(/Windows/i.test(s))return "Windows";
+
+function isAlert(event) {
+  return String(
+    event.severity||"info"
+  ).toLowerCase()!=="info";
+}
+
+function eventName(event) {
+  return eventNames[event.event_type]||
+    "Aktivitas Keamanan";
+}
+
+function shortDevice(userAgent) {
+  const value=String(userAgent||"");
+
+  if (!value) return "";
+
+  const match=value.match(
+    /Android\s+[\d.]+;\s*([^;)]+?)(?:\s+Build\/|;\s*wv|\))/
+  );
+
+  if (match&&match[1].trim()!=="K") {
+    return "Android • "+
+      match[1].trim().slice(0,40);
+  }
+
+  if (/iPhone/i.test(value)) return "iPhone";
+  if (/iPad/i.test(value)) return "iPad";
+  if (/Android/i.test(value)) return "Android";
+  if (/Windows/i.test(value)) return "Windows";
+
   return "Perangkat lain";
 }
-function eventItem(e){
-  const b=document.createElement("button");
-  b.type="button";b.className="event";
-  const critical=["critical","high"].includes(String(e.severity||"").toLowerCase());
-  const sym=node(b,"div","event-symbol"+(!isAlert(e)?" info":critical?" critical":""),"");
-  const icon=document.createElementNS("http://www.w3.org/2000/svg","svg");
-  const use=document.createElementNS("http://www.w3.org/2000/svg","use");
-  use.setAttribute("href",e.event_type==="new_device_login"?"#i-lock":"#i-shield");
-  icon.appendChild(use);sym.appendChild(icon);
-  const main=node(b,"div","event-main","");
-  node(main,"strong","",eventName(e));
-  node(main,"small","",(e.actor_name||"HSM Internal")+" • "+formatWIT(e.created_at));
-  const arrow=document.createElementNS("http://www.w3.org/2000/svg","svg");
+
+function eventItem(event) {
+  const button=document.createElement("button");
+
+  button.type="button";
+  button.className="event";
+
+  const critical=[
+    "critical",
+    "high"
+  ].includes(
+    String(event.severity||"").toLowerCase()
+  );
+
+  const symbol=node(
+    button,
+    "div",
+    "event-symbol"+
+    (!isAlert(event)?" info":critical?" critical":""),
+    ""
+  );
+
+  const icon=document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg"
+  );
+
+  const use=document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "use"
+  );
+
+  use.setAttribute(
+    "href",
+    event.event_type==="new_device_login"
+      ? "#i-lock"
+      : "#i-shield"
+  );
+
+  icon.appendChild(use);
+  symbol.appendChild(icon);
+
+  const main=node(
+    button,
+    "div",
+    "event-main",
+    ""
+  );
+
+  node(
+    main,
+    "strong",
+    "",
+    eventName(event)
+  );
+
+  node(
+    main,
+    "small",
+    "",
+    (event.actor_name||"HSM Internal")+
+    " • "+
+    formatWIT(event.created_at)
+  );
+
+  const arrow=document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg"
+  );
+
   arrow.classList.add("event-arrow");
-  const arrowUse=document.createElementNS("http://www.w3.org/2000/svg","use");
-  arrowUse.setAttribute("href","#i-arrow");arrow.appendChild(arrowUse);b.appendChild(arrow);
-  b.addEventListener("click",()=>openEvent(e));
-  return b;
+
+  const arrowUse=document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "use"
+  );
+
+  arrowUse.setAttribute("href","#i-arrow");
+
+  arrow.appendChild(arrowUse);
+  button.appendChild(arrow);
+
+  button.addEventListener(
+    "click",
+    ()=>openEvent(event)
+  );
+
+  return button;
 }
-function detailRow(label,value){
-  if(value===null||value===undefined||value==="")return;
-  const el=node($("modalBody"),"div","detailrow","");
-  node(el,"span","",label);node(el,"strong","",Array.isArray(value)?value.join(", "):String(value));
+
+function detailRow(label,value) {
+  if (
+    value===null||
+    value===undefined||
+    value===""
+  ) return;
+
+  const row=node(
+    $("modalBody"),
+    "div",
+    "detailrow",
+    ""
+  );
+
+  node(row,"span","",label);
+
+  node(
+    row,
+    "strong",
+    "",
+    Array.isArray(value)
+      ? value.join(", ")
+      : String(value)
+  );
 }
-function openEvent(e){
-  $("modalTitle").textContent=eventName(e);
-  $("modalTime").textContent=formatWIT(e.created_at);
+
+function openEvent(event) {
+  $("modalTitle").textContent=
+    eventName(event);
+
+  $("modalTime").textContent=
+    formatWIT(event.created_at);
+
   $("modalBody").replaceChildren();
-  detailRow("Pelaku",e.actor_name||"Tidak diketahui");
-  detailRow("Jabatan",e.actor_role);
-  detailRow("Armada",e.vehicle);
-  detailRow("Perangkat",shortDevice(e.device_name));
-  detailRow("Platform",e.access_platform);
-  detailRow("IP",e.ip_address);
-  detailRow("Lokasi",e.location_name||"Belum tersedia");
-  const d=e.details||{};
-  detailRow("Petugas",d.crew_name||d.staff_name);
-  detailRow("Data diubah",d.changed_fields);
-  detailRow("Jenis kode",d.purpose);
-  detailRow("Jabatan lama",d.old_role);
-  detailRow("Jabatan baru",d.new_role);
-  detailRow("Armada lama",d.old_vehicle);
-  detailRow("Armada baru",d.new_vehicle);
-  detailRow("Keterangan",d.message);
+
+  detailRow(
+    "Pelaku",
+    event.actor_name||"Tidak diketahui"
+  );
+
+  detailRow("Jabatan",event.actor_role);
+  detailRow("Armada",event.vehicle);
+  detailRow("Perangkat",shortDevice(event.device_name));
+  detailRow("Platform",event.access_platform);
+  detailRow("IP",event.ip_address);
+  detailRow(
+    "Lokasi",
+    event.location_name||"Belum tersedia"
+  );
+
+  const details=event.details||{};
+
+  detailRow(
+    "Petugas",
+    details.crew_name||details.staff_name
+  );
+
+  detailRow(
+    "Data diubah",
+    details.changed_fields
+  );
+
+  detailRow("Jenis kode",details.purpose);
+  detailRow("Jabatan lama",details.old_role);
+  detailRow("Jabatan baru",details.new_role);
+  detailRow("Armada lama",details.old_vehicle);
+  detailRow("Armada baru",details.new_vehicle);
+  detailRow("Keterangan",details.message);
+
   $("detailModal").hidden=false;
 }
-function closeModal(){$("detailModal").hidden=true}
-$("closeModal").addEventListener("click",closeModal);
-$("modalCloseBtn").addEventListener("click",closeModal);
-$("detailModal").addEventListener("click",e=>{if(e.target===$("detailModal"))closeModal()});
 
-function renderSecurity(){
-  const warnings=securityEvents.filter(isAlert);
-  $("securityWarningCount").textContent=warnings.length;
-  $("homeSecurityCount").textContent=warnings.length+" peringatan terbaru";
-  $("securityNavBadge").hidden=!warnings.length;
-  $("headerNotificationDot").hidden=!warnings.length;
-  const home=$("homeSecurityList");
-  home.replaceChildren();
-  if(!warnings.length)node(home,"div","empty","Belum ada peringatan keamanan.");
-  else warnings.slice(0,3).forEach(e=>home.appendChild(eventItem(e)));
-  const list=$("securityList");
-  list.replaceChildren();
-  const shown=securityFilter==="alerts"?warnings:securityEvents;
-  if(!shown.length)node(list,"div","empty","Belum ada aktivitas untuk filter ini.");
-  else shown.forEach(e=>list.appendChild(eventItem(e)));
+function closeModal() {
+  $("detailModal").hidden=true;
 }
-async function loadSecurity(){
-  if(!ownerDB||securityBusy||!$("dashboardPage").classList.contains("active"))return;
-  securityBusy=true;
-  const ver=securityVersion;
-  try{
-    await ownerAccess();
-    const {data,error}=await ownerDB.rpc("hsm_owner_get_security_events");
-    if(error){console.error("SECURITY:",error);throw Error("Gagal memuat riwayat keamanan.")}
-    if(ver!==securityVersion||!$("dashboardPage").classList.contains("active"))return;
-    securityEvents=data||[];
-    renderSecurity();
-  }catch(e){message(e.message)}
-  finally{securityBusy=false}
-}
-document.querySelectorAll("[data-security-filter]").forEach(b=>b.addEventListener("click",()=>{
-  securityFilter=b.dataset.securityFilter;
-  document.querySelectorAll("[data-security-filter]").forEach(x=>x.classList.toggle("active",x===b));
-  renderSecurity();
-}));
-$("securityRefreshBtn").addEventListener("click",()=>void loadSecurity());
-function stopSecurityTimer(){if(securityTimer)clearInterval(securityTimer);securityTimer=null}
-function startSecurityTimer(){
-  stopSecurityTimer();
-  securityTimer=setInterval(()=>{
-    if(!document.hidden&&$("dashboardPage").classList.contains("active"))void loadSecurity();
-  },30000);
-}
-document.addEventListener("visibilitychange",()=>{
-  if(!document.hidden&&$("dashboardPage").classList.contains("active")){
-    void loadSecurity();void loadToday();void loadHomeChart();
+
+$("closeModal").addEventListener(
+  "click",
+  closeModal
+);
+
+$("modalCloseBtn").addEventListener(
+  "click",
+  closeModal
+);
+
+$("detailModal").addEventListener("click",event=>{
+  if (event.target===$("detailModal")) {
+    closeModal();
   }
 });
 
+/* ======================================
+   RENDER KEAMANAN
+====================================== */
+
+function renderSecurity() {
+  const warnings=securityEvents.filter(isAlert);
+
+  $("securityWarningCount").textContent=
+    warnings.length;
+
+  $("homeSecurityCount").textContent=
+    warnings.length+" peringatan terbaru";
+
+  $("securityNavBadge").hidden=
+    !warnings.length;
+
+  $("headerNotificationDot").hidden=
+    !warnings.length;
+
+  const home=$("homeSecurityList");
+
+  home.replaceChildren();
+
+  if (!warnings.length) {
+    node(
+      home,
+      "div",
+      "empty",
+      "Belum ada peringatan keamanan."
+    );
+  } else {
+    warnings.slice(0,3).forEach(event=>{
+      home.appendChild(eventItem(event));
+    });
+  }
+
+  const list=$("securityList");
+
+  list.replaceChildren();
+
+  const shown=
+    securityFilter==="alerts"
+      ? warnings
+      : securityEvents;
+
+  if (!shown.length) {
+    node(
+      list,
+      "div",
+      "empty",
+      "Belum ada aktivitas untuk filter ini."
+    );
+  } else {
+    shown.forEach(event=>{
+      list.appendChild(eventItem(event));
+    });
+  }
+}
+
+async function loadSecurity() {
+  if (
+    !ownerDB||
+    securityBusy||
+    !$("dashboardPage").classList.contains("active")
+  ) return;
+
+  securityBusy=true;
+
+  const version=securityVersion;
+
+  try {
+    await ownerAccess();
+
+    const {data,error} =
+      await ownerDB.rpc(
+        "hsm_owner_get_security_events"
+      );
+
+    if (error) {
+      console.error("SECURITY:",error);
+
+      throw new Error(
+        "Gagal memuat riwayat keamanan."
+      );
+    }
+
+    if (
+      version!==securityVersion||
+      !$("dashboardPage").classList.contains("active")
+    ) return;
+
+    securityEvents=data||[];
+
+    renderSecurity();
+
+  } catch(error) {
+    message(error.message);
+
+  } finally {
+    securityBusy=false;
+  }
+}
+
+document.querySelectorAll("[data-security-filter]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    securityFilter=
+      button.dataset.securityFilter;
+
+    document.querySelectorAll("[data-security-filter]").forEach(el=>{
+      el.classList.toggle(
+        "active",
+        el===button
+      );
+    });
+
+    renderSecurity();
+  });
+});
+
+$("securityRefreshBtn").addEventListener(
+  "click",
+  ()=>void loadSecurity()
+);
+
+/* ======================================
+   REFRESH KEAMANAN
+====================================== */
+
+function stopSecurityTimer() {
+  if (securityTimer) {
+    clearInterval(securityTimer);
+  }
+
+  securityTimer=null;
+}
+
+function startSecurityTimer() {
+  stopSecurityTimer();
+
+  securityTimer=setInterval(()=>{
+    if (
+      !document.hidden&&
+      $("dashboardPage").classList.contains("active")
+    ) {
+      void loadSecurity();
+    }
+  },30000);
+}
+
+document.addEventListener("visibilitychange",()=>{
+  if (
+    !document.hidden&&
+    $("dashboardPage").classList.contains("active")
+  ) {
+    void loadSecurity();
+    void loadToday();
+    void loadHomeChart();
+  }
+});
+
+/* ======================================
+   INISIALISASI TANGGAL
+====================================== */
+
 const today=todayWIT();
+
 $("reportDate").value=today;
 $("reportMonth").value=today.slice(0,7);
+
 const currentYear=Number(today.slice(0,4));
-for(let y=2026;y<=Math.max(2030,currentYear+1);y++){
+
+for (
+  let year=2026;
+  year<=Math.max(2030,currentYear+1);
+  year++
+) {
   const option=document.createElement("option");
-  option.value=String(y);option.textContent=String(y);
-  if(y===currentYear)option.selected=true;
+
+  option.value=String(year);
+  option.textContent=String(year);
+
+  if (year===currentYear) {
+    option.selected=true;
+  }
+
   $("reportYear").appendChild(option);
 }
-async function init(){
-  if(!ownerDB)return;
-  try{await resolveState()}
-  catch(e){console.error("INIT:",e);message(e.message||"Gagal memeriksa akun Owner.")}
+
+/* ======================================
+   START
+====================================== */
+
+async function init() {
+  if (!ownerDB) return;
+
+  try {
+    await resolveState();
+
+  } catch(error) {
+    console.error("OWNER INIT:",error);
+
+    message(
+      error?.message||
+      "Gagal memeriksa akun Owner."
+    );
+  }
 }
+
 init();
+
 </script>
+
 </body>
 </html>
