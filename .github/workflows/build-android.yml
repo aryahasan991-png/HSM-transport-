@@ -414,7 +414,7 @@ jobs:
           </html>
           HTML
 
-      # ======================================================
+            # ======================================================
       # 8. SIAPKAN HALAMAN HSM OWNER
       # ======================================================
 
@@ -423,94 +423,33 @@ jobs:
         run: |
           set -e
 
-          python3 - <<'PY'
-          from pathlib import Path
-          import shutil
-          import re
+          echo "Menyiapkan HSM Owner..."
 
-                    root = Path(".")
-          www = Path("builds/owner/www")
+          if [ ! -s "owner-app/index.html" ]; then
+            echo "ERROR: owner-app/index.html tidak ditemukan."
+            exit 1
+          fi
 
-          candidates = [
-              Path("owner-app/index.html")
-          ]
+          if [ ! -s "owner-app/config.js" ]; then
+            echo "ERROR: owner-app/config.js tidak ditemukan."
+            exit 1
+          fi
 
-          source = next(
-              (
-                  path for path in candidates
-                  if path.is_file()
-                  and path.stat().st_size > 0
-              ),
-              None
-          )
+          if [ ! -s "owner-app/hsm-owner-security-fix.js" ]; then
+            echo "ERROR: File keamanan Owner tidak ditemukan."
+            exit 1
+          fi
 
-          if source is None:
-              raise RuntimeError(
-                  "Halaman HSM Owner tidak ditemukan. "
-                  "Periksa apakah nama file Owner adalah "
-                  "owner.html, hsm-owner.html, "
-                  "owner/index.html, atau "
-                  "hsm-owner/index.html."
-              )
+          cp -R owner-app/. builds/owner/www/
 
-          # Jika Owner berada dalam folder khusus,
-          # salin aset folder tersebut terlebih dahulu.
-          if source.parent != root:
-              shutil.copytree(
-                  source.parent,
-                  www,
-                  dirs_exist_ok=True
-              )
+          echo "Memeriksa konfigurasi Owner..."
 
-          # Jadikan halaman asli Owner sebagai
-          # halaman awal aplikasi.
-          shutil.copy2(
-              source,
-              www / "index.html"
-          )
+          if ! grep -q "HSM_OWNER_CONFIG" builds/owner/www/config.js; then
+            echo "ERROR: Konfigurasi HSM Owner tidak ditemukan."
+            exit 1
+          fi
 
-          owner_html = (
-              www / "index.html"
-          ).read_text(encoding="utf-8")
-
-          if "HSM_OWNER_CONFIG" not in owner_html:
-              print(
-                  "PERINGATAN: Nama konfigurasi Owner "
-                  "tidak ditemukan dalam HTML."
-              )
-
-          # Pastikan file config.js yang digunakan
-          # oleh halaman Owner menyediakan
-          # HSM_OWNER_CONFIG.
-          config_file = www / "config.js"
-
-          if not config_file.is_file():
-              raise RuntimeError(
-                  "config.js untuk HSM Owner "
-                  "tidak ditemukan."
-              )
-
-          config_text = config_file.read_text(
-              encoding="utf-8"
-          )
-
-          if "HSM_OWNER_CONFIG" not in config_text:
-              raise RuntimeError(
-                  "config.js pada APK Owner belum "
-                  "menyediakan HSM_OWNER_CONFIG. "
-                  "Pastikan konfigurasi Owner yang "
-                  "berfungsi di Vercel ikut disalin."
-              )
-
-          print(
-              "Halaman Owner:",
-              source
-          )
-
-          print(
-              "HSM Owner menggunakan konfigurasi asli."
-          )
-          PY
+          echo "HSM Owner siap untuk proses build."
 
       # ======================================================
       # 9. INSTALL CAPACITOR
