@@ -2,27 +2,28 @@
 # HSM TRANSPORT
 # PT HIDAYAH SARANA MULIA
 #
-# BUILD 2 APK ANDROID
+# BUILD 3 APK ANDROID
 #
 # 1. HSM Transport
 #    com.hsmtransport.app
-#    Khusus penumpang
 #
 # 2. HSM Internal
 #    com.hsmtransport.internal
-#    Admin + Sopir & Kernet
+#
+# 3. HSM Owner
+#    com.hsmtransport.owner
 #
 # Capacitor 8
 # ============================================================
 
-name: Build APK HSM Transport
+name: Build 3 APK HSM
 
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build 2 Android APK
+    name: Build 3 Android APK
 
     runs-on: ubuntu-latest
 
@@ -81,7 +82,7 @@ jobs:
             "platform-tools"
 
       # ======================================================
-      # 5. VALIDASI
+      # 5. VALIDASI FILE
       # ======================================================
 
       - name: Validate HSM Files
@@ -89,7 +90,7 @@ jobs:
         run: |
           set -e
 
-                    for file in \
+          for file in \
             index.html \
             admin.html \
             petugas.html \
@@ -103,37 +104,32 @@ jobs:
             hsm_scan_error.wav \
             android-app/package.json
           do
-
             if [ ! -s "$file" ]; then
-              echo "File tidak ditemukan: $file"
+              echo "ERROR: File tidak ditemukan: $file"
               exit 1
             fi
-
           done
 
-          echo "Semua file utama tersedia."
+          echo "File utama HSM tersedia."
 
       # ======================================================
-      # 6. MEMBUAT DUA PROJECT CAPACITOR
+      # 6. SIAPKAN 3 PROJECT
       # ======================================================
 
-      - name: Prepare Two Capacitor Projects
+      - name: Prepare Three Capacitor Projects
         shell: bash
         run: |
           set -e
 
-          mkdir -p builds/passenger/www
-          mkdir -p builds/internal/www
+          for app in passenger internal owner
+          do
+            mkdir -p "builds/$app/www"
 
-          cp android-app/package.json \
-            builds/passenger/package.json
+            cp android-app/package.json \
+              "builds/$app/package.json"
+          done
 
-          cp android-app/package.json \
-            builds/internal/package.json
-
-          # Salin file website ke masing-masing project.
-          # Hanya mengambil file pada folder utama repository.
-
+          # Salin aset website utama.
           for file in \
             ./*.html \
             ./*.js \
@@ -148,30 +144,39 @@ jobs:
             ./*.webmanifest \
             ./*.wav
           do
-
             if [ -f "$file" ]; then
-              cp "$file" builds/passenger/www/
-              cp "$file" builds/internal/www/
+              for app in passenger internal owner
+              do
+                cp "$file" "builds/$app/www/"
+              done
             fi
-
           done
 
-          # APK Penumpang:
-          # Hilangkan halaman dan skrip internal.
+          # Folder aset tambahan bila tersedia.
+          for folder in assets images img fonts
+          do
+            if [ -d "$folder" ]; then
+              for app in passenger internal owner
+              do
+                cp -R "$folder" \
+                  "builds/$app/www/"
+              done
+            fi
+          done
 
-          rm -f builds/passenger/www/admin.html
-          rm -f builds/passenger/www/petugas.html
-          rm -f builds/passenger/www/portal.html
-
-          rm -f builds/passenger/www/admin.js
-          rm -f builds/passenger/www/hsm-admin-extra.js
-
-          # Menu PWA khusus iPhone tidak diperlukan
-          # dalam APK Android penumpang.
-
-          rm -f builds/passenger/www/hsm-pwa-menu.js
-
-          # Konfigurasi masing-masing aplikasi.
+          # Penumpang tidak memuat portal internal.
+          rm -f \
+            builds/passenger/www/admin.html \
+            builds/passenger/www/petugas.html \
+            builds/passenger/www/portal.html \
+            builds/passenger/www/admin.js \
+            builds/passenger/www/hsm-admin-extra.js \
+            builds/passenger/www/hsm-manifest.js \
+            builds/passenger/www/hsm-staff-admin.js \
+            builds/passenger/www/hsm-trip-monitor.js \
+            builds/passenger/www/hsm-trip-corrections.js \
+            builds/passenger/www/hsm-site-admin.js \
+            builds/passenger/www/hsm-petugas-premium.js
 
           python3 - <<'PY'
           import json
@@ -191,7 +196,15 @@ jobs:
                   "appName": "HSM Internal",
                   "webDir": "www",
                   "android": {
-                      "backgroundColor": "#ffffff"
+                      "backgroundColor": "#071e42"
+                  }
+              },
+              "owner": {
+                  "appId": "com.hsmtransport.owner",
+                  "appName": "HSM Owner",
+                  "webDir": "www",
+                  "android": {
+                      "backgroundColor": "#071e42"
                   }
               }
           }
@@ -202,14 +215,11 @@ jobs:
               )
 
               path.write_text(
-                  json.dumps(
-                      config,
-                      indent=2
-                  ),
+                  json.dumps(config, indent=2),
                   encoding="utf-8"
               )
 
-          print("Dua konfigurasi Capacitor siap.")
+          print("3 konfigurasi Capacitor siap.")
           PY
 
       # ======================================================
@@ -224,165 +234,289 @@ jobs:
           cat > builds/internal/www/index.html <<'HTML'
           <!DOCTYPE html>
           <html lang="id">
-
           <head>
-
             <meta charset="UTF-8">
-
             <meta
               name="viewport"
               content="width=device-width,initial-scale=1"
             >
+            <meta name="theme-color" content="#071e42">
 
-            <meta
-              name="theme-color"
-              content="#0754a6"
-            >
-
-            <meta
-              name="robots"
-              content="noindex,nofollow"
-            >
-
-            <title>
-              HSM Internal
-            </title>
+            <title>HSM Internal</title>
 
             <style>
-
               * {
-                box-sizing: border-box;
+                box-sizing:border-box;
               }
 
               body {
-                margin: 0;
-                min-height: 100vh;
-                padding: 25px 18px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: #f2f6fc;
-                font-family: Arial, sans-serif;
+                margin:0;
+                min-height:100dvh;
+                display:grid;
+                place-items:center;
+                padding:20px;
+                background:
+                  linear-gradient(
+                    150deg,
+                    #061936,
+                    #0b3975 45%,
+                    #dfe8f2 45%
+                  );
+                font-family:
+                  system-ui,
+                  -apple-system,
+                  sans-serif;
               }
 
               .card {
-                width: 100%;
-                max-width: 440px;
-                background: white;
-                border-radius: 20px;
-                padding: 34px 23px;
-                text-align: center;
-                box-shadow:
-                  0 10px 35px rgba(7,84,166,.09);
-                border: 1px solid #dce5f0;
+                width:100%;
+                max-width:430px;
+                padding:30px 22px;
+                border-radius:22px;
+                background:#eaf1f8;
+                box-shadow:0 15px 45px #06193630;
+                text-align:center;
               }
 
               .logo {
-                display: block;
-                width: 180px;
-                max-width: 75%;
-                margin: 0 auto 22px;
+                display:block;
+                width:170px;
+                max-width:75%;
+                margin:0 auto 20px;
               }
 
               h1 {
-                margin: 0;
-                font-size: 25px;
-                color: #0754a6;
+                margin:0;
+                color:#071e42;
+                font-size:25px;
               }
 
               .company {
-                margin: 9px 0 27px;
-                font-size: 12px;
-                color: #64748b;
-                line-height: 1.6;
+                margin:10px 0 27px;
+                color:#687e98;
+                font-size:12px;
+                line-height:1.7;
               }
 
               .menu {
-                display: block;
-                padding: 19px 15px;
-                margin-top: 14px;
-                text-decoration: none;
-                background: #0754a6;
-                color: white;
-                border-radius: 13px;
-                font-weight: bold;
-                font-size: 15px;
+                display:flex;
+                align-items:center;
+                gap:14px;
+                margin-top:12px;
+                padding:17px;
+                border-radius:14px;
+                background:
+                  linear-gradient(
+                    120deg,
+                    #0754a6,
+                    #0b2a55
+                  );
+                color:#fff;
+                text-align:left;
+                text-decoration:none;
               }
 
-              .menu.petugas {
-                background: #063d79;
+              .menu svg {
+                width:28px;
+                height:28px;
+                flex-shrink:0;
+                fill:none;
+                stroke:currentColor;
+                stroke-width:1.7;
+                stroke-linecap:round;
+                stroke-linejoin:round;
               }
 
-              .menu span {
-                display: block;
-                margin-top: 7px;
-                font-size: 11px;
-                font-weight: normal;
-                opacity: .9;
+              .menu strong {
+                display:block;
+                font-size:14px;
+              }
+
+              .menu small {
+                display:block;
+                margin-top:5px;
+                opacity:.8;
+                font-size:11px;
               }
 
               .footer {
-                margin-top: 29px;
-                font-size: 11px;
-                color: #94a3b8;
+                margin-top:26px;
+                color:#687e98;
+                font-size:10px;
               }
-
             </style>
-
           </head>
 
           <body>
-
             <main class="card">
 
               <img
-                src="hsm-logo.png"
                 class="logo"
+                src="hsm-logo.png"
                 alt="HSM Transport"
               >
 
               <h1>HSM Internal</h1>
 
               <div class="company">
-                Portal Resmi Perusahaan<br>
-                PT Hidayah Sarana Mulia
+                PT HIDAYAH SARANA MULIA<br>
+                INTERNAL CONTROL CENTER
               </div>
 
-              <a
-                class="menu"
-                href="admin.html"
-              >
-                🔐 Login Admin
+              <a class="menu" href="admin.html">
+                <svg viewBox="0 0 24 24">
+                  <rect
+                    x="4"
+                    y="10"
+                    width="16"
+                    height="11"
+                    rx="2"
+                  />
+                  <path
+                    d="M8 10V7a4 4 0 0 1 8 0v3"
+                  />
+                </svg>
 
                 <span>
-                  Dashboard pengelolaan HSM Transport
+                  <strong>Login Admin</strong>
+                  <small>Dashboard operasional HSM</small>
                 </span>
               </a>
 
-              <a
-                class="menu petugas"
-                href="petugas.html"
-              >
-                🚐 Login Sopir & Kernet
+              <a class="menu" href="petugas.html">
+                <svg viewBox="0 0 24 24">
+                  <rect
+                    x="3"
+                    y="7"
+                    width="18"
+                    height="12"
+                    rx="3"
+                  />
+                  <path d="M6 7V4h12v3"/>
+                  <path d="M3 12h18"/>
+                  <path d="M7 19v2m10-2v2"/>
+                </svg>
 
                 <span>
-                  Manifest, perjalanan, dan QR Scanner
+                  <strong>Login Sopir & Kernet</strong>
+                  <small>
+                    Scan QR, manifest & perjalanan
+                  </small>
                 </span>
               </a>
 
               <div class="footer">
-                KHUSUS INTERNAL HSM TRANSPORT
+                KHUSUS PERSONEL HSM TRANSPORT
               </div>
 
             </main>
-
           </body>
-
           </html>
           HTML
 
       # ======================================================
-      # 8. INSTALL CAPACITOR
+      # 8. SIAPKAN HALAMAN HSM OWNER
+      # ======================================================
+
+      - name: Prepare HSM Owner Home
+        shell: bash
+        run: |
+          set -e
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          import re
+
+          root = Path(".")
+          www = Path("builds/owner/www")
+
+          candidates = [
+              Path("owner.html"),
+              Path("hsm-owner.html"),
+              Path("owner/index.html"),
+              Path("hsm-owner/index.html")
+          ]
+
+          source = next(
+              (
+                  path for path in candidates
+                  if path.is_file()
+                  and path.stat().st_size > 0
+              ),
+              None
+          )
+
+          if source is None:
+              raise RuntimeError(
+                  "Halaman HSM Owner tidak ditemukan. "
+                  "Periksa apakah nama file Owner adalah "
+                  "owner.html, hsm-owner.html, "
+                  "owner/index.html, atau "
+                  "hsm-owner/index.html."
+              )
+
+          # Jika Owner berada dalam folder khusus,
+          # salin aset folder tersebut terlebih dahulu.
+          if source.parent != root:
+              shutil.copytree(
+                  source.parent,
+                  www,
+                  dirs_exist_ok=True
+              )
+
+          # Jadikan halaman asli Owner sebagai
+          # halaman awal aplikasi.
+          shutil.copy2(
+              source,
+              www / "index.html"
+          )
+
+          owner_html = (
+              www / "index.html"
+          ).read_text(encoding="utf-8")
+
+          if "HSM_OWNER_CONFIG" not in owner_html:
+              print(
+                  "PERINGATAN: Nama konfigurasi Owner "
+                  "tidak ditemukan dalam HTML."
+              )
+
+          # Pastikan file config.js yang digunakan
+          # oleh halaman Owner menyediakan
+          # HSM_OWNER_CONFIG.
+          config_file = www / "config.js"
+
+          if not config_file.is_file():
+              raise RuntimeError(
+                  "config.js untuk HSM Owner "
+                  "tidak ditemukan."
+              )
+
+          config_text = config_file.read_text(
+              encoding="utf-8"
+          )
+
+          if "HSM_OWNER_CONFIG" not in config_text:
+              raise RuntimeError(
+                  "config.js pada APK Owner belum "
+                  "menyediakan HSM_OWNER_CONFIG. "
+                  "Pastikan konfigurasi Owner yang "
+                  "berfungsi di Vercel ikut disalin."
+              )
+
+          print(
+              "Halaman Owner:",
+              source
+          )
+
+          print(
+              "HSM Owner menggunakan konfigurasi asli."
+          )
+          PY
+
+      # ======================================================
+      # 9. INSTALL CAPACITOR
       # ======================================================
 
       - name: Install Capacitor Dependencies
@@ -390,9 +524,8 @@ jobs:
         run: |
           set -e
 
-          for app in passenger internal
+          for app in passenger internal owner
           do
-
             echo "Install Capacitor: $app"
 
             (
@@ -402,21 +535,19 @@ jobs:
                 --no-audit \
                 --no-fund
             )
-
           done
 
       # ======================================================
-      # 9. GENERATE ANDROID PROJECTS
+      # 10. GENERATE ANDROID PROJECT
       # ======================================================
 
-      - name: Generate Android Projects
+      - name: Generate Three Android Projects
         shell: bash
         run: |
           set -e
 
-          for app in passenger internal
+          for app in passenger internal owner
           do
-
             echo "Generate Android: $app"
 
             (
@@ -424,11 +555,10 @@ jobs:
 
               npx cap add android
             )
-
           done
 
       # ======================================================
-      # 10. IKON KEDUA APLIKASI
+      # 11. GENERATE IKON
       # ======================================================
 
       - name: Generate HSM App Icons
@@ -436,9 +566,8 @@ jobs:
         run: |
           set -e
 
-          for app in passenger internal
+          for app in passenger internal owner
           do
-
             (
               cd "builds/$app"
 
@@ -458,11 +587,10 @@ jobs:
                 --iconBackgroundColor '#ffffff' \
                 --iconBackgroundColorDark '#ffffff'
             )
-
           done
 
       # ======================================================
-      # 11. INSTALL AUDIO HSM INTERNAL
+      # 12. AUDIO SCANNER HSM INTERNAL
       # ======================================================
 
       - name: Install HSM Internal Scanner Sounds
@@ -480,15 +608,17 @@ jobs:
           cp hsm_scan_error.wav \
             "$RAW_DIR/hsm_scan_error.wav"
 
-          echo "Kedua suara scanner terpasang."
+          echo "Audio scanner berhasil dipasang."
 
       # ======================================================
-      # 12. NATIVE AUDIO + GETARAN INTERNAL
+      # 13. NATIVE AUDIO DAN GETARAN
       # ======================================================
 
       - name: Configure HSM Internal Android
         shell: bash
         run: |
+          set -e
+
           python3 - <<'PY'
           from pathlib import Path
           import re
@@ -559,10 +689,6 @@ jobs:
               private int successStream = 0;
               private int errorStream = 0;
 
-              // ============================================
-              // JAVASCRIPT BRIDGE
-              // ============================================
-
               private final class HSMNativeBridge {
 
                   @JavascriptInterface
@@ -599,14 +725,8 @@ jobs:
                           playFeedback(success);
 
                       });
-
                   }
-
               }
-
-              // ============================================
-              // ON CREATE
-              // ============================================
 
               @Override
               public void onCreate(Bundle state) {
@@ -621,21 +741,14 @@ jobs:
                           : getBridge().getWebView();
 
                   if (webView != null) {
-
                       webView.addJavascriptInterface(
                           new HSMNativeBridge(),
                           "HSMNative"
                       );
-
                   }
 
                   configureBackButton();
-
               }
-
-              // ============================================
-              // LOAD CUSTOM WAV
-              // ============================================
 
               private void initializeSounds() {
 
@@ -659,7 +772,6 @@ jobs:
                       (pool, sampleId, status) -> {
 
                           if (status == 0) {
-
                               if (sampleId == successSound) {
                                   successReady = true;
                               }
@@ -667,9 +779,7 @@ jobs:
                               if (sampleId == errorSound) {
                                   errorReady = true;
                               }
-
                           }
-
                       }
                   );
 
@@ -684,18 +794,11 @@ jobs:
                       R.raw.hsm_scan_error,
                       1
                   );
-
               }
 
-              // ============================================
-              // FEEDBACK
-              // ============================================
-
               private void playFeedback(boolean success) {
-
                   playVibration(success);
                   playSound(success);
-
               }
 
               private void playSound(boolean success) {
@@ -743,24 +846,16 @@ jobs:
                               0,
                               1.0f
                           );
-
                       }
 
                   } catch (Exception error) {
-
                       android.util.Log.e(
                           "HSM",
                           "Scanner audio error",
                           error
                       );
-
                   }
-
               }
-
-              // ============================================
-              // VIBRATION
-              // ============================================
 
               private void playVibration(boolean success) {
 
@@ -786,7 +881,6 @@ jobs:
                           Build.VERSION.SDK_INT >=
                           Build.VERSION_CODES.O
                       ) {
-
                           vibrator.vibrate(
                               VibrationEffect.createWaveform(
                                   pattern,
@@ -795,29 +889,20 @@ jobs:
                           );
 
                       } else {
-
                           vibrator.vibrate(
                               pattern,
                               -1
                           );
-
                       }
 
                   } catch (Exception error) {
-
                       android.util.Log.e(
                           "HSM",
                           "Scanner vibration error",
                           error
                       );
-
                   }
-
               }
-
-              // ============================================
-              // ANDROID BACK BUTTON
-              // ============================================
 
               private void configureBackButton() {
 
@@ -843,14 +928,12 @@ jobs:
                                   String path = "";
 
                                   if (url != null) {
-
                                       String parsed =
                                           Uri.parse(url).getPath();
 
                                       if (parsed != null) {
                                           path = parsed;
                                       }
-
                                   }
 
                                   path = path.toLowerCase(
@@ -883,11 +966,9 @@ jobs:
                                   if (
                                       now - lastBackPressed < 2000
                                   ) {
-
                                       finish();
 
                                   } else {
-
                                       lastBackPressed = now;
 
                                       Toast.makeText(
@@ -895,35 +976,22 @@ jobs:
                                           "Tekan sekali lagi untuk keluar",
                                           Toast.LENGTH_SHORT
                                       ).show();
-
                                   }
-
                               }
-
                           }
                       );
-
               }
-
-              // ============================================
-              // CLEANUP
-              // ============================================
 
               @Override
               public void onDestroy() {
 
                   if (soundPool != null) {
-
                       soundPool.release();
-
                       soundPool = null;
-
                   }
 
                   super.onDestroy();
-
               }
-
           }
           """
 
@@ -938,17 +1006,19 @@ jobs:
           )
 
           print(
-              "HSM Internal Native Android siap."
+              "Native scanner HSM Internal siap."
           )
           PY
 
       # ======================================================
-      # 13. IZIN KAMERA DAN GETARAN
+      # 14. CAMERA + VIBRATION
       # ======================================================
 
       - name: Enable HSM Internal Permissions
         shell: bash
         run: |
+          set -e
+
           python3 - <<'PY'
           from pathlib import Path
           import xml.etree.ElementTree as ET
@@ -967,9 +1037,7 @@ jobs:
           ]
 
           for permission in permissions:
-
               if permission not in content:
-
                   line = (
                       '<uses-permission '
                       'android:name="' +
@@ -985,7 +1053,6 @@ jobs:
                   )
 
           if "android.hardware.camera" not in content:
-
               content = content.replace(
                   "<application",
                   '    <uses-feature '
@@ -1002,31 +1069,29 @@ jobs:
 
           ET.parse(manifest)
 
-          print("Izin kamera dan getaran siap.")
+          print("Izin Android Internal siap.")
           PY
 
       # ======================================================
-      # 14. CAPACITOR SYNC
+      # 15. CAPACITOR SYNC
       # ======================================================
 
-      - name: Sync Both Android Projects
+      - name: Sync Three Android Projects
         shell: bash
         run: |
           set -e
 
-          for app in passenger internal
+          for app in passenger internal owner
           do
-
             (
               cd "builds/$app"
 
               npx cap sync android
             )
-
           done
 
       # ======================================================
-      # 15. BUILD APK PENUMPANG
+      # 16. BUILD APK
       # ======================================================
 
       - name: Build HSM Transport APK
@@ -1040,10 +1105,6 @@ jobs:
 
           ./gradlew assembleDebug --no-daemon
 
-      # ======================================================
-      # 16. BUILD APK INTERNAL
-      # ======================================================
-
       - name: Build HSM Internal APK
         shell: bash
         run: |
@@ -1055,11 +1116,22 @@ jobs:
 
           ./gradlew assembleDebug --no-daemon
 
+      - name: Build HSM Owner APK
+        shell: bash
+        run: |
+          set -e
+
+          cd builds/owner/android
+
+          chmod +x gradlew
+
+          ./gradlew assembleDebug --no-daemon
+
       # ======================================================
-      # 17. PREPARE OUTPUT
+      # 17. SIAPKAN 3 FILE APK
       # ======================================================
 
-      - name: Prepare Two APK Files
+      - name: Prepare Three APK Files
         shell: bash
         run: |
           set -e
@@ -1074,7 +1146,11 @@ jobs:
             builds/internal/android/app/build/outputs/apk/debug/app-debug.apk \
             output/HSM-Internal.apk
 
-          echo "Kedua APK berhasil dibuat."
+          cp \
+            builds/owner/android/app/build/outputs/apk/debug/app-debug.apk \
+            output/HSM-Owner.apk
+
+          echo "Ketiga APK berhasil dibuat."
 
           ls -lh output/
 
@@ -1095,5 +1171,13 @@ jobs:
         with:
           name: HSM-Internal-APK
           path: output/HSM-Internal.apk
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Upload HSM Owner APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: HSM-Owner-APK
+          path: output/HSM-Owner.apk
           retention-days: 30
           if-no-files-found: error
