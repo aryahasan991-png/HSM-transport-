@@ -467,7 +467,52 @@ async function ensureAdminDay() {
 /* ============================================================
    LOGIN
 ============================================================ */
+/* ============================================================
+   HSM OWNER - MONITORING LOGIN ADMIN
+============================================================ */
 
+async function reportAdminSecurity() {
+  try {
+    const { data, error } =
+      await adminDb.auth.getSession();
+
+    if (error || !data?.session?.access_token) {
+      console.warn("HSM SECURITY: Sesi tidak tersedia");
+      return;
+    }
+
+    const url =
+      HSM_CONFIG.SUPABASE_URL.replace(/\/$/, "") +
+      "/functions/v1/hsm-admin-security";
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": HSM_CONFIG.SUPABASE_PUBLISHABLE_KEY,
+        "Authorization":
+          "Bearer " + data.session.access_token
+      },
+      body: JSON.stringify({
+        event: "login",
+        pool: selectedPool
+      })
+    });
+
+    if (!response.ok) {
+      console.warn(
+        "HSM SECURITY: Gagal mencatat login",
+        response.status
+      );
+    }
+
+  } catch (error) {
+    console.warn(
+      "HSM SECURITY:",
+      error.message
+    );
+  }
+}
 async function loginAdmin() {
   if (adminUpdating) return;
 
@@ -529,11 +574,14 @@ async function loginAdmin() {
     showDashboard();
 
     setLoginMessage(
-      "Login berhasil.",
-      "success"
-    );
+  "Login berhasil.",
+  "success"
+);
 
-    await loadBookings();
+// Catat aktivitas login Admin ke server keamanan.
+void reportAdminSecurity();
+
+await loadBookings();
 
   } catch (error) {
     showLogin();
