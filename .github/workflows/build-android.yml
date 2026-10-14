@@ -428,10 +428,10 @@ jobs:
           import shutil
           import re
 
-          root = Path(".")
+                    root = Path(".")
           www = Path("builds/owner/www")
 
-                    candidates = [
+          candidates = [
               Path("owner-app/index.html")
           ]
 
