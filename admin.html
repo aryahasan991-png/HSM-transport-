@@ -1,502 +1,1717 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0754a6">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, viewport-fit=cover"
+>
+
+<meta name="theme-color" content="#09254b">
 <meta name="robots" content="noindex,nofollow">
-<title>Admin HSM Transport</title>
+
+<title>HSM Internal | Admin</title>
+
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="hsm-apk-icon.png">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
 <style>
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  background:#f3f6fa;
-  color:#111827;
-  font-family:Arial,Helvetica,sans-serif;
-}
-button,input,select{font:inherit}
-button{cursor:pointer}
-button:disabled{opacity:.6;cursor:not-allowed}
 
-.topbar{
-  position:sticky;
-  top:0;
-  z-index:100;
+/* ============================================================
+   HSM INTERNAL PREMIUM NAVY
+   ============================================================ */
+
+:root {
+  --navy:#09254b;
+  --navy-dark:#061a37;
+  --navy-light:#123e75;
+
+  --blue:#0754a6;
+  --blue-light:#126bbd;
+
+  --red:#e31e2d;
+  --green:#16834b;
+  --orange:#d58b22;
+
+  --background:#dfe8f4;
+  --card:#e8f0f9;
+  --card-blue:#d5e5f5;
+
+  --text:#10284b;
+  --muted:#647994;
+
+  --border:#c5d6e8;
+
+  --shadow:0 9px 24px rgba(9,37,75,.07);
+}
+
+* {
+  box-sizing:border-box;
+}
+
+html {
+  scroll-behavior:smooth;
+}
+
+body {
+  margin:0;
+  min-height:100vh;
+
+  background:
+    linear-gradient(
+      180deg,
+      #d5e3f3 0%,
+      #e0e9f5 48%,
+      #dce6f2 100%
+    );
+
+  color:var(--text);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font:inherit;
+}
+
+button {
+  cursor:pointer;
+}
+
+button:disabled {
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color:transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline:3px solid #69acfa;
+  outline-offset:2px;
+}
+
+[hidden] {
+  display:none!important;
+}
+
+/* ============================================================
+   LOGO DAN HEADER
+   ============================================================ */
+
+.topbar {
+  position:relative;
+
+  width:100%;
+  min-height:212px;
+
+  padding:
+    calc(22px + env(safe-area-inset-top))
+    22px
+    34px;
+
+  overflow:hidden;
+
+  background:
+    radial-gradient(
+      circle at 95% 8%,
+      rgba(36,123,211,.65),
+      transparent 43%
+    ),
+    linear-gradient(
+      125deg,
+      #071a37 0%,
+      #0a376d 58%,
+      #0754a6 100%
+    );
+
+  color:white;
+
+  border-radius:0 0 34px 34px;
+}
+
+.topbar::before {
+  content:"";
+
+  position:absolute;
+
+  width:330px;
+  height:330px;
+
+  border:35px solid rgba(255,255,255,.035);
+
+  border-radius:50%;
+
+  right:-135px;
+  top:-90px;
+
+  pointer-events:none;
+}
+
+.topbar-inner {
+  position:relative;
+  z-index:2;
+
+  width:min(1120px,100%);
+  margin:auto;
+
   display:flex;
   align-items:center;
   justify-content:space-between;
+
   gap:12px;
-  padding:13px 16px;
-  background:#0754a6;
-  color:#fff;
-  box-shadow:0 3px 14px rgba(0,0,0,.15);
 }
-.brand{
+
+.brand {
   display:flex;
   align-items:center;
-  gap:10px;
+
+  gap:13px;
+
   min-width:0;
 }
-.brand-logo{
+
+.brand-logo {
+  width:70px;
+  height:70px;
+
+  flex:0 0 70px;
+
+  padding:7px;
+
   display:flex;
   align-items:center;
   justify-content:center;
-  width:50px;
-  height:50px;
-  flex:0 0 50px;
+
+  border-radius:19px;
+
+  background:#fff;
+
+  box-shadow:
+    0 5px 18px rgba(0,0,0,.12);
+
   overflow:hidden;
 }
-.brand-logo img{
-  display:block;
+
+.brand-logo img {
   width:100%;
   height:100%;
+
   object-fit:contain;
 }
-.brand-text{min-width:0}
-.brand-text strong{
+
+.brand-text {
+  min-width:0;
+}
+
+.brand-text strong {
   display:block;
-  font-size:17px;
+
+  font-size:22px;
   font-weight:900;
-  white-space:nowrap;
+
+  letter-spacing:.3px;
 }
-.brand-text span{
+
+.brand-text span {
   display:block;
-  margin-top:2px;
-  font-size:10px;
-  opacity:.9;
-  white-space:nowrap;
+
+  margin-top:6px;
+
+  color:#cbdaf0;
+
+  font-size:11px;
 }
-.logout-btn{
-  display:none;
-  border:1px solid rgba(255,255,255,.6);
-  border-radius:8px;
-  padding:8px 11px;
-  background:rgba(255,255,255,.12);
+
+.header-icon {
+  width:51px;
+  height:51px;
+
+  flex:0 0 51px;
+
+  border:1px solid rgba(255,255,255,.19);
+  border-radius:17px;
+
+  background:rgba(255,255,255,.09);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
   color:white;
+}
+
+.header-icon svg {
+  width:25px;
+  height:25px;
+}
+
+.header-bottom {
+  width:min(1120px,100%);
+
+  margin:26px auto 0;
+
+  position:relative;
+  z-index:2;
+}
+
+.header-caption {
+  color:#c0d5ee;
+
   font-size:12px;
-  font-weight:800;
-}
-.logout-btn:active{transform:scale(.98)}
 
-.container{
-  width:min(1100px,100%);
+  letter-spacing:1px;
+}
+
+.header-title {
+  margin:10px 0 0;
+
+  font-size:30px;
+  font-weight:900;
+}
+
+.header-date {
+  margin-top:11px;
+
+  color:#bfd3ed;
+
+  font-size:13px;
+}
+
+/* ============================================================
+   CONTAINER
+   ============================================================ */
+
+.container {
+  width:min(1120px,100%);
+
   margin:0 auto;
-  padding:18px 14px 45px;
+
+  padding:20px 20px 115px;
 }
 
-#loginSection{
+#dashboard {
+  display:none;
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+
+#loginSection {
   display:flex;
   justify-content:center;
   align-items:center;
-  min-height:calc(100vh - 100px);
-}
-.login-card{
-  width:min(420px,100%);
-  padding:25px 20px;
-  border:1px solid #e5e7eb;
-  border-radius:17px;
-  background:#fff;
-  box-shadow:0 8px 30px rgba(15,23,42,.08);
-}
-.login-title{
-  margin:0;
-  text-align:center;
-  font-size:24px;
-  font-weight:900;
-}
-.login-subtitle{
-  margin:7px 0 22px;
-  text-align:center;
-  color:#6b7280;
-  font-size:13px;
-  line-height:1.5;
-}
-.form-group{margin-bottom:14px}
-.form-group label{
-  display:block;
-  margin-bottom:6px;
-  color:#374151;
-  font-size:12px;
-  font-weight:800;
-}
-.form-control{
-  width:100%;
-  height:45px;
-  border:1px solid #d1d5db;
-  border-radius:9px;
-  padding:0 12px;
-  outline:none;
-  background:#fff;
-  color:#111827;
-}
-.form-control:focus{
-  border-color:#0754a6;
-  box-shadow:0 0 0 3px rgba(7,84,166,.12);
-}
-.pool-group{margin-bottom:16px}
-.pool-group label{color:#0754a6}
-.pool-select{
-  width:100%;
-  height:48px;
-  border:2px solid #0754a6;
-  border-radius:9px;
-  padding:0 12px;
-  outline:none;
-  background:#f8fbff;
-  color:#111827;
-  font-weight:800;
-}
-.pool-note{
-  margin-top:6px;
-  color:#6b7280;
-  font-size:10px;
-  line-height:1.4;
-}
-.login-btn{
-  width:100%;
-  min-height:46px;
-  margin-top:5px;
-  border:0;
-  border-radius:9px;
-  background:#0754a6;
-  color:#fff;
-  font-weight:900;
-}
-.login-message{
-  min-height:20px;
-  margin-top:12px;
-  text-align:center;
-  font-size:12px;
-  font-weight:700;
+
+  min-height:430px;
+
+  margin-top:-76px;
+
+  position:relative;
+  z-index:5;
 }
 
-#dashboard{display:none}
-.dashboard-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom:16px;
-}
-.dashboard-head h1{
-  margin:0;
-  font-size:22px;
-  font-weight:900;
-}
-.dashboard-head p{
-  margin:4px 0 0;
-  color:#6b7280;
-  font-size:12px;
-}
-.pool-badge{
-  display:inline-flex;
-  align-items:center;
-  margin-top:8px;
-  border-radius:999px;
-  padding:6px 11px;
-  background:#dbeafe;
-  color:#1e40af;
-  font-size:11px;
-  font-weight:900;
-}
-.refresh-btn{
-  min-height:40px;
-  border:0;
-  border-radius:9px;
-  padding:0 13px;
-  background:#111827;
-  color:#fff;
-  font-size:12px;
-  font-weight:800;
+.login-card {
+  width:min(430px,100%);
+
+  padding:27px 22px;
+
+  border:1px solid #ceddf0;
+  border-radius:24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f3f8ff,
+      #dbe8f7
+    );
+
+  box-shadow:
+    0 15px 40px rgba(9,37,75,.12);
 }
 
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:16px;
-}
-.stat-card{
-  min-width:0;
-  padding:14px;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  background:#fff;
-  box-shadow:0 2px 8px rgba(15,23,42,.04);
-}
-.stat-card span{
-  display:block;
-  color:#6b7280;
-  font-size:11px;
-  font-weight:700;
-}
-.stat-card strong{
-  display:block;
-  margin-top:5px;
+.login-title {
+  margin:0;
+
+  text-align:center;
+
   font-size:25px;
   font-weight:900;
 }
 
-.filters{
-  display:grid;
-  grid-template-columns:2fr 1fr 1fr;
-  gap:10px;
-  margin-bottom:16px;
-  padding:13px;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  background:#fff;
-}
-.filter-item label{
-  display:block;
-  margin-bottom:5px;
-  color:#6b7280;
-  font-size:10px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.3px;
-}
-.filter-control{
-  width:100%;
-  height:41px;
-  border:1px solid #d1d5db;
-  border-radius:8px;
-  padding:0 10px;
-  outline:none;
-  background:#fff;
-}
-.filter-control:focus{border-color:#0754a6}
+.login-subtitle {
+  margin:9px 0 24px;
 
-.booking-list{
-  display:grid;
-  gap:13px;
-}
-.booking-card{
-  overflow:hidden;
-  border:1px solid #e5e7eb;
-  border-radius:14px;
-  background:#fff;
-  box-shadow:0 3px 12px rgba(15,23,42,.05);
-}
-.booking-head{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:10px;
-  padding:14px 15px;
-  border-bottom:1px solid #eef0f3;
-  background:#fafafa;
-}
-.booking-code{
-  font-size:17px;
-  font-weight:900;
-  letter-spacing:.3px;
-}
-.created{
-  margin-top:4px;
-  color:#6b7280;
-  font-size:10px;
-}
-.status{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:27px;
-  border-radius:999px;
-  padding:5px 9px;
-  white-space:nowrap;
-  font-size:10px;
-  font-weight:900;
-}
-.status.pending{
-  background:#fff4cc;
-  color:#8a5b00;
-}
-.status.paid{
-  background:#dcfce7;
-  color:#166534;
-}
-.status.completed{
-  background:#dbeafe;
-  color:#1e40af;
-}
-.status.cancelled{
-  background:#fee2e2;
-  color:#991b1b;
-}
-.booking-grid{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:1px;
-  background:#eef0f3;
-}
-.info{
-  min-width:0;
-  padding:11px;
-  background:#fff;
-}
-.info span{
-  display:block;
-  margin-bottom:4px;
-  color:#6b7280;
-  font-size:9px;
-  font-weight:700;
-  text-transform:uppercase;
-}
-.info strong{
-  display:block;
-  overflow-wrap:anywhere;
-  font-size:12px;
-  line-height:1.35;
-}
-
-.actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  padding:13px 15px;
-  border-top:1px solid #eef0f3;
-}
-.actions button,
-.actions a{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:39px;
-  border:0;
-  border-radius:8px;
-  padding:8px 12px;
-  text-decoration:none;
-  font-size:11px;
-  font-weight:900;
-}
-.btn-paid{
-  background:#16a34a;
-  color:#fff;
-}
-.btn-print{
-  background:#111827;
-  color:#fff;
-}
-.btn-completed{
-  background:#0754a6;
-  color:#fff;
-}
-.btn-cancel{
-  background:#dc2626;
-  color:#fff;
-}
-.btn-wa{
-  background:#25d366;
-  color:#fff;
-}
-.actions button:active,
-.actions a:active{transform:scale(.98)}
-
-.empty{
-  padding:35px 18px;
-  border:1px dashed #cbd5e1;
-  border-radius:12px;
-  background:#fff;
-  color:#6b7280;
   text-align:center;
+
+  color:var(--muted);
+
+  font-size:12px;
+  line-height:1.7;
+}
+
+.form-group {
+  margin-bottom:15px;
+}
+
+.form-group label {
+  display:block;
+
+  margin-bottom:7px;
+
+  color:var(--text);
+
+  font-size:12px;
+  font-weight:800;
+}
+
+.form-control,
+.pool-select {
+  width:100%;
+  min-height:49px;
+
+  padding:12px;
+
+  border:1px solid #c3d3e5;
+  border-radius:12px;
+
+  background:#f9fcff;
+
+  color:var(--text);
+
+  outline:none;
+}
+
+.form-control:focus,
+.pool-select:focus {
+  border-color:var(--blue);
+
+  box-shadow:
+    0 0 0 3px rgba(7,84,166,.1);
+}
+
+.pool-group label {
+  color:var(--blue);
+}
+
+.pool-note {
+  margin-top:8px;
+
+  color:var(--muted);
+
+  font-size:11px;
+  line-height:1.6;
+}
+
+.login-btn {
+  width:100%;
+  min-height:50px;
+
+  margin-top:7px;
+
+  border:0;
+  border-radius:12px;
+
+  background:
+    linear-gradient(
+      120deg,
+      var(--navy),
+      var(--blue)
+    );
+
+  color:white;
+
   font-size:13px;
+  font-weight:900;
+}
+
+.login-message {
+  min-height:21px;
+
+  margin-top:15px;
+
+  text-align:center;
+
+  font-size:12px;
+  font-weight:800;
+}
+
+/* ============================================================
+   JUDUL DASHBOARD
+   ============================================================ */
+
+.dashboard-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  gap:12px;
+
+  margin-bottom:16px;
+}
+
+.dashboard-head h1 {
+  margin:0;
+
+  font-size:23px;
+  font-weight:900;
+}
+
+.dashboard-head p {
+  margin:6px 0;
+
+  color:var(--muted);
+
+  font-size:12px;
   line-height:1.5;
 }
 
-.admin-footer{
-  margin-top:30px;
-  padding-top:18px;
-  border-top:1px solid #e5e7eb;
-  text-align:center;
-  color:#6b7280;
+.pool-badge {
+  display:inline-flex;
+
+  padding:7px 12px;
+
+  border-radius:30px;
+
+  background:#c9ddf4;
+
+  color:var(--navy-light);
+
+  font-size:11px;
+  font-weight:900;
+}
+
+.refresh-btn {
+  min-height:42px;
+
+  padding:10px 15px;
+
+  border:0;
+  border-radius:11px;
+
+  background:var(--navy);
+
+  color:white;
+
+  font-size:12px;
+  font-weight:800;
+}
+
+/* ============================================================
+   STATISTIK BOOKING
+   ============================================================ */
+
+.stats {
+  display:grid;
+
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
+
+  gap:12px;
+
+  margin-bottom:20px;
+}
+
+.stat-card {
+  min-width:0;
+
+  padding:18px;
+
+  border:1px solid var(--border);
+  border-radius:19px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #edf4fc,
+      #cfe1f3
+    );
+
+  box-shadow:var(--shadow);
+}
+
+.stat-card span {
+  display:block;
+
+  color:var(--muted);
+
+  font-size:12px;
+  font-weight:700;
+}
+
+.stat-card strong {
+  display:block;
+
+  margin-top:12px;
+
+  color:var(--navy);
+
+  font-size:29px;
+  font-weight:900;
+}
+
+/* ============================================================
+   FILTER
+   ============================================================ */
+
+.filters {
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,minmax(0,1fr));
+
+  gap:10px;
+
+  margin-bottom:17px;
+
+  padding:15px;
+
+  border:1px solid var(--border);
+  border-radius:17px;
+
+  background:#e8f0f9;
+}
+
+.filter-item label {
+  display:block;
+
+  margin-bottom:7px;
+
+  color:var(--muted);
+
+  font-size:11px;
+  font-weight:800;
+}
+
+.filter-control {
+  width:100%;
+  min-height:45px;
+
+  padding:10px;
+
+  border:1px solid #c1d2e5;
+  border-radius:10px;
+
+  background:#f7fbff;
+
+  color:var(--text);
+
+  outline:none;
+}
+
+/* ============================================================
+   BOOKING CARD
+   ============================================================ */
+
+.booking-list {
+  display:grid;
+  gap:13px;
+}
+
+.booking-card {
+  overflow:hidden;
+
+  border:1px solid var(--border);
+  border-radius:19px;
+
+  background:#eaf2fb;
+
+  box-shadow:var(--shadow);
+}
+
+.booking-head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+
+  gap:12px;
+
+  padding:16px;
+
+  background:
+    linear-gradient(
+      120deg,
+      #d4e5f8,
+      #e6f0fc
+    );
+}
+
+.booking-code {
+  color:var(--navy);
+
+  font-size:16px;
+  font-weight:900;
+}
+
+.created {
+  margin-top:6px;
+
+  color:var(--muted);
+
   font-size:10px;
+}
+
+.status {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  min-height:29px;
+
+  padding:6px 10px;
+
+  border-radius:30px;
+
+  white-space:nowrap;
+
+  font-size:10px;
+  font-weight:900;
+}
+
+.status.pending {
+  background:#fff0c6;
+  color:#8b5b06;
+}
+
+.status.paid {
+  background:#d8f5e1;
+  color:#176a3c;
+}
+
+.status.completed {
+  background:#cfe4fa;
+  color:#0754a6;
+}
+
+.status.cancelled {
+  background:#fbdcdc;
+  color:#a52020;
+}
+
+.booking-grid {
+  display:grid;
+
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
+
+  gap:1px;
+
+  background:#c9d9e9;
+}
+
+.info {
+  min-width:0;
+
+  padding:13px;
+
+  background:#edf4fc;
+}
+
+.info span {
+  display:block;
+
+  margin-bottom:6px;
+
+  color:var(--muted);
+
+  font-size:10px;
+  font-weight:700;
+
+  text-transform:uppercase;
+}
+
+.info strong {
+  display:block;
+
+  overflow-wrap:anywhere;
+
+  color:var(--text);
+
+  font-size:12px;
+  line-height:1.5;
+}
+
+.actions {
+  display:flex;
+  flex-wrap:wrap;
+
+  gap:9px;
+
+  padding:14px;
+
+  border-top:1px solid var(--border);
+}
+
+.actions button,
+.actions a {
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+
+  flex:1 1 calc(50% - 5px);
+
+  min-height:42px;
+
+  padding:10px;
+
+  border:0;
+  border-radius:11px;
+
+  text-align:center;
+  text-decoration:none;
+
+  font-size:11px;
+  font-weight:900;
+}
+
+.btn-paid {
+  background:#16834b;
+  color:white;
+}
+
+.btn-print {
+  background:var(--navy);
+  color:white;
+}
+
+.btn-completed {
+  background:var(--blue);
+  color:white;
+}
+
+.btn-cancel {
+  background:#c82c35;
+  color:white;
+}
+
+.btn-wa {
+  background:#20a85c;
+  color:white;
+}
+
+.empty {
+  padding:27px 16px;
+
+  border:1px dashed #b9cde3;
+  border-radius:15px;
+
+  background:#e9f1fa;
+
+  color:var(--muted);
+
+  text-align:center;
+
+  font-size:12px;
+  line-height:1.7;
+}
+
+/* ============================================================
+   BERANDA PREMIUM NAVY
+   ============================================================ */
+
+#hsmAdminHome {
+  display:none;
+}
+
+#hsmAdminHome.active {
+  display:block;
+}
+
+.home-main-card {
+  position:relative;
+
+  min-height:190px;
+
+  margin-bottom:17px;
+
+  padding:24px;
+
+  overflow:hidden;
+
+  border-radius:26px;
+
+  background:
+    radial-gradient(
+      circle at 95% 100%,
+      rgba(29,123,222,.6),
+      transparent 48%
+    ),
+    linear-gradient(
+      120deg,
+      #09254b,
+      #0d4687
+    );
+
+  color:white;
+
+  box-shadow:
+    0 15px 30px rgba(9,37,75,.12);
+}
+
+.home-main-card::after {
+  content:"";
+
+  position:absolute;
+
+  width:200px;
+  height:200px;
+
+  right:-75px;
+  bottom:-95px;
+
+  border:30px solid rgba(255,255,255,.04);
+  border-radius:50%;
+}
+
+.home-main-label {
+  position:relative;
+  z-index:1;
+
+  color:#cbdcf2;
+
+  font-size:13px;
+}
+
+.home-main-title {
+  position:relative;
+  z-index:1;
+
+  margin-top:15px;
+
+  font-size:30px;
+  font-weight:900;
+}
+
+.home-main-description {
+  position:relative;
+  z-index:1;
+
+  margin-top:14px;
+
+  color:#cbdcf2;
+
+  font-size:12px;
   line-height:1.6;
 }
-.admin-footer strong{color:#111827}
 
-@media(max-width:850px){
-  .booking-grid{grid-template-columns:repeat(2,1fr)}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .filters{grid-template-columns:1fr 1fr}
-  .filter-search{grid-column:1/-1}
+.home-main-chip {
+  position:absolute;
+  top:23px;
+  right:20px;
+
+  padding:8px 12px;
+
+  border-radius:30px;
+
+  background:rgba(255,255,255,.12);
+
+  font-size:10px;
+  font-weight:900;
 }
-@media(max-width:560px){
-  .topbar{padding:11px 12px}
-  .brand-logo{
-    width:44px;
-    height:44px;
-    flex-basis:44px;
-  }
-  .brand-text strong{font-size:14px}
-  .brand-text span{font-size:8px}
-  .container{padding:14px 10px 40px}
-  .dashboard-head{align-items:flex-start}
-  .dashboard-head h1{font-size:18px}
-  .refresh-btn{min-width:76px}
-  .stats{gap:7px}
-  .stat-card{padding:11px}
-  .stat-card strong{font-size:21px}
-  .filters{
+
+.home-stats {
+  display:grid;
+
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
+
+  gap:13px;
+
+  margin-bottom:25px;
+}
+
+.home-stat {
+  min-width:0;
+
+  min-height:125px;
+
+  padding:18px;
+
+  border:1px solid #c0d3e7;
+  border-radius:22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #eaf2fb,
+      #cbdff3
+    );
+}
+
+.home-stat-icon {
+  width:42px;
+  height:42px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:13px;
+
+  background:#bdd7f1;
+
+  color:var(--navy);
+
+  font-size:21px;
+}
+
+.home-stat-label {
+  margin-top:13px;
+
+  color:var(--muted);
+
+  font-size:12px;
+}
+
+.home-stat-value {
+  margin-top:7px;
+
+  color:var(--navy);
+
+  font-size:26px;
+  font-weight:900;
+}
+
+.home-stat-note {
+  margin-top:8px;
+
+  color:var(--muted);
+
+  font-size:11px;
+}
+
+/* ============================================================
+   SECTION
+   ============================================================ */
+
+.home-section {
+  margin-bottom:28px;
+}
+
+.home-section-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  gap:10px;
+
+  margin-bottom:14px;
+}
+
+.home-section-head h2 {
+  margin:0;
+
+  font-size:22px;
+  font-weight:900;
+}
+
+.home-section-head span {
+  color:var(--muted);
+
+  font-size:12px;
+}
+
+/* ============================================================
+   GRAFIK
+   ============================================================ */
+
+.home-chart-card {
+  padding:20px 15px 15px;
+
+  border:1px solid #c2d4e7;
+  border-radius:25px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #eaf3fc,
+      #d7e7f7
+    );
+
+  box-shadow:var(--shadow);
+}
+
+.home-chart {
+  position:relative;
+
+  height:190px;
+
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-around;
+
+  gap:10px;
+
+  padding:20px 8px 28px;
+
+  background:
+    repeating-linear-gradient(
+      to top,
+      transparent 0,
+      transparent 46px,
+      rgba(95,128,163,.18) 47px,
+      rgba(95,128,163,.18) 48px
+    );
+}
+
+.home-chart-bar-wrap {
+  height:100%;
+  flex:1;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+
+  gap:9px;
+
+  min-width:0;
+}
+
+.home-chart-bar {
+  width:min(38px,80%);
+
+  min-height:3px;
+
+  border-radius:8px 8px 0 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      #126dc0,
+      #0754a6
+    );
+}
+
+.home-chart-day {
+  position:absolute;
+
+  transform:translateY(25px);
+
+  color:var(--muted);
+
+  font-size:11px;
+}
+
+.home-chart-note {
+  margin-top:15px;
+
+  color:var(--muted);
+
+  font-size:11px;
+  line-height:1.6;
+}
+
+/* ============================================================
+   AKSES CEPAT
+   ============================================================ */
+
+.home-shortcuts {
+  display:grid;
+
+  grid-template-columns:
+    repeat(4,minmax(0,1fr));
+
+  gap:12px;
+}
+
+.home-shortcut {
+  min-width:0;
+
+  min-height:105px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  gap:12px;
+
+  padding:13px 6px;
+
+  border:1px solid #bdd0e5;
+  border-radius:19px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #dceafa,
+      #bdd7f1
+    );
+
+  color:var(--navy);
+
+  font-size:11px;
+  font-weight:900;
+}
+
+.home-shortcut-icon {
+  font-size:27px;
+}
+
+/* ============================================================
+   AKTIVITAS TERBARU
+   ============================================================ */
+
+.home-activity-list {
+  display:grid;
+  gap:11px;
+}
+
+.home-activity {
+  display:flex;
+  align-items:center;
+
+  gap:13px;
+
+  padding:16px;
+
+  border:1px solid #c1d5e9;
+  border-radius:19px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #eaf3fc,
+      #d3e4f6
+    );
+}
+
+.home-activity-icon {
+  width:47px;
+  height:47px;
+
+  flex:0 0 47px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:14px;
+
+  background:#bdd7f1;
+
+  font-size:20px;
+}
+
+.home-activity-content {
+  min-width:0;
+  flex:1;
+}
+
+.home-activity-title {
+  font-size:13px;
+  font-weight:900;
+}
+
+.home-activity-subtitle {
+  margin-top:6px;
+
+  color:var(--muted);
+
+  font-size:11px;
+  line-height:1.5;
+}
+
+/* ============================================================
+   AKUN ADMIN
+   ============================================================ */
+
+#hsmAdminAccount {
+  display:none;
+}
+
+#hsmAdminAccount.active {
+  display:block;
+}
+
+.account-card {
+  margin-bottom:15px;
+
+  padding:20px;
+
+  border:1px solid var(--border);
+  border-radius:21px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #edf4fc,
+      #d4e5f7
+    );
+}
+
+.account-card h2 {
+  margin:0 0 14px;
+
+  color:var(--navy);
+
+  font-size:19px;
+}
+
+.account-line {
+  padding:12px 0;
+
+  border-bottom:1px solid #c3d5e8;
+}
+
+.account-line:last-child {
+  border-bottom:0;
+}
+
+.account-line small {
+  display:block;
+
+  color:var(--muted);
+
+  font-size:11px;
+}
+
+.account-line strong {
+  display:block;
+
+  margin-top:6px;
+
+  overflow-wrap:anywhere;
+
+  font-size:13px;
+}
+
+.account-action {
+  width:100%;
+  min-height:49px;
+
+  margin-top:12px;
+
+  border:0;
+  border-radius:12px;
+
+  background:var(--navy);
+
+  color:white;
+
+  font-size:13px;
+  font-weight:900;
+}
+
+.account-action.danger {
+  background:#bf2936;
+}
+
+/* ============================================================
+   NAVIGASI BAWAH
+   ============================================================ */
+
+.hsm-bottom-nav {
+  position:fixed;
+
+  bottom:0;
+  left:0;
+  right:0;
+
+  z-index:5000;
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(5,minmax(0,1fr));
+
+  min-height:78px;
+
+  padding:
+    8px
+    8px
+    calc(8px + env(safe-area-inset-bottom));
+
+  background:
+    linear-gradient(
+      110deg,
+      #071a37,
+      #0b315e
+    );
+
+  box-shadow:
+    0 -5px 20px rgba(9,37,75,.12);
+}
+
+.hsm-bottom-button {
+  min-width:0;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  gap:5px;
+
+  padding:10px 2px;
+
+  border:0;
+  border-radius:15px;
+
+  background:transparent;
+  color:#90abc9;
+
+  font-size:10px;
+  font-weight:800;
+}
+
+.hsm-bottom-button.active {
+  background:
+    linear-gradient(
+      140deg,
+      #174678,
+      #0754a6
+    );
+
+  color:white;
+}
+
+.hsm-bottom-button svg {
+  width:25px;
+  height:25px;
+
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.9;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+/* ============================================================
+   NAVIGASI LAMA TETAP ADA UNTUK KOMPATIBILITAS
+   ============================================================ */
+
+.hsm-extra-nav {
+  display:none!important;
+}
+
+/* ============================================================
+   PENYESUAIAN MODUL LAMA
+   ============================================================ */
+
+.hsm-extra-card,
+.hsm-site-card,
+.hsm-monitor-trip,
+.hsm-manifest-group {
+  border-color:#c1d4e8!important;
+
+  border-radius:19px!important;
+
+  background:
+    linear-gradient(
+      145deg,
+      #edf4fc,
+      #dbe9f8
+    )!important;
+
+  box-shadow:var(--shadow);
+}
+
+.hsm-extra-title,
+.hsm-site-heading {
+  color:var(--navy)!important;
+}
+
+.hsm-crew-grid {
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
+}
+
+.hsm-crew-photo {
+  background:#c6d9ed;
+}
+
+.hsm-monitor-summary {
+  grid-template-columns:
+    repeat(2,minmax(0,1fr))!important;
+}
+
+.hsm-monitor-passengers {
+  grid-template-columns:
+    repeat(2,minmax(0,1fr))!important;
+}
+
+.hsm-manifest-scroll {
+  overflow-x:auto;
+}
+
+.hsm-site-button,
+.hsm-extra-button,
+.hsm-monitor-refresh,
+.hsm-manifest-button {
+  border-radius:11px!important;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.admin-footer {
+  margin-top:30px;
+
+  padding:17px;
+
+  border-top:1px solid #c5d4e6;
+
+  text-align:center;
+
+  color:var(--muted);
+
+  font-size:10px;
+  line-height:1.8;
+}
+
+.admin-footer strong {
+  color:var(--navy);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media(max-width:760px) {
+
+  .filters {
     grid-template-columns:1fr;
-    padding:10px;
   }
-  .filter-search{grid-column:auto}
-  .booking-grid{grid-template-columns:repeat(2,1fr)}
-  .booking-head{padding:12px}
-  .booking-code{font-size:15px}
-  .info{padding:10px}
-  .actions{padding:11px}
-  .actions button,
-  .actions a{
-    flex:1 1 calc(50% - 4px);
-    min-width:125px;
+
+  .home-shortcuts {
+    grid-template-columns:
+      repeat(4,minmax(0,1fr));
+
+    gap:9px;
   }
+
+  .home-shortcut {
+    min-height:96px;
+  }
+
+  .hsm-crew-grid {
+    grid-template-columns:1fr;
+  }
+
 }
-@media(max-width:370px){
-  .booking-grid{grid-template-columns:1fr}
+
+@media(max-width:560px) {
+
+  .topbar {
+    min-height:195px;
+
+    padding:
+      calc(19px + env(safe-area-inset-top))
+      17px
+      27px;
+  }
+
+  .brand-logo {
+    width:58px;
+    height:58px;
+
+    flex-basis:58px;
+
+    border-radius:17px;
+  }
+
+  .brand-text strong {
+    font-size:18px;
+  }
+
+  .brand-text span {
+    font-size:9px;
+  }
+
+  .header-icon {
+    width:45px;
+    height:45px;
+
+    flex-basis:45px;
+  }
+
+  .header-title {
+    font-size:26px;
+  }
+
+  .container {
+    padding:17px 15px 115px;
+  }
+
+  .dashboard-head h1 {
+    font-size:20px;
+  }
+
+  .dashboard-head p {
+    font-size:11px;
+  }
+
+  .home-main-card {
+    min-height:176px;
+    padding:22px;
+  }
+
+  .home-main-title {
+    font-size:27px;
+  }
+
+  .home-main-chip {
+    right:15px;
+  }
+
+  .home-stat {
+    padding:15px;
+  }
+
+  .home-stat-value {
+    font-size:24px;
+  }
+
+  .home-section-head h2 {
+    font-size:20px;
+  }
+
+  .home-shortcut {
+    padding:10px 4px;
+  }
+
+  .home-shortcut-icon {
+    font-size:24px;
+  }
+
+  .home-shortcut {
+    font-size:10px;
+  }
+
   .actions button,
-  .actions a{flex:1 1 100%}
-  .brand-text span{display:none}
+  .actions a {
+    flex:1 1 calc(50% - 5px);
+  }
+
 }
+
+@media(max-width:370px) {
+
+  .brand-text span {
+    display:none;
+  }
+
+  .home-main-title {
+    font-size:24px;
+  }
+
+  .home-shortcut {
+    font-size:9px;
+  }
+
+  .booking-grid {
+    grid-template-columns:1fr;
+  }
+
+}
+
 </style>
+
 </head>
 
 <body>
 
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+
 <header class="topbar">
-  <div class="brand">
-    <div class="brand-logo">
-      <img src="hsm-logo.png" alt="Logo HSM Transport">
+
+  <div class="topbar-inner">
+
+    <div class="brand">
+
+      <div class="brand-logo">
+        <img
+          src="hsm-logo.png"
+          alt="Logo HSM Transport"
+        >
+      </div>
+
+      <div class="brand-text">
+        <strong>HSM INTERNAL</strong>
+        <span>PT HIDAYAH SARANA MULIA</span>
+      </div>
+
     </div>
-    <div class="brand-text">
-      <strong>HSM Transport</strong>
-      <span>PT Hidayah Sarana Mulia</span>
+
+    <div class="header-icon" aria-hidden="true">
+
+      <svg viewBox="0 0 24 24">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+        <path d="M10 21h4"></path>
+      </svg>
+
     </div>
+
   </div>
-  <button id="logoutBtn" class="logout-btn" type="button">
-    Keluar
-  </button>
+
+  <div class="header-bottom">
+
+    <div class="header-caption">
+      HSM ADMIN CONTROL CENTER
+    </div>
+
+    <h1 class="header-title">
+      Selamat Datang
+    </h1>
+
+    <div
+      id="hsmHeaderDate"
+      class="header-date"
+    >
+      Memuat tanggal...
+    </div>
+
+  </div>
+
 </header>
 
 <main class="container">
 
+<!-- ============================================================
+     LOGIN
+     ============================================================ -->
+
 <section id="loginSection">
+
   <div class="login-card">
-    <h1 class="login-title">Admin HSM</h1>
+
+    <h1 class="login-title">
+      🔐 Login HSM Admin
+    </h1>
+
     <p class="login-subtitle">
-      Masuk menggunakan akun administrator HSM Transport
-      dan pilih pool operasional.
+      Masuk menggunakan akun administrator
+      untuk mengelola operasional HSM Transport.
     </p>
 
     <div class="form-group">
-      <label for="adminEmail">Email Admin</label>
+
+      <label for="adminEmail">
+        Email Admin
+      </label>
+
       <input
         id="adminEmail"
         class="form-control"
@@ -504,10 +1719,15 @@ button:disabled{opacity:.6;cursor:not-allowed}
         autocomplete="username"
         placeholder="Email admin"
       >
+
     </div>
 
     <div class="form-group">
-      <label for="adminPassword">Password</label>
+
+      <label for="adminPassword">
+        Password
+      </label>
+
       <input
         id="adminPassword"
         class="form-control"
@@ -515,125 +1735,1358 @@ button:disabled{opacity:.6;cursor:not-allowed}
         autocomplete="current-password"
         placeholder="Password"
       >
+
     </div>
 
     <div class="form-group pool-group">
-      <label for="poolSelect">Pool Operasional</label>
-      <select id="poolSelect" class="pool-select">
-        <option value="">Pilih Pool</option>
-        <option value="Sofifi">Pool Sofifi</option>
-        <option value="Loleo">Pool Loleo</option>
-        <option value="Weda">Pool Weda</option>
-        <option value="Lelilef">Pool Lelilef</option>
+
+      <label for="poolSelect">
+        Pool Operasional
+      </label>
+
+      <select
+        id="poolSelect"
+        class="pool-select"
+      >
+
+        <option value="">
+          Pilih Pool
+        </option>
+
+        <option value="Sofifi">
+          Pool Sofifi
+        </option>
+
+        <option value="Loleo">
+          Pool Loleo
+        </option>
+
+        <option value="Weda">
+          Pool Weda
+        </option>
+
+        <option value="Lelilef">
+          Pool Lelilef
+        </option>
+
       </select>
+
       <div class="pool-note">
-        Dashboard hanya menampilkan penumpang
-        yang naik dari pool yang dipilih.
+        Dashboard booking menampilkan penumpang
+        berdasarkan pool yang dipilih.
       </div>
+
     </div>
 
-    <button id="loginBtn" class="login-btn" type="button">
+    <button
+      id="loginBtn"
+      class="login-btn"
+      type="button"
+    >
       Masuk
     </button>
 
-    <div id="loginMessage" class="login-message"></div>
+    <div
+      id="loginMessage"
+      class="login-message"
+    ></div>
+
   </div>
+
 </section>
+
+<!-- ============================================================
+     DASHBOARD
+     ============================================================ -->
 
 <section id="dashboard">
 
+  <!-- WAJIB DIPERTAHANKAN UNTUK MODUL LAMA -->
+
   <div class="dashboard-head">
+
     <div>
-      <h1 id="dashboardTitle">Booking HSM Transport</h1>
+
+      <h1 id="dashboardTitle">
+        Booking HSM Transport
+      </h1>
+
       <p>
-        Kelola pembayaran, tiket,
-        perjalanan dan pembatalan.
+        Pengelolaan operasional HSM Transport
       </p>
-      <div id="activePoolBadge" class="pool-badge">
+
+      <div
+        id="activePoolBadge"
+        class="pool-badge"
+      >
         Pool -
       </div>
+
     </div>
-    <button id="refreshBtn" class="refresh-btn" type="button">
+
+    <button
+      id="refreshBtn"
+      class="refresh-btn"
+      type="button"
+    >
       Refresh
     </button>
+
   </div>
 
+  <!-- ========================================================
+       STATISTIK BOOKING LAMA
+       ======================================================== -->
+
   <div class="stats">
+
     <div class="stat-card">
+
       <span>MENUNGGU</span>
-      <strong id="statPending">0</strong>
+
+      <strong id="statPending">
+        0
+      </strong>
+
     </div>
+
     <div class="stat-card">
+
       <span>LUNAS</span>
-      <strong id="statPaid">0</strong>
+
+      <strong id="statPaid">
+        0
+      </strong>
+
     </div>
+
     <div class="stat-card">
+
       <span>SELESAI</span>
-      <strong id="statCompleted">0</strong>
+
+      <strong id="statCompleted">
+        0
+      </strong>
+
     </div>
+
     <div class="stat-card">
+
       <span>DIBATALKAN</span>
-      <strong id="statCancelled">0</strong>
+
+      <strong id="statCancelled">
+        0
+      </strong>
+
     </div>
+
   </div>
+
+  <!-- ========================================================
+       FILTER BOOKING LAMA
+       ======================================================== -->
 
   <div class="filters">
 
     <div class="filter-item filter-search">
-      <label for="searchInput">Cari Booking</label>
+
+      <label for="searchInput">
+        Cari Booking
+      </label>
+
       <input
         id="searchInput"
         class="filter-control"
         type="search"
-        placeholder="Kode, nama, nomor WA, rute, armada..."
+        placeholder="Kode, nama, WhatsApp, rute..."
       >
+
     </div>
 
     <div class="filter-item">
-      <label for="dateFilter">Tanggal Perjalanan</label>
+
+      <label for="dateFilter">
+        Tanggal Perjalanan
+      </label>
+
       <input
         id="dateFilter"
         class="filter-control"
         type="date"
       >
+
     </div>
 
     <div class="filter-item">
-      <label for="statusFilter">Status</label>
-      <select id="statusFilter" class="filter-control">
-        <option value="">Semua Status</option>
-        <option value="pending">Menunggu Pembayaran</option>
-        <option value="paid">Lunas</option>
-        <option value="completed">Selesai</option>
-        <option value="cancelled">Dibatalkan</option>
+
+      <label for="statusFilter">
+        Status
+      </label>
+
+      <select
+        id="statusFilter"
+        class="filter-control"
+      >
+
+        <option value="">
+          Semua Status
+        </option>
+
+        <option value="pending">
+          Menunggu Pembayaran
+        </option>
+
+        <option value="paid">
+          Lunas
+        </option>
+
+        <option value="completed">
+          Selesai
+        </option>
+
+        <option value="cancelled">
+          Dibatalkan
+        </option>
+
       </select>
+
     </div>
 
   </div>
 
-  <div id="bookingList" class="booking-list">
-    <div class="empty">Memuat data booking...</div>
+  <!-- ========================================================
+       BOOKING LIST LAMA
+       ======================================================== -->
+
+  <div
+    id="bookingList"
+    class="booking-list"
+  >
+
+    <div class="empty">
+      Memuat data booking...
+    </div>
+
   </div>
 
+  <!-- ========================================================
+       BERANDA BARU
+       ======================================================== -->
+
+  <section
+    id="hsmAdminHome"
+    aria-label="Beranda Admin"
+  >
+
+    <div class="home-main-card">
+
+      <div class="home-main-label">
+        Operasional HSM Transport
+      </div>
+
+      <div class="home-main-chip">
+        ● LIVE DATA
+      </div>
+
+      <div
+        id="homePoolName"
+        class="home-main-title"
+      >
+        Pool -
+      </div>
+
+      <div class="home-main-description">
+        Pusat pengelolaan booking, manifest,
+        petugas, dan perjalanan HSM Transport.
+      </div>
+
+    </div>
+
+    <div class="home-stats">
+
+      <div class="home-stat">
+
+        <div class="home-stat-icon">
+          ⏳
+        </div>
+
+        <div class="home-stat-label">
+          Menunggu
+        </div>
+
+        <div
+          id="homePending"
+          class="home-stat-value"
+        >
+          0
+        </div>
+
+        <div class="home-stat-note">
+          Booking menunggu
+        </div>
+
+      </div>
+
+      <div class="home-stat">
+
+        <div class="home-stat-icon">
+          ✅
+        </div>
+
+        <div class="home-stat-label">
+          Tiket Lunas
+        </div>
+
+        <div
+          id="homePaid"
+          class="home-stat-value"
+        >
+          0
+        </div>
+
+        <div class="home-stat-note">
+          Berdasarkan data booking
+        </div>
+
+      </div>
+
+      <div class="home-stat">
+
+        <div class="home-stat-icon">
+          🚐
+        </div>
+
+        <div class="home-stat-label">
+          Selesai
+        </div>
+
+        <div
+          id="homeCompleted"
+          class="home-stat-value"
+        >
+          0
+        </div>
+
+        <div class="home-stat-note">
+          Status booking selesai
+        </div>
+
+      </div>
+
+      <div class="home-stat">
+
+        <div class="home-stat-icon">
+          ✕
+        </div>
+
+        <div class="home-stat-label">
+          Dibatalkan
+        </div>
+
+        <div
+          id="homeCancelled"
+          class="home-stat-value"
+        >
+          0
+        </div>
+
+        <div class="home-stat-note">
+          Tiket dibatalkan
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- GRAFIK -->
+
+    <section class="home-section">
+
+      <div class="home-section-head">
+
+        <h2>
+          Tren Booking
+        </h2>
+
+        <span>
+          7 hari terakhir
+        </span>
+
+      </div>
+
+      <div class="home-chart-card">
+
+        <div
+          id="hsmBookingChart"
+          class="home-chart"
+          role="img"
+          aria-label="Grafik jumlah booking tujuh hari terakhir"
+        ></div>
+
+        <div class="home-chart-note">
+          Jumlah booking berdasarkan tanggal pembuatan
+          pada data pool yang telah dimuat.
+          Grafik ini bukan laporan pendapatan.
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- AKSES CEPAT -->
+
+    <section class="home-section">
+
+      <div class="home-section-head">
+
+        <h2>
+          Akses Cepat
+        </h2>
+
+      </div>
+
+      <div class="home-shortcuts">
+
+        <button
+          class="home-shortcut"
+          data-hsm-target="booking"
+          type="button"
+        >
+
+          <span class="home-shortcut-icon">
+            🎫
+          </span>
+
+          Booking
+
+        </button>
+
+        <button
+          class="home-shortcut"
+          data-hsm-target="manifest"
+          type="button"
+        >
+
+          <span class="home-shortcut-icon">
+            📋
+          </span>
+
+          Manifest
+
+        </button>
+
+        <button
+          class="home-shortcut"
+          data-hsm-target="monitor"
+          type="button"
+        >
+
+          <span class="home-shortcut-icon">
+            🚐
+          </span>
+
+          Monitoring
+
+        </button>
+
+        <button
+          class="home-shortcut"
+          data-hsm-target="site"
+          type="button"
+        >
+
+          <span class="home-shortcut-icon">
+            ⚙️
+          </span>
+
+          Pengaturan
+
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- AKTIVITAS -->
+
+    <section class="home-section">
+
+      <div class="home-section-head">
+
+        <h2>
+          Booking Terbaru
+        </h2>
+
+        <span>
+          Pool aktif
+        </span>
+
+      </div>
+
+      <div
+        id="hsmHomeActivities"
+        class="home-activity-list"
+      >
+
+        <div class="empty">
+          Memuat aktivitas booking...
+        </div>
+
+      </div>
+
+    </section>
+
+  </section>
+
+  <!-- ========================================================
+       AKUN ADMIN BARU
+       ======================================================== -->
+
+  <section
+    id="hsmAdminAccount"
+    aria-label="Akun Admin"
+  >
+
+    <div class="account-card">
+
+      <h2>
+        👤 Akun Administrator
+      </h2>
+
+      <div class="account-line">
+
+        <small>
+          Email Admin
+        </small>
+
+        <strong id="hsmAccountEmail">
+          -
+        </strong>
+
+      </div>
+
+      <div class="account-line">
+
+        <small>
+          Pool Operasional
+        </small>
+
+        <strong id="hsmAccountPool">
+          -
+        </strong>
+
+      </div>
+
+      <div class="account-line">
+
+        <small>
+          Masa Login
+        </small>
+
+        <strong>
+          Sampai pergantian hari pukul 00.00 WIT
+        </strong>
+
+      </div>
+
+      <button
+        type="button"
+        id="hsmOpenSiteSettings"
+        class="account-action"
+      >
+        ⚙️ Pengaturan Website
+      </button>
+
+      <button
+        type="button"
+        id="hsmAccountLogout"
+        class="account-action danger"
+      >
+        Keluar dari Akun
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- ========================================================
+       LOGOUT LAMA - WAJIB UNTUK ADMIN.JS
+       ======================================================== -->
+
+  <button
+    id="logoutBtn"
+    class="logout-btn"
+    type="button"
+    hidden
+  >
+    Keluar
+  </button>
+
   <footer class="admin-footer">
-    <strong>HSM Transport</strong><br>
-    PT Hidayah Sarana Mulia<br>
-    081356902006<br>
+
+    <strong>
+      HSM Transport
+    </strong>
+
+    <br>
+
+    PT Hidayah Sarana Mulia
+
+    <br>
+
     Satu Perjalanan, Banyak Cerita
+
   </footer>
+
+  <!-- ========================================================
+       NAVIGASI BAWAH
+       ======================================================== -->
+
+  <nav
+    class="hsm-bottom-nav"
+    id="hsmBottomNavigation"
+    aria-label="Navigasi utama Admin"
+  >
+
+    <button
+      type="button"
+      class="hsm-bottom-button active"
+      data-hsm-target="home"
+    >
+
+      <svg viewBox="0 0 24 24">
+        <path d="m3 10 9-7 9 7v10H3z"></path>
+        <path d="M9 20v-7h6v7"></path>
+      </svg>
+
+      Beranda
+
+    </button>
+
+    <button
+      type="button"
+      class="hsm-bottom-button"
+      data-hsm-target="booking"
+    >
+
+      <svg viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+        <path d="M7 5v14M17 5v14M10 12h4"></path>
+      </svg>
+
+      Booking
+
+    </button>
+
+    <button
+      type="button"
+      class="hsm-bottom-button"
+      data-hsm-target="manifest"
+    >
+
+      <svg viewBox="0 0 24 24">
+        <rect x="5" y="3" width="14" height="18" rx="2"></rect>
+        <path d="M9 8h6M9 12h6M9 16h4"></path>
+      </svg>
+
+      Manifest
+
+    </button>
+
+    <button
+      type="button"
+      class="hsm-bottom-button"
+      data-hsm-target="crew"
+    >
+
+      <svg viewBox="0 0 24 24">
+        <circle cx="9" cy="8" r="3"></circle>
+        <path d="M3 20v-2a6 6 0 0 1 12 0v2"></path>
+        <path d="M17 5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 3 5"></path>
+      </svg>
+
+      Petugas
+
+    </button>
+
+    <button
+      type="button"
+      class="hsm-bottom-button"
+      data-hsm-target="account"
+    >
+
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M4 21a8 8 0 0 1 16 0"></path>
+      </svg>
+
+      Akun
+
+    </button>
+
+  </nav>
 
 </section>
 
 </main>
 
+<!-- ============================================================
+     SELURUH SCRIPT LAMA TETAP DIPERTAHANKAN
+     ============================================================ -->
+
 <script src="config.js"></script>
+
 <script src="admin.js"></script>
+
 <script src="hsm-admin-extra.js"></script>
+
 <script src="hsm-manifest.js"></script>
+
 <script src="hsm-staff-admin.js"></script>
+
 <script src="hsm-trip-monitor.js"></script>
+
 <script src="hsm-trip-corrections.js"></script>
+
 <script src="hsm-site-admin.js?v=3"></script>
+
+<!-- ============================================================
+     PENGHUBUNG NAVIGASI PREMIUM NAVY
+     ============================================================ -->
+
+<script>
+(function () {
+  "use strict";
+
+  const $ = id => document.getElementById(id);
+
+  const MENU_NAMES = [
+    "home",
+    "booking",
+    "manifest",
+    "monitor",
+    "crew",
+    "site",
+    "account"
+  ];
+
+  let currentMenu = "home";
+
+  /* ==========================================================
+     TANGGAL WIT
+     ========================================================== */
+
+  function todayWIT() {
+    const parts = new Intl.DateTimeFormat(
+      "id-ID",
+      {
+        timeZone:"Asia/Jayapura",
+        day:"numeric",
+        month:"short",
+        year:"numeric"
+      }
+    ).format(new Date());
+
+    return parts;
+  }
+
+  function dateKeyWIT(date = new Date()) {
+    const parts = new Intl.DateTimeFormat(
+      "en-GB",
+      {
+        timeZone:"Asia/Jayapura",
+        year:"numeric",
+        month:"2-digit",
+        day:"2-digit"
+      }
+    ).formatToParts(date);
+
+    const values = {};
+
+    for (const part of parts) {
+      values[part.type] = part.value;
+    }
+
+    return (
+      values.year + "-" +
+      values.month + "-" +
+      values.day
+    );
+  }
+
+  function updateDate() {
+    $("hsmHeaderDate").textContent =
+      todayWIT() + " • WIT";
+  }
+
+  /* ==========================================================
+     INTERNAL NAVIGATION
+     ========================================================== */
+
+  function internalButton(menu) {
+    return document.querySelector(
+      `.hsm-extra-nav [data-hsm-menu="${menu}"]`
+    );
+  }
+
+  function clickInternalMenu(menu) {
+    const button = internalButton(menu);
+
+    if (!button) {
+      console.warn(
+        "HSM NAV: Menu internal tidak ditemukan:",
+        menu
+      );
+
+      return false;
+    }
+
+    button.click();
+
+    return true;
+  }
+
+  /* ==========================================================
+     TAMPILKAN / SEMBUNYIKAN
+     ========================================================== */
+
+  function hideCustomPanels() {
+    $("hsmAdminHome")?.classList.remove("active");
+
+    $("hsmAdminAccount")?.classList.remove("active");
+  }
+
+  function hideLegacyContent() {
+    const stats = document.querySelector(
+      "#dashboard > .stats"
+    );
+
+    const filters = document.querySelector(
+      "#dashboard > .filters"
+    );
+
+    const booking = $("bookingList");
+
+    if (stats) stats.style.display = "none";
+
+    if (filters) filters.style.display = "none";
+
+    if (booking) booking.style.display = "none";
+
+    $("hsmManifestSection")
+      ?.classList.remove("active");
+
+    $("hsmCrewSection")
+      ?.classList.remove("active");
+
+    $("hsmTripMonitorSection")
+      ?.classList.remove("active");
+
+    $("hsmSiteAdminSection")
+      ?.classList.remove("active");
+  }
+
+  function setBottomActive(menu) {
+    let bottomMenu = menu;
+
+    if (menu === "monitor") {
+      bottomMenu = "manifest";
+    }
+
+    if (menu === "site") {
+      bottomMenu = "account";
+    }
+
+    document.querySelectorAll(
+      ".hsm-bottom-button"
+    ).forEach(button => {
+      const active =
+        button.dataset.hsmTarget === bottomMenu;
+
+      button.classList.toggle(
+        "active",
+        active
+      );
+
+      if (active) {
+        button.setAttribute(
+          "aria-current",
+          "page"
+        );
+      } else {
+        button.removeAttribute(
+          "aria-current"
+        );
+      }
+    });
+  }
+
+  /* ==========================================================
+     HEADER DASHBOARD
+     ========================================================== */
+
+  function updatePageTitle(menu) {
+    const titles = {
+      home:"Beranda Admin",
+      booking:"Booking HSM Transport",
+      manifest:"Manifest Penumpang",
+      monitor:"Monitoring Perjalanan",
+      crew:"Data Sopir & Kernet",
+      site:"Pengaturan Website",
+      account:"Akun Administrator"
+    };
+
+    const title = $("dashboardTitle");
+
+    if (!title) return;
+
+    title.textContent =
+      titles[menu] || "HSM Internal";
+  }
+
+  /* ==========================================================
+     BERANDA - RINGKASAN
+     ========================================================== */
+
+  function syncHomeStats() {
+    const pairs = [
+      ["statPending","homePending"],
+      ["statPaid","homePaid"],
+      ["statCompleted","homeCompleted"],
+      ["statCancelled","homeCancelled"]
+    ];
+
+    for (const [source,target] of pairs) {
+      const from = $(source);
+      const to = $(target);
+
+      if (from && to) {
+        to.textContent = from.textContent.trim();
+      }
+    }
+
+    const pool = $("poolSelect")?.value || "-";
+
+    $("homePoolName").textContent =
+      "Pool " + pool;
+
+    $("hsmAccountPool").textContent =
+      "Pool " + pool;
+
+    $("hsmAccountEmail").textContent =
+      $("adminEmail")?.value.trim() ||
+      "Akun Admin aktif";
+  }
+
+  /* ==========================================================
+     GRAFIK BOOKING 7 HARI
+     ========================================================== */
+
+  function renderHomeChart() {
+    const host = $("hsmBookingChart");
+
+    if (!host) return;
+
+    let rows = [];
+
+    try {
+      if (typeof bookings !== "undefined") {
+        rows = Array.isArray(bookings)
+          ? bookings
+          : [];
+      }
+    } catch {
+      rows = [];
+    }
+
+    const now = new Date();
+
+    const days = [];
+
+    for (let offset = 6; offset >= 0; offset--) {
+      const date = new Date(
+        now.getTime() - offset * 86400000
+      );
+
+      days.push({
+        date:dateKeyWIT(date),
+        label:dateKeyWIT(date).slice(-2),
+        count:0
+      });
+    }
+
+    for (const row of rows) {
+      if (!row.created_at) continue;
+
+      const created = new Date(row.created_at);
+
+      if (Number.isNaN(created.getTime())) {
+        continue;
+      }
+
+      const key = dateKeyWIT(created);
+
+      const item = days.find(
+        day => day.date === key
+      );
+
+      if (item) item.count++;
+    }
+
+    const max = Math.max(
+      1,
+      ...days.map(day => day.count)
+    );
+
+    host.replaceChildren();
+
+    for (const day of days) {
+      const wrap = document.createElement("div");
+
+      wrap.className = "home-chart-bar-wrap";
+
+      const bar = document.createElement("div");
+
+      bar.className = "home-chart-bar";
+
+      const height = day.count === 0
+        ? 3
+        : Math.max(
+            8,
+            Math.round(day.count / max * 135)
+          );
+
+      bar.style.height = height + "px";
+
+      bar.title =
+        day.date + ": " +
+        day.count + " booking";
+
+      const label = document.createElement("span");
+
+      label.className = "home-chart-day";
+
+      label.textContent = day.label;
+
+      wrap.append(bar,label);
+
+      host.appendChild(wrap);
+    }
+  }
+
+  /* ==========================================================
+     BOOKING TERBARU
+     ========================================================== */
+
+  function renderHomeActivities() {
+    const host = $("hsmHomeActivities");
+
+    if (!host) return;
+
+    let rows = [];
+
+    try {
+      if (typeof bookings !== "undefined") {
+        rows = Array.isArray(bookings)
+          ? [...bookings]
+          : [];
+      }
+    } catch {
+      rows = [];
+    }
+
+    rows.sort((a,b) =>
+      String(b.created_at || "").localeCompare(
+        String(a.created_at || "")
+      )
+    );
+
+    rows = rows.slice(0,4);
+
+    host.replaceChildren();
+
+    if (!rows.length) {
+      const empty = document.createElement("div");
+
+      empty.className = "empty";
+
+      empty.textContent =
+        "Belum ada booking yang dimuat " +
+        "untuk pool aktif.";
+
+      host.appendChild(empty);
+
+      return;
+    }
+
+    for (const booking of rows) {
+      const card = document.createElement("div");
+
+      card.className = "home-activity";
+
+      const icon = document.createElement("div");
+
+      icon.className = "home-activity-icon";
+
+      icon.textContent = "🎫";
+
+      const content = document.createElement("div");
+
+      content.className = "home-activity-content";
+
+      const title = document.createElement("div");
+
+      title.className = "home-activity-title";
+
+      title.textContent =
+        booking.passenger_name ||
+        booking.booking_code ||
+        "Booking HSM";
+
+      const sub = document.createElement("div");
+
+      sub.className = "home-activity-subtitle";
+
+      sub.textContent =
+        (booking.origin || "-") +
+        " → " +
+        (booking.destination || "-") +
+        " • " +
+        (booking.booking_code || "-");
+
+      content.append(title,sub);
+
+      card.append(icon,content);
+
+      host.appendChild(card);
+    }
+  }
+
+  function refreshHome() {
+    syncHomeStats();
+    renderHomeChart();
+    renderHomeActivities();
+  }
+
+  /* ==========================================================
+     NAVIGASI UTAMA
+     ========================================================== */
+
+  function openMenu(menu) {
+    if (!MENU_NAMES.includes(menu)) {
+      return;
+    }
+
+    if (
+      $("dashboard")?.style.display !== "block"
+    ) {
+      return;
+    }
+
+    hideCustomPanels();
+
+    if (menu === "home" || menu === "account") {
+      /*
+        Aktifkan menu Booking internal dahulu
+        agar seluruh panel lama kembali konsisten.
+      */
+      clickInternalMenu("booking");
+
+      hideLegacyContent();
+
+      if (menu === "home") {
+        $("hsmAdminHome").classList.add("active");
+        refreshHome();
+      } else {
+        $("hsmAdminAccount").classList.add("active");
+        syncHomeStats();
+      }
+
+    } else {
+      const activated = clickInternalMenu(menu);
+
+      if (!activated) {
+        alert(
+          "Menu belum tersedia. " +
+          "Periksa modul HSM Internal."
+        );
+        return;
+      }
+    }
+
+    currentMenu = menu;
+
+    setBottomActive(menu);
+
+    updatePageTitle(menu);
+
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
+  }
+
+  /* ==========================================================
+     NAVIGASI BAWAH DAN AKSES CEPAT
+     ========================================================== */
+
+  function installNavigation() {
+    document.addEventListener(
+      "click",
+      event => {
+        const target = event.target.closest(
+          "[data-hsm-target]"
+        );
+
+        if (!target) return;
+
+        event.preventDefault();
+
+        openMenu(
+          target.dataset.hsmTarget
+        );
+      }
+    );
+
+    $("hsmOpenSiteSettings")
+      ?.addEventListener(
+        "click",
+        () => openMenu("site")
+      );
+
+    $("hsmAccountLogout")
+      ?.addEventListener(
+        "click",
+        () => {
+          $("logoutBtn")?.click();
+        }
+      );
+  }
+
+  /* ==========================================================
+     OBSERVER PERUBAHAN DATA
+     ========================================================== */
+
+  function installDataObserver() {
+    const list = $("bookingList");
+
+    if (!list) return;
+
+    let scheduled = false;
+
+    const observer = new MutationObserver(() => {
+      if (scheduled) return;
+
+      scheduled = true;
+
+      setTimeout(() => {
+        scheduled = false;
+
+        if (
+          $("dashboard")?.style.display === "block"
+        ) {
+          refreshHome();
+        }
+      },150);
+    });
+
+    observer.observe(list,{
+      childList:true
+    });
+
+    [
+      "statPending",
+      "statPaid",
+      "statCompleted",
+      "statCancelled"
+    ].forEach(id => {
+      const stat = $(id);
+
+      if (!stat) return;
+
+      observer.observe(stat,{
+        childList:true,
+        characterData:true,
+        subtree:true
+      });
+    });
+  }
+
+  /* ==========================================================
+     LOGIN STATE
+     ========================================================== */
+
+  function installDashboardObserver() {
+    const dashboard = $("dashboard");
+
+    if (!dashboard) return;
+
+    let wasVisible = false;
+
+    const observer = new MutationObserver(() => {
+      const visible =
+        dashboard.style.display === "block";
+
+      if (visible && !wasVisible) {
+        /*
+          Tunggu modul login menyelesaikan
+          pembaruan pool dan data awal.
+        */
+        setTimeout(() => {
+          openMenu("home");
+        },100);
+      }
+
+      if (!visible) {
+        currentMenu = "home";
+        hideCustomPanels();
+      }
+
+      wasVisible = visible;
+    });
+
+    observer.observe(dashboard,{
+      attributes:true,
+      attributeFilter:["style"]
+    });
+
+    if (dashboard.style.display === "block") {
+      openMenu("home");
+      wasVisible = true;
+    }
+  }
+
+  /* ==========================================================
+     INITIALIZE
+     ========================================================== */
+
+  function initialize() {
+    updateDate();
+
+    installNavigation();
+
+    installDataObserver();
+
+    installDashboardObserver();
+
+    setInterval(updateDate,60000);
+
+    console.log(
+      "HSM INTERNAL PREMIUM NAVY: Siap."
+    );
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      initialize
+    );
+  } else {
+    initialize();
+  }
+
+})();
+</script>
 
 </body>
 </html>
