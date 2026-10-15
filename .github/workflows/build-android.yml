@@ -6,14 +6,18 @@
 #
 # 1. HSM Transport
 #    com.hsmtransport.app
+#    Aplikasi penumpang
 #
 # 2. HSM Internal
 #    com.hsmtransport.internal
+#    Admin, Sopir, Kernet
+#    Scanner QR + GPS Live Tracking
 #
 # 3. HSM Owner
 #    com.hsmtransport.owner
+#    Dashboard pemilik perusahaan
 #
-# Capacitor 8
+# CAPACITOR 8
 # ============================================================
 
 name: Build 3 APK HSM
@@ -22,7 +26,9 @@ on:
   workflow_dispatch:
 
 jobs:
+
   build:
+
     name: Build 3 Android APK
 
     runs-on: ubuntu-latest
@@ -35,44 +41,49 @@ jobs:
     steps:
 
       # ======================================================
-      # 1. CHECKOUT
+      # 1. CHECKOUT REPOSITORY
       # ======================================================
 
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       # ======================================================
-      # 2. NODE.JS
+      # 2. SETUP NODE.JS
       # ======================================================
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
+
         with:
           node-version: "22"
 
       # ======================================================
-      # 3. JAVA
+      # 3. SETUP JAVA
       # ======================================================
 
       - name: Setup Java
         uses: actions/setup-java@v4
+
         with:
           distribution: temurin
           java-version: "21"
 
       # ======================================================
-      # 4. ANDROID SDK
+      # 4. SETUP ANDROID SDK
       # ======================================================
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+
         with:
           cmdline-tools-version: "12266719"
           accept-android-sdk-licenses: "true"
           packages: ""
 
       - name: Install Android Platform
+
         shell: bash
+
         run: |
           set -e
 
@@ -82,13 +93,17 @@ jobs:
             "platform-tools"
 
       # ======================================================
-      # 5. VALIDASI FILE
+      # 5. VALIDASI FILE HSM
       # ======================================================
 
       - name: Validate HSM Files
+
         shell: bash
+
         run: |
           set -e
+
+          echo "Memeriksa file HSM Transport..."
 
           for file in \
             index.html \
@@ -102,34 +117,54 @@ jobs:
             hsm-pwa-audio.js \
             hsm_scan_success.wav \
             hsm_scan_error.wav \
+            hsm-gps-tracking.js \
+            hsm-gps-android/MainActivity.java \
+            hsm-gps-android/HSMGpsService.java \
+            owner-app/index.html \
+            owner-app/config.js \
+            owner-app/hsm-owner-security-fix.js \
             android-app/package.json
           do
+
             if [ ! -s "$file" ]; then
+
               echo "ERROR: File tidak ditemukan: $file"
+
               exit 1
+
             fi
+
           done
 
-          echo "File utama HSM tersedia."
+          echo "Semua file utama tersedia."
 
       # ======================================================
-      # 6. SIAPKAN 3 PROJECT
+      # 6. MEMBUAT TIGA PROJECT CAPACITOR
       # ======================================================
 
       - name: Prepare Three Capacitor Projects
+
         shell: bash
+
         run: |
           set -e
 
+          echo "Menyiapkan tiga aplikasi HSM..."
+
           for app in passenger internal owner
           do
+
             mkdir -p "builds/$app/www"
 
             cp android-app/package.json \
               "builds/$app/package.json"
+
           done
 
-          # Salin aset website utama.
+          # --------------------------------------------------
+          # SALIN FILE WEBSITE UTAMA
+          # --------------------------------------------------
+
           for file in \
             ./*.html \
             ./*.js \
@@ -144,27 +179,47 @@ jobs:
             ./*.webmanifest \
             ./*.wav
           do
+
             if [ -f "$file" ]; then
+
               for app in passenger internal owner
               do
+
                 cp "$file" "builds/$app/www/"
+
               done
+
             fi
+
           done
 
-          # Folder aset tambahan bila tersedia.
+          # --------------------------------------------------
+          # SALIN FOLDER ASET TAMBAHAN
+          # --------------------------------------------------
+
           for folder in assets images img fonts
           do
+
             if [ -d "$folder" ]; then
+
               for app in passenger internal owner
               do
+
                 cp -R "$folder" \
                   "builds/$app/www/"
+
               done
+
             fi
+
           done
 
-          # Penumpang tidak memuat portal internal.
+          # --------------------------------------------------
+          # APK PENUMPANG
+          #
+          # Tidak menyertakan halaman khusus internal.
+          # --------------------------------------------------
+
           rm -f \
             builds/passenger/www/admin.html \
             builds/passenger/www/petugas.html \
@@ -176,50 +231,78 @@ jobs:
             builds/passenger/www/hsm-trip-monitor.js \
             builds/passenger/www/hsm-trip-corrections.js \
             builds/passenger/www/hsm-site-admin.js \
-            builds/passenger/www/hsm-petugas-premium.js
+            builds/passenger/www/hsm-petugas-premium.js \
+            builds/passenger/www/hsm-gps-tracking.js
+
+          # --------------------------------------------------
+          # KONFIGURASI CAPACITOR
+          # --------------------------------------------------
 
           python3 - <<'PY'
           import json
           from pathlib import Path
 
           configs = {
+
               "passenger": {
+
                   "appId": "com.hsmtransport.app",
+
                   "appName": "HSM Transport",
+
                   "webDir": "www",
+
                   "android": {
                       "backgroundColor": "#ffffff"
                   }
+
               },
+
               "internal": {
+
                   "appId": "com.hsmtransport.internal",
+
                   "appName": "HSM Internal",
+
                   "webDir": "www",
+
                   "android": {
                       "backgroundColor": "#071e42"
                   }
+
               },
+
               "owner": {
+
                   "appId": "com.hsmtransport.owner",
+
                   "appName": "HSM Owner",
+
                   "webDir": "www",
+
                   "android": {
                       "backgroundColor": "#071e42"
                   }
+
               }
+
           }
 
           for name, config in configs.items():
+
               path = Path(
                   f"builds/{name}/capacitor.config.json"
               )
 
               path.write_text(
-                  json.dumps(config, indent=2),
+                  json.dumps(
+                      config,
+                      indent=2
+                  ),
                   encoding="utf-8"
               )
 
-          print("3 konfigurasi Capacitor siap.")
+          print("Tiga konfigurasi Capacitor siap.")
           PY
 
       # ======================================================
@@ -227,24 +310,34 @@ jobs:
       # ======================================================
 
       - name: Create HSM Internal Home
+
         shell: bash
+
         run: |
           set -e
 
           cat > builds/internal/www/index.html <<'HTML'
           <!DOCTYPE html>
           <html lang="id">
+
           <head>
+
             <meta charset="UTF-8">
+
             <meta
               name="viewport"
               content="width=device-width,initial-scale=1"
             >
-            <meta name="theme-color" content="#071e42">
+
+            <meta
+              name="theme-color"
+              content="#071e42"
+            >
 
             <title>HSM Internal</title>
 
             <style>
+
               * {
                 box-sizing:border-box;
               }
@@ -344,10 +437,13 @@ jobs:
                 color:#687e98;
                 font-size:10px;
               }
+
             </style>
+
           </head>
 
           <body>
+
             <main class="card">
 
               <img
@@ -363,7 +459,11 @@ jobs:
                 INTERNAL CONTROL CENTER
               </div>
 
-              <a class="menu" href="admin.html">
+              <a
+                class="menu"
+                href="admin.html"
+              >
+
                 <svg viewBox="0 0 24 24">
                   <rect
                     x="4"
@@ -378,13 +478,24 @@ jobs:
                 </svg>
 
                 <span>
+
                   <strong>Login Admin</strong>
-                  <small>Dashboard operasional HSM</small>
+
+                  <small>
+                    Dashboard operasional HSM
+                  </small>
+
                 </span>
+
               </a>
 
-              <a class="menu" href="petugas.html">
+              <a
+                class="menu"
+                href="petugas.html"
+              >
+
                 <svg viewBox="0 0 24 24">
+
                   <rect
                     x="3"
                     y="7"
@@ -392,17 +503,25 @@ jobs:
                     height="12"
                     rx="3"
                   />
+
                   <path d="M6 7V4h12v3"/>
                   <path d="M3 12h18"/>
                   <path d="M7 19v2m10-2v2"/>
+
                 </svg>
 
                 <span>
-                  <strong>Login Sopir & Kernet</strong>
+
+                  <strong>
+                    Login Sopir & Kernet
+                  </strong>
+
                   <small>
                     Scan QR, manifest & perjalanan
                   </small>
+
                 </span>
+
               </a>
 
               <div class="footer">
@@ -410,58 +529,54 @@ jobs:
               </div>
 
             </main>
+
           </body>
+
           </html>
           HTML
 
-            # ======================================================
-      # 8. SIAPKAN HALAMAN HSM OWNER
+      # ======================================================
+      # 8. SIAPKAN HSM OWNER
       # ======================================================
 
       - name: Prepare HSM Owner Home
+
         shell: bash
+
         run: |
           set -e
 
           echo "Menyiapkan HSM Owner..."
 
-          if [ ! -s "owner-app/index.html" ]; then
-            echo "ERROR: owner-app/index.html tidak ditemukan."
-            exit 1
-          fi
-
-          if [ ! -s "owner-app/config.js" ]; then
-            echo "ERROR: owner-app/config.js tidak ditemukan."
-            exit 1
-          fi
-
-          if [ ! -s "owner-app/hsm-owner-security-fix.js" ]; then
-            echo "ERROR: File keamanan Owner tidak ditemukan."
-            exit 1
-          fi
-
           cp -R owner-app/. builds/owner/www/
 
-          echo "Memeriksa konfigurasi Owner..."
+          if ! grep -q \
+            "HSM_OWNER_CONFIG" \
+            builds/owner/www/config.js
+          then
 
-          if ! grep -q "HSM_OWNER_CONFIG" builds/owner/www/config.js; then
-            echo "ERROR: Konfigurasi HSM Owner tidak ditemukan."
+            echo "ERROR: Konfigurasi Owner tidak ditemukan."
+
             exit 1
+
           fi
 
-          echo "HSM Owner siap untuk proses build."
+          echo "HSM Owner siap."
 
       # ======================================================
-      # 9. INSTALL CAPACITOR
+      # 9. INSTALL DEPENDENCIES
       # ======================================================
 
       - name: Install Capacitor Dependencies
+
         shell: bash
+
         run: |
           set -e
 
           for app in passenger internal owner
           do
+
             echo "Install Capacitor: $app"
 
             (
@@ -471,19 +586,23 @@ jobs:
                 --no-audit \
                 --no-fund
             )
+
           done
 
       # ======================================================
-      # 10. GENERATE ANDROID PROJECT
+      # 10. GENERATE ANDROID PROJECTS
       # ======================================================
 
       - name: Generate Three Android Projects
+
         shell: bash
+
         run: |
           set -e
 
           for app in passenger internal owner
           do
+
             echo "Generate Android: $app"
 
             (
@@ -491,19 +610,23 @@ jobs:
 
               npx cap add android
             )
+
           done
 
       # ======================================================
-      # 11. GENERATE IKON
+      # 11. GENERATE IKON APLIKASI
       # ======================================================
 
       - name: Generate HSM App Icons
+
         shell: bash
+
         run: |
           set -e
 
           for app in passenger internal owner
           do
+
             (
               cd "builds/$app"
 
@@ -523,14 +646,17 @@ jobs:
                 --iconBackgroundColor '#ffffff' \
                 --iconBackgroundColorDark '#ffffff'
             )
+
           done
 
       # ======================================================
-      # 12. AUDIO SCANNER HSM INTERNAL
+      # 12. PASANG SUARA SCANNER HSM INTERNAL
       # ======================================================
 
       - name: Install HSM Internal Scanner Sounds
+
         shell: bash
+
         run: |
           set -e
 
@@ -538,20 +664,38 @@ jobs:
 
           mkdir -p "$RAW_DIR"
 
-          cp hsm_scan_success.wav \
+          cp \
+            hsm_scan_success.wav \
             "$RAW_DIR/hsm_scan_success.wav"
 
-          cp hsm_scan_error.wav \
+          cp \
+            hsm_scan_error.wav \
             "$RAW_DIR/hsm_scan_error.wav"
 
           echo "Audio scanner berhasil dipasang."
 
       # ======================================================
-      # 13. NATIVE AUDIO DAN GETARAN
+      # 13. INSTALL NATIVE ANDROID GPS
+      #
+      # HANYA UNTUK HSM INTERNAL
+      #
+      # MainActivity.java:
+      # - Native scanner audio
+      # - Native getaran
+      # - Android GPS bridge
+      # - Tombol kembali Android
+      #
+      # HSMGpsService.java:
+      # - Foreground GPS
+      # - Notifikasi lokasi
+      # - Mengirim lokasi ke Supabase
+      # - Berhenti ketika sesi berakhir
       # ======================================================
 
-      - name: Configure HSM Internal Android
+      - name: Install HSM Internal Native GPS
+
         shell: bash
+
         run: |
           set -e
 
@@ -559,399 +703,101 @@ jobs:
           from pathlib import Path
           import re
 
-          root = Path(
+          java_root = Path(
               "builds/internal/android/app/src/main/java"
           )
 
-          files = list(
-              root.rglob("MainActivity.java")
+          matches = list(
+              java_root.rglob("MainActivity.java")
           )
 
-          if len(files) != 1:
+          if len(matches) != 1:
+
               raise RuntimeError(
                   "MainActivity.java tidak ditemukan."
               )
 
-          path = files[0]
+          main_activity = matches[0]
 
-          original = path.read_text(
+          original = main_activity.read_text(
               encoding="utf-8"
           )
 
-          match = re.search(
+          package_match = re.search(
               r"^\s*package\s+([\w.]+)\s*;",
               original,
               re.M
           )
 
-          if not match:
+          if not package_match:
+
               raise RuntimeError(
-                  "Package Java tidak ditemukan."
+                  "Package Android tidak ditemukan."
               )
 
-          package_name = match.group(1)
+          package_name = package_match.group(1)
 
-          code = r"""
-          package PACKAGE_NAME;
+          templates = [
+              "MainActivity.java",
+              "HSMGpsService.java"
+          ]
 
-          import android.content.Context;
-          import android.media.AudioAttributes;
-          import android.media.SoundPool;
-          import android.net.Uri;
-          import android.os.Build;
-          import android.os.Bundle;
-          import android.os.VibrationEffect;
-          import android.os.Vibrator;
-          import android.webkit.JavascriptInterface;
-          import android.webkit.WebView;
-          import android.widget.Toast;
+          for filename in templates:
 
-          import androidx.activity.OnBackPressedCallback;
+              source = Path(
+                  "hsm-gps-android"
+              ) / filename
 
-          import com.getcapacitor.BridgeActivity;
+              if not source.is_file():
 
-          public class MainActivity extends BridgeActivity {
+                  raise RuntimeError(
+                      f"File GPS tidak ditemukan: {source}"
+                  )
 
-              private long lastBackPressed = 0;
+              code = source.read_text(
+                  encoding="utf-8"
+              )
 
-              private SoundPool soundPool;
+              code = code.replace(
+                  "PACKAGE_NAME",
+                  package_name
+              )
 
-              private int successSound;
-              private int errorSound;
+              destination = (
+                  main_activity.parent / filename
+              )
 
-              private boolean successReady = false;
-              private boolean errorReady = false;
+              destination.write_text(
+                  code,
+                  encoding="utf-8"
+              )
 
-              private int successStream = 0;
-              private int errorStream = 0;
-
-              private final class HSMNativeBridge {
-
-                  @JavascriptInterface
-                  public void feedback(boolean success) {
-
-                      runOnUiThread(() -> {
-
-                          WebView webView =
-                              getBridge() == null
-                                  ? null
-                                  : getBridge().getWebView();
-
-                          if (webView == null) {
-                              return;
-                          }
-
-                          String url = webView.getUrl();
-
-                          if (url == null) {
-                              return;
-                          }
-
-                          Uri uri = Uri.parse(url);
-
-                          boolean allowed =
-                              "https".equals(uri.getScheme()) &&
-                              "localhost".equals(uri.getHost()) &&
-                              "/petugas.html".equals(uri.getPath());
-
-                          if (!allowed) {
-                              return;
-                          }
-
-                          playFeedback(success);
-
-                      });
-                  }
-              }
-
-              @Override
-              public void onCreate(Bundle state) {
-
-                  super.onCreate(state);
-
-                  initializeSounds();
-
-                  WebView webView =
-                      getBridge() == null
-                          ? null
-                          : getBridge().getWebView();
-
-                  if (webView != null) {
-                      webView.addJavascriptInterface(
-                          new HSMNativeBridge(),
-                          "HSMNative"
-                      );
-                  }
-
-                  configureBackButton();
-              }
-
-              private void initializeSounds() {
-
-                  AudioAttributes attributes =
-                      new AudioAttributes.Builder()
-                          .setUsage(
-                              AudioAttributes.USAGE_MEDIA
-                          )
-                          .setContentType(
-                              AudioAttributes.CONTENT_TYPE_SONIFICATION
-                          )
-                          .build();
-
-                  soundPool =
-                      new SoundPool.Builder()
-                          .setMaxStreams(2)
-                          .setAudioAttributes(attributes)
-                          .build();
-
-                  soundPool.setOnLoadCompleteListener(
-                      (pool, sampleId, status) -> {
-
-                          if (status == 0) {
-                              if (sampleId == successSound) {
-                                  successReady = true;
-                              }
-
-                              if (sampleId == errorSound) {
-                                  errorReady = true;
-                              }
-                          }
-                      }
-                  );
-
-                  successSound = soundPool.load(
-                      this,
-                      R.raw.hsm_scan_success,
-                      1
-                  );
-
-                  errorSound = soundPool.load(
-                      this,
-                      R.raw.hsm_scan_error,
-                      1
-                  );
-              }
-
-              private void playFeedback(boolean success) {
-                  playVibration(success);
-                  playSound(success);
-              }
-
-              private void playSound(boolean success) {
-
-                  if (soundPool == null) {
-                      return;
-                  }
-
-                  try {
-
-                      if (success) {
-
-                          if (!successReady) {
-                              return;
-                          }
-
-                          if (successStream != 0) {
-                              soundPool.stop(successStream);
-                          }
-
-                          successStream = soundPool.play(
-                              successSound,
-                              1.0f,
-                              1.0f,
-                              1,
-                              0,
-                              1.0f
-                          );
-
-                      } else {
-
-                          if (!errorReady) {
-                              return;
-                          }
-
-                          if (errorStream != 0) {
-                              soundPool.stop(errorStream);
-                          }
-
-                          errorStream = soundPool.play(
-                              errorSound,
-                              1.0f,
-                              1.0f,
-                              1,
-                              0,
-                              1.0f
-                          );
-                      }
-
-                  } catch (Exception error) {
-                      android.util.Log.e(
-                          "HSM",
-                          "Scanner audio error",
-                          error
-                      );
-                  }
-              }
-
-              private void playVibration(boolean success) {
-
-                  try {
-
-                      Vibrator vibrator =
-                          (Vibrator) getSystemService(
-                              Context.VIBRATOR_SERVICE
-                          );
-
-                      if (
-                          vibrator == null ||
-                          !vibrator.hasVibrator()
-                      ) {
-                          return;
-                      }
-
-                      long[] pattern = success
-                          ? new long[]{0,180}
-                          : new long[]{0,100,70,100,70,100};
-
-                      if (
-                          Build.VERSION.SDK_INT >=
-                          Build.VERSION_CODES.O
-                      ) {
-                          vibrator.vibrate(
-                              VibrationEffect.createWaveform(
-                                  pattern,
-                                  -1
-                              )
-                          );
-
-                      } else {
-                          vibrator.vibrate(
-                              pattern,
-                              -1
-                          );
-                      }
-
-                  } catch (Exception error) {
-                      android.util.Log.e(
-                          "HSM",
-                          "Scanner vibration error",
-                          error
-                      );
-                  }
-              }
-
-              private void configureBackButton() {
-
-                  getOnBackPressedDispatcher()
-                      .addCallback(
-                          this,
-                          new OnBackPressedCallback(true) {
-
-                              @Override
-                              public void handleOnBackPressed() {
-
-                                  WebView webView =
-                                      getBridge() == null
-                                          ? null
-                                          : getBridge().getWebView();
-
-                                  if (webView == null) {
-                                      finish();
-                                      return;
-                                  }
-
-                                  String url = webView.getUrl();
-                                  String path = "";
-
-                                  if (url != null) {
-                                      String parsed =
-                                          Uri.parse(url).getPath();
-
-                                      if (parsed != null) {
-                                          path = parsed;
-                                      }
-                                  }
-
-                                  path = path.toLowerCase(
-                                      java.util.Locale.ROOT
-                                  );
-
-                                  boolean home =
-                                      path.isEmpty() ||
-                                      path.equals("/") ||
-                                      path.endsWith("/index.html");
-
-                                  boolean staff =
-                                      path.endsWith("/petugas.html");
-
-                                  boolean admin =
-                                      path.endsWith("/admin.html");
-
-                                  if (staff || admin || !home) {
-
-                                      webView.loadUrl(
-                                          "https://localhost/index.html"
-                                      );
-
-                                      return;
-                                  }
-
-                                  long now =
-                                      System.currentTimeMillis();
-
-                                  if (
-                                      now - lastBackPressed < 2000
-                                  ) {
-                                      finish();
-
-                                  } else {
-                                      lastBackPressed = now;
-
-                                      Toast.makeText(
-                                          MainActivity.this,
-                                          "Tekan sekali lagi untuk keluar",
-                                          Toast.LENGTH_SHORT
-                                      ).show();
-                                  }
-                              }
-                          }
-                      );
-              }
-
-              @Override
-              public void onDestroy() {
-
-                  if (soundPool != null) {
-                      soundPool.release();
-                      soundPool = null;
-                  }
-
-                  super.onDestroy();
-              }
-          }
-          """
-
-          code = code.replace(
-              "PACKAGE_NAME",
-              package_name
-          )
-
-          path.write_text(
-              code.strip() + "\n",
-              encoding="utf-8"
-          )
+              print(
+                  f"Installed: {destination}"
+              )
 
           print(
-              "Native scanner HSM Internal siap."
+              "Native Android GPS HSM Internal siap."
           )
           PY
 
       # ======================================================
-      # 14. CAMERA + VIBRATION
+      # 14. IZIN GPS, KAMERA, GETARAN
+      #
+      # Android 13:
+      # POST_NOTIFICATIONS
+      #
+      # Android 14+:
+      # FOREGROUND_SERVICE_LOCATION
+      #
+      # GPS foreground service menampilkan
+      # notifikasi selama pelacakan berlangsung.
       # ======================================================
 
-      - name: Enable HSM Internal Permissions
+      - name: Enable HSM Internal GPS Permissions
+
         shell: bash
+
         run: |
           set -e
 
@@ -968,13 +814,28 @@ jobs:
           )
 
           permissions = [
+
               "android.permission.CAMERA",
-              "android.permission.VIBRATE"
+
+              "android.permission.VIBRATE",
+
+              "android.permission.ACCESS_FINE_LOCATION",
+
+              "android.permission.ACCESS_COARSE_LOCATION",
+
+              "android.permission.POST_NOTIFICATIONS",
+
+              "android.permission.FOREGROUND_SERVICE",
+
+              "android.permission.FOREGROUND_SERVICE_LOCATION"
+
           ]
 
           for permission in permissions:
+
               if permission not in content:
-                  line = (
+
+                  declaration = (
                       '<uses-permission '
                       'android:name="' +
                       permission +
@@ -983,18 +844,46 @@ jobs:
 
                   content = content.replace(
                       "<application",
-                      "    " + line +
+                      "    " + declaration +
                       "\n    <application",
                       1
                   )
 
           if "android.hardware.camera" not in content:
+
               content = content.replace(
                   "<application",
                   '    <uses-feature '
                   'android:name="android.hardware.camera" '
                   'android:required="false" />'
                   "\n    <application",
+                  1
+              )
+
+          if "android.hardware.location.gps" not in content:
+
+              content = content.replace(
+                  "<application",
+                  '    <uses-feature '
+                  'android:name="android.hardware.location.gps" '
+                  'android:required="false" />'
+                  "\n    <application",
+                  1
+              )
+
+          if 'android:name=".HSMGpsService"' not in content:
+
+              service = (
+                  '\n        <service '
+                  'android:name=".HSMGpsService" '
+                  'android:exported="false" '
+                  'android:foregroundServiceType="location" '
+                  'android:stopWithTask="false" />\n'
+              )
+
+              content = content.replace(
+                  "</application>",
+                  service + "    </application>",
                   1
               )
 
@@ -1005,33 +894,110 @@ jobs:
 
           ET.parse(manifest)
 
-          print("Izin Android Internal siap.")
+          print(
+              "Izin GPS Android berhasil dikonfigurasi."
+          )
           PY
 
       # ======================================================
-      # 15. CAPACITOR SYNC
+      # 15. PASANG KONTROL GPS PADA PORTAL PETUGAS
+      #
+      # hsm-gps-tracking.js
+      # hanya dimasukkan ke APK Internal.
+      #
+      # File petugas.html asli tidak diubah
+      # di repository.
+      # ======================================================
+
+      - name: Install GPS Control Into Staff Portal
+
+        shell: bash
+
+        run: |
+          set -e
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          html_file = Path(
+              "builds/internal/www/petugas.html"
+          )
+
+          html = html_file.read_text(
+              encoding="utf-8"
+          )
+
+          script_name = "hsm-gps-tracking.js"
+
+          snippet = (
+              '<script '
+              'src="./hsm-gps-tracking.js?v=1">'
+              '</script>'
+          )
+
+          if script_name not in html:
+
+              if not re.search(
+                  r"</body>",
+                  html,
+                  re.IGNORECASE
+              ):
+
+                  raise RuntimeError(
+                      "Tag </body> tidak ditemukan."
+                  )
+
+              html = re.sub(
+                  r"</body>",
+                  lambda _: snippet + "\n</body>",
+                  html,
+                  count=1,
+                  flags=re.IGNORECASE
+              )
+
+              html_file.write_text(
+                  html,
+                  encoding="utf-8"
+              )
+
+          print(
+              "Kontrol GPS berhasil dipasang pada Portal Petugas."
+          )
+          PY
+
+      # ======================================================
+      # 16. CAPACITOR SYNC
       # ======================================================
 
       - name: Sync Three Android Projects
+
         shell: bash
+
         run: |
           set -e
 
           for app in passenger internal owner
           do
+
+            echo "Sync Capacitor: $app"
+
             (
               cd "builds/$app"
 
               npx cap sync android
             )
+
           done
 
       # ======================================================
-      # 16. BUILD APK
+      # 17. BUILD APK HSM TRANSPORT
       # ======================================================
 
       - name: Build HSM Transport APK
+
         shell: bash
+
         run: |
           set -e
 
@@ -1041,8 +1007,16 @@ jobs:
 
           ./gradlew assembleDebug --no-daemon
 
+      # ======================================================
+      # 18. BUILD APK HSM INTERNAL
+      #
+      # APK INI MEMILIKI GPS LIVE TRACKING
+      # ======================================================
+
       - name: Build HSM Internal APK
+
         shell: bash
+
         run: |
           set -e
 
@@ -1052,8 +1026,14 @@ jobs:
 
           ./gradlew assembleDebug --no-daemon
 
+      # ======================================================
+      # 19. BUILD APK HSM OWNER
+      # ======================================================
+
       - name: Build HSM Owner APK
+
         shell: bash
+
         run: |
           set -e
 
@@ -1064,11 +1044,13 @@ jobs:
           ./gradlew assembleDebug --no-daemon
 
       # ======================================================
-      # 17. SIAPKAN 3 FILE APK
+      # 20. SIAPKAN HASIL APK
       # ======================================================
 
       - name: Prepare Three APK Files
+
         shell: bash
+
         run: |
           set -e
 
@@ -1086,34 +1068,60 @@ jobs:
             builds/owner/android/app/build/outputs/apk/debug/app-debug.apk \
             output/HSM-Owner.apk
 
-          echo "Ketiga APK berhasil dibuat."
+          echo "Ketiga file APK berhasil dibuat."
 
           ls -lh output/
 
       # ======================================================
-      # 18. UPLOAD APK
+      # 21. UPLOAD APK HSM TRANSPORT
       # ======================================================
 
       - name: Upload HSM Transport APK
+
         uses: actions/upload-artifact@v4
+
         with:
+
           name: HSM-Transport-APK
+
           path: output/HSM-Transport.apk
+
           retention-days: 30
+
           if-no-files-found: error
+
+      # ======================================================
+      # 22. UPLOAD APK HSM INTERNAL
+      # ======================================================
 
       - name: Upload HSM Internal APK
+
         uses: actions/upload-artifact@v4
+
         with:
+
           name: HSM-Internal-APK
+
           path: output/HSM-Internal.apk
+
           retention-days: 30
+
           if-no-files-found: error
 
+      # ======================================================
+      # 23. UPLOAD APK HSM OWNER
+      # ======================================================
+
       - name: Upload HSM Owner APK
+
         uses: actions/upload-artifact@v4
+
         with:
+
           name: HSM-Owner-APK
+
           path: output/HSM-Owner.apk
+
           retention-days: 30
+
           if-no-files-found: error
